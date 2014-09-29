@@ -8,7 +8,7 @@
 #### Install verison 1.2.3 of xyz
 
 ```
-asdf install xyz 1.2.3
+asdf install xyz 1.2.3 --name 1.0.0-erl-17.3
 ```
 
 #### Uninstall version 1.2.3 of xyz
@@ -41,6 +41,6 @@ asdf add elixir HashNuke/asdf-elixir
 asdf list
 ```
 
-####
+#### erlang 17.3 1.0.0-erl-17.3
 
 asdf depend elixir 1.0.0 on java 1.0
