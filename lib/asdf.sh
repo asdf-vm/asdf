@@ -92,7 +92,3 @@ clone_github_repo() {
 # verify_package_source() {
 #
 # }
-
-####
-
-run_command $@

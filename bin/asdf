@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+source $(dirname $(dirname $0))/lib/asdf.sh
+run_command $@
