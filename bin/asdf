@@ -1,4 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env sh -l
 
+source $(dirname $(dirname $0))/lib/asdf/utils.sh
 source $(dirname $(dirname $0))/lib/asdf.sh
-run_command $@
+source $(dirname $(dirname $0))/lib/asdf/docs.sh
+
+# run_command $@
+help_all

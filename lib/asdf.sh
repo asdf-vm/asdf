@@ -6,6 +6,10 @@
 
 ASDF_DIR=$(dirname $0)
 
+asdf_version () {
+  echo "0.1"
+}
+
 run_command () {
   echo $1
   echo $2
