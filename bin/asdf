@@ -4,5 +4,4 @@ source $(dirname $(dirname $0))/lib/asdf/utils.sh
 source $(dirname $(dirname $0))/lib/asdf.sh
 source $(dirname $(dirname $0))/lib/asdf/docs.sh
 
-# run_command $@
-help_all
+run_command $@
