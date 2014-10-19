@@ -11,33 +11,68 @@ asdf_version () {
 }
 
 run_command () {
-  echo $1
-  echo $2
-  # help
-  #
-  # source
-  # source add <name> <source>
-  # source remove <name>
-  #
-  # package install
-  # package list <version>
-  # package uninstall
-  # versions package
-  # versions package --all
-  # use
+
+  if [ $1 = "--version" ]
+  then
+    echo $(asdf_version)
+    exit 0
+  fi
+
+
+  if [ $1 = "install" ]
+  then
+    install_command
+    exit 0
+  fi
+
+
+  if [ $1 = "uninstall" ]
+  then
+    uninstall_command
+    exit 0
+  fi
+
+
+  if [ $1 = "installed" ]
+  then
+    installed_command
+    exit 0
+  fi
+
+  if [ $1 = "available" ]
+  then
+    available_command
+    exit 0
+  fi
+
+
+  if [ $1 = "use" ]
+  then
+    use_command
+    exit 0
+  fi
+
+
+  if [ $1 = "source" ]
+  then
+    source_command
+    exit 0
+  fi
+
+  help_all
 }
 
 
 # # install <package> <version>
-# install_command() {
-# }
-#
-#
-# # uninstall_command <package> <version>
-# uninstall_command() {
-# }
-#
-#
+install_command() {
+  echo "TODO install"
+}
+
+# uninstall_command <package> <version>
+uninstall_command() {
+  echo "TODO uninstall"
+}
+
 # # list
 # list_packages_command() {
 # }
