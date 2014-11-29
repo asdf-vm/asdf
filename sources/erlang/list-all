@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+versions=(
+  17.3.4
+  17.3
+  17.2
+  17.1
+  17.0
+)
+
+for version in "${versions[@]}"
+do
+  echo $version
+done

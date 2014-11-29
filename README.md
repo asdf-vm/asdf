@@ -8,12 +8,12 @@
 asdf install <package> <version>
 asdf uninstall <package> <version>
 asdf list <package>
-asdf list <package> -a
+asdf list-all <package>
 asdf use <package> <version>
-asdf source add <package> <source>
-asdf source remove <package>
-asdf source update --all
-asdf source update <package>
+asdf source-add <package> <source>
+asdf source-remove <package>
+asdf source-update
+asdf source-update <package>
 
 ## `.asdf-versions` file
 
