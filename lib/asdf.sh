@@ -6,68 +6,44 @@
 
 ASDF_DIR=$(dirname $0)
 
-asdf_version() {
-  echo "0.1"
-}
-
-
-asdf_dir() {
-  echo $(dirname $(dirname $0))
-}
-
-
-check_and_run() {
-  if [ "$1" = "$2" ]
-  then
-    $($3 ${@:4})
-    exit 0
-  fi
-}
-
-
 run_command() {
-  check_and_run "--version" $1 asdf_version "${@:2}"
-  check_and_run "list" $1 list_command "${@:2}"
-  check_and_run "list-all" $1 list_all_command "${@:2}"
-
-  # if [ "$1" = "list" ]
-  # then
-  #   list_command "$@"
-  #   exit 0
-  # fi
+  run_callback_if_command "--version" $1 asdf_version     "${@:2}"
+  run_callback_if_command "install"   $1 install_command  "${@:2}"
+  run_callback_if_command "list"      $1 list_command     "${@:2}"
+  run_callback_if_command "list-all"  $1 list_all_command "${@:2}"
+  run_callback_if_command "help"      $1 help_command     "${@:2}"
 
 
-  help_all
+  help_command
+  exit 1
 }
+
+
+install_command() {
+  local source_path=$(get_source_path $1)
+  check_if_source_exists $source_path
+  echo "TODO"
+}
+
 
 
 list_all_command() {
-  asdf_path=$(asdf_dir)
-  if [ -d ${asdf_path}/sources/$1 ]
-    then
-    echo ./$(asdf_dir)/sources/$1/list-all
-  else
-    display_error "no such package"
-  fi
+  local source_path=$(get_source_path $1)
+  check_if_source_exists $source_path
+  ./${source_path}/list-all
 }
 
 
 list_command() {
-  asdf_path=$(asdf_dir)
-  if [ -d ${asdf_path}/sources/$1 ]
-  then
-    # echo ./$(asdf_dir)/sources/$1/list
-    #TODO list versions installed with the installs/erlang/.installs file
-    # the .installs file will have lines of the format "version hash"
-  else
-    display_error "no such package"
-  fi
+  local source_path=$(get_source_path $1)
+  check_if_source_exists $source_path
+  echo "TODO"
+  # echo ./$(asdf_dir)/sources/$1/list
+  #TODO list versions installed with the installs/erlang/.installs file
+  # the .installs file will have lines of the format "version hash"
 }
 
-display_error() {
-  echo $1
-}
 
-help_all() {
+help_command() {
   echo "display help message"
 }
