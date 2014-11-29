@@ -7,8 +7,8 @@
 
 asdf install <package> <version>
 asdf uninstall <package> <version>
-asdf installed <package>
-asdf available <package>
+asdf list <package>
+asdf list <package> -a
 asdf use <package> <version>
 asdf source add <package> <source>
 asdf source remove <package>

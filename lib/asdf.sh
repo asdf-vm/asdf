@@ -33,15 +33,9 @@ run_command () {
   fi
 
 
-  if [ $1 = "installed" ]
+  if [ $1 = "list" ]
   then
-    installed_command
-    exit 0
-  fi
-
-  if [ $1 = "available" ]
-  then
-    available_command
+    list_command
     exit 0
   fi
 
