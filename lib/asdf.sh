@@ -1,11 +1,3 @@
-#!/usr/bin/env sh
-
-#TODO run command with args
-
-#TODO decide which function to run based on args
-
-ASDF_DIR=$(dirname $0)
-
 run_command() {
   run_callback_if_command "--version" $1 asdf_version     "${@:2}"
   run_callback_if_command "install"   $1 install_command  "${@:2}"
@@ -20,11 +12,24 @@ run_command() {
 
 
 install_command() {
-  local source_path=$(get_source_path $1)
+  local package=$1
+  local version=$2
+  local source_path=$(get_source_path $package)
+
   check_if_source_exists $source_path
-  echo "TODO"
+
+  local install_path=$(get_install_path $package $version)
+  ./${source_path}/install $version $install_path "${@:3}"
 }
 
+
+get_install_path() {
+  local package=$1
+  local versio=$2
+  mkdir -p $(asdf_dir)/installs/$package
+
+  echo $(asdf_dir)/installs/$package/$(generate_random_hash)
+}
 
 
 list_all_command() {

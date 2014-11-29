@@ -8,6 +8,11 @@ asdf_dir() {
 }
 
 
+generate_random_hash() {
+  openssl rand -hex 4
+}
+
+
 run_callback_if_command() {
   if [ "$1" = "$2" ]
     then
