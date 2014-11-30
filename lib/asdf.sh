@@ -14,16 +14,28 @@ run_command() {
 
 install_command() {
   local package=$1
-  local version=$2
+  local full_version=$2
   local source_path=$(get_source_path $package)
 
   check_if_source_exists $source_path
 
+  IFS=':' read -a version_info <<< "$full_version"
+  if [ "${version_info[0]}" -e "tag" ] || [ "${version_info[0]}" -e "commit" ]
+  then
+    local install_type="${version_info[0]}"
+    local version="${version_info[1]}"
+  else
+    local install_type="version"
+    local version="${version_info[0]}"
+  fi
+
   local install_path=$(get_install_path $package $version)
-  ${source_path}/install $version $install_path "${@:3}"
+  ${source_path}/install $install_type $version $install_path "${@:3}"
+
   if [ $? -e 0 ]
   then
     echo "$version $(basename $install_path)" >> $(dirname $install_path)/.versions
+    #TODO create shims for new version
   else
     exit 1
   fi
