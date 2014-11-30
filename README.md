@@ -12,7 +12,7 @@ asdf list-all <package>
 asdf use <package> <version>
 asdf source-add <package> <source>
 asdf source-remove <package>
-asdf source-update
+asdf source-update --all
 asdf source-update <package>
 
 
