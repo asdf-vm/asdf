@@ -15,7 +15,8 @@ asdf source-remove <package>
 asdf source-update
 asdf source-update <package>
 
-## `.asdf-versions` file
+
+## `.versions` file
 
 ```
 elixir 1.0.0
@@ -25,10 +26,12 @@ erlang 17.3
 
 ## Package source structure
 
-A package source is a git repo, with the following files
+A package source is a git repo, with the following executable scripts
 
-* `bin/install`
-* `bin/uninstall`
-* `bin/use`
+* `bin/list-all` - lists all installable versions
+* `bin/install` - installs the specified version
+* `bin/uninstall` - uninstalls the specified version
+* `bin/use` - uses the specified version (and also adds the version to `.versions` file in the dir)
 
-These scripts are run when `package install`, `package uninstall` or `package use` commands are run. You can set or unset env vars,
+
+These scripts are run when `list-all`, `install`, `uninstall` or `use` commands are run. You can set or unset env vars,
