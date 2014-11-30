@@ -21,6 +21,12 @@ install_command() {
 
   local install_path=$(get_install_path $package $version)
   ${source_path}/install $version $install_path "${@:3}"
+  if [ $? -e 0 ]
+  then
+    echo "$version $(basename $install_path)" >> $(dirname $install_path)/.versions
+  else
+    exit 1
+  fi
 }
 
 
