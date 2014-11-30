@@ -103,11 +103,11 @@ A package source is a git repo, with the following executable scripts
 * `bin/use` - whatever you want to run when a specific version is used (like set an env var?)
 
 
-### list-all
+### bin/list-all
 
 This script should list stable versions that can be installed
 
-### install
+### bin/install
 
 This script should install the package. It will be passed the following command-line args (in order).
 
@@ -119,13 +119,13 @@ This script should install the package. It will be passed the following command-
 
 These scripts are run when `list-all`, `install`, `uninstall` or `use` commands are run. You can set or unset env vars and do whatever you need.
 
-### uninstall
+### bin/uninstall
 
 Uninstalls a command
 
 You'll get the same args as the `install` script.
 
-### use
+### bin/use
 
 Will be passed the following args
 
