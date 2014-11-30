@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-
-
 install_erlang() {
   local version=$1
   local install_path=$2
