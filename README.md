@@ -4,7 +4,7 @@
 
 asdf is an extendable version manager.
 
-Add or create a source for any package/language/tool you want. There's a simple API for it.
+Add or create a source for any package/language/tool you want. There's a [simple API](#creating-package-sources) for it.
 
 
 ## Manage sources
