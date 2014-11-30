@@ -5,6 +5,12 @@ run_command() {
   run_callback_if_command "uninstall" $1 uninstall_command  $callback_args
   run_callback_if_command "list"      $1 list_command       $callback_args
   run_callback_if_command "list-all"  $1 list_all_command   $callback_args
+
+  run_callback_if_command "source-add"     $1 source_add_command     $callback_args
+  run_callback_if_command "source-remove"  $1 source_remove_command  $callback_args
+  run_callback_if_command "source-update"  $1 source_update_command  $callback_args
+
+
   run_callback_if_command "help"      $1 help_command       $callback_args
 
 
@@ -85,6 +91,36 @@ list_command() {
   # echo ./$(asdf_dir)/sources/$1/list
   #TODO list versions installed with the installs/erlang/.installs file
   # the .installs file will have lines of the format "version hash"
+}
+
+
+source_add_command() {
+  local package_name=$1
+  local source_url=$2
+  local source_path=$(get_source_path $package_name)
+  git clone $source_url $source_path
+}
+
+
+source_remove_command() {
+  local package_name=$1
+  local source_path=$(get_source_path $package_name)
+
+  rm -rf $source_path
+  rm -rf $(asdf_dir)/installs/${package_name}
+}
+
+
+source_update_command() {
+  local package_name=$1
+  if [ "$package_name" = "--all" ]
+  then
+    for dir in $(asdf_dir)/sources/*; do (cd "$dir" && git pull); done
+  else
+    local source_path=$(get_source_path $package_name)
+    check_if_source_exists $source_path
+    (cd $source_path; git pull)
+  fi
 }
 
 
