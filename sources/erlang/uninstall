@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+
+uninstall_erlang() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  rm -rf $install_path
+}
+
+uninstall_erlang $@
