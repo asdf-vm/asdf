@@ -14,7 +14,7 @@ install_erlang() {
     cd $(dirname $source_path)
     tar zxf $source_path || exit 1
     cd $(untar_path $install_type $version)
-    if [ "$install_type" -ne "version"]
+    if [ "$install_type" != "version" ]
     then
       ./otp_build autoconf || exit 1
     fi
@@ -29,7 +29,7 @@ untar_path() {
   local install_type=$1
   local version=$2
 
-  if [ "$install_type" -e "version" ]
+  if [ "$install_type" = "version" ]
   then
     echo "$TMPDIR/otp_src_${version}"
   else
@@ -44,7 +44,7 @@ download_source() {
   local download_path=$(get_download_file_path $install_type $version)
   local download_url=$(get_download_url $install_type $version)
 
-  curl -Lo $download_path $download_url
+  curl -Lco $download_path $download_url
 }
 
 
