@@ -61,7 +61,7 @@ get_download_url() {
   local install_type=$1
   local version=$2
 
-  if [ "$install_type" -e "version" ]
+  if [ "$install_type" = "version" ]
   then
     echo "http://www.erlang.org/download/otp_src_${version}.tar.gz"
   else
