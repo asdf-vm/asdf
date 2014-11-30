@@ -9,15 +9,14 @@ install_erlang() {
 
   # running this in a subshell
   # because we don't want to disturb current working dir
-  echo
   (
     cd $(dirname $source_path)
-    tar zxf $source_path
+    tar zxf $source_path || exit 1
     cd $(untar_path $1)
-    ./otp_build autoconf
-    ./configure --prefix=$install_path
-    make
-    make install
+    ./otp_build autoconf || exit 1
+    ./configure --prefix=$install_path || exit 1
+    make || exit 1
+    make install || exit 1
   )
 }
 
