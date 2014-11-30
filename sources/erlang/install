@@ -7,9 +7,7 @@ install_erlang() {
   local install_path=$2
   local source_path=$(get_download_file_path $1)
 
-
-  # download_git_source $1
-  cp ~/projects/asdf/tryout/otp-17.3.4.tar.gz $TMPDIR/
+  download_git_source $1
 
   # running this in a subshell
   # because we don't want to disturb current working dir
@@ -19,11 +17,9 @@ install_erlang() {
     tar zxf $source_path
     cd $(untar_path $1)
     ./otp_build autoconf
-    pwd
-    echo $install_path
     ./configure --prefix=$install_path
-    # make
-    # make install
+    make
+    make install
   )
 }
 
@@ -41,14 +37,15 @@ download_git_source() {
 
 get_download_file_path() {
   local version=$1
-  echo "$TMPDIR/otp-$1.tar.gz"
+  local pkg_name="otp-$1.tar.gz"
+  echo "$TMPDIR$pkg_name"
 }
 
 
 get_github_download_url() {
   local version=$1
   #TODO support downloading tags, branches and commits
-  echo "https://github.com/erlang/otp/archive/OTP-${$1}.tar.gz"
+  echo "https://github.com/erlang/otp/archive/OTP-$1.tar.gz"
 }
 
 

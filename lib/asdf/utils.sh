@@ -4,7 +4,12 @@ asdf_version() {
 
 
 asdf_dir() {
-  echo $(dirname $(dirname $0))
+  if [ -z $ASDF_DIR ]
+  then
+    export ASDF_DIR=$(cd $(dirname $(dirname $0)); echo $(pwd))
+  fi
+
+  echo $ASDF_DIR
 }
 
 

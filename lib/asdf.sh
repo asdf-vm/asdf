@@ -1,9 +1,10 @@
 run_command() {
-  run_callback_if_command "--version" $1 asdf_version     "${@:2}"
-  run_callback_if_command "install"   $1 install_command  "${@:2}"
-  run_callback_if_command "list"      $1 list_command     "${@:2}"
-  run_callback_if_command "list-all"  $1 list_all_command "${@:2}"
-  run_callback_if_command "help"      $1 help_command     "${@:2}"
+  local callback_args="${@:2}"
+  run_callback_if_command "--version" $1 asdf_version      $callback_args
+  run_callback_if_command "install"   $1 install_command   $callback_args
+  run_callback_if_command "list"      $1 list_command      $callback_args
+  run_callback_if_command "list-all"  $1 list_all_command  $callback_args
+  run_callback_if_command "help"      $1 help_command      $callback_args
 
 
   help_command
@@ -19,7 +20,7 @@ install_command() {
   check_if_source_exists $source_path
 
   local install_path=$(get_install_path $package $version)
-  ./${source_path}/install $version $install_path "${@:3}"
+  ${source_path}/install $version $install_path "${@:3}"
 }
 
 
@@ -35,7 +36,7 @@ get_install_path() {
 list_all_command() {
   local source_path=$(get_source_path $1)
   check_if_source_exists $source_path
-  ./${source_path}/list-all
+  ${source_path}/list-all
 }
 
 
