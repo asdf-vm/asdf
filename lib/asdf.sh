@@ -29,25 +29,17 @@ install_command() {
     local version="${version_info[0]}"
   fi
 
-  local install_path=$(get_install_path $package $version)
+  local install_path=$(get_install_path $package $full_version)
   ${source_path}/install $install_type $version $install_path "${@:3}"
-
-  if [ $? -e 0 ]
-  then
-    echo "$version $(basename $install_path)" >> $(dirname $install_path)/.versions
-    #TODO create shims for new version
-  else
-    exit 1
-  fi
 }
 
 
 get_install_path() {
   local package=$1
-  local versio=$2
-  mkdir -p $(asdf_dir)/installs/$package
+  local version=$2
+  mkdir -p $(asdf_dir)/installs/${package}
 
-  echo $(asdf_dir)/installs/$package/$(generate_random_hash)
+  echo $(asdf_dir)/installs/${package}/${version}
 }
 
 
