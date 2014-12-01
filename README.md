@@ -2,56 +2,71 @@
 
 > for everything that needs a version manager
 
-asdf is an extendable version manager.
+asdf is an extendable version manager. Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md)
 
 Add or create a source for any package/language/tool you want. There's a [simple API](#creating-package-sources) for it.
+
+
+## Table of Contents
+
+* [Install](#install)
+* [Manage sources](#manage-sources)
+* [Manage packages](#manage-packages)
+* [The `.versions` file](the-versions-file)
+* [Creating package sources](#creating-package-sources)
+
+
+## Install
+
+Copy-paste the following into command line:
+
+```bash
+git clone https://github.com/HashNuke/asdf.git ~/.asdf
+echo 'export PATH="$HOME/.asdf/bin:$PATH"' >> ~/.bash_profile
+```
+
+**That's all ~! You are ready to use asdf**
+
+It clones the adsf repo and adds `~/.asdf/bin` to `$PATH` in `~/.bash_profile`.
 
 
 ## Manage sources
 
 Sources are how asdf understands how to handle packages.
 
-#### Add a source for a package
 
-```
-asdf source-add <name> <git-url>
-```
+#### Add a package
 
-Say you want to add Erlang. There's a package source for it at <https://github.com/HashNuke/asdf-erlang>.
-
-```
+```bash
+# asdf source-add <name> <git-url>
 asdf source-add erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
 #### Remove a source
 
-```
-asdf source-remove <name>
-```
-
-Now you want to remove the package source for erlang you added earlier.
-
-```
+```bash
+# asdf source-remove <name>
 asdf source-remove erlang
 ```
 
+
 #### Update sources
 
-To update all sources run the following
-
-```
+```bash
+# To update all sources
 asdf source-update --all
 ```
 
 If you want to update a specific package, just say so.
 
-```
-asdf source-update <name>
+```bash
+# asdf source-update <name>
+asdf source-update erlang
 ```
 
 ## Manage packages
 
-```
+```bash
 # asdf install <name> <version>
 asdf install erlang 17.3
 
@@ -61,22 +76,22 @@ asdf uninstall erlang 17.3
 
 #### Lists installed versions
 
-```
+```bash
 # asdf list <name>
-asdf list <name>
+asdf list erlang
 ```
 
 #### List all available versions
 
-```
+```bash
 # asdf list-all <name>
 asdf list-all erlang
 ```
 
 #### Use a specific version of a package
 
-```
-asdf use <name> <version>
+```bash
+# asdf use <name> <version>
 asdf use erlang 17.3
 ```
 
@@ -121,9 +136,7 @@ These scripts are run when `list-all`, `install`, `uninstall` or `use` commands 
 
 ### bin/uninstall
 
-Uninstalls a command
-
-You'll get the same args as the `install` script.
+Uninstalls a command. Same args as the `bin/install` script.
 
 ### bin/use
 
