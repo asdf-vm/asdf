@@ -2,9 +2,7 @@
 
 > for everything that needs a version manager
 
-asdf is an extendable version manager. Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md)
-
-Add or create a source for any package/language/tool you want. There's a [simple API](#creating-package-sources) for it.
+*asdf* is an extendable version manager. Feel free to add support for the language you want. There's a [simple API](#creating-package-sources) for it. Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
 
 
 ## Table of Contents
@@ -12,7 +10,7 @@ Add or create a source for any package/language/tool you want. There's a [simple
 * [Install](#install)
 * [Manage sources](#manage-sources)
 * [Manage packages](#manage-packages)
-* [The `.versions` file](the-versions-file)
+* [The `.versions` file](#the-versions-file)
 * [Creating package sources](#creating-package-sources)
 
 
