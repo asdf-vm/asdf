@@ -28,6 +28,7 @@ list_package_installs() {
 
   if [ -d $package_installs_path ]
   then
+    #TODO check if dir is empty and show message here too
     for install in ${package_installs_path}/*/; do
       echo "$(basename $install)"
     done
