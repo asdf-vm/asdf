@@ -36,7 +36,7 @@ install_command() {
     local version="${version_info[0]}"
   fi
 
-  local install_path=$(get_install_path $package $full_version)
+  local install_path=$(get_install_path $package $install_type $version)
   ${source_path}/bin/install $install_type $version $install_path "${@:3}"
 }
 
@@ -63,17 +63,8 @@ uninstall_command() {
     local version="${version_info[0]}"
   fi
 
-  local install_path=$(get_install_path $package $full_version)
+  local install_path=$(get_install_path $package $install_type $version)
   ${source_path}/bin/uninstall $install_type $version $install_path "${@:3}"
-}
-
-
-get_install_path() {
-  local package=$1
-  local version=$2
-  mkdir -p $(asdf_dir)/installs/${package}
-
-  echo $(asdf_dir)/installs/${package}/${version}
 }
 
 
@@ -87,10 +78,7 @@ list_all_command() {
 list_command() {
   local source_path=$(get_source_path $1)
   check_if_source_exists $source_path
-  echo "TODO"
-  # echo ./$(asdf_dir)/sources/$1/list
-  #TODO list versions installed with the installs/erlang/.installs file
-  # the .installs file will have lines of the format "version hash"
+  list_package_installs $1
 }
 
 
