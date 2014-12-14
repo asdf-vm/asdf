@@ -43,8 +43,15 @@ exec_command() {
 
 
   local install_path=$(get_install_path $package $install_type $version)
-  local exec_env=$(${source_path}/bin/exec-env $install_type $version $install_path)
-  eval $exec_env ${install_path}/${executable_path} ${@:3}
+
+
+  if [ -f ${source_path}/bin/exec-env ]
+  then
+    local exec_env=$(${source_path}/bin/exec-env $install_type $version $install_path)
+    eval $exec_env ${install_path}/${executable_path} ${@:3}
+  else
+    ${install_path}/${executable_path} ${@:3}
+  fi
 }
 
 
