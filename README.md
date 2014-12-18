@@ -1,9 +1,10 @@
-# asdf version manager
+# asdf
+### _extendable version manager_
 
-> for everything that needs a version manager
 
-*asdf* is an extendable version manager. Feel free to add support for the language you want. There's a [simple API](#creating-package-sources) for it. Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
+Feel free to add support for the language you want. There's a [simple API](#creating-package-sources) for it. Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
 
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/HashNuke/)
 
 ## Table of Contents
 
@@ -112,13 +113,20 @@ A package source is a git repo, with the following executable scripts
 
 * `bin/list-all` - lists all installable versions
 * `bin/install` - installs the specified version
-* `bin/uninstall` - uninstalls the specified version
-* `bin/use` - whatever you want to run when a specific version is used (like set an env var?)
+* `bin/list-executables` - list executables for the version of the package
 
+#### Options scripts
+
+* `bin/exec-env` - whatever you want to run when a specific version is used (like set an env var?)
+* `bin/uninstall` - uninstalls the specified version
 
 ### bin/list-all
 
-This script should list stable versions that can be installed
+Must print a string with a space-seperated list of versions. Example output would be the following:
+
+```
+1.0.1 1.0.2 1.3.0 1.4
+```
 
 ### bin/install
 
@@ -130,20 +138,32 @@ This script should install the package. It will be passed the following command-
 
 **Any other args that comes after this is whatever the user passes to the install command**. Feel free to use them in whatever way you think is appropriate.
 
-These scripts are run when `list-all`, `install`, `uninstall` or `use` commands are run. You can set or unset env vars and do whatever you need.
+These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do whatever you need.
 
-### bin/uninstall
+### bin/list-executables
 
-Uninstalls a command. Same args as the `bin/install` script.
+Must print a string with a space-seperated list of paths to executables. The paths must be relative to the install path passed. Example output would be:
 
-### bin/use
+```
+bin/abc bin/xyz scripts/jkl
+```
+
+### bin/exec-env
 
 Will be passed the following args
 
 * *install type*
 * *version*
 
-Feel free to set env vars and do what is appropriate to setup the version of the package for use.
+Must print a string with space-seperated list of env vars to set. Example output would be
+
+### bin/uninstall
+
+Uninstalls a command. Same args as the `bin/install` script.
+
+```
+FOO=123 BAR=xyz BAZ=example
+```
 
 ## Credits
 
