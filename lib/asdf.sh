@@ -6,9 +6,9 @@ run_command() {
   run_callback_if_command "list"      $1 list_command       $callback_args
   run_callback_if_command "list-all"  $1 list_all_command   $callback_args
 
-  run_callback_if_command "source-add"     $1 source_add_command     $callback_args
-  run_callback_if_command "source-remove"  $1 source_remove_command  $callback_args
-  run_callback_if_command "source-update"  $1 source_update_command  $callback_args
+  run_callback_if_command "add-source"     $1 source_add_command     $callback_args
+  run_callback_if_command "remove-source"  $1 source_remove_command  $callback_args
+  run_callback_if_command "update-source"  $1 source_update_command  $callback_args
 
   run_callback_if_command "reshim" $1 reshim_command $callback_args
 
@@ -130,7 +130,14 @@ uninstall_command() {
 list_all_command() {
   local source_path=$(get_source_path $1)
   check_if_source_exists $source_path
-  ${source_path}/bin/list-all
+  local versions=$( ${source_path}/bin/list-all )
+
+  IFS=' ' read -a versions_list <<< "$versions"
+
+  for version in "${versions_list[@]}"
+  do
+    echo "${version}"
+  done
 }
 
 
