@@ -71,7 +71,6 @@ reshim_command() {
       echo "TODO"
       echo "$(basename $install)"
     done
-
   else
     generate_shims_for_version $package $version "${@:3}"
   fi
@@ -123,7 +122,13 @@ uninstall_command() {
   fi
 
   local install_path=$(get_install_path $package $install_type $version)
-  ${source_path}/bin/uninstall $install_type $version $install_path "${@:3}"
+
+  if [ -f ${source_path}/bin/uninstall ]
+  then
+    ${source_path}/bin/uninstall $install_type $version $install_path "${@:3}"
+  else
+    rm -rf $install_path
+  fi
 }
 
 
