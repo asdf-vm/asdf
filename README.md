@@ -1,11 +1,17 @@
 # asdf
 ### _extendable version manager_
 
+> Feel free to add support for the language you want. There is a [simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for it. For now, I've added support for the following languages:
 
-Feel free to add support for the language you want. There's a [simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for it.
+> * [erlang](https://github.com/HashNuke/asdf-erlang)
+> * [elixir](https://github.com/HashNuke/asdf-elixir)
+> * [ruby](#TODO)
+>
+> -- @HashNuke
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/HashNuke/)
 
+---
 
 ## Install
 
