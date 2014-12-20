@@ -24,7 +24,7 @@ echo 'export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >> ~/.bash_profile
 
 **That's all ~! You are ready to use asdf**
 
-It clones the adsf repo and adds `~/.asdf/bin` to `$PATH` in `~/.bash_profile`.
+It clones the adsf-related dirs to your `$PATH` in `~/.bash_profile`. If you use a different shell, replace the filename appropriately.
 
 
 ## Manage sources
