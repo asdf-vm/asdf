@@ -3,11 +3,11 @@
 
 > Feel free to add support for the language you want. There is a [simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for it. For now, I've added support for the following languages:
 
-> * [erlang](https://github.com/HashNuke/asdf-erlang)
-> * [elixir](https://github.com/HashNuke/asdf-elixir)
-> * [ruby](#TODO)
+> * [Ruby](#TODO)
+> * [Erlang](https://github.com/HashNuke/asdf-erlang)
+> * [Elixir](https://github.com/HashNuke/asdf-elixir)
 >
-> -- @HashNuke
+> -- [@HashNuke](https://twitter.com/HashNuke)
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/HashNuke/)
 
