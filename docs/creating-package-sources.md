@@ -27,7 +27,7 @@ This script should install the package. It will be passed the following command-
 * *version* - this is the version or commit sha or the tag name that should be installed (use the first argument to figure out what to do).
 * *install path* - the dir where the it *should* be installed
 
-**Any other args that comes after this is whatever the user passes to the install command**. Feel free to use them in whatever way you think is appropriate.
+If you need to provide any options, use environment variables.
 
 These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do whatever you need.
 
