@@ -6,7 +6,7 @@ A package source is a git repo, with the following executable scripts
 * `bin/install` - installs the specified version
 * `bin/list-executables` - list executables for the version of the package
 
-#### Options scripts
+##### Options scripts
 
 * `bin/exec-env` - whatever you want to run when a specific version is used (like set an env var?)
 * `bin/uninstall` - uninstalls the specified version
