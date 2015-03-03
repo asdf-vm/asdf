@@ -94,7 +94,7 @@ install_command() {
   fi
 
   local install_path=$(get_install_path $package $install_type $version)
-  ${source_path}/bin/install $install_type $version $install_path "${@:3}"
+  ${source_path}/bin/install $install_type $version $install_path
   #TODO generate shims
 }
 
