@@ -197,5 +197,5 @@ source_update_command() {
 
 
 help_command() {
-  echo "display help message"
+  cat $(asdf_dir)/help.txt
 }

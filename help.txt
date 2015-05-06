@@ -1,0 +1,35 @@
+-- Usage --
+
+MANAGE SOURCES
+
+  asdf add-source <name> <git-url>
+
+  asdf remove-source <name>
+
+  asdf update-source <name>
+
+  asdf update-source --all
+
+
+MANAGE PACKAGES
+
+  asdf install <name> <version>
+  asdf remove <name> <version>
+
+
+LIST INSTALLED VERSIONS
+
+  asdf list <name>
+
+
+LIST ALL VERSIONS
+
+  asdf list-all <name>
+
+
+UTILS
+
+  asdf reshim <name> <version>
+
+
+-- end I promise --
