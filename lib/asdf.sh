@@ -62,6 +62,13 @@ reshim_command() {
   local source_path=$(get_source_path $package)
   check_if_source_exists $source_path
 
+
+  if [ ! -d $(asdf_dir)/shims ]
+    then
+    mkdir $(asdf_dir)/shims
+  fi
+
+
   local package_installs_path=$(asdf_dir)/installs/${package}
 
   if [ $version = "" ]
@@ -95,7 +102,7 @@ install_command() {
 
   local install_path=$(get_install_path $package $install_type $version)
   ${source_path}/bin/install $install_type $version $install_path
-  #TODO generate shims
+  reshim_command $package $version
 }
 
 
