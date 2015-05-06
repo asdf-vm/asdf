@@ -36,14 +36,14 @@ Sources are how asdf understands how to handle packages.
 
 ```bash
 # asdf source-add <name> <git-url>
-asdf source-add erlang https://github.com/HashNuke/asdf-erlang.git
+asdf add-source erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
 #### Remove a source
 
 ```bash
 # asdf source-remove <name>
-asdf source-remove erlang
+asdf remove-source erlang
 ```
 
 
@@ -51,14 +51,14 @@ asdf source-remove erlang
 
 ```bash
 # To update all sources
-asdf source-update --all
+asdf update-source --all
 ```
 
 If you want to update a specific package, just say so.
 
 ```bash
 # asdf source-update <name>
-asdf source-update erlang
+asdf update-source erlang
 ```
 
 ## Manage packages
