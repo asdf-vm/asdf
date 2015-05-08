@@ -1,0 +1,1 @@
+cat $(asdf_dir)/help.txt
