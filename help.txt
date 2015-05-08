@@ -1,37 +1,37 @@
-MANAGE SOURCES
+MANAGE PACKAGE SOURCES
 
-  asdf add-source <name> <git-url>
+  asdf source-add <name> <git-url>
       Add git repo as source for a package
 
-  asdf remove-source <name>
+  asdf source-remove <name>
       Remove package source and versions
 
-  asdf update-source <name>
+  asdf source-update <name>
       Update package source
 
-  asdf update-source --all
+  asdf source-updatee --all
       Update sources for all packages
 
 
 MANAGE PACKAGES
 
   asdf install <name> <version>
+      Install a specific version of a package
+
   asdf remove <name> <version>
-
-
-LIST INSTALLED VERSIONS
+      Remove a specific version of a package
 
   asdf list <name>
-
-
-LIST ALL VERSIONS
+      List installed versions of a package
 
   asdf list-all <name>
+      List all versions of a package
 
 
 UTILS
 
   asdf reshim <name> <version>
+      Recreate shims for the specific version of a package
 
 
--- end I promise --
+-- The end I promise --
