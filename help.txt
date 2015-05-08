@@ -1,14 +1,16 @@
--- Usage --
-
 MANAGE SOURCES
 
   asdf add-source <name> <git-url>
+      Add git repo as source for a package
 
   asdf remove-source <name>
+      Remove package source and versions
 
   asdf update-source <name>
+      Update package source
 
   asdf update-source --all
+      Update sources for all packages
 
 
 MANAGE PACKAGES
