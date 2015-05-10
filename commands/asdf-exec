@@ -1,4 +1,4 @@
-source $(dirname $(dirname $0))/lib/asdf/utils.sh
+source $(dirname $(dirname $0))/lib/utils.sh
 
 package=$1
 executable_path=$2

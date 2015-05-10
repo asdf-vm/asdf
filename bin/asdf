@@ -1,6 +1,6 @@
 #!/usr/bin/env sh -l
 
-source $(dirname $(dirname $0))/lib/asdf/utils.sh
+source $(dirname $(dirname $0))/lib/utils.sh
 
 expected_asdf_command_path="$(asdf_dir)/commands/asdf-$1"
 

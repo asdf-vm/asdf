@@ -1,3 +1,5 @@
+source $(dirname $(dirname $0))/lib/utils.sh
+
 package_name=$1
 source_path=$(get_source_path $package_name)
 
