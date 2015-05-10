@@ -17,14 +17,19 @@
 
 Copy-paste the following into command line:
 
-```bash
+```sh-session
 git clone https://github.com/HashNuke/asdf.git ~/.asdf
-echo 'export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"' >> ~/.bash_profile
+
+# For Ubuntu or other linux distros
+echo 'source $HOME/.asdf/asdf.sh' >> ~/.bashrc
+
+# OR for Max OSX
+echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 ```
 
-**That's all ~! You are ready to use asdf**
+> *If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.*
 
-It clones the adsf-related dirs to your `$PATH` in `~/.bash_profile`. If you use a different shell, replace the filename appropriately.
+**That's all ~! You are ready to use asdf**
 
 
 ## Manage sources
