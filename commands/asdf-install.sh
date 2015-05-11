@@ -17,4 +17,4 @@ fi
 
 install_path=$(get_install_path $package $install_type $version)
 ${source_path}/bin/install $install_type $version $install_path
-reshim_command $package $version
+$(asdf_dir)/bin/asdf reshim $package $full_version
