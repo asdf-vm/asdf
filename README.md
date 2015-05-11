@@ -100,9 +100,9 @@ asdf use erlang 17.3
 It writes the version to the `.versions` file in the current working directory.
 
 
-## The `.tool-versions` file
+## The `.asdf-versions` file (TODO implementation)
 
-Add a `.tool-versions` file to your project dir and versions of those packages will be used.
+Add a `.asdf-versions` file to your project dir and versions of those packages will be used.
 
 ```
 elixir 1.0.2
