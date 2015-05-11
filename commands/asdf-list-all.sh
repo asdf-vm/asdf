@@ -1,6 +1,7 @@
 source $(dirname $(dirname $0))/lib/utils.sh
 
-source_path=$(get_source_path $1)
+package=$1
+source_path=$(get_source_path $package)
 check_if_source_exists $source_path
 versions=$( ${source_path}/bin/list-all )
 
