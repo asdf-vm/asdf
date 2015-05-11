@@ -2,14 +2,14 @@
 
 source $(dirname $(dirname $0))/lib/utils.sh
 
-expected_asdf_command_path="$(asdf_dir)/commands/asdf-$1"
+expected_asdf_command_path="$(asdf_dir)/commands/asdf-$1.sh"
 
 # check if command exists
 if [ -f $expected_asdf_command_path ]; then
   asdf_command_path=$expected_asdf_command_path
 else
   # run help command
-  asdf_command_path="$(asdf_dir)/commands/asdf-help"
+  asdf_command_path="$(asdf_dir)/commands/asdf-help.sh"
 fi
 
 
