@@ -10,7 +10,7 @@
 
 ---
 
-## Setup
+## SETUP
 
 Copy-paste the following into command line:
 
@@ -32,20 +32,23 @@ echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 
 **That's all ~! You are ready to use asdf**
 
+-----------------------
 
-## Manage sources
+## USAGE
+
+### Manage sources
 
 Sources are how asdf understands how to handle packages.
 
 
-#### Add a package source
+##### Add a package source
 
 ```bash
 asdf source-add <name> <git-url>
 # asdf add-source erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
-#### Remove a source
+##### Remove a source
 
 ```bash
 asdf source-remove <name>
@@ -53,7 +56,7 @@ asdf source-remove <name>
 ```
 
 
-#### Update sources
+##### Update sources
 
 ```bash
 asdf update-source --all
@@ -66,7 +69,7 @@ asdf source-update <name>
 # asdf update-source erlang
 ```
 
-## Manage packages
+### Manage packages
 
 ```bash
 asdf install <name> <version>
@@ -76,21 +79,21 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
-#### Lists installed versions
+##### Lists installed versions
 
 ```bash
 asdf list <name>
 # asdf list erlang
 ```
 
-#### List all available versions
+##### List all available versions
 
 ```bash
 asdf list-all <name>
 # asdf list-all erlang
 ```
 
-#### Use a specific version of a package
+##### Use a specific version of a package
 
 ```bash
 asdf use <name> <version>
@@ -100,7 +103,7 @@ asdf use <name> <version>
 It writes the version to the `.versions` file in the current working directory.
 
 
-## The `.asdf-versions` file (TODO implementation)
+## The `.asdf-versions` file
 
 Add a `.asdf-versions` file to your project dir and versions of those packages will be used.
 
