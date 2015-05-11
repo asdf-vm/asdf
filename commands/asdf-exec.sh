@@ -4,7 +4,7 @@ package=$1
 executable_path=$2
 
 
-#TODO support .versions file
+#TODO support .asdf-versions file
 full_version=$ASDF_PACKAGE_VERSION
 
 source_path=$(get_source_path $package)
