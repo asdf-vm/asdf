@@ -1,8 +1,8 @@
 source $(dirname $(dirname $0))/lib/utils.sh
 
-package=$1
+package_name=$1
 full_version=$2
-source_path=$(get_source_path $package)
+source_path=$(get_source_path $package_name)
 
 check_if_source_exists $source_path
 if [ ! -d "$source_path/$full_version" ]
@@ -21,7 +21,7 @@ else
   version="${version_info[0]}"
 fi
 
-install_path=$(get_install_path $package $install_type $version)
+install_path=$(get_install_path $package_name $install_type $version)
 
 if [ -f ${source_path}/bin/uninstall ]
 then

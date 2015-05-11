@@ -11,13 +11,13 @@ ensure_shims_dir() {
 
 
 write_shim_script() {
-  local package=$1
+  local package_name=$1
   local version=$2
   local executable_path=$3
   local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
 
   echo """#!/usr/bin/env sh
-asdf exec ${package} $executable_path \${@:1}
+asdf exec ${package_name} $executable_path \${@:1}
 """ > $shim_path
 
   chmod +x $shim_path
@@ -25,9 +25,9 @@ asdf exec ${package} $executable_path \${@:1}
 
 
 generate_shims_for_version() {
-  local package=$1
+  local package_name=$1
   local full_version=$2
-  local source_path=$(get_source_path $package)
+  local source_path=$(get_source_path $package_name)
   check_if_source_exists $source_path
 
   IFS=':' read -a version_info <<< "$full_version"
@@ -40,20 +40,20 @@ generate_shims_for_version() {
     local version="${version_info[0]}"
   fi
 
-  local space_seperated_list_of_executables=$(sh ${source_path}/bin/list-executables $package $install_type $version "${@:2}")
+  local space_seperated_list_of_executables=$(sh ${source_path}/bin/list-executables $package_name $install_type $version "${@:2}")
   IFS=' ' read -a all_executables <<< "$space_seperated_list_of_executables"
 
   for executable in "${all_executables[@]}"
   do
-    write_shim_script $package $version $executable
+    write_shim_script $package_name $version $executable
   done
 }
 
 
 
-package=$1
+package_name=$1
 full_version=$2
-source_path=$(get_source_path $package)
+source_path=$(get_source_path $package_name)
 check_if_source_exists $source_path
 ensure_shims_dir
 
@@ -62,8 +62,8 @@ if [ $full_version = "" ]
 then
   for install in ${package_installs_path}/*/; do
     full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
-    generate_shims_for_version $package $full_version_name
+    generate_shims_for_version $package_name $full_version_name
   done
 else
-  generate_shims_for_version $package $full_version
+  generate_shims_for_version $package_name $full_version
 fi
