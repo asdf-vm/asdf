@@ -1,4 +1,3 @@
-* check all commands
-* .tool-versions file support
+* .asdf-versions file support
 * ruby plugin
 
