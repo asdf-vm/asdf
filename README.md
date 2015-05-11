@@ -1,25 +1,26 @@
 # asdf
 ### _extendable version manager_
 
-> Feel free to add support for the language you want. There is a [simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for it. For now, I've added support for the following languages:
-
+> I've built plugins to support the following languages:
 > * [Ruby](#TODO)
 > * [Erlang](https://github.com/HashNuke/asdf-erlang)
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
 >
-> -- [@HashNuke](https://twitter.com/HashNuke)
-
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.3.0/dist/gratipay.png)](https://gratipay.com/HashNuke/)
+> There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for supporting more languages.
 
 ---
 
-## Install
+## Setup
 
 Copy-paste the following into command line:
 
-```sh-session
+```bash
 git clone https://github.com/HashNuke/asdf.git ~/.asdf
 
+```
+
+Depending on your OS, run the following
+```bash
 # For Ubuntu or other linux distros
 echo 'source $HOME/.asdf/asdf.sh' >> ~/.bashrc
 
@@ -37,64 +38,63 @@ echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 Sources are how asdf understands how to handle packages.
 
 
-#### Add a package
+#### Add a package source
 
 ```bash
-# asdf source-add <name> <git-url>
-asdf add-source erlang https://github.com/HashNuke/asdf-erlang.git
+asdf source-add <name> <git-url>
+# asdf add-source erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
 #### Remove a source
 
 ```bash
-# asdf source-remove <name>
-asdf remove-source erlang
+asdf source-remove <name>
+# asdf remove-source erlang
 ```
 
 
 #### Update sources
 
 ```bash
-# To update all sources
 asdf update-source --all
 ```
 
 If you want to update a specific package, just say so.
 
 ```bash
-# asdf source-update <name>
-asdf update-source erlang
+asdf source-update <name>
+# asdf update-source erlang
 ```
 
 ## Manage packages
 
 ```bash
-# asdf install <name> <version>
-asdf install erlang 17.3
+asdf install <name> <version>
+# asdf install erlang 17.3
 
-# asdf uninstall <name> <version>
-asdf uninstall erlang 17.3
+asdf uninstall <name> <version>
+# asdf uninstall erlang 17.3
 ```
 
 #### Lists installed versions
 
 ```bash
-# asdf list <name>
-asdf list erlang
+asdf list <name>
+# asdf list erlang
 ```
 
 #### List all available versions
 
 ```bash
-# asdf list-all <name>
-asdf list-all erlang
+asdf list-all <name>
+# asdf list-all erlang
 ```
 
 #### Use a specific version of a package
 
 ```bash
-# asdf use <name> <version>
-asdf use erlang 17.3
+asdf use <name> <version>
+# asdf use erlang 17.3
 ```
 
 It writes the version to the `.versions` file in the current working directory.
