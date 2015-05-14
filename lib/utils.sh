@@ -51,3 +51,36 @@ get_source_path() {
 display_error() {
   echo $1
 }
+
+
+get_asdf_versions_file_path() {
+  if [ -f $(pwd)/.asdf-versions ]; then
+    echo $(pwd)/.asdf-versions
+  elif [ -f $(asdf_dir)/.asdf_versions ]; then
+    echo $(asdf_dir)/.asdf-versions
+  else
+    touch $(asdf_dir)/.asdf_versions
+    echo $(asdf_dir)/.asdf-versions
+  fi
+}
+
+
+get_preset_version_for() {
+  local package=$1
+  local asdf_versions_path=$(get_asdf_versions_file_path)
+
+  while read tool_line
+  do
+    IFS=' ' read -a tool_info <<< $tool_line
+    local tool_name=$(echo -e "${tool_info[0]}" | xargs)
+    local tool_version=$(echo -e "${tool_info[1]}" | xargs)
+
+    if [ $tool_name = "$package" ]; then
+      echo $tool_version
+      break;
+    fi
+  done < $asdf_versions_path
+
+  # our way of saying no version found
+  echo ""
+}
