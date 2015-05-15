@@ -25,7 +25,6 @@ else
   version="${version_info[0]}"
 fi
 
-
 install_path=$(get_install_path $package $install_type $version)
 
 

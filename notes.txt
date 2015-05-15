@@ -1,0 +1,33 @@
+have to maintain ASDF_TOOL_VERSIONS env var
+set env var on first ASDF_PACKAGE_VERSIONS execution
+
+
+if "$(pwd)" = "$ASDF_TOOL_VERSIONS_DIR" && [ -f $(pwd)/.asdf-versions ]; then
+  read tool versions
+else
+  # while dir name search path doesnt have versions file
+  while [ $(dirname $search_path) ]; do
+  done
+  loop thru until $HOME == next path and find a version file
+end
+
+
+if ASDF_TOOL_VERSIONS_DIR == $(pwd); then
+else
+end
+
+
+if [[ "${ASDF_TOOL_VERSIONS_DIR}" =~ ^"$(pwd)" ]]; then
+  if [ -f $(pwd)/.asdf-versions ]; then
+    read_tool_versions_file $(pwd)/.asdf-versions
+    export ASDF_TOOL_VERSIONS_DIR=$(pwd)/.asdf-versions
+  fi
+else
+  if [ -f $(pwd)/.asdf-versions ]; then
+    read_tool_versions_file $(pwd)/.asdf-versions
+    export ASDF_TOOL_VERSIONS_DIR=$(pwd)/.asdf-versions
+  else
+    unset ASDF_TOOL_VERSIONS
+    unset ASDF_TOOL_VERSIONS_DIR
+  fi
+fi
