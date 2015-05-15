@@ -56,11 +56,11 @@ display_error() {
 get_asdf_versions_file_path() {
   if [ -f $(pwd)/.asdf-versions ]; then
     echo $(pwd)/.asdf-versions
-  elif [ -f $(asdf_dir)/.asdf_versions ]; then
-    echo $(asdf_dir)/.asdf-versions
+  elif [ -f $HOME/.asdf-versions ]; then
+    echo $HOME/.asdf-versions
   else
-    touch $(asdf_dir)/.asdf_versions
-    echo $(asdf_dir)/.asdf-versions
+    touch $HOME/.asdf_versions
+    echo $HOME/.asdf-versions
   fi
 }
 
