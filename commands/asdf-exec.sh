@@ -3,12 +3,17 @@ source $(dirname $(dirname $0))/lib/utils.sh
 package=$1
 executable_path=$2
 
-
-#TODO support .asdf-versions file
-full_version=$ASDF_PACKAGE_VERSION
-
 source_path=$(get_source_path $package)
 check_if_source_exists $source_path
+
+full_version=$(get_preset_version_for $package)
+
+if [ "$full_version" == "" ]
+then
+  echo "No version set for ${package}"
+  exit -1
+fi
+
 
 IFS=':' read -a version_info <<< "$full_version"
 if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]
