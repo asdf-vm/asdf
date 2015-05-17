@@ -1,7 +1,7 @@
 plugin_update_command() {
   local package_name=$1
   if [ "$package_name" = "--all" ]; then
-    for dir in $(asdf_dir)/sources/*; do
+    for dir in $(asdf_dir)/plugins/*; do
       (cd "$dir" && git pull)
     done
   else
