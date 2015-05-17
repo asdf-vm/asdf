@@ -4,9 +4,9 @@ asdf_version() {
 
 
 asdf_dir() {
-  if [ -z $ASDF_DIR ]
-  then
-    export ASDF_DIR=$(cd $(dirname $(dirname $0)); echo $(pwd))
+  if [ -z $ASDF_DIR ]; then
+    local current_script_path=${BASH_SOURCE[0]}
+    export ASDF_DIR=$(cd $(dirname $(dirname $current_script_path)); echo $(pwd))
   fi
 
   echo $ASDF_DIR
@@ -83,10 +83,11 @@ get_preset_version_for() {
   while read tool_line
   do
     IFS=' ' read -a tool_info <<< $tool_line
-    local tool_name=$(echo -e "${tool_info[0]}" | xargs)
-    local tool_version=$(echo -e "${tool_info[1]}" | xargs)
+    local tool_name=$(echo "${tool_info[0]}" | xargs)
+    local tool_version=$(echo "${tool_info[1]}" | xargs)
 
-    if [ $tool_name = "$package" ]; then
+    if [ "$tool_name" = "$package" ]
+    then
       echo $tool_version
       break;
     fi
