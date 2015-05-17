@@ -86,7 +86,12 @@ generate_shims_for_version() {
 
   local install_path=$(get_install_path $package_name $install_type $version)
 
-  local space_seperated_list_of_bin_paths=$(sh ${source_path}/bin/list-bin-paths $package_name $install_type $version "${@:2}")
+  if [ -f ${source_path}/bin/list-bin-paths ]; then
+    local space_seperated_list_of_bin_paths=$(sh ${source_path}/bin/list-bin-paths $package_name $install_type $version "${@:2}")
+  else
+    local space_seperated_list_of_bin_paths="bin"
+  fi
+
   IFS=' ' read -a all_bin_paths <<< "$space_seperated_list_of_bin_paths"
 
   for bin_path in "${all_bin_paths[@]}"; do
