@@ -6,8 +6,7 @@ reshim_command() {
   ensure_shims_dir
 
   # If full version is empty then generate shims for all versions in the package
-  if [ $full_version = "" ]
-  then
+  if [ $full_version = "" ]; then
     for install in ${package_installs_path}/*/; do
       local full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
       generate_shims_for_version $package_name $full_version_name
@@ -20,8 +19,7 @@ reshim_command() {
 
 ensure_shims_dir() {
   # Create shims dir if doesn't exist
-  if [ ! -d $(asdf_dir)/shims ]
-    then
+  if [ ! -d $(asdf_dir)/shims ]; then
     mkdir $(asdf_dir)/shims
   fi
 }
@@ -48,8 +46,7 @@ generate_shims_for_version() {
   check_if_source_exists $source_path
 
   IFS=':' read -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]
-    then
+  if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
   else

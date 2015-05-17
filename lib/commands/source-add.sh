@@ -5,8 +5,7 @@ source_add_command() {
 
   mkdir -p $(asdf_dir)/sources
   git clone $source_url $source_path
-  if [ $? -eq 0 ]
-  then
+  if [ $? -eq 0 ]; then
     chmod +x $source_path/bin/*
   fi
 }
