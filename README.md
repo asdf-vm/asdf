@@ -103,9 +103,9 @@ asdf use <name> <version>
 It writes the version to the `.versions` file in the current working directory.
 
 
-## The `.asdf-versions` file
+## The `.tool-versions` file
 
-Add a `.asdf-versions` file to your project dir and versions of those packages will be used.
+Add a `.tool-versions` file to your project dir and versions of those packages will be used.
 
 ```
 elixir 1.0.2

@@ -58,8 +58,8 @@ get_asdf_versions_file_path() {
   local search_path=$(pwd)
 
   while [ "$search_path" != "/" ]; do
-    if [ -f "$search_path/.asdf-versions" ]; then
-      asdf_tool_versions_path="$search_path/.asdf-versions"
+    if [ -f "$search_path/.tool-versions" ]; then
+      asdf_tool_versions_path="$search_path/.tool-versions"
       break
     fi
     search_path=$(dirname $search_path)
@@ -67,7 +67,7 @@ get_asdf_versions_file_path() {
 
 
   if [ "$asdf_tool_versions_path" = "" ]; then
-    asdf_tool_versions_path=$HOME/.asdf-versions
+    asdf_tool_versions_path=$HOME/.tool-versions
     if [ ! -f $asdf_tool_versions_path ]; then
       touch $asdf_tool_versions_path
     fi
