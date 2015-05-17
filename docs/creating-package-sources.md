@@ -4,12 +4,14 @@ A package source is a git repo, with the following executable scripts
 
 * `bin/list-all` - lists all installable versions
 * `bin/install` - installs the specified version
-* `bin/list-executables` - list executables for the version of the package
 
-##### Options scripts
 
-* `bin/exec-env` - whatever you want to run when a specific version is used (like set an env var?)
+##### Optional scripts
+
+* `bin/list-bin-paths` - list executables for the version of the package
+* `bin/exec-env` - `echo` a space separated list of "key1=value1 key2=value2" and asdf will set them before running your command
 * `bin/uninstall` - uninstalls the specified version
+
 
 ### bin/list-all
 
@@ -31,13 +33,16 @@ If you need to provide any options, use environment variables.
 
 These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do whatever you need.
 
-### bin/list-executables
 
-Must print a string with a space-seperated list of paths to executables. The paths must be relative to the install path passed. Example output would be:
+### bin/list-bin-paths
+
+Must print a string with a space-seperated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
 
 ```
-bin/abc bin/xyz scripts/jkl
+bin tools veggies
 ```
+
+Shims will be automatically created for each of the binaries/executables. If this script is not specified, asdf will look for the `bin` dir in an installation and create shims for those.
 
 ### bin/exec-env
 
