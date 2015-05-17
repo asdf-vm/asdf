@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
 
 package=$1
@@ -27,12 +29,17 @@ fi
 
 install_path=$(get_install_path $package $install_type $version)
 
-
 if [ -f ${source_path}/bin/exec-env ]
 then
   exec_env=$(${source_path}/bin/exec-env $install_type $version $install_path)
-  eval $exec_env ${install_path}/${executable_path} ${@:3}
+  (
+    eval export ${exec_env};
+    ${install_path}/${executable_path} "${@:3}"
+    exit $?
+  )
 else
-  ${install_path}/${executable_path} ${@:3}
+  (
+    ${install_path}/${executable_path} "${@:3}"
+    exit $?
+  )
 fi
- 
