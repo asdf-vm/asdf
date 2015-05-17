@@ -92,7 +92,9 @@ generate_shims_for_version() {
   for bin_path in "${all_bin_paths[@]}"; do
     #TODO check if it's actually an executable file
     for executable_file in $install_path/$bin_path/*; do
-      write_shim_script $package_name $version $executable_file
+      # because just $executable_file gives absolute path; We don't want version hardcoded in shim
+      local executable_path_relative_to_install_path=$bin_path/$(basename $executable_file)
+      write_shim_script $package_name $version $executable_path_relative_to_install_path
     done
   done
 }
