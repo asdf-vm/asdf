@@ -59,7 +59,7 @@ asdf source-remove <name>
 ##### Update sources
 
 ```bash
-asdf update-source --all
+asdf source-update --all
 ```
 
 If you want to update a specific package, just say so.
