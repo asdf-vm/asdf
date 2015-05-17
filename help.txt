@@ -9,7 +9,7 @@ MANAGE PACKAGE SOURCES
   asdf source-update <name>
       Update package source
 
-  asdf source-updatee --all
+  asdf source-update --all
       Update sources for all packages
 
 
