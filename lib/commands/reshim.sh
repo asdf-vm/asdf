@@ -41,7 +41,7 @@ write_shim_script() {
   local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
 
   echo """#!/usr/bin/env sh
-$(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} "\$@"
+$(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} \"\$@\"
 """ > $shim_path
 
   chmod +x $shim_path
