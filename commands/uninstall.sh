@@ -1,5 +1,3 @@
-source $(dirname $(dirname $0))/lib/utils.sh
-
 uninstall_command() {
   local package_name=$1
   local full_version=$2
