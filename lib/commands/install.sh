@@ -1,4 +1,4 @@
-install_command() {}
+install_command() {
   local package_name=$1
   local full_version=$2
   local source_path=$(get_source_path $package_name)
