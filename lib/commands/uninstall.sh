@@ -1,9 +1,9 @@
 uninstall_command() {
   local package_name=$1
   local full_version=$2
-  local source_path=$(get_source_path $package_name)
+  local plugin_path=$(get_plugin_path $package_name)
 
-  check_if_source_exists $source_path
+  check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
@@ -21,8 +21,8 @@ uninstall_command() {
     exit 1
   fi
 
-  if [ -f ${source_path}/bin/uninstall ]; then
-    ${source_path}/bin/uninstall $install_type $version $install_path "${@:3}"
+  if [ -f ${plugin_path}/bin/uninstall ]; then
+    ${plugin_path}/bin/uninstall $install_type $version $install_path "${@:3}"
   else
     rm -rf $install_path
   fi

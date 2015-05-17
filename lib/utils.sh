@@ -28,10 +28,10 @@ get_install_path() {
 }
 
 
-check_if_source_exists() {
+check_if_plugin_exists() {
   if [ ! -d $1 ]
     then
-    display_error "No such package"
+    display_error "No such plugin"
     exit 1
   fi
 }
@@ -43,8 +43,8 @@ get_version_part() {
 }
 
 
-get_source_path() {
-  echo $(asdf_dir)/sources/$1
+get_plugin_path() {
+  echo $(asdf_dir)/plugins/$1
 }
 
 

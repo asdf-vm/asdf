@@ -6,7 +6,7 @@ package=$1
 executable_path=$2
 
 source_path=$(get_source_path $package)
-check_if_source_exists $source_path
+check_if_plugin_exists $plugin_path
 
 full_version=$(get_preset_version_for $package)
 

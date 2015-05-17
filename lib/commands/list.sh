@@ -1,7 +1,7 @@
 list_command() {
   local package_name=$1
-  local source_path=$(get_source_path $package_name)
-  check_if_source_exists $source_path
+  local plugin_path=$(get_plugin_path $package_name)
+  check_if_plugin_exists $plugin_path
 
   local package_installs_path=$(asdf_dir)/installs/${package_name}
 

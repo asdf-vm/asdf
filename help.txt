@@ -1,16 +1,16 @@
-MANAGE PACKAGE SOURCES
+MANAGE PLUGINS
 
-  asdf source-add <name> <git-url>
-      Add git repo as source for a package
+  asdf plugin-add <name> <git-url>
+      Add git repo as plugin
 
-  asdf source-remove <name>
-      Remove package source and versions
+  asdf plugin-remove <name>
+      Remove plugin and versions
 
-  asdf source-update <name>
-      Update package source
+  asdf plugin-update <name>
+      Update plugin
 
-  asdf source-updatee --all
-      Update sources for all packages
+  asdf plugin-updatee --all
+      Update all plugins
 
 
 MANAGE PACKAGES

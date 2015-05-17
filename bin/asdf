@@ -8,9 +8,9 @@ source $(dirname $(dirname $0))/lib/commands/uninstall.sh
 source $(dirname $(dirname $0))/lib/commands/list.sh
 source $(dirname $(dirname $0))/lib/commands/list-all.sh
 source $(dirname $(dirname $0))/lib/commands/reshim.sh
-source $(dirname $(dirname $0))/lib/commands/source-add.sh
-source $(dirname $(dirname $0))/lib/commands/source-update.sh
-source $(dirname $(dirname $0))/lib/commands/source-remove.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-add.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-update.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-remove.sh
 
 
 callback_args="${@:2}"
@@ -38,14 +38,14 @@ case $1 in
 "reshim")
     reshim_command $callback_args;;
 
-"source-add")
-    source_add_command $callback_args;;
+"plugin-add")
+    plugin_add_command $callback_args;;
 
-"source-update")
-    source_update_command $callback_args;;
+"plugin-update")
+    plugin_update_command $callback_args;;
 
-"source-remove")
-    source_remove_command $callback_args;;
+"plugin-remove")
+    plugin_remove_command $callback_args;;
 
 *)
   help_command
