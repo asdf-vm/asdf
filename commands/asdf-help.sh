@@ -1,5 +1,5 @@
-source $(dirname $(dirname $0))/lib/utils.sh
-
-echo "version: $(asdf_version)"
-echo ""
-cat $(asdf_dir)/help.txt
+help_command () {
+  echo "version: $(asdf_version)"
+  echo ""
+  cat $(asdf_dir)/help.txt
+}

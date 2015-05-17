@@ -1,4 +1,4 @@
-source $(dirname $(dirname $0))/lib/utils.sh
+source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
 
 package=$1
 executable_path=$2
@@ -35,3 +35,4 @@ then
 else
   ${install_path}/${executable_path} ${@:3}
 fi
+ 

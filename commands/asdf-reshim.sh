@@ -1,4 +1,21 @@
-source $(dirname $(dirname $0))/lib/utils.sh
+reshim_command() {
+  local package_name=$1
+  local full_version=$2
+  local source_path=$(get_source_path $package_name)
+  check_if_source_exists $source_path
+  ensure_shims_dir
+
+  # If full version is empty then generate shims for all versions in the package
+  if [ $full_version = "" ]
+  then
+    for install in ${package_installs_path}/*/; do
+      local full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
+      generate_shims_for_version $package_name $full_version_name
+    done
+  else
+    generate_shims_for_version $package_name $full_version
+  fi
+}
 
 
 ensure_shims_dir() {
@@ -48,22 +65,3 @@ generate_shims_for_version() {
     write_shim_script $package_name $version $executable
   done
 }
-
-
-
-package_name=$1
-full_version=$2
-source_path=$(get_source_path $package_name)
-check_if_source_exists $source_path
-ensure_shims_dir
-
-# If full version is empty then generate shims for all versions in the package
-if [ $full_version = "" ]
-then
-  for install in ${package_installs_path}/*/; do
-    full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
-    generate_shims_for_version $package_name $full_version_name
-  done
-else
-  generate_shims_for_version $package_name $full_version
-fi
