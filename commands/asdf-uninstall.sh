@@ -5,11 +5,6 @@ full_version=$2
 source_path=$(get_source_path $package_name)
 
 check_if_source_exists $source_path
-if [ ! -d "$source_path/$full_version" ]
-then
-  display_error "No such version"
-  exit 1
-fi
 
 IFS=':' read -a version_info <<< "$full_version"
 if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]
@@ -22,6 +17,12 @@ else
 fi
 
 install_path=$(get_install_path $package_name $install_type $version)
+
+if [ ! -d $install_path ]
+then
+  display_error "No such version"
+  exit 1
+fi
 
 if [ -f ${source_path}/bin/uninstall ]
 then
