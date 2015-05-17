@@ -15,5 +15,5 @@ install_command() {
 
   local install_path=$(get_install_path $package_name $install_type $version)
   ${source_path}/bin/install $install_type $version $install_path
-  $(asdf_dir)/bin/asdf reshim $package_name $full_version
+  reshim_command $package_name $full_version
 }
