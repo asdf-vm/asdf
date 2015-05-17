@@ -66,7 +66,7 @@ get_asdf_versions_file_path() {
   done
 
 
-  if [ $asdf_tool_versions_path = "" ]; then
+  if [ "$asdf_tool_versions_path" = "" ]; then
     asdf_tool_versions_path=$HOME/.asdf-versions
     if [ ! -f $asdf_tool_versions_path ]; then
       touch $asdf_tool_versions_path
