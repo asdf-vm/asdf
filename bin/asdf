@@ -2,16 +2,52 @@
 
 source $(dirname $(dirname $0))/lib/utils.sh
 
-expected_asdf_command_path="$(asdf_dir)/commands/asdf-$1.sh"
-
-# check if command exists
-if [ -f $expected_asdf_command_path ]; then
-  asdf_command_path=$expected_asdf_command_path
-else
-  # run help command
-  asdf_command_path="$(asdf_dir)/commands/asdf-help.sh"
-fi
+source $(dirname $(dirname $0))/lib/commands/help.sh
+source $(dirname $(dirname $0))/lib/commands/install.sh
+source $(dirname $(dirname $0))/lib/commands/uninstall.sh
+source $(dirname $(dirname $0))/lib/commands/list.sh
+source $(dirname $(dirname $0))/lib/commands/list-all.sh
+source $(dirname $(dirname $0))/lib/commands/reshim.sh
+source $(dirname $(dirname $0))/lib/commands/source-add.sh
+source $(dirname $(dirname $0))/lib/commands/source-update.sh
+source $(dirname $(dirname $0))/lib/commands/source-remove.sh
 
 
 callback_args="${@:2}"
-$SHELL $asdf_command_path $callback_args
+
+case $1 in
+
+"--version")
+  asdf_version $callback_args;;
+
+"help")
+    help_command $callback_args;;
+
+"install")
+    install_command $callback_args;;
+
+"uninstall")
+    uninstall_command $callback_args;;
+
+"list")
+    list_command $callback_args;;
+
+"list-all")
+    list_all_command $callback_args;;
+
+"reshim")
+    reshim_command $callback_args;;
+
+"source-add")
+    source_add_command $callback_args;;
+
+"source-update")
+    source_update_command $callback_args;;
+
+"source-remove")
+    source_remove_command $callback_args;;
+
+*)
+  help_command
+  exit 1;;
+esac
