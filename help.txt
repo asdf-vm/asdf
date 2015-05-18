@@ -1,37 +1,20 @@
 MANAGE PLUGINS
-
-  asdf plugin-add <name> <git-url>
-      Add git repo as plugin
-
-  asdf plugin-remove <name>
-      Remove plugin and versions
-
-  asdf plugin-update <name>
-      Update plugin
-
-  asdf plugin-updatee --all
-      Update all plugins
+  asdf plugin-add <name> <git-url>     Add git repo as plugin
+  asdf plugin-remove <name>            Remove plugin and package versions
+  asdf plugin-update <name>            Update plugin
+  asdf plugin-update --all             Update all plugins
 
 
 MANAGE PACKAGES
-
-  asdf install <name> <version>
-      Install a specific version of a package
-
-  asdf remove <name> <version>
-      Remove a specific version of a package
-
-  asdf list <name>
-      List installed versions of a package
-
-  asdf list-all <name>
-      List all versions of a package
+  asdf install <name> <version>        Install a specific version of a package
+  asdf remove <name> <version>         Remove a specific version of a package
+  asdf list <name>                     List installed versions of a package
+  asdf list-all <name>                 List all versions of a package
 
 
 UTILS
-
-  asdf reshim <name> <version>
-      Recreate shims for the specific version of a package
+  asdf reshim <name> <version>         Recreate shims for version of a package
 
 
--- The end I promise --
+"Late but latest"
+-- Rajinikanth
