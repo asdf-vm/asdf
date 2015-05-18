@@ -97,11 +97,10 @@ asdf list-all <name>
 
 ```bash
 asdf use <name> <version>
-# asdf use erlang 17.3
+# asdf use erlang 17.5
 ```
 
-It writes the version to the `.versions` file in the current working directory.
-
+This will set the requested version of the package for the current terminal session.
 
 ## The `.tool-versions` file
 
