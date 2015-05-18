@@ -2,11 +2,11 @@
 ### _extendable version manager_
 
 > I've built plugins to support the following languages:
-> * [Ruby](#TODO)
+> * [Ruby](https://github.com/HashNuke/asdf-ruby)
 > * [Erlang](https://github.com/HashNuke/asdf-erlang)
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
 >
-> There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-package-sources.md) for supporting more languages.
+> There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 ---
 
@@ -36,40 +36,40 @@ echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 
 ## USAGE
 
-### Manage sources
+### Manage plugins
 
-Sources are how asdf understands how to handle packages.
+Plugins are how asdf understands how to handle different packages.
 
 
-##### Add a package source
+##### Add a plugin
 
 ```bash
-asdf source-add <name> <git-url>
-# asdf add-source erlang https://github.com/HashNuke/asdf-erlang.git
+asdf plugin-add <name> <git-url>
+# asdf plugin-add erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
-##### Remove a source
+##### Remove a plugin
 
 ```bash
-asdf source-remove <name>
-# asdf remove-source erlang
+asdf plugin-remove <name>
+# asdf plugin-remove erlang
 ```
 
 
-##### Update sources
+##### Update plugins
 
 ```bash
-asdf source-update --all
+asdf plugin-update --all
 ```
 
 If you want to update a specific package, just say so.
 
 ```bash
-asdf source-update <name>
-# asdf update-source erlang
+asdf plugin-update <name>
+# asdf plugin-update erlang
 ```
 
-### Manage packages
+### Manage versions
 
 ```bash
 asdf install <name> <version>
@@ -103,9 +103,9 @@ asdf use <name> <version>
 It writes the version to the `.versions` file in the current working directory.
 
 
-## The `.asdf-versions` file
+## The `.tool-versions` file
 
-Add a `.asdf-versions` file to your project dir and versions of those packages will be used.
+Add a `.tool-versions` file to your project dir and versions of those packages will be used.
 
 ```
 elixir 1.0.2
@@ -120,4 +120,4 @@ Copyright 2014 to the end of time
 
 -------
 
-Read the [ballad](https://github.com/HashNuke/asdf/blob/master/docs/ballad-of-asdf.md).
+Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
