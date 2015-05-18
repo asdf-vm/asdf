@@ -120,4 +120,4 @@ Copyright 2014 to the end of time
 
 -------
 
-Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
+Read the [ballad](https://github.com/HashNuke/asdf/blob/master/docs/ballad-of-asdf.md).
