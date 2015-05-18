@@ -1,6 +1,6 @@
-## Creating package sources
+## Creating plugins
 
-A package source is a git repo, with a couple executable scripts. These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do anything required to setup the environment for the tool.
+A plugin is a git repo, with a couple executable scripts, to support versioning another language or tool. These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do anything required to setup the environment for the tool.
 
 ### Required scripts
 
@@ -49,6 +49,10 @@ Will be passed the following args
 * *version*
 
 Must print a string with space-seperated list of env vars to set. Example output would be
+
+```
+FOO=bar BAR=baz XYZ=123
+```
 
 ##### bin/uninstall
 
