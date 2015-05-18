@@ -28,10 +28,10 @@ get_install_path() {
 }
 
 
-check_if_source_exists() {
+check_if_plugin_exists() {
   if [ ! -d $1 ]
     then
-    display_error "No such package"
+    display_error "No such plugin"
     exit 1
   fi
 }
@@ -43,8 +43,8 @@ get_version_part() {
 }
 
 
-get_source_path() {
-  echo $(asdf_dir)/sources/$1
+get_plugin_path() {
+  echo $(asdf_dir)/plugins/$1
 }
 
 
@@ -58,16 +58,16 @@ get_asdf_versions_file_path() {
   local search_path=$(pwd)
 
   while [ "$search_path" != "/" ]; do
-    if [ -f "$search_path/.asdf-versions" ]; then
-      asdf_tool_versions_path="$search_path/.asdf-versions"
+    if [ -f "$search_path/.tool-versions" ]; then
+      asdf_tool_versions_path="$search_path/.tool-versions"
       break
     fi
     search_path=$(dirname $search_path)
   done
 
 
-  if [ $asdf_tool_versions_path = "" ]; then
-    asdf_tool_versions_path=$HOME/.asdf-versions
+  if [ "$asdf_tool_versions_path" = "" ]; then
+    asdf_tool_versions_path=$HOME/.tool-versions
     if [ ! -f $asdf_tool_versions_path ]; then
       touch $asdf_tool_versions_path
     fi

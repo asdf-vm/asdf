@@ -2,8 +2,8 @@ reshim_command() {
   local package_name=$1
   local full_version=$2
   local executable_path=$3
-  local source_path=$(get_source_path $package_name)
-  check_if_source_exists $source_path
+  local plugin_path=$(get_plugin_path $package_name)
+  check_if_plugin_exists $plugin_path
   ensure_shims_dir
 
   # If full version is empty then generate shims for all versions in the package
@@ -41,7 +41,7 @@ write_shim_script() {
   local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
 
   echo """#!/usr/bin/env sh
-$(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} "\$@"
+$(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} \"\$@\"
 """ > $shim_path
 
   chmod +x $shim_path
@@ -52,9 +52,9 @@ generate_shim_for_executable() {
   local package_name=$1
   local full_version=$2
   local executable=$3
-  local source_path=$(get_source_path $package_name)
+  local plugin_path=$(get_plugin_path $package_name)
 
-  check_if_source_exists $source_path
+  check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
@@ -72,8 +72,8 @@ generate_shim_for_executable() {
 generate_shims_for_version() {
   local package_name=$1
   local full_version=$2
-  local source_path=$(get_source_path $package_name)
-  check_if_source_exists $source_path
+  local plugin_path=$(get_plugin_path $package_name)
+  check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
@@ -86,7 +86,12 @@ generate_shims_for_version() {
 
   local install_path=$(get_install_path $package_name $install_type $version)
 
-  local space_seperated_list_of_bin_paths=$(sh ${source_path}/bin/list-bin-paths $package_name $install_type $version "${@:2}")
+  if [ -f ${plugin_path}/bin/list-bin-paths ]; then
+    local space_seperated_list_of_bin_paths=$(sh ${plugin_path}/bin/list-bin-paths $package_name $install_type $version "${@:2}")
+  else
+    local space_seperated_list_of_bin_paths="bin"
+  fi
+
   IFS=' ' read -a all_bin_paths <<< "$space_seperated_list_of_bin_paths"
 
   for bin_path in "${all_bin_paths[@]}"; do

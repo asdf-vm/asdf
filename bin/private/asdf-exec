@@ -5,8 +5,8 @@ source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
 package=$1
 executable_path=$2
 
-source_path=$(get_source_path $package)
-check_if_source_exists $source_path
+plugin_path=$(get_plugin_path $package)
+check_if_plugin_exists $plugin_path
 
 full_version=$(get_preset_version_for $package)
 
@@ -27,8 +27,8 @@ fi
 
 install_path=$(get_install_path $package $install_type $version)
 
-if [ -f ${source_path}/bin/exec-env ]; then
-  exec_env=$(${source_path}/bin/exec-env $install_type $version $install_path)
+if [ -f ${plugin_path}/bin/exec-env ]; then
+  exec_env=$(${plugin_path}/bin/exec-env $install_type $version $install_path)
   (
     eval export ${exec_env};
     ${install_path}/${executable_path} "${@:3}"

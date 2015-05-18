@@ -1,8 +1,8 @@
 list_all_command() {
   local package_name=$1
-  local source_path=$(get_source_path $package_name)
-  check_if_source_exists $source_path
-  local versions=$( ${source_path}/bin/list-all )
+  local plugin_path=$(get_plugin_path $package_name)
+  check_if_plugin_exists $plugin_path
+  local versions=$( ${plugin_path}/bin/list-all )
 
   IFS=' ' read -a versions_list <<< "$versions"
 
