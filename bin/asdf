@@ -1,4 +1,4 @@
-#!/usr/bin/env sh -l
+#!/usr/bin/env bash
 
 source $(dirname $(dirname $0))/lib/utils.sh
 
