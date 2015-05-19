@@ -11,6 +11,6 @@ list_command() {
       echo "$(basename $install)"
     done
   else
-    echo 'Oohes nooes ~! Nothing found'
+    echo 'Oohes nooes ~! No versions installed'
   fi
 }
