@@ -33,7 +33,7 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 > For most plugins, it is good if you have installed the following packages OR their equivalent on you OS
 
 > * **OS X**: Install these via homebrew `openssl libyaml readline ncurses libxslt`
-> * **Ubuntu**: `libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev`
+> * **Ubuntu**: `libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev`
 
 **That's all ~! You are ready to use asdf**
 
