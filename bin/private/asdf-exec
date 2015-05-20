@@ -37,9 +37,8 @@ fi
 
 
 if [ -f ${plugin_path}/bin/exec-env ]; then
-  exec_env=$(${plugin_path}/bin/exec-env $install_type $version $install_path)
   (
-    eval export ${exec_env};
+    . ${plugin_path}/bin/exec-env $install_type $version $install_path
     ${install_path}/${executable_path} "${@:3}"
     exit $?
   )
