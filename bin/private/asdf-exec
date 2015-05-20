@@ -20,12 +20,21 @@ IFS=':' read -a version_info <<< "$full_version"
 if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
   install_type="${version_info[0]}"
   version="${version_info[1]}"
+  install_path=$(get_install_path $package $install_type $version)
+elif [ "${version_info[0]}" = "path" ]; then
+  # This is for people who have the local source already compiled
+  # Like those who work on the language, etc
+  # We'll allow specifying path:/foo/bar/project in .tool-versions
+  # And then use the binaries there
+  install_type="path"
+  version="path"
+  install_path="${version_info[1]}"
 else
   install_type="version"
   version="${version_info[0]}"
+  install_path=$(get_install_path $package $install_type $version)
 fi
 
-install_path=$(get_install_path $package $install_type $version)
 
 if [ -f ${plugin_path}/bin/exec-env ]; then
   exec_env=$(${plugin_path}/bin/exec-env $install_type $version $install_path)
