@@ -2,16 +2,16 @@
 
 source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
 
-package=$1
+plugin_name=$1
 executable_path=$2
 
-plugin_path=$(get_plugin_path $package)
+plugin_path=$(get_plugin_path $plugin_name)
 check_if_plugin_exists $plugin_path
 
-full_version=$(get_preset_version_for $package)
+full_version=$(get_preset_version_for $plugin_name)
 
 if [ "$full_version" == "" ]; then
-  echo "No version set for ${package}"
+  echo "No version set for ${plugin_name}"
   exit -1
 fi
 
@@ -25,7 +25,14 @@ else
   version="${version_info[0]}"
 fi
 
-install_path=$(get_install_path $package $install_type $version)
+install_path=$(get_install_path $plugin_name $install_type $version)
+
+
+if [ ! -f ${install_path}/${executable_path} ]; then
+  echo "No such command in $full_version of $plugin_name"
+  exit 1
+fi
+
 
 if [ -f ${plugin_path}/bin/exec-env ]; then
   exec_env=$(${plugin_path}/bin/exec-env $install_type $version $install_path)
