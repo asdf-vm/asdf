@@ -47,6 +47,10 @@ case $1 in
 "plugin-remove")
     plugin_remove_command $callback_args;;
 
+# Undocumented commands for development
+"plugin-push")
+    plugin_push_command $callback_args;;
+
 *)
   help_command
   exit 1;;
