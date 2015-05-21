@@ -12,6 +12,8 @@ source $(dirname $(dirname $0))/lib/commands/plugin-add.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-update.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-remove.sh
 
+source $(dirname $(dirname $0))/lib/commands/plugin-push.sh
+
 
 callback_args="${@:2}"
 
