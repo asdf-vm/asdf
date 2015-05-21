@@ -2,16 +2,16 @@
 
 source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
 
-package=$1
+plugin_name=$1
 executable_path=$2
 
-plugin_path=$(get_plugin_path $package)
+plugin_path=$(get_plugin_path $plugin_name)
 check_if_plugin_exists $plugin_path
 
-full_version=$(get_preset_version_for $package)
+full_version=$(get_preset_version_for $plugin_name)
 
 if [ "$full_version" == "" ]; then
-  echo "No version set for ${package}"
+  echo "No version set for ${plugin_name}"
   exit -1
 fi
 
@@ -20,7 +20,7 @@ IFS=':' read -a version_info <<< "$full_version"
 if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
   install_type="${version_info[0]}"
   version="${version_info[1]}"
-  install_path=$(get_install_path $package $install_type $version)
+  install_path=$(get_install_path $plugin_name $install_type $version)
 elif [ "${version_info[0]}" = "path" ]; then
   # This is for people who have the local source already compiled
   # Like those who work on the language, etc
@@ -32,7 +32,15 @@ elif [ "${version_info[0]}" = "path" ]; then
 else
   install_type="version"
   version="${version_info[0]}"
-  install_path=$(get_install_path $package $install_type $version)
+  install_path=$(get_install_path $plugin_name $install_type $version)
+fi
+
+
+install_path=$(get_install_path $plugin_name $install_type $version)
+
+if [ ! -f ${install_path}/${executable_path} ]; then
+  echo "No such command in $full_version of $plugin_name"
+  exit 1
 fi
 
 
