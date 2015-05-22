@@ -57,7 +57,7 @@ generate_shim_for_executable() {
   check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
+  if [ "${version_info[0]}" = "ref" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
   else
@@ -76,7 +76,7 @@ generate_shims_for_version() {
   check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
+  if [ "${version_info[0]}" = "ref" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
   else
