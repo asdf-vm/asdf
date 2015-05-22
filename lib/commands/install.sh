@@ -1,7 +1,7 @@
 install_command() {
-  local package_name=$1
+  local plugin_name=$1
   local full_version=$2
-  local plugin_path=$(get_plugin_path $package_name)
+  local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
@@ -13,7 +13,13 @@ install_command() {
     local version="${version_info[0]}"
   fi
 
-  local install_path=$(get_install_path $package_name $install_type $version)
+  local install_path=$(get_install_path $plugin_name $install_type $version)
+  if [ -d $install_path ]; then
+    echo "$plugin_name $full_version is already installed"
+    echo "To uninstall it run: asdf uninstall $plugin_name $full_version"
+    exit 1
+  fi
+
   (
     export ASDF_INSTALL_TYPE=$install_type
     export ASDF_INSTALL_VERSION=$version
@@ -22,7 +28,7 @@ install_command() {
   )
   local exit_code=$?
   if [ $exit_code -eq 0 ]; then
-    reshim_command $package_name $full_version
+    reshim_command $plugin_name $full_version
   else
     exit $exit_code
   fi
