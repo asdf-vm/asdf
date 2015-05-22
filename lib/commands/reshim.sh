@@ -19,7 +19,7 @@ reshim_command() {
     local package_installs_path=$(asdf_dir)/installs/${package_name}
 
     for install in ${package_installs_path}/*/; do
-      local full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
+      local full_version_name=$(echo $(basename $install) | sed 's/ref\-/ref\:/')
       generate_shims_for_version $package_name $full_version_name
     done
   fi
