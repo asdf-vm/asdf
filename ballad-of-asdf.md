@@ -10,7 +10,7 @@ Different, old, new.
 So there came more version managers  
 And many commands for them  
 
-> I installed a lot of them (rbenv, erlenv, exenv, nvm, etc)  
+> I installed a lot of them
 I learnt a lot of commands  
 
 > Then I said, just one more version manager  
