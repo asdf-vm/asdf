@@ -101,13 +101,20 @@ asdf list-all <name>
 ## The `.tool-versions` file
 
 Add a `.tool-versions` file to your project dir and versions of those tools will be used.
-
-```
-elixir 1.0.2
-erlang 17.3
-```
-
 **Global defaults can be set in the file `$HOME/.tool-versions`**
+
+This is how a `.tool-versions` file looks like:
+
+```
+ruby 2.2.0
+nodejs 0.12.3
+```
+
+The versions can be in the following format:
+
+* `0.12.3` - an actual version. Plugins that support downloading binaries, will download binaries.
+* `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
+* `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 
 ## Credits
 
