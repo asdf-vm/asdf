@@ -84,6 +84,8 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
+*If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit).* You'll have to use the same name when uninstalling too.
+
 ##### Lists installed versions
 
 ```bash
