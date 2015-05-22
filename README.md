@@ -103,7 +103,7 @@ asdf list-all <name>
 Add a `.tool-versions` file to your project dir and versions of those tools will be used.
 **Global defaults can be set in the file `$HOME/.tool-versions`**
 
-This is how a `.tool-versions` file looks like:
+This is what a `.tool-versions` file looks like:
 
 ```
 ruby 2.2.0
