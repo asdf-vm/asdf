@@ -22,7 +22,12 @@ uninstall_command() {
   fi
 
   if [ -f ${plugin_path}/bin/uninstall ]; then
-    ${plugin_path}/bin/uninstall $install_type $version $install_path "${@:3}"
+    (
+      export ASDF_INSTALL_TYPE=$install_type
+      export ASDF_INSTALL_VERSION=$version
+      export ASDF_INSTALL_PATH=$install_path
+      bash ${plugin_path}/bin/uninstall
+    )
   else
     rm -rf $install_path
   fi

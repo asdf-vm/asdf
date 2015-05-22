@@ -58,11 +58,9 @@ if [ -f ${plugin_path}/bin/exec-env ]; then
     unset ASDF_INSTALL_PATH
 
     ${install_path}/${executable_path} "${@:3}"
-    exit $?
   )
 else
   (
     ${install_path}/${executable_path} "${@:3}"
-    exit $?
   )
 fi

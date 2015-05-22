@@ -87,7 +87,12 @@ generate_shims_for_version() {
   local install_path=$(get_install_path $package_name $install_type $version)
 
   if [ -f ${plugin_path}/bin/list-bin-paths ]; then
-    local space_seperated_list_of_bin_paths=$(sh ${plugin_path}/bin/list-bin-paths $package_name $install_type $version "${@:2}")
+    local space_seperated_list_of_bin_paths=$(
+      export ASDF_INSTALL_TYPE=$install_type
+      export ASDF_INSTALL_VERSION=$version
+      export ASDF_INSTALL_PATH=$install_path
+      bash ${plugin_path}/bin/list-bin-paths
+    )
   else
     local space_seperated_list_of_bin_paths="bin"
   fi

@@ -14,6 +14,16 @@ install_command() {
   fi
 
   local install_path=$(get_install_path $package_name $install_type $version)
-  ${plugin_path}/bin/install $install_type $version $install_path
-  reshim_command $package_name $full_version
+  (
+    export ASDF_INSTALL_TYPE=$install_type
+    export ASDF_INSTALL_VERSION=$version
+    export ASDF_INSTALL_PATH=$install_path
+    bash ${plugin_path}/bin/install
+  )
+  local exit_code=$?
+  if [ $exit_code -eq 0 ]; then
+    reshim_command $package_name $full_version
+  else
+    exit $exit_code
+  fi
 }
