@@ -98,23 +98,16 @@ asdf list-all <name>
 # asdf list-all erlang
 ```
 
-##### Use a specific version of a package
-
-```bash
-asdf use <name> <version>
-# asdf use erlang 17.5
-```
-
-This will set the requested version of the package for the current terminal session.
-
 ## The `.tool-versions` file
 
-Add a `.tool-versions` file to your project dir and versions of those packages will be used.
+Add a `.tool-versions` file to your project dir and versions of those tools will be used.
 
 ```
 elixir 1.0.2
 erlang 17.3
 ```
+
+**Global defaults can be set in the file `$HOME/.tool-versions`**
 
 ## Credits
 
