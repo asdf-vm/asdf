@@ -1,6 +1,6 @@
 shim_command() {
   local plugin_name=$1
-  local executable_path=$3
+  local executable_path=$2
   local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_path
   ensure_shims_dir
@@ -40,7 +40,7 @@ ensure_shims_dir() {
 
 write_shim_script() {
   local plugin_name=$1
-  local executable_path=$3
+  local executable_path=$2
   local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
 
   echo """#!/usr/bin/env bash
@@ -53,7 +53,7 @@ $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
 
 generate_shim_for_executable() {
   local plugin_name=$1
-  local executable=$3
+  local executable=$2
   local plugin_path=$(get_plugin_path $plugin_name)
 
   check_if_plugin_exists $plugin_path
