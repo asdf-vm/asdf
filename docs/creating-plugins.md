@@ -1,13 +1,21 @@
 ## Creating plugins
 
-A plugin is a git repo, with a couple executable scripts, to support versioning another language or tool. These scripts are run when `list-all`, `install`, `uninstall` or `exec-env` commands are run. You can set or unset env vars and do anything required to setup the environment for the tool.
+A plugin is a git repo, with a couple executable scripts, to support versioning another language or tool. These scripts are run when `list-all`, `install` or `uninstall` commands are run. You can set or unset env vars and do anything required to setup the environment for the tool.
 
 ### Required scripts
 
 * `bin/list-all` - lists all installable versions
 * `bin/install` - installs the specified version
 
-##### bin/list-all
+
+All scripts except `bin/list-all` will have access to the following env vars to act upon:
+
+* `ASDF_INSTALL_TYPE` - `version` or `ref`
+* `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
+* `ASDF_INSTALL_PATH` - the dir where the it *has been* installed (or *should* be installed in case of the `bin/install` script)
+
+
+#### bin/list-all
 
 Must print a string with a space-seperated list of versions. Example output would be the following:
 
@@ -15,45 +23,29 @@ Must print a string with a space-seperated list of versions. Example output woul
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
-##### bin/install
+#### bin/install
 
-This script should install the package. It will be passed the following command-line args (in order).
-
-* *install type* - "version", "tag", "commit"
-* *version* - this is the version or commit sha or the tag name that should be installed (use the first argument to figure out what to do).
-* *install path* - the dir where the it *should* be installed
+This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`
 
 
 ### Optional scripts
 
-* `bin/list-bin-paths` - list executables for the version of the package
-* `bin/exec-env` - `echo` a space separated list of "key1=value1 key2=value2" and asdf will set them before running your command
-* `bin/uninstall` - uninstalls the specified version
+#### bin/list-bin-paths
 
-
-##### bin/list-bin-paths
-
-Must print a string with a space-seperated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
+List executables for the specified version of the tool. Must print a string with a space-seperated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
 
 ```
 bin tools veggies
 ```
 
-Shims will be automatically created for each of the binaries/executables. If this script is not specified, asdf will look for the `bin` dir in an installation and create shims for those.
+This will instruct asdf to create shims for the files in `<install-path>/bin`, `<install-path>/tools` and `<install-path>/veggies`
 
-##### bin/exec-env
+If this script is not specified, asdf will look for the `bin` dir in an installation and create shims for those.
 
-Will be passed the following args
+#### bin/exec-env
 
-* *install type*
-* *version*
+Setup the env to run the binaries in the package.
 
-Must print a string with space-seperated list of env vars to set. Example output would be
+#### bin/uninstall
 
-```
-FOO=bar BAR=baz XYZ=123
-```
-
-##### bin/uninstall
-
-Uninstalls a specific version of a tool. Same args as the `bin/install` script.
+Uninstalls a specific version of a tool.

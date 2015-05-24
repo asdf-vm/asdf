@@ -5,6 +5,7 @@
 > * [Ruby](https://github.com/HashNuke/asdf-ruby)
 > * [Erlang](https://github.com/HashNuke/asdf-erlang)
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
+> * Node.js pending. Tired polishing this stuff. I'll finish it up over the weekend.
 >
 > There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
@@ -84,6 +85,8 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
+*If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit).* You'll have to use the same name when uninstalling too.
+
 ##### Lists installed versions
 
 ```bash
@@ -98,23 +101,23 @@ asdf list-all <name>
 # asdf list-all erlang
 ```
 
-##### Use a specific version of a package
-
-```bash
-asdf use <name> <version>
-# asdf use erlang 17.5
-```
-
-This will set the requested version of the package for the current terminal session.
-
 ## The `.tool-versions` file
 
-Add a `.tool-versions` file to your project dir and versions of those packages will be used.
+Add a `.tool-versions` file to your project dir and versions of those tools will be used.
+**Global defaults can be set in the file `$HOME/.tool-versions`**
+
+This is what a `.tool-versions` file looks like:
 
 ```
-elixir 1.0.2
-erlang 17.3
+ruby 2.2.0
+nodejs 0.12.3
 ```
+
+The versions can be in the following format:
+
+* `0.12.3` - an actual version. Plugins that support downloading binaries, will download binaries.
+* `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
+* `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 
 ## Credits
 

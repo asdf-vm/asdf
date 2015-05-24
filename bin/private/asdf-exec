@@ -17,7 +17,7 @@ fi
 
 
 IFS=':' read -a version_info <<< "$full_version"
-if [ "${version_info[0]}" = "tag" ] || [ "${version_info[0]}" = "commit" ]; then
+if [ "${version_info[0]}" = "ref" ]; then
   install_type="${version_info[0]}"
   version="${version_info[1]}"
   install_path=$(get_install_path $plugin_name $install_type $version)
@@ -58,11 +58,9 @@ if [ -f ${plugin_path}/bin/exec-env ]; then
     unset ASDF_INSTALL_PATH
 
     ${install_path}/${executable_path} "${@:3}"
-    exit $?
   )
 else
   (
     ${install_path}/${executable_path} "${@:3}"
-    exit $?
   )
 fi
