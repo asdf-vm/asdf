@@ -5,7 +5,7 @@
 > * [Ruby](https://github.com/HashNuke/asdf-ruby)
 > * [Erlang](https://github.com/HashNuke/asdf-erlang)
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
-> * Node.js pending. Tired polishing this stuff. I'll finish it up over the weekend.
+> * [Node.js](https://github.com/HashNuke/asdf-nodejs)
 >
 > There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
