@@ -37,6 +37,9 @@ case $1 in
 "list-all")
     list_all_command $callback_args;;
 
+"shim")
+    shim_command $callback_args;;
+
 "reshim")
     reshim_command $callback_args;;
 

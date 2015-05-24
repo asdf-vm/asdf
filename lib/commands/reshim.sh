@@ -1,26 +1,30 @@
-reshim_command() {
-  local package_name=$1
-  local full_version=$2
+shim_command() {
+  local plugin_name=$1
   local executable_path=$3
-  local plugin_path=$(get_plugin_path $package_name)
+  local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_path
   ensure_shims_dir
 
-  # If full version is empty then generate shims for all versions in the package
-  if [ "$full_version" != "" ] && [ "$executable_path" != "" ]; then
-    generate_shim_for_executable $package_name $full_version $executable_path
+  generate_shim_for_executable $plugin_name $executable_path
+}
 
-  elif [ "$full_version" != "" ]; then
+reshim_command() {
+  local plugin_name=$1
+  local full_version=$2
+  local plugin_path=$(get_plugin_path $plugin_name)
+  check_if_plugin_exists $plugin_path
+  ensure_shims_dir
+
+  if [ "$full_version" != "" ]; then
     # generate for the whole package version
-    generate_shims_for_version $package_name $full_version
-
+    generate_shims_for_version $plugin_name $full_version
   else
     # generate for all versions of the package
-    local package_installs_path=$(asdf_dir)/installs/${package_name}
+    local package_installs_path=$(asdf_dir)/installs/${plugin_name}
 
     for install in ${package_installs_path}/*/; do
       local full_version_name=$(echo $(basename $install) | sed 's/tag\-/tag\:/' | sed 's/commit-/commit:/')
-      generate_shims_for_version $package_name $full_version_name
+      generate_shims_for_version $plugin_name $full_version_name
     done
   fi
 }
@@ -35,13 +39,12 @@ ensure_shims_dir() {
 
 
 write_shim_script() {
-  local package_name=$1
-  local version=$2
+  local plugin_name=$1
   local executable_path=$3
   local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
 
   echo """#!/usr/bin/env bash
-$(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} \"\$@\"
+$(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
 """ > $shim_path
 
   chmod +x $shim_path
@@ -49,10 +52,9 @@ $(asdf_dir)/bin/private/asdf-exec ${package_name} ${executable_path} \"\$@\"
 
 
 generate_shim_for_executable() {
-  local package_name=$1
-  local full_version=$2
+  local plugin_name=$1
   local executable=$3
-  local plugin_path=$(get_plugin_path $package_name)
+  local plugin_path=$(get_plugin_path $plugin_name)
 
   check_if_plugin_exists $plugin_path
 
@@ -65,7 +67,7 @@ generate_shim_for_executable() {
     local version="${version_info[0]}"
   fi
 
-  write_shim_script $package_name $version $executable
+  write_shim_script $plugin_name $executable
 }
 
 
@@ -99,7 +101,7 @@ generate_shims_for_version() {
     for executable_file in $install_path/$bin_path/*; do
       # because just $executable_file gives absolute path; We don't want version hardcoded in shim
       local executable_path_relative_to_install_path=$bin_path/$(basename $executable_file)
-      write_shim_script $package_name $version $executable_path_relative_to_install_path
+      write_shim_script $package_name $executable_path_relative_to_install_path
     done
   done
 }
