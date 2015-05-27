@@ -1,7 +1,7 @@
 uninstall_command() {
-  local package_name=$1
+  local plugin_name=$1
   local full_version=$2
-  local plugin_path=$(get_plugin_path $package_name)
+  local plugin_path=$(get_plugin_path $plugin_name)
 
   check_if_plugin_exists $plugin_path
 
@@ -14,7 +14,7 @@ uninstall_command() {
     local version="${version_info[0]}"
   fi
 
-  local install_path=$(get_install_path $package_name $install_type $version)
+  local install_path=$(get_install_path $plugin_name $install_type $version)
 
   if [ ! -d $install_path ]; then
     display_error "No such version"
