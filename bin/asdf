@@ -5,6 +5,7 @@ source $(dirname $(dirname $0))/lib/utils.sh
 source $(dirname $(dirname $0))/lib/commands/help.sh
 source $(dirname $(dirname $0))/lib/commands/install.sh
 source $(dirname $(dirname $0))/lib/commands/uninstall.sh
+source $(dirname $(dirname $0))/lib/commands/which.sh
 source $(dirname $(dirname $0))/lib/commands/list.sh
 source $(dirname $(dirname $0))/lib/commands/list-all.sh
 source $(dirname $(dirname $0))/lib/commands/reshim.sh
@@ -30,6 +31,9 @@ case $1 in
 
 "uninstall")
     uninstall_command $callback_args;;
+
+"which")
+    which_command $callback_args;;
 
 "list")
     list_command $callback_args;;
