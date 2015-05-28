@@ -81,6 +81,10 @@ asdf plugin-update <name>
 asdf install <name> <version>
 # asdf install erlang 17.3
 
+asdf which <name>
+# asdf which erlang
+# 17.3
+
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
