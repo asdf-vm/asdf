@@ -20,9 +20,9 @@ reshim_command() {
     generate_shims_for_version $plugin_name $full_version
   else
     # generate for all versions of the package
-    local package_installs_path=$(asdf_dir)/installs/${plugin_name}
+    local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
 
-    for install in ${package_installs_path}/*/; do
+    for install in ${plugin_installs_path}/*/; do
       local full_version_name=$(echo $(basename $install) | sed 's/ref\-/ref\:/')
       generate_shims_for_version $plugin_name $full_version_name
     done
