@@ -5,9 +5,9 @@ list_command() {
 
   local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
 
-  if [ -d $package_installs_path ]; then
+  if [ -d $plugin_installs_path ]; then
     #TODO check if dir is empty and show no-installed-versions msg
-    for install in ${package_installs_path}/*/; do
+    for install in ${plugin_installs_path}/*/; do
       echo "$(basename $install)"
     done
   else
