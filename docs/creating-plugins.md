@@ -49,3 +49,11 @@ Setup the env to run the binaries in the package.
 #### bin/uninstall
 
 Uninstalls a specific version of a tool.
+
+### Custom shim templates
+
+**PLEASE use this feature only if absolutely required**
+
+asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
+
+This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
