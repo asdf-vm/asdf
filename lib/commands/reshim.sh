@@ -41,11 +41,17 @@ ensure_shims_dir() {
 write_shim_script() {
   local plugin_name=$1
   local executable_path=$2
-  local shim_path=$(asdf_dir)/shims/$(basename $executable_path)
+  local executable_name=$(basename $executable_path)
+  local plugin_shims_path=$(get_plugin_path $plugin_name)/shims
+  local shim_path=$(asdf_dir)/shims/$executable_name
 
-  echo """#!/usr/bin/env bash
+  if [ -f $plugin_shims_path/$executable_name ]; then
+    cp $plugin_shims_path/$executable_name $shim_path
+  else
+    echo """#!/usr/bin/env bash
 $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
 """ > $shim_path
+  fi
 
   chmod +x $shim_path
 }
