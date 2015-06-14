@@ -54,6 +54,13 @@ asdf plugin-add <name> <git-url>
 # asdf plugin-add erlang https://github.com/HashNuke/asdf-erlang.git
 ```
 
+##### List installed plugins
+
+```bash
+asdf plugin-list
+# asdf plugin-list
+```
+
 ##### Remove a plugin
 
 ```bash
