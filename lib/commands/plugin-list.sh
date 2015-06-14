@@ -6,6 +6,6 @@ plugin_list_command() {
       echo "* $(basename $plugin_path)"
     done
   else
-    echo 'Oohes nooes ~! No versions installed'
+    echo 'Oohes nooes ~! No plugins installed'
   fi
 }
