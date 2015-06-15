@@ -4,9 +4,13 @@ plugin_add_command() {
   local plugin_path=$(get_plugin_path $plugin_name)
 
   mkdir -p $(asdf_dir)/plugins
-  git clone $source_url $plugin_path
-  if [ $? -eq 0 ]; then
-    chmod +x $plugin_path/bin/*
+
+  if [ -d $plugin_path ]; then
+    echo "Plugin named $plugin_name already added"
+  else
+    git clone $source_url $plugin_path
+    if [ $? -eq 0 ]; then
+      chmod +x $plugin_path/bin/*
+    fi
   fi
 }
-
