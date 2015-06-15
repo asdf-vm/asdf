@@ -17,6 +17,7 @@ install_command() {
   if [ -d $install_path ]; then
     echo "$plugin_name $full_version is already installed"
     echo "To uninstall it run: asdf uninstall $plugin_name $full_version"
+    exit 0
   fi
 
   (
