@@ -23,10 +23,10 @@ git clone https://github.com/HashNuke/asdf.git ~/.asdf
 Depending on your OS, run the following
 ```bash
 # For Ubuntu or other linux distros
-echo 'source $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 
 # OR for Max OSX
-echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 ```
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
