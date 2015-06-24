@@ -13,11 +13,15 @@ install_command() {
 install_local_tool_versions() {
   if [ -f $(pwd)/.tool-versions ]; then
     local asdf_versions_path=$(pwd)/.tool-versions
-    echo "Reading $asdf_versions_path" >> ~/.asdf.log
 
     local read_done=false
     until $read_done; do
       read tool_line || read_done=true
+
+      if $read_done ; then
+        break;
+      fi
+
       IFS=' ' read -a tool_info <<< $tool_line
       local t_name=$(echo "${tool_info[0]}" | xargs)
       local t_version=$(echo "${tool_info[1]}" | xargs)

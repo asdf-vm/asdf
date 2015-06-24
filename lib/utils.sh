@@ -103,6 +103,11 @@ get_tool_version_from_file() {
   local read_done=false
   until $read_done; do
     read tool_line || read_done=true
+
+    if $read_done ; then
+      break;
+    fi
+
     IFS=' ' read -a tool_info <<< $tool_line
     local t_name=$(echo "${tool_info[0]}" | xargs)
     local t_version=$(echo "${tool_info[1]}" | xargs)
