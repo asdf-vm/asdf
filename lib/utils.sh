@@ -80,6 +80,32 @@ get_preset_version_for() {
   local package=$1
   local asdf_versions_path=$(get_asdf_versions_file_path)
 
+  if [ "$asdf_versions_path" != "" ]; then
+    matching_tool_version=$(get_package_version_from_file $asdf_versions_path)
+  fi
+
+
+  # If there's no global .tool-versions file
+  # then we create it and return blank
+  if [ "$matching_tool_version" = "" ]; then
+    local global_tool_versions_path=$HOME/.tool-versions
+    if [ ! -f $global_tool_versions_path ]; then
+      touch $global_tool_versions_path
+    else
+      matching_tool_version=$(get_package_version_from_file $global_tool_versions_path)
+    fi
+  fi
+
+
+  echo $matching_tool_version
+}
+
+
+get_package_version_from_file() {
+  local package=$1
+  local asdf_versions_path=$2
+  local matching_tool_version=""
+
   while read tool_line
   do
     IFS=' ' read -a tool_info <<< $tool_line
@@ -88,11 +114,10 @@ get_preset_version_for() {
 
     if [ "$tool_name" = "$package" ]
     then
-      echo $tool_version
+      matching_tool_version=$tool_version
       break;
     fi
   done < $asdf_versions_path
 
-  # our way of saying no version found
-  echo ""
+  echo $matching_tool_version
 }
