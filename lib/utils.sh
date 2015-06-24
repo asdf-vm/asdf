@@ -77,11 +77,12 @@ get_asdf_versions_file_path() {
 
 
 get_preset_version_for() {
-  local plugin=$1
+  local tool_name=$1
   local asdf_versions_path=$(get_asdf_versions_file_path)
+  local matching_tool_version=""
 
   if [ "$asdf_versions_path" != "" ]; then
-    matching_tool_version=$(get_package_version_from_file $asdf_versions_path)
+    matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
   fi
 
 
@@ -92,7 +93,7 @@ get_preset_version_for() {
     if [ ! -f $global_tool_versions_path ]; then
       touch $global_tool_versions_path
     else
-      matching_tool_version=$(get_package_version_from_file $global_tool_versions_path)
+      matching_tool_version=$(get_tool_version_from_file $global_tool_versions_path $tool_name)
     fi
   fi
 
@@ -101,20 +102,20 @@ get_preset_version_for() {
 }
 
 
-get_package_version_from_file() {
-  local package=$1
-  local asdf_versions_path=$2
+get_tool_version_from_file() {
+  local asdf_versions_path=$1
+  local tool_name=$2
   local matching_tool_version=""
 
   while read tool_line
   do
     IFS=' ' read -a tool_info <<< $tool_line
-    local tool_name=$(echo "${tool_info[0]}" | xargs)
-    local tool_version=$(echo "${tool_info[1]}" | xargs)
+    local t_name=$(echo "${tool_info[0]}" | xargs)
+    local t_version=$(echo "${tool_info[1]}" | xargs)
 
-    if [ "$tool_name" = "$plugin" ]
+    if [ "$t_name" = "$tool_name" ]
     then
-      matching_tool_version=$tool_version
+      matching_tool_version=$t_version
       break;
     fi
   done < $asdf_versions_path
