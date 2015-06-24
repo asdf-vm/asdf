@@ -14,16 +14,16 @@ asdf_dir() {
 
 
 get_install_path() {
-  local package=$1
+  local plugin=$1
   local install_type=$2
   local version=$3
-  mkdir -p $(asdf_dir)/installs/${package}
+  mkdir -p $(asdf_dir)/installs/${plugin}
 
   if [ $install_type = "version" ]
   then
-    echo $(asdf_dir)/installs/${package}/${version}
+    echo $(asdf_dir)/installs/${plugin}/${version}
   else
-    echo $(asdf_dir)/installs/${package}/${install_type}-${version}
+    echo $(asdf_dir)/installs/${plugin}/${install_type}-${version}
   fi
 }
 
@@ -77,7 +77,7 @@ get_asdf_versions_file_path() {
 
 
 get_preset_version_for() {
-  local package=$1
+  local plugin=$1
   local asdf_versions_path=$(get_asdf_versions_file_path)
 
   if [ "$asdf_versions_path" != "" ]; then
@@ -112,7 +112,7 @@ get_package_version_from_file() {
     local tool_name=$(echo "${tool_info[0]}" | xargs)
     local tool_version=$(echo "${tool_info[1]}" | xargs)
 
-    if [ "$tool_name" = "$package" ]
+    if [ "$tool_name" = "$plugin" ]
     then
       matching_tool_version=$tool_version
       break;

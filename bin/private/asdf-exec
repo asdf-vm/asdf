@@ -38,6 +38,11 @@ fi
 
 install_path=$(get_install_path $plugin_name $install_type $version)
 
+if [ ! -d $install_path ]; then
+  echo "$plugin_name $full_version not installed"
+  exit 1
+fi
+
 if [ ! -f ${install_path}/${executable_path} ]; then
   echo "No such command in $full_version of $plugin_name"
   exit 1

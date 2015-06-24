@@ -5,7 +5,7 @@
 > * [Ruby](https://github.com/HashNuke/asdf-ruby)
 > * [Erlang](https://github.com/HashNuke/asdf-erlang)
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
-> * Node.js pending. Tired polishing this stuff. I'll finish it up over the weekend.
+> * [Node.js](https://github.com/HashNuke/asdf-nodejs)
 >
 > There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
@@ -23,10 +23,10 @@ git clone https://github.com/HashNuke/asdf.git ~/.asdf
 Depending on your OS, run the following
 ```bash
 # For Ubuntu or other linux distros
-echo 'source $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 
 # OR for Max OSX
-echo 'source $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 ```
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
@@ -52,6 +52,13 @@ Plugins are how asdf understands how to handle different packages.
 ```bash
 asdf plugin-add <name> <git-url>
 # asdf plugin-add erlang https://github.com/HashNuke/asdf-erlang.git
+```
+
+##### List installed plugins
+
+```bash
+asdf plugin-list
+# asdf plugin-list
 ```
 
 ##### Remove a plugin
@@ -80,6 +87,10 @@ asdf plugin-update <name>
 ```bash
 asdf install <name> <version>
 # asdf install erlang 17.3
+
+asdf which <name>
+# asdf which erlang
+# 17.3
 
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3

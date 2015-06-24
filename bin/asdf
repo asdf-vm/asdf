@@ -5,10 +5,13 @@ source $(dirname $(dirname $0))/lib/utils.sh
 source $(dirname $(dirname $0))/lib/commands/help.sh
 source $(dirname $(dirname $0))/lib/commands/install.sh
 source $(dirname $(dirname $0))/lib/commands/uninstall.sh
+source $(dirname $(dirname $0))/lib/commands/which.sh
+source $(dirname $(dirname $0))/lib/commands/where.sh
 source $(dirname $(dirname $0))/lib/commands/list.sh
 source $(dirname $(dirname $0))/lib/commands/list-all.sh
 source $(dirname $(dirname $0))/lib/commands/reshim.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-add.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-list.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-update.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-remove.sh
 
@@ -31,6 +34,12 @@ case $1 in
 "uninstall")
     uninstall_command $callback_args;;
 
+"which")
+    which_command $callback_args;;
+
+"where")
+    where_command $callback_args;;
+
 "list")
     list_command $callback_args;;
 
@@ -45,6 +54,9 @@ case $1 in
 
 "plugin-add")
     plugin_add_command $callback_args;;
+
+"plugin-list")
+    plugin_list_command $callback_args;;
 
 "plugin-update")
     plugin_update_command $callback_args;;

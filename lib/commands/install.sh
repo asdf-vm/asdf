@@ -17,13 +17,14 @@ install_command() {
   if [ -d $install_path ]; then
     echo "$plugin_name $full_version is already installed"
     echo "To uninstall it run: asdf uninstall $plugin_name $full_version"
-    exit 1
+    exit 0
   fi
 
   (
     export ASDF_INSTALL_TYPE=$install_type
     export ASDF_INSTALL_VERSION=$version
     export ASDF_INSTALL_PATH=$install_path
+    mkdir $install_path
     bash ${plugin_path}/bin/install
   )
   local exit_code=$?

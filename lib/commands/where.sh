@@ -1,8 +1,7 @@
-uninstall_command() {
+where_command() {
   local plugin_name=$1
   local full_version=$2
   local plugin_path=$(get_plugin_path $plugin_name)
-
   check_if_plugin_exists $plugin_path
 
   IFS=':' read -a version_info <<< "$full_version"
@@ -16,19 +15,11 @@ uninstall_command() {
 
   local install_path=$(get_install_path $plugin_name $install_type $version)
 
-  if [ ! -d $install_path ]; then
-    display_error "No such version"
-    exit 1
-  fi
-
-  if [ -f ${plugin_path}/bin/uninstall ]; then
-    (
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
-      bash ${plugin_path}/bin/uninstall
-    )
+  if [ -d $install_path ]; then
+    echo $install_path
+    exit 0
   else
-    rm -rf $install_path
+    echo "Version not installed"
+    exit 1
   fi
 }

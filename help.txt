@@ -1,5 +1,6 @@
 MANAGE PLUGINS
   asdf plugin-add <name> <git-url>     Add git repo as plugin
+  asdf plugin-list                     List installed plugins
   asdf plugin-remove <name>            Remove plugin and package versions
   asdf plugin-update <name>            Update plugin
   asdf plugin-update --all             Update all plugins
@@ -8,6 +9,8 @@ MANAGE PLUGINS
 MANAGE PACKAGES
   asdf install <name> <version>        Install a specific version of a package
   asdf remove <name> <version>         Remove a specific version of a package
+  asdf which <name>                    Display version set or being used for package
+  asdf where <name> <version>          Display install path for an installed version
   asdf list <name>                     List installed versions of a package
   asdf list-all <name>                 List all versions of a package
 
