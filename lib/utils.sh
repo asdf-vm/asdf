@@ -65,13 +65,6 @@ get_asdf_versions_file_path() {
     search_path=$(dirname $search_path)
   done
 
-
-  if [ "$asdf_tool_versions_path" = "" ]; then
-    asdf_tool_versions_path=$HOME/.tool-versions
-    if [ ! -f $asdf_tool_versions_path ]; then
-      touch $asdf_tool_versions_path
-    fi
-  fi
   echo $asdf_tool_versions_path
 }
 
@@ -107,8 +100,9 @@ get_tool_version_from_file() {
   local tool_name=$2
   local matching_tool_version=""
 
-  while read tool_line
-  do
+  local read_done=false
+  until $read_done; do
+    read tool_line || read_done=true
     IFS=' ' read -a tool_info <<< $tool_line
     local t_name=$(echo "${tool_info[0]}" | xargs)
     local t_version=$(echo "${tool_info[1]}" | xargs)
