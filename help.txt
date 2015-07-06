@@ -8,7 +8,7 @@ MANAGE PLUGINS
 
 MANAGE PACKAGES
   asdf install <name> <version>        Install a specific version of a package
-  asdf remove <name> <version>         Remove a specific version of a package
+  asdf uninstall <name> <version>         Remove a specific version of a package
   asdf which <name>                    Display version set or being used for package
   asdf where <name> <version>          Display install path for an installed version
   asdf list <name>                     List installed versions of a package
