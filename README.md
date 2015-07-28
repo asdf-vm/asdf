@@ -1,4 +1,4 @@
-# qwer
+# QWER
 ### _extendable version manager_
 
 > I've built plugins to support the following languages:
@@ -138,4 +138,4 @@ Copyright 2014 to the end of time
 
 -------
 
-Read the [ballad](https://github.com/HashNuke/qwer/blob/master/ballad-of-qwer.md).
+Read the [ballad](https://github.com/HashNuke/qwer/blob/master/ballad-of-asdf.md).

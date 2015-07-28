@@ -1,6 +1,6 @@
 # Ballad of asdf
 
-*"qwer" was initially called "asdf". Hence the reference to "asdf" below*
+*"QWER" was initially called "asdf". Hence the reference to "asdf" below*
 
 > Once upon a time there was a programming language  
 There were many versions of it  
