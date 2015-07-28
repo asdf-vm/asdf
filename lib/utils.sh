@@ -1,9 +1,9 @@
-asdf_version() {
+qwer_version() {
   echo "0.1"
 }
 
 
-asdf_dir() {
+qwer_dir() {
   if [ -z $QWER_DIR ]; then
     local current_script_path=${BASH_SOURCE[0]}
     export QWER_DIR=$(cd $(dirname $(dirname $current_script_path)); echo $(pwd))
@@ -17,13 +17,13 @@ get_install_path() {
   local plugin=$1
   local install_type=$2
   local version=$3
-  mkdir -p $(asdf_dir)/installs/${plugin}
+  mkdir -p $(qwer_dir)/installs/${plugin}
 
   if [ $install_type = "version" ]
   then
-    echo $(asdf_dir)/installs/${plugin}/${version}
+    echo $(qwer_dir)/installs/${plugin}/${version}
   else
-    echo $(asdf_dir)/installs/${plugin}/${install_type}-${version}
+    echo $(qwer_dir)/installs/${plugin}/${install_type}-${version}
   fi
 }
 
@@ -44,7 +44,7 @@ get_version_part() {
 
 
 get_plugin_path() {
-  echo $(asdf_dir)/plugins/$1
+  echo $(qwer_dir)/plugins/$1
 }
 
 
@@ -53,29 +53,29 @@ display_error() {
 }
 
 
-get_asdf_versions_file_path() {
-  local asdf_tool_versions_path=""
+get_qwer_versions_file_path() {
+  local qwer_tool_versions_path=""
   local search_path=$(pwd)
 
   while [ "$search_path" != "/" ]; do
     if [ -f "$search_path/.tool-versions" ]; then
-      asdf_tool_versions_path="$search_path/.tool-versions"
+      qwer_tool_versions_path="$search_path/.tool-versions"
       break
     fi
     search_path=$(dirname $search_path)
   done
 
-  echo $asdf_tool_versions_path
+  echo $qwer_tool_versions_path
 }
 
 
 get_preset_version_for() {
   local tool_name=$1
-  local asdf_versions_path=$(get_asdf_versions_file_path)
+  local qwer_versions_path=$(get_qwer_versions_file_path)
   local matching_tool_version=""
 
-  if [ "$asdf_versions_path" != "" ]; then
-    matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
+  if [ "$qwer_versions_path" != "" ]; then
+    matching_tool_version=$(get_tool_version_from_file $qwer_versions_path $tool_name)
   fi
 
 
@@ -96,7 +96,7 @@ get_preset_version_for() {
 
 
 get_tool_version_from_file() {
-  local asdf_versions_path=$1
+  local qwer_versions_path=$1
   local tool_name=$2
   local matching_tool_version=""
 
@@ -117,7 +117,7 @@ get_tool_version_from_file() {
       matching_tool_version=$t_version
       break;
     fi
-  done < $asdf_versions_path
+  done < $qwer_versions_path
 
   echo $matching_tool_version
 }
