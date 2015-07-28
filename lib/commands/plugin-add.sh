@@ -3,7 +3,7 @@ plugin_add_command() {
   local source_url=$2
   local plugin_path=$(get_plugin_path $plugin_name)
 
-  mkdir -p $(asdf_dir)/plugins
+  mkdir -p $(qwer_dir)/plugins
 
   if [ -d $plugin_path ]; then
     echo "Plugin named $plugin_name already added"
