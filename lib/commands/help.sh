@@ -1,5 +1,5 @@
 help_command () {
-  echo "version: $(asdf_version)"
+  echo "version: $(qwer_version)"
   echo ""
-  cat $(asdf_dir)/help.txt
+  cat $(qwer_dir)/help.txt
 }
