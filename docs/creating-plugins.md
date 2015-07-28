@@ -38,9 +38,9 @@ List executables for the specified version of the tool. Must print a string with
 bin tools veggies
 ```
 
-This will instruct asdf to create shims for the files in `<install-path>/bin`, `<install-path>/tools` and `<install-path>/veggies`
+This will instruct qwer to create shims for the files in `<install-path>/bin`, `<install-path>/tools` and `<install-path>/veggies`
 
-If this script is not specified, asdf will look for the `bin` dir in an installation and create shims for those.
+If this script is not specified, QWER will look for the `bin` dir in an installation and create shims for those.
 
 #### bin/exec-env
 
@@ -54,6 +54,6 @@ Uninstalls a specific version of a tool.
 
 **PLEASE use this feature only if absolutely required**
 
-asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
+qwer allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then qwer will copy that file instead of using it's standard shim template.
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
