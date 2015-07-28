@@ -96,9 +96,9 @@ generate_shims_for_version() {
 
   if [ -f ${plugin_path}/bin/list-bin-paths ]; then
     local space_seperated_list_of_bin_paths=$(
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
+      export QWER_INSTALL_TYPE=$install_type
+      export QWER_INSTALL_VERSION=$version
+      export QWER_INSTALL_PATH=$install_path
       bash ${plugin_path}/bin/list-bin-paths
     )
   else
