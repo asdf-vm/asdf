@@ -3,7 +3,7 @@ list_command() {
   local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_path
 
-  local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+  local plugin_installs_path=$(qwer_dir)/installs/${plugin_name}
 
   if [ -d $plugin_installs_path ]; then
     #TODO check if dir is empty and show no-installed-versions msg
