@@ -58,9 +58,9 @@ install_tool_version() {
     echo "$plugin_name $full_version is already installed"
   else
     (
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
+      export QWER_INSTALL_TYPE=$install_type
+      export QWER_INSTALL_VERSION=$version
+      export QWER_INSTALL_PATH=$install_path
       mkdir $install_path
       bash ${plugin_path}/bin/install
     )
