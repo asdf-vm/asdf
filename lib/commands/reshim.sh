@@ -20,7 +20,7 @@ reshim_command() {
     generate_shims_for_version $plugin_name $full_version
   else
     # generate for all versions of the package
-    local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+    local plugin_installs_path=$(qwer_dir)/installs/${plugin_name}
 
     for install in ${plugin_installs_path}/*/; do
       local full_version_name=$(echo $(basename $install) | sed 's/ref\-/ref\:/')
@@ -32,8 +32,8 @@ reshim_command() {
 
 ensure_shims_dir() {
   # Create shims dir if doesn't exist
-  if [ ! -d $(asdf_dir)/shims ]; then
-    mkdir $(asdf_dir)/shims
+  if [ ! -d $(qwer_dir)/shims ]; then
+    mkdir $(qwer_dir)/shims
   fi
 }
 
@@ -43,13 +43,13 @@ write_shim_script() {
   local executable_path=$2
   local executable_name=$(basename $executable_path)
   local plugin_shims_path=$(get_plugin_path $plugin_name)/shims
-  local shim_path=$(asdf_dir)/shims/$executable_name
+  local shim_path=$(qwer_dir)/shims/$executable_name
 
   if [ -f $plugin_shims_path/$executable_name ]; then
     cp $plugin_shims_path/$executable_name $shim_path
   else
     echo """#!/usr/bin/env bash
-$(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
+$(qwer_dir)/bin/private/qwer-exec ${plugin_name} ${executable_path} \"\$@\"
 """ > $shim_path
   fi
 
