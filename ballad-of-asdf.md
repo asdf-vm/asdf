@@ -1,5 +1,7 @@
 # Ballad of asdf
 
+*"qwer" was initially called "asdf". Hence the reference to "asdf" below*
+
 > Once upon a time there was a programming language  
 There were many versions of it  
 So people wrote a version manager for it  
@@ -17,7 +19,7 @@ I learnt a lot of commands
 Which I will write instead  
 
 > So, there came another version manager  
-**asdf version manager** - <https://github.com/HashNuke/asdf>  
+**asdf version manager** - <https://github.com/HashNuke/qwer>  
 
 > A version manager so extendable  
 for which anyone can create a plugin  

@@ -1,13 +1,13 @@
-# asdf
+# qwer
 ### _extendable version manager_
 
 > I've built plugins to support the following languages:
-> * [Ruby](https://github.com/HashNuke/asdf-ruby)
-> * [Erlang](https://github.com/HashNuke/asdf-erlang)
-> * [Elixir](https://github.com/HashNuke/asdf-elixir)
-> * [Node.js](https://github.com/HashNuke/asdf-nodejs)
+> * [Ruby](https://github.com/HashNuke/qwer-ruby)
+> * [Erlang](https://github.com/HashNuke/qwer-erlang)
+> * [Elixir](https://github.com/HashNuke/qwer-elixir)
+> * [Node.js](https://github.com/HashNuke/qwer-nodejs)
 >
-> There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
+> There is a [super-simple API](https://github.com/HashNuke/qwer/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 ---
 
@@ -16,17 +16,17 @@
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/HashNuke/asdf.git ~/.asdf
+git clone https://github.com/HashNuke/qwer.git ~/.qwer
 
 ```
 
 Depending on your OS, run the following
 ```bash
 # For Ubuntu or other linux distros
-echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '. $HOME/.qwer/qwer.sh' >> ~/.bashrc
 
 # OR for Max OSX
-echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+echo '. $HOME/.qwer/qwer.sh' >> ~/.bash_profile
 ```
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
@@ -36,7 +36,7 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 > * **OS X**: Install these via homebrew `automake autoconf openssl libyaml readline ncurses libxslt libtool unixodbc`
 > * **Ubuntu**: `automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev`
 
-**That's all ~! You are ready to use asdf**
+**That's all ~! You are ready to use qwer**
 
 -----------------------
 
@@ -44,56 +44,56 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 
 ### Manage plugins
 
-Plugins are how asdf understands how to handle different packages.
+Plugins are how qwer understands how to handle different packages.
 
 
 ##### Add a plugin
 
 ```bash
-asdf plugin-add <name> <git-url>
-# asdf plugin-add erlang https://github.com/HashNuke/asdf-erlang.git
+qwer plugin-add <name> <git-url>
+# qwer plugin-add erlang https://github.com/HashNuke/qwer-erlang.git
 ```
 
 ##### List installed plugins
 
 ```bash
-asdf plugin-list
-# asdf plugin-list
+qwer plugin-list
+# qwer plugin-list
 ```
 
 ##### Remove a plugin
 
 ```bash
-asdf plugin-remove <name>
-# asdf plugin-remove erlang
+qwer plugin-remove <name>
+# qwer plugin-remove erlang
 ```
 
 
 ##### Update plugins
 
 ```bash
-asdf plugin-update --all
+qwer plugin-update --all
 ```
 
 If you want to update a specific package, just say so.
 
 ```bash
-asdf plugin-update <name>
-# asdf plugin-update erlang
+qwer plugin-update <name>
+# qwer plugin-update erlang
 ```
 
 ### Manage versions
 
 ```bash
-asdf install <name> <version>
-# asdf install erlang 17.3
+qwer install <name> <version>
+# qwer install erlang 17.3
 
-asdf which <name>
-# asdf which erlang
+qwer which <name>
+# qwer which erlang
 # 17.3
 
-asdf uninstall <name> <version>
-# asdf uninstall erlang 17.3
+qwer uninstall <name> <version>
+# qwer uninstall erlang 17.3
 ```
 
 *If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit).* You'll have to use the same name when uninstalling too.
@@ -101,15 +101,15 @@ asdf uninstall <name> <version>
 ##### Lists installed versions
 
 ```bash
-asdf list <name>
-# asdf list erlang
+qwer list <name>
+# qwer list erlang
 ```
 
 ##### List all available versions
 
 ```bash
-asdf list-all <name>
-# asdf list-all erlang
+qwer list-all <name>
+# qwer list-all erlang
 ```
 
 ## The `.tool-versions` file
@@ -138,4 +138,4 @@ Copyright 2014 to the end of time
 
 -------
 
-Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
+Read the [ballad](https://github.com/HashNuke/qwer/blob/master/ballad-of-qwer.md).
