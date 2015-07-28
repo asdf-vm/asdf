@@ -4,12 +4,12 @@ asdf_version() {
 
 
 asdf_dir() {
-  if [ -z $ASDF_DIR ]; then
+  if [ -z $QWER_DIR ]; then
     local current_script_path=${BASH_SOURCE[0]}
-    export ASDF_DIR=$(cd $(dirname $(dirname $current_script_path)); echo $(pwd))
+    export QWER_DIR=$(cd $(dirname $(dirname $current_script_path)); echo $(pwd))
   fi
 
-  echo $ASDF_DIR
+  echo $QWER_DIR
 }
 
 
