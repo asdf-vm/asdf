@@ -23,9 +23,9 @@ uninstall_command() {
 
   if [ -f ${plugin_path}/bin/uninstall ]; then
     (
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
+      export QWER_INSTALL_TYPE=$install_type
+      export QWER_INSTALL_VERSION=$version
+      export QWER_INSTALL_PATH=$install_path
       bash ${plugin_path}/bin/uninstall
     )
   else
