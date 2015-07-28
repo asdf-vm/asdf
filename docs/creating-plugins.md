@@ -10,9 +10,9 @@ A plugin is a git repo, with a couple executable scripts, to support versioning 
 
 All scripts except `bin/list-all` will have access to the following env vars to act upon:
 
-* `ASDF_INSTALL_TYPE` - `version` or `ref`
-* `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
-* `ASDF_INSTALL_PATH` - the dir where the it *has been* installed (or *should* be installed in case of the `bin/install` script)
+* `QWER_INSTALL_TYPE` - `version` or `ref`
+* `QWER_INSTALL_VERSION` - if `QWER_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
+* `QWER_INSTALL_PATH` - the dir where the it *has been* installed (or *should* be installed in case of the `bin/install` script)
 
 
 #### bin/list-all
@@ -25,7 +25,7 @@ Must print a string with a space-seperated list of versions. Example output woul
 
 #### bin/install
 
-This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`
+This script should install the version, in the path mentioned in `QWER_INSTALL_PATH`
 
 
 ### Optional scripts
