@@ -12,7 +12,7 @@ install_command() {
 
 install_local_tool_versions() {
   if [ -f $(pwd)/.tool-versions ]; then
-    local asdf_versions_path=$(pwd)/.tool-versions
+    local qwer_versions_path=$(pwd)/.tool-versions
 
     local read_done=false
     until $read_done; do
@@ -27,7 +27,7 @@ install_local_tool_versions() {
       local t_version=$(echo "${tool_info[1]}" | xargs)
 
       install_command $t_name $t_version
-    done < $asdf_versions_path
+    done < $qwer_versions_path
   else
     echo "Either specify a tool & version in the command"
     echo "OR add .tool-versions file in this directory"
