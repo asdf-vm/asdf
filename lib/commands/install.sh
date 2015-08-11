@@ -70,7 +70,7 @@ install_tool_version() {
       reshim_command $plugin_name $full_version
     else
       rm -rf $install_path
-      exit $exit_code
+      exit 1
     fi
   fi
 }
