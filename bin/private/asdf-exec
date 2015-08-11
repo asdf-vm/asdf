@@ -36,8 +36,6 @@ else
 fi
 
 
-install_path=$(get_install_path $plugin_name $install_type $version)
-
 if [ ! -d $install_path ]; then
   echo "$plugin_name $full_version not installed"
   exit 1
