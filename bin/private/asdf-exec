@@ -48,22 +48,17 @@ fi
 
 
 if [ -f ${plugin_path}/bin/exec-env ]; then
-  (
-    export ASDF_INSTALL_TYPE=$install_type
-    export ASDF_INSTALL_VERSION=$version
-    export ASDF_INSTALL_PATH=$install_path
+  export ASDF_INSTALL_TYPE=$install_type
+  export ASDF_INSTALL_VERSION=$version
+  export ASDF_INSTALL_PATH=$install_path
 
-    source ${plugin_path}/bin/exec-env
+  source ${plugin_path}/bin/exec-env
 
-    # unset everything, we don't want to pollute
-    unset ASDF_INSTALL_TYPE
-    unset ASDF_INSTALL_VERSION
-    unset ASDF_INSTALL_PATH
-
-    ${install_path}/${executable_path} "${@:3}"
-  )
+  # unset everything, we don't want to pollute
+  unset ASDF_INSTALL_TYPE
+  unset ASDF_INSTALL_VERSION
+  unset ASDF_INSTALL_PATH
+  exec ${install_path}/${executable_path} "${@:3}"
 else
-  (
-    ${install_path}/${executable_path} "${@:3}"
-  )
+  exec ${install_path}/${executable_path} "${@:3}"
 fi

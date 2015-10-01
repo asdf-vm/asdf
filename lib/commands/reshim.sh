@@ -49,7 +49,7 @@ write_shim_script() {
     cp $plugin_shims_path/$executable_name $shim_path
   else
     echo """#!/usr/bin/env bash
-$(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
+exec $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
 """ > $shim_path
   fi
 
