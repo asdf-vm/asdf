@@ -1,15 +1,7 @@
 # asdf
 ### _extendable version manager_
 
-> I've built plugins to support the following languages:
-> * [Ruby](https://github.com/HashNuke/asdf-ruby)
-> * [Erlang](https://github.com/HashNuke/asdf-erlang)
-> * [Elixir](https://github.com/HashNuke/asdf-elixir)
-> * [Node.js](https://github.com/HashNuke/asdf-nodejs)
->
-> There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
-
----
+Supported languages include Ruby, Node.js, Elixir and more. Supporting a new language is as simple as [this plugin API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md).
 
 ## SETUP
 
@@ -40,11 +32,20 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 
 -----------------------
 
+
 ## USAGE
 
 ### Manage plugins
 
-Plugins are how asdf understands how to handle different packages.
+Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
+
+| Language | Repository  |
+|----------|-------------|
+| Elixir  | [HashNuke/asdf-elixir](https://github.com/HashNuke/asdf-elixir)
+| Erlang  | [HashNuke/asdf-erlang](https://github.com/HashNuke/asdf-erlang)
+| Lua     | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua)
+| Node.js | [HashNuke/asdf-nodejs](https://github.com/HashNuke/asdf-nodejs)
+| Ruby    | [HashNuke/asdf-ruby](https://github.com/HashNuke/asdf-ruby)
 
 
 ##### Add a plugin
