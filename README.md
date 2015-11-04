@@ -7,6 +7,9 @@
 > * [Elixir](https://github.com/HashNuke/asdf-elixir)
 > * [Node.js](https://github.com/HashNuke/asdf-nodejs)
 >
+> Third party plugins have been built for the following languages:
+> * [Lua](https://github.com/Stratus3D/asdf-lua)
+>
 > There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 ---
