@@ -131,6 +131,8 @@ The versions can be in the following format:
 * `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
 * `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 
+To install all the tools defined in a `.tool-versions` file run the `asdf install` command with no other arguments in the directory containing the `.tool-versions` file.
+
 ## Credits
 
 Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
