@@ -111,7 +111,7 @@ generate_shims_for_version() {
     for executable_file in $install_path/$bin_path/*; do
       # because just $executable_file gives absolute path; We don't want version hardcoded in shim
       local executable_path_relative_to_install_path=$bin_path/$(basename $executable_file)
-      if [ -x $executable_path_relative_to_install_path ]; then
+      if [ -x "$executable_file" ]; then
           write_shim_script $plugin_name $executable_path_relative_to_install_path
       fi
     done
