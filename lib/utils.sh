@@ -78,11 +78,11 @@ get_preset_version_for() {
   if [ "$asdf_versions_path" != "$(pwd)/.tool-versions" ]; then
     # Check for legacy version file
     matching_tool_version=$(get_tool_version_from_legacy_file $tool_name)
-  fi
 
-  # No legacy file, see if we can use .tool-versions file
-  if [ "$asdf_versions_path" != "" ]; then
-    matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
+    # If no legacy version file, see if we can use a .tool-versions file higher in the directory tree
+    if [ "$matching_tool_version" = "" ] && [ "$asdf_versions_path" != "" ]; then
+        matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
+    fi
   fi
 
 
