@@ -135,8 +135,8 @@ get_tool_version_from_legacy_file() {
   local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_path
 
-  if [ -f ${plugin_path}/bin/get_version_from_legacy_file ]; then
-    local legacy_tool_version=$(bash ${plugin_path}/bin/get_version_from_legacy_file $(pwd))
+  if [ -f ${plugin_path}/bin/get-version-from-legacy-file ]; then
+    local legacy_tool_version=$(bash ${plugin_path}/bin/get-version-from-legacy-file $(pwd))
   fi
 
   # Should return the version/tag/commit/branch/path
