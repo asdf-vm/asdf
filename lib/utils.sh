@@ -62,7 +62,7 @@ get_asdf_versions_file_path() {
       asdf_tool_versions_path="$search_path/.tool-versions"
       break
     fi
-    search_path=$(dirname $search_path)
+    search_path=$(dirname "$search_path")
   done
 
   echo $asdf_tool_versions_path
