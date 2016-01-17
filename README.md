@@ -25,7 +25,7 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 
 > For most plugins, it is good if you have installed the following packages OR their equivalent on you OS
 
-> * **OS X**: Install these via homebrew `automake autoconf openssl libyaml readline ncurses libxslt libtool unixodbc`
+> * **OS X**: Install these via homebrew `automake autoconf openssl libyaml readline libxslt libtool unixodbc`
 > * **Ubuntu**: `automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev`
 
 **That's all ~! You are ready to use asdf**
