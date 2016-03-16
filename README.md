@@ -1,14 +1,14 @@
 # asdf
 ### _extendable version manager_
 
-Supported languages include Ruby, Node.js, Elixir and more. Supporting a new language is as simple as [this plugin API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md).
+Supported languages include Ruby, Node.js, Elixir and more. Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
 
 ## SETUP
 
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/HashNuke/asdf.git ~/.asdf
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 ```
 
@@ -43,18 +43,18 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 
 | Language | Repository  |
 |----------|-------------|
-| Elixir  | [HashNuke/asdf-elixir](https://github.com/HashNuke/asdf-elixir)
-| Erlang  | [HashNuke/asdf-erlang](https://github.com/HashNuke/asdf-erlang)
+| Elixir  | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir)
+| Erlang  | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang)
 | Lua     | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua)
-| Node.js | [HashNuke/asdf-nodejs](https://github.com/HashNuke/asdf-nodejs)
-| Ruby    | [HashNuke/asdf-ruby](https://github.com/HashNuke/asdf-ruby)
+| Node.js | [asdf-vm/asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
+| Ruby    | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby)
 
 
 ##### Add a plugin
 
 ```bash
 asdf plugin-add <name> <git-url>
-# asdf plugin-add erlang https://github.com/HashNuke/asdf-erlang.git
+# asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
 ```
 
 ##### List installed plugins
@@ -143,4 +143,4 @@ Copyright 2014 to the end of time
 
 -------
 
-Read the [ballad](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
+Read the [ballad](https://github.com/asdf-vm/asdf/blob/master/ballad-of-asdf.md).
