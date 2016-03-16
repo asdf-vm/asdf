@@ -39,7 +39,7 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 
 ### Manage plugins
 
-Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/HashNuke/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
+Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 | Language | Repository  |
 |----------|-------------|
