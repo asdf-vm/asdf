@@ -139,7 +139,7 @@ To install all the tools defined in a `.tool-versions` file run the `asdf instal
 
 Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
 
-Copyright 2014 to the end of time
+Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
 
 -------
 
