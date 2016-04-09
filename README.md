@@ -45,6 +45,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 |-----------|-------------|
 | Elixir    | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir)
 | Erlang    | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang)
+| Go        | [kennyp/asdf-golang](https://github.com/kennyp/asdf-golang)
 | Lua       | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua)
 | OpenResty | [smashedtoatoms/asdf-openresty](https://github.com/smashedtoatoms/asdf-openresty)
 | Node.js   | [asdf-vm/asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
