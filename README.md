@@ -41,13 +41,17 @@ If you use zsh or any other shell, replace `.bashrc` with the config file for th
 
 Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
-| Language | Repository  |
-|----------|-------------|
-| Elixir  | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir)
-| Erlang  | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang)
-| Lua     | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua)
-| Node.js | [asdf-vm/asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
-| Ruby    | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby)
+| Language  | Repository  |
+|-----------|-------------|
+| Elixir    | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir)
+| Erlang    | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang)
+| Lua       | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua)
+| OpenResty | [smashedtoatoms/asdf-openresty](https://github.com/smashedtoatoms/asdf-openresty)
+| Node.js   | [asdf-vm/asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs)
+| Postgres  | [smashedtoatoms/asdf-postgres](https://github.com/smashedtoatoms/asdf-postgres)
+| Redis     | [smashedtoatoms/asdf-redis](https://github.com/smashedtoatoms/asdf-redis)
+| Riak      | [smashedtoatoms/asdf-riak](https://github.com/smashedtoatoms/asdf-riak)
+| Ruby      | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby)
 
 
 ##### Add a plugin
