@@ -21,6 +21,9 @@ echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 # OR for Max OSX
 echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
+
+# For Fish Shell http://fishshell.com
+echo '. $HOME/.asdf/asdf.fish' >> ~/.config/fish/config.fish
 ```
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
