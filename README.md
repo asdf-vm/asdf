@@ -25,6 +25,13 @@ echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
 
+For fish, you can use the following:
+
+```
+echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+```
+
 > For most plugins, it is good if you have installed the following packages OR their equivalent on you OS
 
 > * **OS X**: Install these via homebrew `automake autoconf openssl libyaml readline libxslt libtool unixodbc`
