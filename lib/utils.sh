@@ -83,9 +83,10 @@ get_preset_version_for() {
   local tool_name=$1
   local asdf_versions_path=$(get_asdf_versions_file_path)
   local matching_tool_version=""
+  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
 
   # If .tool-versions is not in the working directory
-  if [ "$asdf_versions_path" != "$(pwd)/.tool-versions" ]; then
+  if [ "$asdf_versions_path" != "$(pwd)/.tool-versions" ] && [ "$legacy_version_file_support" = "yes" ]; then
     # Check for legacy version file
     matching_tool_version=$(get_tool_version_from_legacy_file $tool_name $(pwd))
   fi
