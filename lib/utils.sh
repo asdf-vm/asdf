@@ -36,6 +36,16 @@ check_if_plugin_exists() {
   fi
 }
 
+check_if_version_exists() {
+  local plugin=$1
+  local version=$2
+  local version_dir=$(asdf_dir)/installs/$plugin/$version
+  if [ ! -d $version_dir ]; then
+    display_error "version $version is not installed for $plugin"
+    exit 1
+  fi
+}
+
 
 get_version_part() {
   IFS='@' read -a version_info <<< "$1"
@@ -62,7 +72,7 @@ get_asdf_versions_file_path() {
       asdf_tool_versions_path="$search_path/.tool-versions"
       break
     fi
-    search_path=$(dirname $search_path)
+    search_path=$(dirname "$search_path")
   done
 
   echo $asdf_tool_versions_path
@@ -129,6 +139,7 @@ get_tool_version_from_file() {
   echo $matching_tool_version
 }
 
+
 get_tool_version_from_legacy_file() {
   local plugin_name=$1
   local directory=$2
@@ -143,4 +154,33 @@ get_tool_version_from_legacy_file() {
 
   # Should return the version/tag/commit/branch/path
   echo $legacy_tool_version
+}
+
+
+get_asdf_config_value_from_file() {
+    local config_path=$1
+    local key=$2
+
+    if [ ! -f $config_path ]; then
+        return 0
+    fi
+
+    local result=$(grep -E "^\s*$key\s*=" $config_path | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
+    if [ -n "$result" ]; then
+        echo $result
+    fi
+}
+
+get_asdf_config_value() {
+    local key=$1
+    local config_path=${AZDF_CONFIG_FILE:-"$HOME/.asdfrc"}
+    local default_config_path=${AZDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
+
+    local result=$(get_asdf_config_value_from_file $config_path $key)
+
+    if [ -n "$result" ]; then
+        echo $result
+    else
+        get_asdf_config_value_from_file $default_config_path $key
+    fi
 }
