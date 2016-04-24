@@ -1,0 +1,2 @@
+# enables the use of .ruby-version like files used by other version managers
+legacy_version_file = no

@@ -1,0 +1,8 @@
+language: c
+script: bats test
+before_script:
+  - git clone https://github.com/sstephenson/bats.git /tmp/bats
+  - export PATH=/tmp/bats/bin:$PATH
+os:
+  - linux
+  - osx
