@@ -140,6 +140,47 @@ The versions can be in the following format:
 
 To install all the tools defined in a `.tool-versions` file run the `asdf install` command with no other arguments in the directory containing the `.tool-versions` file.
 
+## Development
+
+For testing and development, you can run asdf through the following methods:
+
+### Docker
+
+1. Install [Docker](http://docker.com)
+2. Execute the following command:
+  ```
+  docker run -i -t --rm -v "$(pwd):/asdf" ubuntu bash --init-file "/asdf/asdf.sh"
+  ```
+
+3. Use asdf as needed:
+  ```
+  asdf
+  ```
+
+### Vagrant
+
+1. Install [Vagrant](https://www.vagrantup.com/)
+
+2. Run the Vagrant box:
+  ```
+  vagrant up
+  ```
+
+3. SSH into the Vagrant box:
+  ```
+  vagrant ssh
+  ```
+
+4. Register the asdf script:
+  ```
+  . /vagrant/asdf.sh
+  ```
+
+5. Use asdf as needed:
+  ```
+  asdf
+  ```
+
 ## Credits
 
 Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
