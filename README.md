@@ -127,6 +127,26 @@ asdf list-all <name>
 # asdf list-all erlang
 ```
 
+#### View current version
+
+```bash
+asdf local [name]
+asdf global [name]
+# asdf local
+# asdf global
+# asdf local elixir
+# asdf global elixir
+```
+
+#### Set current version
+
+```bash
+asdf global <name> <version>
+asdf local <name> <version>
+asdf global elixir 1.2.4
+```
+
+
 ## The `.tool-versions` file
 
 Add a `.tool-versions` file to your project dir and versions of those tools will be used.
@@ -146,6 +166,8 @@ The versions can be in the following format:
 * `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 
 To install all the tools defined in a `.tool-versions` file run the `asdf install` command with no other arguments in the directory containing the `.tool-versions` file.
+
+You can view/modify the file by hand or use `asdf local` and `asdf global` to manage it.
 
 ## Credits
 
