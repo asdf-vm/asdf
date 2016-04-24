@@ -36,6 +36,16 @@ check_if_plugin_exists() {
   fi
 }
 
+check_if_version_exists() {
+  local plugin=$1
+  local version=$2
+  local version_dir=$(asdf_dir)/installs/$plugin/$version
+  if [ ! -d $version_dir ]; then
+    display_error "version $version is not installed for $plugin"
+    exit 1
+  fi
+}
+
 
 get_version_part() {
   IFS='@' read -a version_info <<< "$1"
