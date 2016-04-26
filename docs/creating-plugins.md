@@ -50,6 +50,10 @@ Setup the env to run the binaries in the package.
 
 Uninstalls a specific version of a tool.
 
+#### bin/get_version_from_legacy_file
+
+Prints the version of the tool to use if a legacy version file is found in the current directory (e.g. rbenv's `.ruby-version`). Current directory is passed as the only argument to this script.
+
 ### Custom shim templates
 
 **PLEASE use this feature only if absolutely required**

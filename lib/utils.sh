@@ -83,8 +83,16 @@ get_preset_version_for() {
   local tool_name=$1
   local asdf_versions_path=$(get_asdf_versions_file_path)
   local matching_tool_version=""
+  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
 
-  if [ "$asdf_versions_path" != "" ]; then
+  # If .tool-versions is not in the working directory
+  if [ "$asdf_versions_path" != "$(pwd)/.tool-versions" ] && [ "$legacy_version_file_support" = "yes" ]; then
+    # Check for legacy version file
+    matching_tool_version=$(get_tool_version_from_legacy_file $tool_name $(pwd))
+  fi
+
+  # If no legacy version file, see if we can use a .tool-versions file higher in the directory tree
+  if [ "$matching_tool_version" = "" ] && [ "$asdf_versions_path" != "" ]; then
     matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
   fi
 
@@ -131,6 +139,24 @@ get_tool_version_from_file() {
 
   echo $matching_tool_version
 }
+
+
+get_tool_version_from_legacy_file() {
+  local plugin_name=$1
+  local directory=$2
+  local legacy_tool_version=""
+  local plugin_path=$(get_plugin_path $plugin_name)
+  local legacy_version_script="${plugin_path}/bin/get-version-from-legacy-file"
+  check_if_plugin_exists $plugin_path
+
+  if [ -f $legacy_version_script ]; then
+    local legacy_tool_version=$(bash $legacy_version_script $directory)
+  fi
+
+  # Should return the version/tag/commit/branch/path
+  echo $legacy_tool_version
+}
+
 
 get_asdf_config_value_from_file() {
     local config_path=$1
