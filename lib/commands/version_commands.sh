@@ -1,3 +1,33 @@
+get_plugin_version() {
+  local cmd=$1
+  local file=$2
+  local plugin=$3
+  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
+  local result
+
+  if [ $cmd = "local" -a "$legacy_version_file_support" = "yes" -a \
+            \( ! -f $file -o $file = "$HOME/.tool-versions" \) ]; then
+      result=$(get_tool_version_from_legacy_file $plugin $(pwd))
+      if [ -n "$result" ]; then
+          echo $result
+          exit 0
+      fi
+  fi
+
+  if [ -f $file ]; then
+    result=$(get_tool_version_from_file $file $plugin)
+  fi
+
+  if [ -n "$result" ]; then
+    echo $result
+    exit 0
+  fi
+
+
+  echo "version not set for $plugin"
+  exit 1
+}
+
 version_command() {
   local cmd=$1
 
@@ -16,7 +46,7 @@ version_command() {
     fi
   fi
 
-  if [ $# -ne 3 -a ! -f $file ]; then
+  if [ $# -eq 1 -a ! -f $file ]; then
     echo $file does not exist
     exit 1
   fi
@@ -27,17 +57,11 @@ version_command() {
   fi
 
   local plugin=$2
+
   check_if_plugin_exists $(get_plugin_path $plugin)
 
   if [ $# -eq 2 ]; then
-    result=$(get_tool_version_from_file $file $plugin)
-    if [ -n "$result" ]; then
-      echo $result
-      exit 0
-    else
-      echo "version not set for $plugin"
-      exit 1
-    fi
+    get_plugin_version $cmd $file $plugin
   fi
 
   local version=$3
