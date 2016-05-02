@@ -31,7 +31,7 @@ teardown() {
   rm $HOME/.tool-versions
   run global_command "foo"
   [ "$status" -eq 1 ]
-  [ "$output" = "$HOME/.tool-versions does not exist" ]
+  [ "$output" = "version not set for foo" ]
 }
 
 @test "local should emit an error when plugin does not exist" {
@@ -68,6 +68,30 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "1.0.0" ]
 }
+
+@test "local should fallback to legacy-file when enabled" {
+    echo 'legacy_version_file = yes' > $HOME/.asdfrc
+    mkdir -p $ASDF_DIR/plugins/foo/bin
+    echo 'echo 1.0.0' > $ASDF_DIR/plugins/foo/bin/get-version-from-legacy-file
+    rm .tool-versions
+
+    run local_command foo
+
+    [ "$status" -eq 0 ]
+    [ "$output" = "1.0.0" ]
+}
+
+@test "local should ignore legacy-file when disabled" {
+    mkdir -p $ASDF_DIR/plugins/foo/bin
+    echo 'cat 1.0.0' > $ASDF_DIR/plugins/foo/bin/get-version-from-legacy-file
+    rm .tool-versions
+
+    run local_command foo
+
+    [ "$status" -eq 1 ]
+    [ "$output" = "version not set for foo" ]
+}
+
 
 @test "global should return and set the global version" {
   run global_command
