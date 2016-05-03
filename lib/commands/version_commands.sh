@@ -31,11 +31,6 @@ get_plugin_version() {
 version_command() {
   local cmd=$1
 
-  if [ $# -gt 3 ]; then
-    echo usage: $cmd [PLUGIN] [VERSION]
-    exit 1
-  fi
-
   local file
   if [ $cmd = "global" ]; then
     file=$HOME/.tool-versions
@@ -64,7 +59,7 @@ version_command() {
     get_plugin_version $cmd $file $plugin
   fi
 
-  local version=$3
+  local version=${@:3}
 
   check_if_version_exists $plugin $version
 

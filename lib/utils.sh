@@ -116,6 +116,7 @@ get_preset_version_for() {
 get_tool_version_from_file() {
   local asdf_versions_path=$1
   local tool_name=$2
+  local get_all_versions=$3
   local matching_tool_version=""
 
   local read_done=false
@@ -128,7 +129,7 @@ get_tool_version_from_file() {
 
     IFS=' ' read -a tool_info <<< $tool_line
     local t_name=$(echo "${tool_info[0]}" | xargs)
-    local t_version=$(echo "${tool_info[1]}" | xargs)
+    local t_version=$(echo "${tool_info[@]:1}" | xargs)
 
     if [ "$t_name" = "$tool_name" ]
     then
