@@ -175,6 +175,11 @@ Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
 
 Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
 
+### Maintainers
+
+- [@HashNuke](http://github.com/HashNuke)
+- [@tuvistavie](http://github.com/tuvistavie)
+
 -------
 
 Read the [ballad](https://github.com/asdf-vm/asdf/blob/master/ballad-of-asdf.md).
