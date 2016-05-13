@@ -17,6 +17,7 @@ source $(dirname $(dirname $0))/lib/commands/plugin-update.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-remove.sh
 
 source $(dirname $(dirname $0))/lib/commands/plugin-push.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-test.sh
 
 
 callback_args="${@:2}"
@@ -74,6 +75,9 @@ case $1 in
 # Undocumented commands for development
 "plugin-push")
     plugin_push_command $callback_args;;
+
+"plugin-test")
+    plugin_test_command $callback_args;;
 
 *)
   help_command
