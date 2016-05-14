@@ -61,3 +61,34 @@ Prints the version of the tool to use if a legacy version file is found in the c
 asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
+
+## Testing plugins
+
+`asdf` contains the `plugin-test` command to test your plugin.
+You can use it as follows
+
+```sh
+asdf plugin-test <plugin-name> <plugin-url>
+```
+
+So for example to test the Elixir plugin, we would run
+
+```sh
+asdf plugin-test elixir https://github.com/asdf-vm/asdf-elixir.git
+```
+
+We strongly recommend you test your plugin on TravisCI, to make sure it works
+on both Linux and OSX.
+
+Here is a sample `.travis.yml` file, customize it to your needs
+
+```yaml
+language: c
+script: asdf plugin-test elixir https://github.com/asdf-vm/asdf-elixir.git
+before_script:
+  - git clone https://github.com/asdf-vm/asdf.git asdf
+  - . asdf/asdf.sh
+os:
+  - linux
+  - osx
+```
