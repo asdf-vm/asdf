@@ -66,6 +66,10 @@ version_command() {
 
   local version=$3
 
+  if [ $cmd = "local" ]; then
+    file=$(pwd)/.tool-versions
+  fi
+
   check_if_version_exists $plugin $version
 
   if [ -f $file ] && grep $plugin $file > /dev/null; then

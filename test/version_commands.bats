@@ -67,6 +67,16 @@ teardown() {
   run local_command bar
   [ "$status" -eq 0 ]
   [ "$output" = "1.0.0" ]
+
+  rm .tool-versions
+  run local_command foo 1.2.0
+  [ -f .tool-versions ]
+
+  run local_command foo
+  [ "$status" -eq 0 ]
+  [ "$output" = "1.2.0" ]
+  run global_command foo
+  [ "$output" = "1.0.0" ]
 }
 
 @test "local should fallback to legacy-file when enabled" {
