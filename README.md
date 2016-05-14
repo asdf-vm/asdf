@@ -138,6 +138,11 @@ asdf global [name]
 # asdf global elixir
 ```
 
+`global` reads from `$HOME/.tool-versions`.
+
+`local` reads from `$PWD/.tool-versions` if it exists,
+or searches recursively in the parent directories until it finds a `.tool-versions` file.
+
 #### Set current version
 
 ```bash
@@ -146,6 +151,9 @@ asdf local <name> <version>
 asdf global elixir 1.2.4
 ```
 
+`global` writes the version to `$HOME/.tool-versions`.
+
+`local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
 ## The `.tool-versions` file
 
