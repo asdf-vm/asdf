@@ -187,6 +187,7 @@ Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf
 
 - [@HashNuke](http://github.com/HashNuke)
 - [@tuvistavie](http://github.com/tuvistavie)
+- [@Stratus3D](https://github.com/Stratus3D)
 
 -------
 
