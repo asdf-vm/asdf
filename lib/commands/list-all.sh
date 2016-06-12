@@ -7,7 +7,9 @@ list_all_command() {
 
   IFS=' ' read -a versions_list <<< "$versions"
 
-  for version in "${versions_list[@]}"
+  sorted_versions=$(for version in ${versions_list[@]}; do echo $version; done | sort -r)
+
+  for version in "${sorted_versions[@]}"
   do
     echo "${version}"
   done

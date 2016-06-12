@@ -1,12 +1,10 @@
 #!/usr/bin/env bats
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/utils.sh
+. $(dirname $BATS_TEST_DIRNAME)/test/helper.sh
 . $(dirname $BATS_TEST_DIRNAME)/lib/commands/version_commands.sh
 
 setup() {
-  BASE_DIR=$(mktemp -dt asdf.XXXX)
-  HOME=$BASE_DIR/home
-  ASDF_DIR=$HOME/.asdf
+  prepare
   OTHER_DIR=$BASE_DIR/other
   mkdir -p $ASDF_DIR/plugins/foo $ASDF_DIR/plugins/bar $ASDF_DIR/installs/foo/1.0.0 $ASDF_DIR/installs/foo/1.1.0 $ASDF_DIR/installs/foo/1.2.0 $ASDF_DIR/installs/bar/1.0.0 $OTHER_DIR
 
@@ -16,9 +14,8 @@ setup() {
 }
 
 teardown() {
-  rm -rf $BASE_DIR
+  clean
 }
-
 
 @test "local should emit an error when run in lookup mode and file does not exist" {
   rm .tool-versions
