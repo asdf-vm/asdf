@@ -33,7 +33,8 @@ plugin_test_command() {
         fail_test "list-all did not return any version"
     fi
 
-    (asdf install $plugin_name ${versions[0]})
+    latest_version=${versions[${#versions[@]} - 1]}
+    (asdf install $plugin_name $latest_version)
 
     if [ $? -ne 0 ]; then
         fail_test "install exited with an error"
