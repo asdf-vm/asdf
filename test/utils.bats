@@ -1,14 +1,13 @@
 #!/usr/bin/env bats
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/utils.sh
+. $(dirname $BATS_TEST_DIRNAME)/test/helper.sh
 
 setup() {
-  ASDF_DIR=$(mktemp -dt asdf.XXXX)
+  prepare
 }
 
 teardown() {
-  rm -rf $ASDF_DIR
-  unset ASDF_DIR
+  clean
 }
 
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
