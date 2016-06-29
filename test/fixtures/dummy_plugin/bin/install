@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+mkdir -p $ASDF_INSTALL_PATH
+env > $ASDF_INSTALL_PATH/env
+echo $ASDF_INSTALL_VERSION > $ASDF_INSTALL_PATH/version

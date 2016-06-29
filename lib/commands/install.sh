@@ -9,6 +9,17 @@ install_command() {
   fi
 }
 
+get_concurrency() {
+  if which nproc > /dev/null 2>&1; then
+    echo $(nproc)
+  elif which nproc > /dev/null 2>&1; then
+    echo $(sysctl -n hw.ncpu)
+  elif [ -f /proc/cpuinfo ]; then
+    echo $(grep -c processor /proc/cpuinfo)
+  else
+    echo "1"
+  fi
+}
 
 install_local_tool_versions() {
   if [ -f $(pwd)/.tool-versions ]; then
@@ -49,6 +60,7 @@ install_tool_version() {
 
 
   local install_path=$(get_install_path $plugin_name $install_type $version)
+  local concurrency=$(get_concurrency)
   if [ -d $install_path ]; then
     echo "$plugin_name $full_version is already installed"
   else
@@ -56,6 +68,7 @@ install_tool_version() {
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
+      export ASDF_CONCURRENCY=$concurrency
       mkdir $install_path
       bash ${plugin_path}/bin/install
     )
