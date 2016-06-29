@@ -1,3 +1,0 @@
-#compdef asdf
-
-_arguments "1: :(plugin-add plugin-list plugin-remove plugin-update install uninstall which where list list-all reshim)"

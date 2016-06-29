@@ -10,7 +10,6 @@ asdf_dir=$(cd $(dirname $current_script_path); echo $(pwd))
 export PATH="${asdf_dir}/bin:${asdf_dir}/shims:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
-  fpath=(${asdf_dir}/completions $fpath)
   autoload -U bashcompinit
   bashcompinit
 fi
