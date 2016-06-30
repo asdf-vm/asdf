@@ -28,6 +28,21 @@ get_install_path() {
 }
 
 
+get_source_compile_path() {
+  local plugin=$1
+  local install_type=$2
+  local version=$3
+  mkdir -p $(asdf_dir)/sources/${plugin}
+
+  if [ $install_type = "version" ]
+  then
+    echo $(asdf_dir)/sources/${plugin}/${version}
+  else
+    echo $(asdf_dir)/sources/${plugin}/${install_type}-${version}
+  fi
+}
+
+
 check_if_plugin_exists() {
   if [ ! -d $1 ]
     then
@@ -35,6 +50,7 @@ check_if_plugin_exists() {
     exit 1
   fi
 }
+
 
 check_if_version_exists() {
   local plugin=$1
