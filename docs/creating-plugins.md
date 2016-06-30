@@ -68,13 +68,14 @@ This must be used wisely. For now AFAIK, it's only being used in the Elixir plug
 You can use it as follows
 
 ```sh
-asdf plugin-test <plugin-name> <plugin-url>
+asdf plugin-test <plugin-name> <plugin-url> [test-command]
 ```
 
-So for example to test the Elixir plugin, we would run
+The two first arguments are required. A command can also be passed to check it runs correctly.
+For example to test the NodeJS plugin, we could run
 
 ```sh
-asdf plugin-test elixir https://github.com/asdf-vm/asdf-elixir.git
+asdf plugin-test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
 ```
 
 We strongly recommend you test your plugin on TravisCI, to make sure it works
@@ -84,7 +85,7 @@ Here is a sample `.travis.yml` file, customize it to your needs
 
 ```yaml
 language: c
-script: asdf plugin-test elixir https://github.com/asdf-vm/asdf-elixir.git
+script: asdf plugin-test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git asdf
   - . asdf/asdf.sh

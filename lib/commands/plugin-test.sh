@@ -6,9 +6,11 @@ fail_test() {
 
 plugin_test_command() {
     export ASDF_DIR=$(mktemp -dt asdf.XXXX)
+    git clone https://github.com/asdf-vm/asdf.git $ASDF_DIR
 
     local plugin_name=$1
     local plugin_url=$2
+    local plugin_command="${@:3}"
 
     if [ -z "$plugin_name" -o -z "$plugin_url" ]; then
         fail_test "please provide a plugin name and url"
@@ -33,10 +35,31 @@ plugin_test_command() {
         fail_test "list-all did not return any version"
     fi
 
-    (asdf install $plugin_name ${versions[0]})
+    latest_version=${versions[${#versions[@]} - 1]}
+
+    (asdf install $plugin_name $latest_version)
 
     if [ $? -ne 0 ]; then
         fail_test "install exited with an error"
+    fi
+
+    cd $ASDF_DIR
+    (asdf local $plugin_name $latest_version)
+    if [ $? -ne 0 ]; then
+        fail_test "install did not add the requested version"
+    fi
+
+    (asdf reshim $plugin_name)
+    if [ $? -ne 0 ]; then
+        fail_test "could not reshim plugin"
+    fi
+
+    if [ -n "$plugin_command" ]; then
+        (PATH="$ASDF_DIR/bin":"$ASDF_DIR/shims":$PATH eval "$plugin_command")
+        exit_code=$?
+        if [ $exit_code -ne 0 ]; then
+            fail_test "$plugin_command failed with exit code $?"
+        fi
     fi
 
     rm -rf $ASDF_DIR
