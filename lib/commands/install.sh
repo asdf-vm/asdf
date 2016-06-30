@@ -56,6 +56,13 @@ install_tool_version() {
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
+
+      if [ "$KEEP_SOURCE" == "1" ]; then
+        echo "KEEP_SOURCE enabled"
+        export ASDF_SOURCE_COMPILE_PATH=$(get_source_compile_path $plugin_name $install_type $version)
+        mkdir $ASDF_SOURCE_COMPILE_PATH
+      fi
+
       mkdir $install_path
       bash ${plugin_path}/bin/install
     )
@@ -64,7 +71,7 @@ install_tool_version() {
     if [ $exit_code -eq 0 ]; then
       reshim_command $plugin_name $full_version
     else
-      rm -rf $install_path
+      rm -rf $install_path $ASDF_SOURCE_COMPILE_PATH
       exit 1
     fi
   fi
