@@ -66,7 +66,7 @@ check_if_version_exists() {
       version_dir=$(echo $version | cut -d: -f 2)
   fi
 
-  if [ ! -d $version_dir ]; then
+  if [ $version != "system" -a ! -d $version_dir ]; then
     display_error "version $version is not installed for $plugin"
     exit 1
   fi
@@ -139,6 +139,52 @@ get_version_from_env () {
   local version_env_var="ASDF_${upcase_name}_VERSION"
   local version=${!version_env_var}
   echo "$version"
+}
+
+find_install_path() {
+  local plugin_name=$1
+  local version=$2
+
+  IFS=':' read -a version_info <<< "$version"
+
+  if [ $version = "system" ]; then
+    echo ""
+  elif [ "${version_info[0]}" = "ref" ]; then
+    local install_type="${version_info[0]}"
+    local version="${version_info[1]}"
+    echo $(get_install_path $plugin_name $install_type $version)
+  elif [ "${version_info[0]}" = "path" ]; then
+    # This is for people who have the local source already compiled
+    # Like those who work on the language, etc
+    # We'll allow specifying path:/foo/bar/project in .tool-versions
+    # And then use the binaries there
+    local install_type="path"
+    local version="path"
+    echo "${version_info[1]}"
+  else
+    local install_type="version"
+    local version="${version_info[0]}"
+    echo $(get_install_path $plugin_name $install_type $version)
+  fi
+}
+
+get_executable_path() {
+  local plugin_name=$1
+  local version=$2
+  local executable_path=$3
+
+  if [ $version = "system" ]; then
+    path=$(echo $PATH | sed -e "s|$(asdf_dir)/shims:\?||g")
+    cmd=$(basename $executable_path)
+    cmd_path=$(PATH=$path which $cmd 2>&1)
+    if [ $? -ne 0 ]; then
+      return 1
+    fi
+    echo $cmd_path
+  else
+    local install_path=$(find_install_path $plugin_name $version)
+    echo ${install_path}/${executable_path}
+  fi
 }
 
 parse_asdf_version_file() {

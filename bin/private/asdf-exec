@@ -18,33 +18,16 @@ fi
 IFS=' ' read -a versions <<< "$full_version"
 
 for version in "${versions[@]}"; do
-  IFS=':' read -a version_info <<< "$version"
+  install_path=$(find_install_path $plugin_name $version)
 
-  if [ "${version_info[0]}" = "ref" ]; then
-    install_type="${version_info[0]}"
-    version="${version_info[1]}"
-    install_path=$(get_install_path $plugin_name $install_type $version)
-  elif [ "${version_info[0]}" = "path" ]; then
-    # This is for people who have the local source already compiled
-    # Like those who work on the language, etc
-    # We'll allow specifying path:/foo/bar/project in .tool-versions
-    # And then use the binaries there
-    install_type="path"
-    version="path"
-    install_path="${version_info[1]}"
-  else
-    install_type="version"
-    version="${version_info[0]}"
-    install_path=$(get_install_path $plugin_name $install_type $version)
-  fi
-
-
-  if [ ! -d $install_path ]; then
+  if [ $version != "system" -a ! -d "$install_path" ]; then
     echo "$plugin_name $version not installed"
     exit 1
   fi
 
-  if [ -f ${install_path}/${executable_path} ]; then
+  full_executable_path=$(get_executable_path $plugin_name $version $executable_path)
+
+  if [ $? -eq 0 -a -f "$full_executable_path" ]; then
     if [ -f ${plugin_path}/bin/exec-env ]; then
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
@@ -56,10 +39,9 @@ for version in "${versions[@]}"; do
       unset ASDF_INSTALL_TYPE
       unset ASDF_INSTALL_VERSION
       unset ASDF_INSTALL_PATH
-      exec ${install_path}/${executable_path} "${@:3}"
-    else
-      exec ${install_path}/${executable_path} "${@:3}"
     fi
+
+    exec $full_executable_path "${@:3}"
   fi
 done
 
