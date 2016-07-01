@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/utils.sh
+load test_helpers
 
 setup() {
     AZDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
