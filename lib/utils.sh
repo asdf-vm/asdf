@@ -29,8 +29,13 @@ get_install_path() {
 
 
 check_if_plugin_exists() {
-  if [ ! -d $1 ]
-    then
+  # Check if we have a non-empty argument
+  if [ -z "${1+set}" ]; then
+    display_error "No such plugin"
+    exit 1
+  fi
+
+  if [ ! -d $(asdf_dir)/plugins/$1 ]; then
     display_error "No such plugin"
     exit 1
   fi
