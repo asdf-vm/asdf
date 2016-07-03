@@ -153,7 +153,7 @@ get_tool_version_from_legacy_file() {
   local legacy_tool_version=""
   local plugin_path=$(get_plugin_path $plugin_name)
   local legacy_version_script="${plugin_path}/bin/get-version-from-legacy-file"
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   if [ -f $legacy_version_script ]; then
     local legacy_tool_version=$(bash $legacy_version_script $directory)

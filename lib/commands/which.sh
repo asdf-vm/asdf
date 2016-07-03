@@ -1,7 +1,7 @@
 which_command() {
   local plugin_name=$1
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   full_version=$(get_preset_version_for $plugin_name)
 

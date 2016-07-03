@@ -46,7 +46,7 @@ install_tool_version() {
   local plugin_name=$1
   local full_version=$2
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
 
   IFS=':' read -a version_info <<< "$full_version"

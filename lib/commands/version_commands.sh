@@ -53,7 +53,7 @@ version_command() {
 
   local plugin=$2
 
-  check_if_plugin_exists $(get_plugin_path $plugin)
+  check_if_plugin_exists $plugin
 
   if [ $# -eq 2 ]; then
     get_plugin_version $cmd $file $plugin

@@ -6,7 +6,7 @@ plugin_name=$1
 executable_path=$2
 
 plugin_path=$(get_plugin_path $plugin_name)
-check_if_plugin_exists $plugin_path
+check_if_plugin_exists $plugin_name
 
 full_version=$(get_preset_version_for $plugin_name)
 
