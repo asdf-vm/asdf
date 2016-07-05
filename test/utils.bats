@@ -30,3 +30,16 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "" ]
 }
+
+@test "check_if_plugin_exists should exit with 1 when plugin is empty string" {
+  run check_if_plugin_exists
+  [ "$status" -eq 1 ]
+  [ "$output" = "No such plugin" ]
+}
+
+@test "check_if_plugin_exists should be noop if plugin exists" {
+  mkdir -p $ASDF_DIR/plugins/foo_bar
+  run check_if_plugin_exists "foo_bar"
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}

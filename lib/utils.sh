@@ -29,8 +29,13 @@ get_install_path() {
 
 
 check_if_plugin_exists() {
-  if [ ! -d $1 ]
-    then
+  # Check if we have a non-empty argument
+  if [ -z "${1+set}" ]; then
+    display_error "No such plugin"
+    exit 1
+  fi
+
+  if [ ! -d $(asdf_dir)/plugins/$1 ]; then
     display_error "No such plugin"
     exit 1
   fi
@@ -59,7 +64,7 @@ get_plugin_path() {
 
 
 display_error() {
-  echo $1
+  echo >&2 $1
 }
 
 
@@ -148,7 +153,7 @@ get_tool_version_from_legacy_file() {
   local legacy_tool_version=""
   local plugin_path=$(get_plugin_path $plugin_name)
   local legacy_version_script="${plugin_path}/bin/get-version-from-legacy-file"
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   if [ -f $legacy_version_script ]; then
     local legacy_tool_version=$(bash $legacy_version_script $directory)

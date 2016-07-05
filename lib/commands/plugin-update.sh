@@ -12,7 +12,7 @@ plugin_update_command() {
     done
   else
     local plugin_path=$(get_plugin_path $plugin_name)
-    check_if_plugin_exists $plugin_path
+    check_if_plugin_exists $plugin_name
     echo "Updating $plugin_name..."
     (cd $plugin_path; git pull)
   fi

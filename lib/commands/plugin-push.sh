@@ -7,7 +7,7 @@ plugin_push_command() {
     done
   else
     local plugin_path=$(get_plugin_path $plugin_name)
-    check_if_plugin_exists $plugin_path
+    check_if_plugin_exists $plugin_name
     echo "Pushing $plugin_name..."
     (cd $plugin_path; git push)
   fi

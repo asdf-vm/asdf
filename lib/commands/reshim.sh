@@ -2,7 +2,7 @@ shim_command() {
   local plugin_name=$1
   local executable_path=$2
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
   ensure_shims_dir
 
   generate_shim_for_executable $plugin_name $executable_path
@@ -12,7 +12,7 @@ reshim_command() {
   local plugin_name=$1
   local full_version=$2
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
   ensure_shims_dir
 
   if [ "$full_version" != "" ]; then
@@ -62,7 +62,7 @@ generate_shim_for_executable() {
   local executable=$2
   local plugin_path=$(get_plugin_path $plugin_name)
 
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   IFS=':' read -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
@@ -81,7 +81,7 @@ generate_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   IFS=':' read -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "ref" ]; then

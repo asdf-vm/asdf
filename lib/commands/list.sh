@@ -1,7 +1,7 @@
 list_command() {
   local plugin_name=$1
   local plugin_path=$(get_plugin_path $plugin_name)
-  check_if_plugin_exists $plugin_path
+  check_if_plugin_exists $plugin_name
 
   local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
 
