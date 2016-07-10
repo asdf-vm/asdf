@@ -12,7 +12,7 @@ _asdf () {
     plugin-update)
       COMPREPLY=($(compgen -W "$plugins --all" -- $cur))
       ;;
-    plugin-remove|which|list|list-all)
+    plugin-remove|current|list|list-all)
       COMPREPLY=($(compgen -W "$plugins" -- $cur))
       ;;
     install)
@@ -32,7 +32,7 @@ _asdf () {
       fi
       ;;
     *)
-      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall which where list list-all reshim'
+      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall current where list list-all reshim'
       COMPREPLY=($(compgen -W "$cmds" -- $cur))
       ;;
   esac
