@@ -107,7 +107,7 @@ asdf install <name> <version>
 
 asdf current <name>
 # asdf current erlang
-# 17.3
+# 17.3 (set by /Users/kim/.tool-versions)
 
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
