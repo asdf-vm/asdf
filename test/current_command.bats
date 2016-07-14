@@ -37,6 +37,15 @@ teardown() {
   [ "$output" = "1.0.0 (set by $HOME/.tool-versions)" ]
 }
 
+@test "current should derive from the legacy file if enabled and hide the file path" {
+  echo 'legacy_version_file = yes' > $HOME/.asdfrc
+  cd $OTHER_DIR
+
+  run current_command "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "1.2.0" ]
+}
+
 @test "current should error when the plugin doesn't exist" {
   run current_command "foobar"
   [ "$status" -eq 1 ]
