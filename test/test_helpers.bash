@@ -12,6 +12,11 @@ install_dummy_plugin() {
   cp -r $BATS_TEST_DIRNAME/fixtures/dummy_plugin $ASDF_DIR/plugins/dummy
 }
 
+install_dummy_version() {
+  dummy_version=$1
+  mkdir -p $ASDF_DIR/installs/dummy/$dummy_version
+}
+
 clean_asdf_dir() {
   rm -rf $BASE_DIR
   unset ASDF_DIR
