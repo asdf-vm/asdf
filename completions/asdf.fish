@@ -56,9 +56,9 @@ complete -f -c asdf -n '__fish_asdf_needs_command' -a uninstall -d "Remove a spe
 complete -f -c asdf -n '__fish_asdf_using_command uninstall; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
 complete -f -c asdf -n '__fish_asdf_using_command uninstall; and __fish_asdf_arg_number 3' -a '(asdf list (__fish_asdf_arg_at 3))'
 
-# which completion
-complete -f -c asdf -n '__fish_asdf_needs_command' -a which -d "Display version set or being used for package"
-complete -f -c asdf -n '__fish_asdf_using_command which; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
+# current completion
+complete -f -c asdf -n '__fish_asdf_needs_command' -a current -d "Display version set or being used for package"
+complete -f -c asdf -n '__fish_asdf_using_command current; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
 
 # where completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a where -d "Display install path for an installed version"

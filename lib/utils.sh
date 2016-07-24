@@ -67,6 +67,21 @@ display_error() {
   echo >&2 $1
 }
 
+get_version_file_path_for() {
+  local tool_name=$1
+  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
+
+  if [ ! -f "$(pwd)/.tool-versions" ] && [ "$legacy_version_file_support" = "yes" ]; then
+    # Check for legacy version and return "" if it exists
+    local legacy_version=$(get_tool_version_from_legacy_file $tool_name $(pwd))
+    if [ "$legacy_version" != "" ]; then
+      echo ""
+      return 1
+    fi
+  fi
+
+  echo $(get_asdf_versions_file_path)
+}
 
 get_asdf_versions_file_path() {
   local asdf_tool_versions_path=""

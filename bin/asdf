@@ -5,7 +5,7 @@ source $(dirname $(dirname $0))/lib/utils.sh
 source $(dirname $(dirname $0))/lib/commands/help.sh
 source $(dirname $(dirname $0))/lib/commands/install.sh
 source $(dirname $(dirname $0))/lib/commands/uninstall.sh
-source $(dirname $(dirname $0))/lib/commands/which.sh
+source $(dirname $(dirname $0))/lib/commands/current.sh
 source $(dirname $(dirname $0))/lib/commands/where.sh
 source $(dirname $(dirname $0))/lib/commands/version_commands.sh
 source $(dirname $(dirname $0))/lib/commands/list.sh
@@ -36,8 +36,8 @@ case $1 in
 "uninstall")
     uninstall_command $callback_args;;
 
-"which")
-    which_command $callback_args;;
+"current")
+    current_command $callback_args;;
 
 "where")
     where_command $callback_args;;
