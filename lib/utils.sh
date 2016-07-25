@@ -67,117 +67,81 @@ display_error() {
   echo >&2 $1
 }
 
-get_version_file_path_for() {
-  local tool_name=$1
-  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
+find_version_file_for() {
+  local plugin_name=$1
 
-  if [ ! -f "$(pwd)/.tool-versions" ] && [ "$legacy_version_file_support" = "yes" ]; then
-    # Check for legacy version and return "" if it exists
-    local legacy_version=$(get_tool_version_from_legacy_file $tool_name $(pwd))
-    if [ "$legacy_version" != "" ]; then
-      echo ""
-      return 1
-    fi
-  fi
-
-  echo $(get_asdf_versions_file_path)
-}
-
-get_asdf_versions_file_path() {
-  local asdf_tool_versions_path=""
+  local plugin_path=$(get_plugin_path "$plugin_name")
+  local legacy_config=$(get_asdf_config_value "legacy_version_file")
+  local legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
   local search_path=$(pwd)
 
+  if [ "$legacy_config" = "yes" ] && [ -f $legacy_list_filenames_script ]; then
+    local legacy_filenames=$(bash "$legacy_list_filenames_script")
+    echo $(search_filenames ".tool-versions $legacy_filenames" "$search_path")
+  else
+    echo $(search_filenames ".tool-versions" "$search_path")
+  fi
+}
+
+search_filenames() {
+  local filenames=$1
+  local search_path=$2
+
   while [ "$search_path" != "/" ]; do
-    if [ -f "$search_path/.tool-versions" ]; then
-      asdf_tool_versions_path="$search_path/.tool-versions"
-      break
-    fi
+    for filename in $filenames; do
+      if [ -f "$search_path/$filename" ]; then
+        echo "$search_path/$filename"
+        return 0
+      fi
+    done
     search_path=$(dirname "$search_path")
   done
-
-  echo $asdf_tool_versions_path
 }
 
+parse_asdf_version_file() {
+  local file_path=$1
+  local plugin_name=$2
+
+  cat $file_path | while read -r line || [[ -n "$line" ]]; do
+    local line_parts=($line)
+
+    if [ "${line_parts[0]}" = "$plugin_name" ]; then
+      echo ${line_parts[1]}
+      return 0
+    fi
+  done
+}
+
+parse_legacy_version_file() {
+  local file_path=$1
+  local plugin_name=$2
+
+  local plugin_path=$(get_plugin_path "$plugin_name")
+  local parse_legacy_script="${plugin_path}/bin/parse-legacy-file"
+
+  if [ -f $parse_legacy_script ]; then
+    echo $(bash "$parse_legacy_script" "$file_path")
+  else
+    echo $(cat $file_path)
+  fi
+}
+
+parse_version_file() {
+  local file_path=$1
+  local plugin_name=$2
+
+  if [ $(basename $file_path) = ".tool-versions" ]; then
+    echo $(parse_asdf_version_file "$file_path" "$plugin_name")
+  else
+    echo $(parse_legacy_version_file "$file_path" "$plugin_name")
+  fi
+}
 
 get_preset_version_for() {
-  local tool_name=$1
-  local asdf_versions_path=$(get_asdf_versions_file_path)
-  local matching_tool_version=""
-  local legacy_version_file_support=$(get_asdf_config_value "legacy_version_file")
-
-  # If .tool-versions is not in the working directory
-  if [ "$asdf_versions_path" != "$(pwd)/.tool-versions" ] && [ "$legacy_version_file_support" = "yes" ]; then
-    # Check for legacy version file
-    matching_tool_version=$(get_tool_version_from_legacy_file $tool_name $(pwd))
-  fi
-
-  # If no legacy version file, see if we can use a .tool-versions file higher in the directory tree
-  if [ "$matching_tool_version" = "" ] && [ "$asdf_versions_path" != "" ]; then
-    matching_tool_version=$(get_tool_version_from_file $asdf_versions_path $tool_name)
-  fi
-
-
-  # If there's no global .tool-versions file
-  # then we create it and return blank
-  if [ "$matching_tool_version" = "" ]; then
-    local global_tool_versions_path=$HOME/.tool-versions
-    if [ ! -f $global_tool_versions_path ]; then
-      touch $global_tool_versions_path
-    else
-      matching_tool_version=$(get_tool_version_from_file $global_tool_versions_path $tool_name)
-    fi
-  fi
-
-
-  echo $matching_tool_version
-}
-
-
-get_tool_version_from_file() {
-  local asdf_versions_path=$1
-  local tool_name=$2
-  local get_all_versions=$3
-  local matching_tool_version=""
-
-  local read_done=false
-  until $read_done; do
-    read tool_line || read_done=true
-
-    if $read_done ; then
-      break;
-    fi
-
-    IFS=' ' read -a tool_info <<< $tool_line
-    local t_name=$(echo "${tool_info[0]}" | xargs)
-    local t_version=$(echo "${tool_info[@]:1}" | xargs)
-
-    if [ "$t_name" = "$tool_name" ]
-    then
-      matching_tool_version=$t_version
-      break;
-    fi
-  done < $asdf_versions_path
-
-  echo $matching_tool_version
-}
-
-
-get_tool_version_from_legacy_file() {
   local plugin_name=$1
-  local directory=$2
-  local legacy_tool_version=""
-  local plugin_path=$(get_plugin_path $plugin_name)
-  local legacy_version_script="${plugin_path}/bin/get-version-from-legacy-file"
-  check_if_plugin_exists $plugin_name
-
-  if [ -f $legacy_version_script ]; then
-    local legacy_tool_version=$(bash $legacy_version_script $directory)
-  fi
-
-  # Should return the version/tag/commit/branch/path
-  echo $legacy_tool_version
+  local version_file_path=$(find_version_file_for "$plugin_name")
+  echo $(parse_version_file "$version_file_path" "$plugin_name")
 }
-
 
 get_asdf_config_value_from_file() {
     local config_path=$1
