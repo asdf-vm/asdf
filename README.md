@@ -132,18 +132,10 @@ asdf list-all <name>
 #### View current version
 
 ```bash
-asdf local [name]
-asdf global [name]
-# asdf local
-# asdf global
-# asdf local elixir
-# asdf global elixir
+asdf current <name>
+# asdf current erlang
+# 17.3 (set by /Users/kim/.tool-versions)
 ```
-
-`global` reads from `$HOME/.tool-versions`.
-
-`local` reads from `$PWD/.tool-versions` if it exists,
-or searches recursively in the parent directories until it finds a `.tool-versions` file.
 
 #### Set current version
 
