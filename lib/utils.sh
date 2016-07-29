@@ -1,5 +1,5 @@
 asdf_version() {
-  echo "0.1"
+  echo "0.2.0"
 }
 
 
