@@ -7,55 +7,54 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_dummy_plugin
+  install_dummy_version "1.1.0"
+  install_dummy_version "1.2.0"
 
   PROJECT_DIR=$HOME/project
-  OTHER_DIR=$HOME/other
-  mkdir -p $ASDF_DIR/installs/dummy/1.0.0 $ASDF_DIR/installs/dummy/1.1.0 $PROJECT_DIR $OTHER_DIR
-
-  echo 'dummy 1.0.0' >> $HOME/.tool-versions
-  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
-  echo '1.2.0' >> $OTHER_DIR/.dummy-version
+  mkdir $PROJECT_DIR
 }
 
 teardown() {
   clean_asdf_dir
 }
 
-@test "current should derive from the local .tool_versions when it exists" {
+@test "current should derive from the current .tool-versions" {
   cd $PROJECT_DIR
+  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "1.1.0 (set by $PROJECT_DIR/.tool-versions)" ]
 }
 
-@test "current should derive from the global .tool_versions when local doesn't exist" {
-  cd $OTHER_DIR
-
-  run current_command "dummy"
-  [ "$status" -eq 0 ]
-  [ "$output" = "1.0.0 (set by $HOME/.tool-versions)" ]
-}
-
-@test "current should derive from the legacy file if enabled and hide the file path" {
+@test "current should derive from the legacy file if enabled" {
+  cd $PROJECT_DIR
   echo 'legacy_version_file = yes' > $HOME/.asdfrc
-  cd $OTHER_DIR
+  echo '1.2.0' >> $PROJECT_DIR/.dummy-version
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.2.0" ]
+  [ "$output" = "1.2.0 (set by $PROJECT_DIR/.dummy-version)" ]
 }
 
 @test "current should error when the plugin doesn't exist" {
   run current_command "foobar"
   [ "$status" -eq 1 ]
+  [ "$output" = "No such plugin" ]
 }
 
 @test "current should error when no version is set" {
-  cd $OTHER_DIR
-  rm $HOME/.tool-versions
+  cd $PROJECT_DIR
 
   run current_command "dummy"
   [ "$status" -eq 1 ]
-  [ "$output" = "No version set for dummy" ]
+}
+
+@test "current should error when a version is set that isn't installed" {
+  cd $PROJECT_DIR
+  echo 'dummy 9.9.9' >> $PROJECT_DIR/.tool-versions
+
+  run current_command "dummy"
+  [ "$status" -eq 1 ]
+  [ "$output" = "version 9.9.9 is not installed for dummy" ]
 }
