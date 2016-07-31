@@ -2,7 +2,6 @@ asdf_version() {
   echo "0.2.0-dev"
 }
 
-
 asdf_dir() {
   if [ -z $ASDF_DIR ]; then
     local current_script_path=${BASH_SOURCE[0]}
@@ -11,7 +10,6 @@ asdf_dir() {
 
   echo $ASDF_DIR
 }
-
 
 get_install_path() {
   local plugin=$1
@@ -26,7 +24,6 @@ get_install_path() {
     echo $(asdf_dir)/installs/${plugin}/${install_type}-${version}
   fi
 }
-
 
 check_if_plugin_exists() {
   # Check if we have a non-empty argument
@@ -51,17 +48,9 @@ check_if_version_exists() {
   fi
 }
 
-
-get_version_part() {
-  IFS='@' read -a version_info <<< "$1"
-  echo ${version_info[$2]}
-}
-
-
 get_plugin_path() {
   echo $(asdf_dir)/plugins/$1
 }
-
 
 display_error() {
   echo >&2 $1
