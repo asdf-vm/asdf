@@ -50,9 +50,19 @@ Setup the env to run the binaries in the package.
 
 Uninstalls a specific version of a tool.
 
-#### bin/get_version_from_legacy_file
+#### bin/list-legacy-filenames
 
-Prints the version of the tool to use if a legacy version file is found in the current directory (e.g. rbenv's `.ruby-version`). Current directory is passed as the only argument to this script.
+Register additional setter files for this plugin. Must print a string with a space-seperated list of filenames.
+
+```
+.ruby-version .rvmrc
+```
+
+Note: This will only apply for users who have enabled the `legacy_version_file` option in their `~/.asdfrc`.
+
+#### bin/parse-legacy-file
+
+This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version.
 
 ### Custom shim templates
 
