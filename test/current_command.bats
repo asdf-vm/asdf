@@ -2,6 +2,7 @@
 
 load test_helpers
 
+. $(dirname $BATS_TEST_DIRNAME)/lib/commands/plugin-list.sh
 . $(dirname $BATS_TEST_DIRNAME)/lib/commands/current.sh
 
 setup() {
@@ -11,8 +12,10 @@ setup() {
   PROJECT_DIR=$HOME/project
   OTHER_DIR=$HOME/other
   mkdir -p $ASDF_DIR/installs/dummy/1.0.0 $ASDF_DIR/installs/dummy/1.1.0 $PROJECT_DIR $OTHER_DIR
+  mkdir -p $ASDF_DIR/installs/other/1.0.0 $ASDF_DIR/plugins/other
 
   echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  echo 'other 1.0.0' >> $HOME/.tool-versions
   echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
   echo '1.2.0' >> $OTHER_DIR/.dummy-version
 }
@@ -21,12 +24,21 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "current without arguments should print all versions" {
+  cd $PROJECT_DIR
+
+  run current_command
+  expected=$(echo -e "dummy 1.1.0 (set by $PROJECT_DIR/.tool-versions)\nother 1.0.0 (set by $HOME/.tool-versions)")
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}
+
 @test "current should derive from the local .tool_versions when it exists" {
   cd $PROJECT_DIR
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.1.0 (set by $PROJECT_DIR/.tool-versions)" ]
+  [ "$output" = "dummy 1.1.0 (set by $PROJECT_DIR/.tool-versions)" ]
 }
 
 @test "current should derive from the global .tool_versions when local doesn't exist" {
@@ -34,7 +46,7 @@ teardown() {
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.0.0 (set by $HOME/.tool-versions)" ]
+  [ "$output" = "dummy 1.0.0 (set by $HOME/.tool-versions)" ]
 }
 
 @test "current should derive from the legacy file if enabled and hide the file path" {
@@ -43,7 +55,7 @@ teardown() {
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.2.0" ]
+  [ "$output" = "dummy 1.2.0" ]
 }
 
 @test "current should error when the plugin doesn't exist" {

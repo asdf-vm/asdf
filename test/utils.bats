@@ -4,6 +4,14 @@ load test_helpers
 
 setup() {
   setup_asdf_dir
+  install_dummy_plugin
+
+  PROJECT_DIR=$HOME/project
+  mkdir -p $PROJECT_DIR
+
+  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  echo 'other 1.0.0' >> $HOME/.tool-versions
+  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
 }
 
 teardown() {
@@ -42,4 +50,30 @@ teardown() {
   run check_if_plugin_exists "foo_bar"
   [ "$status" -eq 0 ]
   [ "$output" = "" ]
+}
+
+@test "get_asdf_versions_file_path should return closest .tool-versions when no args provided" {
+  cd $PROJECT_DIR
+
+  run get_asdf_versions_file_path
+  [ "$status" -eq 0 ]
+  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+}
+
+@test "get_asdf_versions_file_path should return closest .tool-versions if contains plugin" {
+  cd $PROJECT_DIR
+
+  run get_asdf_versions_file_path "dummy"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+}
+
+@test "get_asdf_versions_file_path should return correct .tool-versions if closest does not contain plugin" {
+  cd $PROJECT_DIR
+
+  run get_asdf_versions_file_path "other"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$HOME/.tool-versions" ]
 }

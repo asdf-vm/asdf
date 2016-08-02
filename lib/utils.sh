@@ -80,15 +80,18 @@ get_version_file_path_for() {
     fi
   fi
 
-  echo $(get_asdf_versions_file_path)
+  echo $(get_asdf_versions_file_path $tool_name)
 }
 
 get_asdf_versions_file_path() {
+  local tool_name=$1
   local asdf_tool_versions_path=""
   local search_path=$(pwd)
 
   while [ "$search_path" != "/" ]; do
-    if [ -f "$search_path/.tool-versions" ]; then
+    local file="$search_path/.tool-versions"
+    if [ -f $file ] && \
+        ( [ -z "$tool_name" ] || grep -q "$tool_name" "$file" ); then
       asdf_tool_versions_path="$search_path/.tool-versions"
       break
     fi
