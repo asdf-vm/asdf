@@ -171,6 +171,18 @@ To install all the tools defined in a `.tool-versions` file run the `asdf instal
 
 You can view/modify the file by hand or use `asdf local` and `asdf global` to manage it.
 
+## The `$HOME/.asdfrc` config file
+
+Add a `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file should be formatted like this:
+
+```
+legacy_version_file = yes
+```
+
+**Settings**
+
+* `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
+
 ## Credits
 
 Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
