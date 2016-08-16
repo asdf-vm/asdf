@@ -18,10 +18,10 @@ version_command() {
   check_if_plugin_exists $plugin
   check_if_version_exists $plugin $version
 
-  if [ -f $file ] && grep $plugin $file > /dev/null; then
-    sed -i -e "s/$plugin .*/$plugin $version/" $file
+  if [ -f "$file" ] && grep $plugin "$file" > /dev/null; then
+    sed -i -e "s/$plugin .*/$plugin $version/" "$file"
   else
-    echo "$plugin $version" >> $file
+    echo "$plugin $version" >> "$file"
   fi
 }
 
