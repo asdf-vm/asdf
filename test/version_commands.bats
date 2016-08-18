@@ -45,6 +45,18 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "local should create a local .tool-versions file if it doesn't exist when the directory name contains whitespace" {
+  WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
+  mkdir -p "$WHITESPACE_DIR"
+  cd "$WHITESPACE_DIR"
+
+  run local_command "dummy" "1.1.0"
+
+  tool_version_contents=$(cat "$WHITESPACE_DIR/.tool-versions")
+  [ "$status" -eq 0 ]
+  [ "$tool_version_contents" = "dummy 1.1.0" ]
+}
+
 @test "local should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
   run local_command "dummy" "1.1.0"
