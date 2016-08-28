@@ -56,33 +56,36 @@ display_error() {
   echo >&2 $1
 }
 
-find_version_file_for() {
+find_version_for() {
   local plugin_name=$1
+  local search_path=$2
 
   local plugin_path=$(get_plugin_path "$plugin_name")
   local legacy_config=$(get_asdf_config_value "legacy_version_file")
   local legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
-  local search_path=$(pwd)
+  local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f $legacy_list_filenames_script ]; then
-    local legacy_filenames=$(bash "$legacy_list_filenames_script")
-    echo $(search_filenames ".tool-versions $legacy_filenames" "$search_path")
-  else
-    echo $(search_filenames ".tool-versions" "$search_path")
+    legacy_filenames=$(bash "$legacy_list_filenames_script")
   fi
-}
-
-search_filenames() {
-  local filenames=$1
-  local search_path=$2
 
   while [ "$search_path" != "/" ]; do
-    for filename in $filenames; do
-      if [ -f "$search_path/$filename" ]; then
-        echo "$search_path/$filename"
+    local asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" $plugin_name)
+
+    if [ -n "$asdf_version" ]; then
+      echo "$asdf_version"
+      return 0
+    fi
+
+    for filename in $legacy_filenames; do
+      local legacy_version=$(parse_legacy_version_file "$search_path/$filename" $plugin_name)
+
+      if [ -n "$legacy_version" ]; then
+        echo "$legacy_version"
         return 0
       fi
     done
+
     search_path=$(dirname "$search_path")
   done
 }
@@ -91,14 +94,16 @@ parse_asdf_version_file() {
   local file_path=$1
   local plugin_name=$2
 
-  cat $file_path | while read -r line || [[ -n "$line" ]]; do
-    local line_parts=($line)
+  if [ -f $file_path ]; then
+    cat $file_path | while read -r line || [[ -n "$line" ]]; do
+      local line_parts=($line)
 
-    if [ "${line_parts[0]}" = "$plugin_name" ]; then
-      echo ${line_parts[1]}
-      return 0
-    fi
-  done
+      if [ "${line_parts[0]}" = "$plugin_name" ]; then
+        echo ${line_parts[1]}
+        return 0
+      fi
+    done
+  fi
 }
 
 parse_legacy_version_file() {
@@ -108,28 +113,19 @@ parse_legacy_version_file() {
   local plugin_path=$(get_plugin_path "$plugin_name")
   local parse_legacy_script="${plugin_path}/bin/parse-legacy-file"
 
-  if [ -f $parse_legacy_script ]; then
-    echo $(bash "$parse_legacy_script" "$file_path")
-  else
-    echo $(cat $file_path)
-  fi
-}
-
-parse_version_file() {
-  local file_path=$1
-  local plugin_name=$2
-
-  if [ $(basename $file_path) = ".tool-versions" ]; then
-    echo $(parse_asdf_version_file "$file_path" "$plugin_name")
-  else
-    echo $(parse_legacy_version_file "$file_path" "$plugin_name")
+  if [ -f $file_path ]; then
+    if [ -f $parse_legacy_script ]; then
+      echo $(bash "$parse_legacy_script" "$file_path")
+    else
+      echo $(cat $file_path)
+    fi
   fi
 }
 
 get_preset_version_for() {
   local plugin_name=$1
-  local version_file_path=$(find_version_file_for "$plugin_name")
-  echo $(parse_version_file "$version_file_path" "$plugin_name")
+
+  echo "$(find_version "$plugin_name" "$search_path")"
 }
 
 get_asdf_config_value_from_file() {

@@ -46,83 +46,43 @@ teardown() {
   [ "$output" = "" ]
 }
 
-@test "find_version_file_for should return .tool-versions if legacy is disabled" {
-  cd $PROJECT_DIR
-  touch ".tool-versions"
-  touch ".dummy-version"
+@test "find_version should return .tool-versions if legacy is disabled" {
+  echo "dummy 0.1.0" > $PROJECT_DIR/.tool-versions
+  echo "0.2.0" > $PROJECT_DIR/.dummy-version
 
-  run find_version_file_for "dummy"
+  run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+  [ "$output" = "0.1.0" ]
 }
 
-@test "find_version_file_for should return .tool-versions ++ plugin filenames if supported" {
-  cd $PROJECT_DIR
-  touch "$HOME/.tool-versions"
-  touch ".dummy-version"
-  echo 'legacy_version_file = yes' > $HOME/.asdfrc
+@test "find_version should return the legacy file if supported" {
+  echo "legacy_version_file = yes" > $HOME/.asdfrc
+  echo "dummy 0.1.0" > $HOME/.tool-versions
+  echo "0.2.0" > $PROJECT_DIR/.dummy-version
 
-  run find_version_file_for "dummy"
+  run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "$PROJECT_DIR/.dummy-version" ]
+  [ "$output" = "0.2.0" ]
 }
 
-@test "find_version_file_for should return .tool-versions if unsupported" {
-  cd $PROJECT_DIR
-  touch "$HOME/.tool-versions"
-  touch ".dummy-version"
-  echo 'legacy_version_file = yes' > $HOME/.asdfrc
+@test "find_version skips .tool-version file that don't list the plugin" {
+  echo "dummy 0.1.0" > $HOME/.tool-versions
+  echo "another_plugin 0.3.0" > $PROJECT_DIR/.tool-versions
+
+  run find_version "dummy" $PROJECT_DIR
+  [ "$status" -eq 0 ]
+  [ "$output" = "0.1.0" ]
+}
+
+@test "find_version should return .tool-versions if unsupported" {
+  echo "dummy 0.1.0" > $HOME/.tool-versions
+  echo "0.2.0" > $PROJECT_DIR/.dummy-version
+  echo "legacy_version_file = yes" > $HOME/.asdfrc
   rm $ASDF_DIR/plugins/dummy/bin/list-legacy-filenames
 
-  run find_version_file_for "dummy"
+  run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "$HOME/.tool-versions" ]
-}
-
-@test "search_filenames should return the path to the first filename found" {
-  touch "$PROJECT_DIR/.dummy-version"
-  touch "$PROJECT_DIR/.tool-versions"
-
-  run search_filenames ".tool-versions .dummy-version" $PROJECT_DIR
-  [ "$status" -eq 0 ]
-  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
-}
-
-@test "search_filenames should walk parent directories" {
-  touch "$PROJECT_DIR/.dummy-version"
-  touch "$HOME/.tool-versions"
-
-  run search_filenames ".tool-versions" $PROJECT_DIR
-  [ "$status" -eq 0 ]
-  [ "$output" = "$HOME/.tool-versions" ]
-}
-
-@test "search_filenames should return nothing if not found" {
-  run search_filenames ".does-not-exist" $PROJECT_DIR
-  [ "$status" -eq 0 ]
-  [ "$output" = "" ]
-}
-
-@test "parse_version_file parses the version from a .tool-version file" {
-  echo "dummy 0.2.0" > $HOME/.tool-versions
-  run parse_version_file $HOME/.tool-versions "dummy"
-  [ "$status" -eq 0 ]
-  [ "$output" = "0.2.0" ]
-}
-
-@test "parse_version_file calls the plugin's parse-legacy-file if implemented" {
-  echo "dummy-0.2.0" > $HOME/.dummy-version
-  run parse_version_file $HOME/.dummy-version "dummy"
-  [ "$status" -eq 0 ]
-  [ "$output" = "0.2.0" ]
-}
-
-@test "parse_version_file cats the legacy file if parse-legacy-file isn't implemented" {
-  echo "0.2.0" > $HOME/.dummy-version
-  rm $ASDF_DIR/plugins/dummy/bin/parse-legacy-file
-  run parse_version_file $HOME/.dummy-version "dummy"
-  [ "$status" -eq 0 ]
-  [ "$output" = "0.2.0" ]
+  [ "$output" = "0.1.0" ]
 }
 
 @test "get_preset_version_for returns the current version" {
