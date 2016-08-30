@@ -1,14 +1,16 @@
 version_command() {
   local cmd=$1
   local plugin=$2
-  local version=$3
-  local file
 
-  if [ "$#" -ne 3 ]; then
+  if [ "$#" -lt "3" ]; then
     echo "Usage: asdf $cmd <name> <version>"
     exit 1
   fi
 
+  shift 2
+  local versions=$@
+
+  local file
   if [ $cmd = "global" ]; then
     file=$HOME/.tool-versions
   else
@@ -16,12 +18,14 @@ version_command() {
   fi
 
   check_if_plugin_exists $plugin
-  check_if_version_exists $plugin $version
+  for version in $versions; do
+    check_if_version_exists $plugin $version
+  done
 
   if [ -f "$file" ] && grep $plugin "$file" > /dev/null; then
-    sed -i -e "s/$plugin .*/$plugin $version/" "$file"
+    sed -i -e "s/$plugin .*/$plugin $versions/" "$file"
   else
-    echo "$plugin $version" >> "$file"
+    echo "$plugin $versions" >> "$file"
   fi
 }
 
