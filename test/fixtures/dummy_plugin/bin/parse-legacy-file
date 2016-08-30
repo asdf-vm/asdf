@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+echo $(cat $1 | tr -d "dummy-")
