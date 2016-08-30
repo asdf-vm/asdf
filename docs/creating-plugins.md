@@ -62,7 +62,7 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 #### bin/parse-legacy-file
 
-This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version.
+This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
 ### Custom shim templates
 
