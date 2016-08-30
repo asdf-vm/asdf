@@ -45,6 +45,12 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "local should allow multiple versions" {
+  run local_command "dummy" "1.1.0" "1.0.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
+}
+
 @test "local should create a local .tool-versions file if it doesn't exist when the directory name contains whitespace" {
   WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
   mkdir -p "$WHITESPACE_DIR"
@@ -68,6 +74,12 @@ teardown() {
   run global_command "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should accept multiple versions" {
+  run global_command "dummy" "1.1.0" "1.0.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
 }
 
 @test "global should overwrite the existing version if it's set" {
