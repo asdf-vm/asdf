@@ -18,7 +18,7 @@ Depending on your OS, run the following
 echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 
-# OR for Max OSX
+# OR for Mac OSX
 echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 ```
