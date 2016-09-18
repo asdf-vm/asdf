@@ -92,3 +92,11 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "0.2.0" ]
 }
+
+@test "get_preset_version_for returns the current version when using path" {
+  cd $PROJECT_DIR
+  echo "dummy path:/usr" > .tool-versions
+  run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "path:/usr" ]
+}
