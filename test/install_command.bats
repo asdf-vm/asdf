@@ -8,6 +8,9 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_dummy_plugin
+
+  PROJECT_DIR=$HOME/project
+  mkdir $PROJECT_DIR
 }
 
 teardown() {
