@@ -8,6 +8,9 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_dummy_plugin
+
+  PROJECT_DIR=$HOME/project
+  mkdir $PROJECT_DIR
 }
 
 teardown() {
@@ -26,4 +29,16 @@ teardown() {
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
   run grep ASDF_CONCURRENCY $ASDF_DIR/installs/dummy/1.0/env
   [ "$status" -eq 0 ]
+}
+
+@test "install_command should work in directory containing whitespace" {
+  WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
+  mkdir -p "$WHITESPACE_DIR"
+  cd "$WHITESPACE_DIR"
+  echo 'dummy 1.2' >> "$WHITESPACE_DIR/.tool-versions"
+
+  run install_command
+
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
