@@ -8,7 +8,7 @@ Supported languages include Ruby, Node.js, Elixir and more. Supporting a new lan
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.1.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
 
 ```
 
