@@ -94,7 +94,7 @@ parse_asdf_version_file() {
   local file_path=$1
   local plugin_name=$2
 
-  if [ -f $file_path ]; then
+  if [ -f "$file_path" ]; then
     cat $file_path | while read -r line || [[ -n "$line" ]]; do
       local line_parts=($line)
 
