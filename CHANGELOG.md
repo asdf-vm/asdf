@@ -2,6 +2,10 @@
 
 ##0.2.0-dev
 
+Features
+
+* Determine global tool version even when used outside of home directory (#106)
+
 ##0.2.0
 
 Features
