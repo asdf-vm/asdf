@@ -66,6 +66,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Riak      | [smashedtoatoms/asdf-riak](https://github.com/smashedtoatoms/asdf-riak) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-riak.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-riak)
 | Ruby      | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-ruby.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-ruby)
 | Rust      | [code-lever/asdf-rust](https://github.com/code-lever/asdf-rust) | [![Build Status](https://travis-ci.org/code-lever/asdf-rust.svg?branch=master)](https://travis-ci.org/code-lever/asdf-rust)
+| Terraform | [neerfri/asdf-terraform](https://github.com/neerfri/asdf-terraform) | [![Build Status](https://travis-ci.org/neerfri/asdf-terraform.svg?branch=master)](https://travis-ci.org/neerfri/asdf-terraform)
 
 
 ##### Add a plugin
