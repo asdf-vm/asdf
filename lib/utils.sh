@@ -56,6 +56,28 @@ display_error() {
   echo >&2 $1
 }
 
+get_version_in_dir() {
+  local plugin_name=$1
+  local search_path=$2
+  local legacy_filenames=$3
+
+  local asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" $plugin_name)
+
+  if [ -n "$asdf_version" ]; then
+    echo "$asdf_version:$search_path/.tool-versions"
+    return 0
+  fi
+
+  for filename in $legacy_filenames; do
+    local legacy_version=$(parse_legacy_version_file "$search_path/$filename" $plugin_name)
+
+    if [ -n "$legacy_version" ]; then
+      echo "$legacy_version:$search_path/$filename"
+      return 0
+    fi
+  done
+}
+
 find_version() {
   local plugin_name=$1
   local search_path=$2
@@ -70,24 +92,15 @@ find_version() {
   fi
 
   while [ "$search_path" != "/" ]; do
-    local asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" $plugin_name)
-
-    if [ -n "$asdf_version" ]; then
-      echo "$asdf_version:$search_path/.tool-versions"
+    local version=$(get_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
+    if [ -n "$version" ]; then
+      echo "$version"
       return 0
     fi
-
-    for filename in $legacy_filenames; do
-      local legacy_version=$(parse_legacy_version_file "$search_path/$filename" $plugin_name)
-
-      if [ -n "$legacy_version" ]; then
-        echo "$legacy_version:$search_path/$filename"
-        return 0
-      fi
-    done
-
     search_path=$(dirname "$search_path")
   done
+
+  get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
 }
 
 parse_asdf_version_file() {

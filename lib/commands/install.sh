@@ -22,8 +22,8 @@ get_concurrency() {
 }
 
 install_local_tool_versions() {
-  if [ -f $(pwd)/.tool-versions ]; then
-    local asdf_versions_path=$(pwd)/.tool-versions
+  if [ -f "$(pwd)/.tool-versions" ]; then
+    local asdf_versions_path="$(pwd)/.tool-versions"
 
     while read tool_line; do
       IFS=' ' read -a tool_info <<< $tool_line
@@ -33,7 +33,7 @@ install_local_tool_versions() {
       if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
         install_tool_version $tool_name $tool_version
       fi
-    done < $asdf_versions_path
+    done < "$asdf_versions_path"
   else
     echo "Either specify a tool & version in the command"
     echo "OR add .tool-versions file in this directory"
