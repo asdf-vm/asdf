@@ -82,6 +82,12 @@ find_version() {
   local plugin_name=$1
   local search_path=$2
 
+  local version=$(get_version_from_env "$plugin_name")
+  if [ -n "$version" ]; then
+      echo "$version"
+      return 0
+  fi
+
   local plugin_path=$(get_plugin_path "$plugin_name")
   local legacy_config=$(get_asdf_config_value "legacy_version_file")
   local legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
@@ -92,7 +98,7 @@ find_version() {
   fi
 
   while [ "$search_path" != "/" ]; do
-    local version=$(get_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
+    version=$(get_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
     if [ -n "$version" ]; then
       echo "$version"
       return 0
@@ -101,6 +107,14 @@ find_version() {
   done
 
   get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
+}
+
+get_version_from_env () {
+  local plugin_name=$1
+  local upcase_name=$(echo $plugin_name | tr '[a-z]' '[A-Z]')
+  local version_env_var="ASDF_${upcase_name}_VERSION"
+  local version=${!version_env_var}
+  echo "$version"
 }
 
 parse_asdf_version_file() {
