@@ -15,12 +15,12 @@ git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
 Depending on your OS, run the following
 ```bash
 # For Ubuntu or other linux distros
-echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc
-echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+echo '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 
 # OR for Mac OSX
-echo '. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
-echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
+echo '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+echo '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 ```
 
 If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
