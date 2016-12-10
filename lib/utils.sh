@@ -25,6 +25,19 @@ get_install_path() {
   fi
 }
 
+list_installed_versions() {
+  local plugin_name=$1
+  local plugin_path=$(get_plugin_path $plugin_name)
+
+  local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+
+  if [ -d $plugin_installs_path ]; then
+    for install in $(ls -d ${plugin_installs_path}/*/ 2>/dev/null); do
+      echo "$(basename $install)"
+    done
+  fi
+}
+
 check_if_plugin_exists() {
   # Check if we have a non-empty argument
   if [ -z "${1+set}" ]; then
