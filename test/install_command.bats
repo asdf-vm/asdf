@@ -42,3 +42,11 @@ teardown() {
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
+
+@test "install_command should create a shim with metadada" {
+  run install_command dummy 1.0
+  [ "$status" -eq 0 ]
+  [ -f $ASDF_DIR/installs/dummy/1.0/env ]
+  run grep "# asdf-plugin: dummy" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+}

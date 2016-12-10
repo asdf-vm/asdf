@@ -48,9 +48,11 @@ write_shim_script() {
   if [ -f $plugin_shims_path/$executable_name ]; then
     cp $plugin_shims_path/$executable_name $shim_path
   else
-    echo """#!/usr/bin/env bash
+    cat <<EOF > $shim_path
+#!/usr/bin/env bash
+# asdf-plugin: ${plugin_name}
 exec $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
-""" > $shim_path
+EOF
   fi
 
   chmod +x $shim_path
