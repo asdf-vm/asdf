@@ -76,6 +76,16 @@ asdf allows custom shim templates. For an executable called `foo`, if there's a 
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
 
+**Important: Shim metadata **
+
+If you create a custom shim, be sure to include a comment like the following (replacing your plugin name) in it:
+
+```
+# asdf-plugin: plugin_name
+```
+
+asdf uses this `asdf-plugin` metadata to remove unused shims when uninstalling.
+
 ## Testing plugins
 
 `asdf` contains the `plugin-test` command to test your plugin.

@@ -47,7 +47,7 @@ teardown() {
   run install_command dummy 1.0
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
-  run grep "# asdf-plugin: dummy" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 }
 
