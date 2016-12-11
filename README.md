@@ -51,6 +51,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 
 | Language  | Repository  | CI Status
 |-----------|-------------|----------
+| D (DMD)   | [smashedtoatoms/asdf-dmd](https://github.com/smashedtoatoms/asdf-dmd) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-dmd.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-dmd)
 | Elixir    | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-elixir.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-elixir)
 | Elm       | [vic/asdf-elm](https://github.com/vic/asdf-elm) | [![Build Status](https://travis-ci.org/vic/asdf-elm.svg?branch=master)](https://travis-ci.org/vic/asdf-elm)
 | Erlang    | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-erlang.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-erlang)
@@ -71,6 +72,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Riak      | [smashedtoatoms/asdf-riak](https://github.com/smashedtoatoms/asdf-riak) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-riak.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-riak)
 | Ruby      | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-ruby.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-ruby)
 | Rust      | [code-lever/asdf-rust](https://github.com/code-lever/asdf-rust) | [![Build Status](https://travis-ci.org/code-lever/asdf-rust.svg?branch=master)](https://travis-ci.org/code-lever/asdf-rust)
+| Scala     | [smashedtoatoms/asdf-scala](https://github.com/smashedtoatoms/asdf-scala) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-scala.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-scala)
 | Terraform | [neerfri/asdf-terraform](https://github.com/neerfri/asdf-terraform) | [![Build Status](https://travis-ci.org/neerfri/asdf-terraform.svg?branch=master)](https://travis-ci.org/neerfri/asdf-terraform)
 
 
