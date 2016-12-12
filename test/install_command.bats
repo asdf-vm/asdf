@@ -42,3 +42,19 @@ teardown() {
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
+
+@test "install_command should create a shim with metadada" {
+  run install_command dummy 1.0
+  [ "$status" -eq 0 ]
+  [ -f $ASDF_DIR/installs/dummy/1.0/env ]
+  run grep "asdf-plugin: dummy" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+}
+
+
+@test "install_command running a shim should call the plugin executable" {
+  run install_command dummy 1.0
+  [ "$status" -eq 0 ]
+  # run the shim which should be on path and expect the plugin's output
+  [ "dummy" $(dummy) ]
+}
