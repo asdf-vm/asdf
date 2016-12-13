@@ -51,7 +51,7 @@ write_shim_script() {
     cat <<EOF > $shim_path
 #!/usr/bin/env bash
 # asdf-plugin: ${plugin_name}
-exec $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} \"\$@\"
+exec $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} "\$@"
 EOF
   fi
 
