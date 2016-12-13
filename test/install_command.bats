@@ -52,9 +52,15 @@ teardown() {
 }
 
 
-@test "install_command running a shim should call the plugin executable" {
-  run install_command dummy 1.0
+@test "install_command generated shim should pass all arguments to executable" {
+  # asdf lib needed to run generated shims
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
+
+  cd $PROJECT_DIR
+  echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
+  run install_command
+
+  # execute the generated shim
+  [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
-  # run the shim which should be on path and expect the plugin's output
-  [ "dummy" $(dummy) ]
 }
