@@ -64,7 +64,7 @@ get_version_in_dir() {
   local asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" $plugin_name)
 
   if [ -n "$asdf_version" ]; then
-    echo "$asdf_version:$search_path/.tool-versions"
+    echo "$asdf_version|$search_path/.tool-versions"
     return 0
   fi
 
@@ -72,7 +72,7 @@ get_version_in_dir() {
     local legacy_version=$(parse_legacy_version_file "$search_path/$filename" $plugin_name)
 
     if [ -n "$legacy_version" ]; then
-      echo "$legacy_version:$search_path/$filename"
+      echo "$legacy_version|$search_path/$filename"
       return 0
     fi
   done
@@ -108,14 +108,11 @@ parse_asdf_version_file() {
   local plugin_name=$2
 
   if [ -f "$file_path" ]; then
-    cat $file_path | while read -r line || [[ -n "$line" ]]; do
-      local line_parts=($line)
-
-      if [ "${line_parts[0]}" = "$plugin_name" ]; then
-        echo ${line_parts[1]}
-        return 0
-      fi
-    done
+    local version=$(grep "${plugin_name} " $file_path | sed -e "s/^${plugin_name} //")
+    if [ -n "$version" ]; then
+      echo $version
+      return 0
+    fi
   fi
 }
 
@@ -139,7 +136,7 @@ get_preset_version_for() {
   local plugin_name=$1
   local search_path=$(pwd)
   local version_and_path=$(find_version "$plugin_name" "$search_path")
-  local version=$(cut -d ':' -f 1 <<< "$version_and_path");
+  local version=$(cut -d '|' -f 1 <<< "$version_and_path");
 
   echo "$version"
 }
