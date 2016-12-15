@@ -52,6 +52,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Language  | Repository  | CI Status
 |-----------|-------------|----------
 | Clojure   | [vic/asdf-clojure](https://github.com/vic/asdf-clojure) | [![Build Status](https://travis-ci.org/vic/asdf-clojure.svg?branch=master)](https://travis-ci.org/vic/asdf-clojure)
+| D (DMD)   | [sylph01/asdf-dmd](https://github.com/sylph01/asdf-dmd) | [![Build Status](https://travis-ci.org/sylph01/asdf-dmd.svg?branch=master)](https://travis-ci.org/sylph01/asdf-dmd)
 | Elixir    | [asdf-vm/asdf-elixir](https://github.com/asdf-vm/asdf-elixir) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-elixir.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-elixir)
 | Elm       | [vic/asdf-elm](https://github.com/vic/asdf-elm) | [![Build Status](https://travis-ci.org/vic/asdf-elm.svg?branch=master)](https://travis-ci.org/vic/asdf-elm)
 | Erlang    | [asdf-vm/asdf-erlang](https://github.com/asdf-vm/asdf-erlang) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-erlang.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-erlang)
