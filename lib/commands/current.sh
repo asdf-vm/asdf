@@ -5,8 +5,8 @@ current_command() {
 
   local search_path=$(pwd)
   local version_and_path=$(find_version "$plugin_name" "$search_path")
-  local version=$(cut -d ':' -f 1 <<< "$version_and_path");
-  local version_file_path=$(cut -d ':' -f 2  <<< "$version_and_path");
+  local version=$(cut -d '|' -f 1 <<< "$version_and_path");
+  local version_file_path=$(cut -d '|' -f 2  <<< "$version_and_path");
 
   check_if_version_exists $plugin_name $version
   check_for_deprecated_plugin $plugin_name

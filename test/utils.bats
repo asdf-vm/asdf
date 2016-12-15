@@ -52,7 +52,7 @@ teardown() {
 
   run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "0.1.0:$PROJECT_DIR/.tool-versions" ]
+  [ "$output" = "0.1.0|$PROJECT_DIR/.tool-versions" ]
 }
 
 @test "find_version should return the legacy file if supported" {
@@ -62,7 +62,7 @@ teardown() {
 
   run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "0.2.0:$PROJECT_DIR/.dummy-version" ]
+  [ "$output" = "0.2.0|$PROJECT_DIR/.dummy-version" ]
 }
 
 @test "find_version skips .tool-version file that don't list the plugin" {
@@ -71,7 +71,7 @@ teardown() {
 
   run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "0.1.0:$HOME/.tool-versions" ]
+  [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
 @test "find_version should return .tool-versions if unsupported" {
@@ -82,7 +82,7 @@ teardown() {
 
   run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "0.1.0:$HOME/.tool-versions" ]
+  [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
 @test "get_preset_version_for returns the current version" {
@@ -108,4 +108,20 @@ teardown() {
   ASDF_DUMMY_VERSION=3.0.0 run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "3.0.0" ]
+}
+
+@test "get_preset_version_for should return branch reference version" {
+  cd $PROJECT_DIR
+  echo "dummy ref:master" > $PROJECT_DIR/.tool-versions
+  run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "ref:master" ]
+}
+
+@test "get_preset_version_for should return path version" {
+  cd $PROJECT_DIR
+  echo "dummy path:/some/place with spaces" > $PROJECT_DIR/.tool-versions
+  run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "path:/some/place with spaces" ]
 }
