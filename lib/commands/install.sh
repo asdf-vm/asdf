@@ -4,6 +4,9 @@ install_command() {
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions
+  elif [[ $# -eq 1 ]]; then
+    display_error "You must specify a name and a version to install"
+    exit 1
   else
     install_tool_version $plugin_name $full_version
   fi
