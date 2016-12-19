@@ -64,3 +64,15 @@ teardown() {
   [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
+
+@test "install_command fails when the name or version are not specified" {
+  run install_command dummy
+  [ "$status" -eq 1 ]
+  [ "$output" = "You must specify a name and a version to install" ]
+  [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
+
+  run install_command 1.1
+  [ "$status" -eq 1 ]
+  [ "$output" = "You must specify a name and a version to install" ]
+  [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
+}
