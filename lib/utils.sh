@@ -1,5 +1,5 @@
 asdf_version() {
-  echo "0.2.0-dev"
+  echo "0.2.1"
 }
 
 asdf_dir() {
