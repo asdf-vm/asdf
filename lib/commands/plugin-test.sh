@@ -62,5 +62,13 @@ plugin_test_command() {
         fi
     fi
 
+    # Assert the scripts in bin are executable by asdf
+    for filename in $ASDF_DIR/plugins/$plugin_name/bin/*
+    do
+        if [ ! -x "$filename" ]; then
+            fail_test "Incorrect permissions on $filename. Must be executable by asdf"
+        fi
+    done
+
     rm -rf $ASDF_DIR
 }
