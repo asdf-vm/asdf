@@ -39,12 +39,12 @@ complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-list -d "List insta
 
 # plugin-remove completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-remove -d "Remove plugin and package versions"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-remove; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)' -A
+complete -f -c asdf -n '__fish_asdf_using_command plugin-remove; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
 
 # plugin-update completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-update -d "Update plugin"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)' -A
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a --all -A
+complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
+complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a --all
 
 # install completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a install -d "Install a specific version of a package"
