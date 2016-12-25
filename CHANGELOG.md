@@ -1,10 +1,18 @@
 #Changelog
 
-##0.2.0-dev
+##0.2.1-dev
+
+##0.2.1
 
 Features
 
 * Determine global tool version even when used outside of home directory (#106)
+
+Fixed Bugs
+
+* Correct reading of `ref:` and `path:` versions (#112)
+* Remove shims when uninstalling a version or removing a plugin (#122, #123, #125, #128, #131)
+* Add a helpful error message to the install command (#135)
 
 ##0.2.0
 
