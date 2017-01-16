@@ -75,7 +75,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Rust      | [code-lever/asdf-rust](https://github.com/code-lever/asdf-rust) | [![Build Status](https://travis-ci.org/code-lever/asdf-rust.svg?branch=master)](https://travis-ci.org/code-lever/asdf-rust)
 | Scala     | [mtatheonly/asdf-scala](https://github.com/mtatheonly/asdf-scala)| [![Build Status](https://travis-ci.org/mtatheonly/asdf-scala.svg?branch=master)](https://travis-ci.org/mtatheonly/asdf-scala)
 | Terraform | [neerfri/asdf-terraform](https://github.com/neerfri/asdf-terraform) | [![Build Status](https://travis-ci.org/neerfri/asdf-terraform.svg?branch=master)](https://travis-ci.org/neerfri/asdf-terraform)
-
+| SBT       | [lerencao/asdf-sbt](https://github.com/lerencao/asdf-sbt) | [![Build Status](https://travis-ci.org/lerencao/asdf-sbt.svg?branch=master)](https://travis-ci.org/lerencao/asdf-sbt)
 
 ##### Add a plugin
 
