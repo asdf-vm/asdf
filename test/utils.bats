@@ -116,6 +116,14 @@ teardown() {
   [ "$output" = "0.1.0" ]
 }
 
+@test "get_preset_version_for returns the tool version from env if ASDF_{TOOL}_VERSION is defined" {
+  cd $PROJECT_DIR
+  echo "dummy 0.2.0" > .tool-versions
+  ASDF_DUMMY_VERSION=3.0.0 run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "3.0.0" ]
+}
+
 @test "get_preset_version_for should return branch reference version" {
   cd $PROJECT_DIR
   echo "dummy ref:master" > $PROJECT_DIR/.tool-versions
