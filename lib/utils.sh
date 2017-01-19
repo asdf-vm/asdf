@@ -55,6 +55,12 @@ check_if_version_exists() {
   local plugin=$1
   local version=$2
   local version_dir=$(asdf_dir)/installs/$plugin/$version
+
+  # if version starts with path: use that directory
+  if [ "${version/path:}" != "$version" ]; then
+      version_dir=$(echo $version | cut -d: -f 2)
+  fi
+
   if [ ! -d $version_dir ]; then
     display_error "version $version is not installed for $plugin"
     exit 1
