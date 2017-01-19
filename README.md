@@ -1,4 +1,4 @@
-# asdf
+# asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
 ### _extendable version manager_
 
 Supported languages include Ruby, Node.js, Elixir and more. Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
