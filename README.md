@@ -162,6 +162,17 @@ asdf global elixir 1.2.4
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
+Alternatively, if you want to set a version only for the current shell session
+or for executing just a command under a particular tool version, you
+can set an environment variable like `ASDF_${TOOL}_VERSION`.
+
+The following example runs tests on an Elixir project with version `1.4.0`.
+The version format is the same supported by the `.tool-versions` file.
+
+```shell
+ASDF_ELIXIR_VERSION=1.4.0 mix test
+```
+
 ## The `.tool-versions` file
 
 Add a `.tool-versions` file to your project dir and versions of those tools will be used.
