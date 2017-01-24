@@ -62,6 +62,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Idris     | [vic/asdf-idris](https://github.com/vic/asdf-idris) | [![Build Status](https://travis-ci.org/vic/asdf-idris.svg?branch=master)](https://travis-ci.org/vic/asdf-idris)
 | Julia     | [rkyleg/asdf-julia](https://github.com/rkyleg/asdf-julia) | [![Build Status](https://travis-ci.org/rkyleg/asdf-julia.svg?branch=master)](https://travis-ci.org/rkyleg/asdf-julia)
 | LFE       | [vic/asdf-lfe](https://github.com/vic/asdf-lfe) | [![Build Status](https://travis-ci.org/vic/asdf-lfe.svg?branch=master)](https://travis-ci.org/vic/asdf-lfe)
+| Link (system tools) | [vic/asdf-link](https://github.com/vic/asdf-link) | [![Build Status](https://travis-ci.org/vic/asdf-link.svg?branch=master)](https://travis-ci.org/vic/asdf-link)
 | Lua       | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua) | [![Build Status](https://travis-ci.org/Stratus3D/asdf-lua.svg?branch=master)](https://travis-ci.org/Stratus3D/asdf-lua)
 | LuaJIT | [smashedtoatoms/asdf-luaJIT](https://github.com/smashedtoatoms/asdf-luaJIT) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-luaJIT.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-luaJIT)
 | OpenResty | [smashedtoatoms/asdf-openresty](https://github.com/smashedtoatoms/asdf-openresty) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-openresty.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-openresty)
