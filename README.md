@@ -65,9 +65,10 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | Link (system tools) | [vic/asdf-link](https://github.com/vic/asdf-link) | [![Build Status](https://travis-ci.org/vic/asdf-link.svg?branch=master)](https://travis-ci.org/vic/asdf-link)
 | Lua       | [Stratus3D/asdf-lua](https://github.com/Stratus3D/asdf-lua) | [![Build Status](https://travis-ci.org/Stratus3D/asdf-lua.svg?branch=master)](https://travis-ci.org/Stratus3D/asdf-lua)
 | LuaJIT | [smashedtoatoms/asdf-luaJIT](https://github.com/smashedtoatoms/asdf-luaJIT) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-luaJIT.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-luaJIT)
-| OpenResty | [smashedtoatoms/asdf-openresty](https://github.com/smashedtoatoms/asdf-openresty) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-openresty.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-openresty)
 | MongoDB   | [sylph01/asdf-mongodb](https://github.com/sylph01/asdf-mongodb) | [![Build Status](https://travis-ci.org/sylph01/asdf-mongodb.svg?branch=master)](https://travis-ci.org/sylph01/asdf-mongodb)
 | Node.js   | [asdf-vm/asdf-nodejs](https://github.com/asdf-vm/asdf-nodejs) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-nodejs.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-nodejs)
+| OpenResty | [smashedtoatoms/asdf-openresty](https://github.com/smashedtoatoms/asdf-openresty) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-openresty.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-openresty)
+| Packer    | [gozer/asdf-packer](https://github.com/gozer/asdf-packer) | [![Build Status](https://travis-ci.org/gozer/asdf-packer.svg?branch=master)](https://travis-ci.org/gozer/asdf-packer)
 | PHP  | [odarriba/asdf-php](https://github.com/odarriba/asdf-php) | [![Build Status](https://travis-ci.org/odarriba/asdf-php.svg?branch=master)](https://travis-ci.org/odarriba/asdf-php)
 | Postgres  | [smashedtoatoms/asdf-postgres](https://github.com/smashedtoatoms/asdf-postgres) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-postgres.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-postgres)
 | Python    | [tuvistavie/asdf-python](https://github.com/tuvistavie/asdf-python) | [![Build Status](https://travis-ci.org/tuvistavie/asdf-python.svg?branch=master)](https://travis-ci.org/tuvistavie/asdf-python)
@@ -78,7 +79,6 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | SBT       | [lerencao/asdf-sbt](https://github.com/lerencao/asdf-sbt) | [![Build Status](https://travis-ci.org/lerencao/asdf-sbt.svg?branch=master)](https://travis-ci.org/lerencao/asdf-sbt)
 | Scala     | [mtatheonly/asdf-scala](https://github.com/mtatheonly/asdf-scala)| [![Build Status](https://travis-ci.org/mtatheonly/asdf-scala.svg?branch=master)](https://travis-ci.org/mtatheonly/asdf-scala)
 | Terraform | [neerfri/asdf-terraform](https://github.com/neerfri/asdf-terraform) | [![Build Status](https://travis-ci.org/neerfri/asdf-terraform.svg?branch=master)](https://travis-ci.org/neerfri/asdf-terraform)
-| Packer    | [gozer/asdf-packer](https://github.com/gozer/asdf-packer) | [![Build Status](https://travis-ci.org/gozer/asdf-packer.svg?branch=master)](https://travis-ci.org/gozer/asdf-packer)
 
 ##### Add a plugin
 
