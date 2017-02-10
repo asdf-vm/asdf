@@ -70,5 +70,10 @@ plugin_test_command() {
         fi
     done
 
+    (asdf plugin-update $plugin_name)
+    if [ $? -ne 0 ]; then
+        fail_test "could not update plugin"
+    fi
+
     rm -rf $ASDF_DIR
 }
