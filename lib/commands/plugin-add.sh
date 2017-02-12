@@ -15,9 +15,7 @@ plugin_add_command() {
     exit 1
   else
     git clone $source_url $plugin_path
-    if [ $? -eq 0 ]; then
-      chmod +x $plugin_path/bin/*
-    else
+    if [ ! $? -eq 0 ]; then
       exit 1
     fi
   fi
