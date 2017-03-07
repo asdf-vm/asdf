@@ -1,3 +1,8 @@
+# We shouldn't rely on the user's grep settings to be correct. If we set these
+# here anytime asdf invokes grep it will be invoked with these options
+GREP_OPTIONS="--color=never"
+GREP_COLORS=
+
 asdf_version() {
   echo "0.2.1"
 }

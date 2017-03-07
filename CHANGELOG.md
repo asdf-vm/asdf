@@ -4,7 +4,8 @@
 
 Fixed Bugs
 
-* Export `ASDF_DIR` variable so the Zsh plugin can locate asdf if it's in a custom location
+* Set `GREP_OPTIONS` and `GREP_COLORS` variables in util.sh so grep is always invoked with the correct settings (#170)
+* Export `ASDF_DIR` variable so the Zsh plugin can locate asdf if it's in a custom location (#156)
 
 ##0.2.1
 
