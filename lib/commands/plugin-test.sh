@@ -70,5 +70,15 @@ plugin_test_command() {
         fi
     done
 
+    # Assert that a license file exists in the plugin repo and is not empty
+    license_file="$ASDF_DIR/plugins/$plugin_name/LICENSE"
+    if [ -f "$license_file" ]; then
+        if [ ! -s "$license_file" ]; then
+            fail_test "LICENSE file in the plugin repository must not be empty"
+        fi
+    else
+        fail_test "LICENSE file must be present in the plugin repository"
+    fi
+
     rm -rf $ASDF_DIR
 }
