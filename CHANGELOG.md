@@ -2,6 +2,10 @@
 
 ##0.2.1-dev
 
+Fixed Bugs
+
+* Export `ASDF_DIR` variable so the Zsh plugin can locate asdf if it's in a custom location
+
 ##0.2.1
 
 Features
