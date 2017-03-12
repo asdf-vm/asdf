@@ -6,8 +6,8 @@ else
   current_script_path="$0"
 fi
 
-# shellcheck disable=SC2155,SC2164
-export ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null; pwd)"
+export ASDF_DIR
+ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
 export PATH="${ASDF_DIR}/bin:${ASDF_DIR}/shims:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
