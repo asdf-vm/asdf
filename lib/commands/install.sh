@@ -15,7 +15,7 @@ install_command() {
 get_concurrency() {
   if which nproc > /dev/null 2>&1; then
     echo $(nproc)
-  elif which sysctl > /dev/null 2>&1; then
+  elif which sysctl > /dev/null 2>&1 && sysctl hw.ncpu > /dev/null 2>&1; then
     echo $(sysctl -n hw.ncpu)
   elif [ -f /proc/cpuinfo ]; then
     echo $(grep -c processor /proc/cpuinfo)
