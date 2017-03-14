@@ -23,11 +23,12 @@ which_command() {
   local plugin_name=$1
   local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_name
+  local install_type="version"
 
-  local install_path=$(get_install_path $plugin_name $install_type $(current_version))
+  local install_path=$(get_install_path $plugin_name $install_type $(current_version)))
 
   if [ -d $install_path ]; then
-    echo $install_path/$plugin_name
+    echo $install_path
     exit 0
   else
     echo "Version not installed"
