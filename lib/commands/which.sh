@@ -28,7 +28,7 @@ which_command() {
   local install_path=$(get_install_path $plugin_name $install_type $(current_version $plugin_name))
 
   if [ -d $install_path ]; then
-    echo $install_path
+    echo $install_path/$plugin_name
     exit 0
   else
     echo "Version not installed"
