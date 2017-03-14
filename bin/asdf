@@ -7,6 +7,7 @@ source $(dirname $(dirname $0))/lib/commands/install.sh
 source $(dirname $(dirname $0))/lib/commands/uninstall.sh
 source $(dirname $(dirname $0))/lib/commands/current.sh
 source $(dirname $(dirname $0))/lib/commands/where.sh
+source $(dirname $(dirname $0))/lib/commands/which.sh
 source $(dirname $(dirname $0))/lib/commands/version_commands.sh
 source $(dirname $(dirname $0))/lib/commands/list.sh
 source $(dirname $(dirname $0))/lib/commands/list-all.sh
@@ -42,6 +43,9 @@ case $1 in
 "where")
     where_command $callback_args;;
 
+"which")
+    which_command $callback_args;;
+    
 "local")
     local_command $callback_args;;
 
