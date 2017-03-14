@@ -25,7 +25,7 @@ which_command() {
   check_if_plugin_exists $plugin_name
   local install_type="version"
 
-  local install_path=$(get_install_path $plugin_name $install_type $(current_version)))
+  local install_path=$(get_install_path $plugin_name $install_type $(current_version))
 
   if [ -d $install_path ]; then
     echo $install_path
