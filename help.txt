@@ -21,6 +21,8 @@ MANAGE PACKAGES
 
 UTILS
   asdf reshim <name> <version>         Recreate shims for version of a package
+  asdf update                          Update asdf to the latest stable release
+  asdf update --head                   Update asdf to the latest on the master branch
 
 
 "Late but latest"
