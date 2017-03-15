@@ -14,10 +14,7 @@ update_command() {
   else
     # Update to latest release
     git fetch --tags || exit 1
-    tags=$(git tag | sort_versions | tail -r) || exit 1
-
-    # Pick the newest tag
-    tag=$(echo $tags | cut -d ' '  -f1)
+    tag=$(git tag | sort_versions | sed '$!d') || exit 1
 
     # Update
     git checkout "$tag" || exit 1
