@@ -6,18 +6,15 @@ update_command() {
 
   if [ "$update_to_head" = "--head" ]; then
     # Update to latest on the master branch
-    git checkout master || exit 1
+    git checkout master
 
     # Pull down the latest changes on master
-    git pull origin master || exit 1
+    git pull origin master
     echo "Updated asdf to latest on the master branch"
   else
     # Update to latest release
     git fetch --tags || exit 1
-    tags=$(git tag | sort_versions | tail -r) || exit 1
-
-    # Pick the newest tag
-    tag=$(echo $tags | cut -d ' '  -f1)
+    tag=$(git tag | sort_versions | sed '$!d') || exit 1
 
     # Update
     git checkout "$tag" || exit 1
