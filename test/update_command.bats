@@ -12,7 +12,7 @@ setup() {
   install_dummy_plugin
 
   # Copy over git repo so we have something to test with
-  cp -r . $ASDF_DIR
+  cp -r .git $ASDF_DIR
   (
   cd $ASDF_DIR
   git remote remove origin
