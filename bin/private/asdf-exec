@@ -20,7 +20,7 @@ IFS=' ' read -a versions <<< "$full_version"
 for version in "${versions[@]}"; do
   install_path=$(find_install_path $plugin_name $version)
 
-  if [ $version != "system" -a ! -d "$install_path" ]; then
+  if [ $version != "system" ] && [ ! -d "$install_path" ]; then
     echo "$plugin_name $version not installed"
     exit 1
   fi
