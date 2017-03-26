@@ -1,11 +1,23 @@
 plugin_add_command() {
-  if [ "$#" -ne 2 ]; then
-    display_error "usage: asdf plugin-add <name> <git-url>"
+  if [[ $# -lt 1 || $# -gt 2 ]]; then
+    display_error "usage: asdf plugin-add <name> [<git-url>]"
     exit 1
   fi
 
   local plugin_name=$1
-  local source_url=$2
+
+  if [ -n "$2" ]; then
+    local source_url=$2
+  else
+    initialize_or_update_repository
+    local source_url=$(get_plugin_source_url $plugin_name)
+  fi
+
+  if [ -z "$source_url" ]; then
+    display_error "plugin $plugin_name not found in repository"
+    exit 1
+  fi
+
   local plugin_path=$(get_plugin_path $plugin_name)
 
   mkdir -p $(asdf_dir)/plugins
