@@ -178,7 +178,7 @@ get_executable_path() {
   check_if_version_exists $plugin_name $version
 
   if [ $version = "system" ]; then
-    path=$(echo $PATH | sed -e "s|$(asdf_dir)/shims:\?||g")
+    path=$(echo $PATH | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
     cmd=$(basename $executable_path)
     cmd_path=$(PATH=$path which $cmd 2>&1)
     if [ $? -ne 0 ]; then
