@@ -4,6 +4,11 @@
 
 ##0.3.0
 
+Features
+
+* Add `update` command to make it easier to update asdf to the latest release (#172, #180)
+* Add support for `system` version to allow passthrough to system installed tools (#55, #182)
+
 Fixed Bugs
 
 * Set `GREP_OPTIONS` and `GREP_COLORS` variables in util.sh so grep is always invoked with the correct settings (#170)
