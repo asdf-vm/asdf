@@ -46,7 +46,7 @@ list_installed_versions() {
 check_if_plugin_exists() {
   # Check if we have a non-empty argument
   if [ -z "${1+set}" ]; then
-    display_error "No such plugin"
+    display_error "No plugin given"
     exit 1
   fi
 
@@ -57,17 +57,19 @@ check_if_plugin_exists() {
 }
 
 check_if_version_exists() {
-  local plugin=$1
+  local plugin_name=$1
   local version=$2
-  local version_dir=$(asdf_dir)/installs/$plugin/$version
+  local version_dir=$(asdf_dir)/installs/$plugin_name/$version
 
   # if version starts with path: use that directory
   if [ "${version/path:}" != "$version" ]; then
       version_dir=$(echo $version | cut -d: -f 2)
   fi
 
-  if [ ! -d $version_dir ]; then
-    display_error "version $version is not installed for $plugin"
+  check_if_plugin_exists $plugin_name
+
+  if [ $version != "system" ] && [ ! -d $version_dir ]; then
+    display_error "version $version is not installed for $plugin_name"
     exit 1
   fi
 }
@@ -141,6 +143,54 @@ get_version_from_env () {
   echo "$version"
 }
 
+find_install_path() {
+  local plugin_name=$1
+  local version=$2
+
+  IFS=':' read -a version_info <<< "$version"
+
+  if [ $version = "system" ]; then
+    echo ""
+  elif [ "${version_info[0]}" = "ref" ]; then
+    local install_type="${version_info[0]}"
+    local version="${version_info[1]}"
+    echo $(get_install_path $plugin_name $install_type $version)
+  elif [ "${version_info[0]}" = "path" ]; then
+    # This is for people who have the local source already compiled
+    # Like those who work on the language, etc
+    # We'll allow specifying path:/foo/bar/project in .tool-versions
+    # And then use the binaries there
+    local install_type="path"
+    local version="path"
+    echo "${version_info[1]}"
+  else
+    local install_type="version"
+    local version="${version_info[0]}"
+    echo $(get_install_path $plugin_name $install_type $version)
+  fi
+}
+
+get_executable_path() {
+  local plugin_name=$1
+  local version=$2
+  local executable_path=$3
+
+  check_if_version_exists $plugin_name $version
+
+  if [ $version = "system" ]; then
+    path=$(echo $PATH | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
+    cmd=$(basename $executable_path)
+    cmd_path=$(PATH=$path which $cmd 2>&1)
+    if [ $? -ne 0 ]; then
+      return 1
+    fi
+    echo $cmd_path
+  else
+    local install_path=$(find_install_path $plugin_name $version)
+    echo ${install_path}/${executable_path}
+  fi
+}
+
 parse_asdf_version_file() {
   local file_path=$1
   local plugin_name=$2
@@ -180,29 +230,29 @@ get_preset_version_for() {
 }
 
 get_asdf_config_value_from_file() {
-    local config_path=$1
-    local key=$2
+  local config_path=$1
+  local key=$2
 
-    if [ ! -f $config_path ]; then
-        return 0
-    fi
+  if [ ! -f $config_path ]; then
+    return 0
+  fi
 
-    local result=$(grep -E "^\s*$key\s*=" $config_path | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
-    if [ -n "$result" ]; then
-        echo $result
-    fi
+  local result=$(grep -E "^\s*$key\s*=" $config_path | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
+  if [ -n "$result" ]; then
+    echo $result
+  fi
 }
 
 get_asdf_config_value() {
-    local key=$1
-    local config_path=${AZDF_CONFIG_FILE:-"$HOME/.asdfrc"}
-    local default_config_path=${AZDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
+  local key=$1
+  local config_path=${AZDF_CONFIG_FILE:-"$HOME/.asdfrc"}
+  local default_config_path=${AZDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
 
-    local result=$(get_asdf_config_value_from_file $config_path $key)
+  local result=$(get_asdf_config_value_from_file $config_path $key)
 
-    if [ -n "$result" ]; then
-        echo $result
-    else
-        get_asdf_config_value_from_file $default_config_path $key
-    fi
+  if [ -n "$result" ]; then
+    echo $result
+  else
+    get_asdf_config_value_from_file $default_config_path $key
+  fi
 }
