@@ -8,6 +8,10 @@ fi
 
 export ASDF_DIR
 ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
+
+# remove osx bash session logging output
+ASDF_DIR=${ASDF_DIR//[[:space:]]*Saving[[:alpha:][:blank:]]*completed./}
+
 export PATH="${ASDF_DIR}/bin:${ASDF_DIR}/shims:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
