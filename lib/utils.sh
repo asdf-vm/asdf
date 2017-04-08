@@ -68,7 +68,7 @@ check_if_version_exists() {
 
   check_if_plugin_exists $plugin_name
 
-  if [ $version != "system" ] && [ ! -d $version_dir ]; then
+  if [ "$version" != "system" ] && [ ! -d $version_dir ]; then
     display_error "version $version is not installed for $plugin_name"
     exit 1
   fi
