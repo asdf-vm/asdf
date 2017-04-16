@@ -4,7 +4,7 @@ GREP_OPTIONS="--color=never"
 GREP_COLORS=
 
 asdf_version() {
-  echo "0.2.1"
+  echo "0.3.0"
 }
 
 asdf_dir() {
