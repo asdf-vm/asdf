@@ -62,5 +62,23 @@ plugin_test_command() {
         fi
     fi
 
+    # Assert the scripts in bin are executable by asdf
+    for filename in $ASDF_DIR/plugins/$plugin_name/bin/*
+    do
+        if [ ! -x "$filename" ]; then
+            fail_test "Incorrect permissions on $filename. Must be executable by asdf"
+        fi
+    done
+
+    # Assert that a license file exists in the plugin repo and is not empty
+    license_file="$ASDF_DIR/plugins/$plugin_name/LICENSE"
+    if [ -f "$license_file" ]; then
+        if [ ! -s "$license_file" ]; then
+            fail_test "LICENSE file in the plugin repository must not be empty"
+        fi
+    else
+        fail_test "LICENSE file must be present in the plugin repository"
+    fi
+
     rm -rf $ASDF_DIR
 }

@@ -70,6 +70,19 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "local should fail to set a path:dir if dir does not exists " {
+    run local_command "dummy" "path:$PROJECT_DIR/local"
+    [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+    [ "$status" -eq 1 ]
+}
+
+@test "local should set a path:dir if dir exists " {
+    mkdir -p $PROJECT_DIR/local
+    run local_command "dummy" "path:$PROJECT_DIR/local"
+    [ "$status" -eq 0 ]
+    [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
+}
+
 @test "global should create a global .tool-versions file if it doesn't exist" {
   run global_command "dummy" "1.1.0"
   [ "$status" -eq 0 ]
@@ -87,4 +100,17 @@ teardown() {
   run global_command "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should fail to set a path:dir if dir does not exists " {
+    run global_command "dummy" "path:$PROJECT_DIR/local"
+    [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+    [ "$status" -eq 1 ]
+}
+
+@test "global should set a path:dir if dir exists " {
+    mkdir -p $PROJECT_DIR/local
+    run global_command "dummy" "path:$PROJECT_DIR/local"
+    [ "$status" -eq 0 ]
+    [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }

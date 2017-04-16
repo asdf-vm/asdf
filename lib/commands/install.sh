@@ -4,6 +4,9 @@ install_command() {
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions
+  elif [[ $# -eq 1 ]]; then
+    display_error "You must specify a name and a version to install"
+    exit 1
   else
     install_tool_version $plugin_name $full_version
   fi
@@ -12,7 +15,7 @@ install_command() {
 get_concurrency() {
   if which nproc > /dev/null 2>&1; then
     echo $(nproc)
-  elif which sysctl > /dev/null 2>&1; then
+  elif which sysctl > /dev/null 2>&1 && sysctl hw.ncpu > /dev/null 2>&1; then
     echo $(sysctl -n hw.ncpu)
   elif [ -f /proc/cpuinfo ]; then
     echo $(grep -c processor /proc/cpuinfo)
@@ -22,8 +25,8 @@ get_concurrency() {
 }
 
 install_local_tool_versions() {
-  if [ -f $(pwd)/.tool-versions ]; then
-    local asdf_versions_path=$(pwd)/.tool-versions
+  if [ -f "$(pwd)/.tool-versions" ]; then
+    local asdf_versions_path="$(pwd)/.tool-versions"
 
     while read tool_line; do
       IFS=' ' read -a tool_info <<< $tool_line
@@ -33,7 +36,7 @@ install_local_tool_versions() {
       if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
         install_tool_version $tool_name $tool_version
       fi
-    done < $asdf_versions_path
+    done < "$asdf_versions_path"
   else
     echo "Either specify a tool & version in the command"
     echo "OR add .tool-versions file in this directory"

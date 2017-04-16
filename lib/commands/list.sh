@@ -1,16 +1,15 @@
 list_command() {
   local plugin_name=$1
-  local plugin_path=$(get_plugin_path $plugin_name)
   check_if_plugin_exists $plugin_name
 
-  local plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+  local versions=$(list_installed_versions $plugin_name)
 
-  if [ -d $plugin_installs_path ]; then
-    #TODO check if dir is empty and show no-installed-versions msg
-    for install in ${plugin_installs_path}/*/; do
-      echo "$(basename $install)"
+  if [ -n "${versions}" ]; then
+    for version in $versions; do
+      echo $version
     done
   else
-    echo 'Oohes nooes ~! No versions installed'
+    display_error 'No versions installed'
+    exit 1
   fi
 }

@@ -23,6 +23,10 @@ Must print a string with a space-seperated list of versions. Example output woul
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
+Note that the newest version should be listed last so it appears closer to the user's prompt. This is helpful since the `list-all` command prints each version on it's own line. If there are many versions it's possible the early versions will be off screen.
+
+If versions are being pulled from releases page on a website it's recommended to not sort the versions if at all possible. Often the versions are already in the correct order or, in reverse order, in which case something like `tac` should suffice. If you must sort versions manually you cannot rely on `sort -V` since it is not supported on OSX. An alternate sort function [like this is a better choice](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6).
+
 #### bin/install
 
 This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`
@@ -71,6 +75,16 @@ This can be used to further parse the legacy file found by asdf. If `parse-legac
 asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
+
+**Important: Shim metadata **
+
+If you create a custom shim, be sure to include a comment like the following (replacing your plugin name) in it:
+
+```
+# asdf-plugin: plugin_name
+```
+
+asdf uses this `asdf-plugin` metadata to remove unused shims when uninstalling.
 
 ## Testing plugins
 

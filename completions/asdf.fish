@@ -39,12 +39,12 @@ complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-list -d "List insta
 
 # plugin-remove completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-remove -d "Remove plugin and package versions"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-remove; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)' -A
+complete -f -c asdf -n '__fish_asdf_using_command plugin-remove; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
 
 # plugin-update completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-update -d "Update plugin"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)' -A
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a --all -A
+complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
+complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a --all
 
 # install completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a install -d "Install a specific version of a package"
@@ -81,12 +81,12 @@ complete -f -c asdf -n '__fish_asdf_using_command reshim; and __fish_asdf_arg_nu
 # local completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a local -d "Set local version for a plugin"
 complete -f -c asdf -n '__fish_asdf_using_command local; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
-complete -f -c asdf -n '__fish_asdf_using_command local; and test (count (commandline -opc)) -gt 2' -a '(asdf list (__fish_asdf_arg_at 3))'
+complete -f -c asdf -n '__fish_asdf_using_command local; and test (count (commandline -opc)) -gt 2' -a '(asdf list (__fish_asdf_arg_at 3)) system'
 
 # global completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a global -d "Set global version for a plugin"
 complete -f -c asdf -n '__fish_asdf_using_command global; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
-complete -f -c asdf -n '__fish_asdf_using_command global; and test (count (commandline -opc)) -gt 2' -a '(asdf list (__fish_asdf_arg_at 3))'
+complete -f -c asdf -n '__fish_asdf_using_command global; and test (count (commandline -opc)) -gt 2' -a '(asdf list (__fish_asdf_arg_at 3)) system'
 
 # misc
 complete -f -c asdf -n '__fish_asdf_needs_command' -l "help" -d "Displays help"
