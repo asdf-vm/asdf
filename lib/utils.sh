@@ -4,7 +4,11 @@ GREP_OPTIONS="--color=never"
 GREP_COLORS=
 
 asdf_version() {
-  echo "0.3.0"
+  # Move to the asdf repo, then report the current tag
+  (
+  cd $(asdf_dir)
+  git describe --tags
+  )
 }
 
 asdf_dir() {
