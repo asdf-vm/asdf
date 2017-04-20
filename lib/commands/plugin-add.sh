@@ -10,7 +10,8 @@ plugin_add_command() {
     local source_url=$2
   else
     initialize_or_update_repository
-    local source_url=$(get_plugin_source_url $plugin_name)
+    local source_url
+    source_url=$(get_plugin_source_url "$plugin_name")
   fi
 
   if [ -z "$source_url" ]; then
