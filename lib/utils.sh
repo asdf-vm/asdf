@@ -217,7 +217,7 @@ initialize_or_update_repository() {
 
   if [ -d $repository_path ]; then
     echo "updating plugin repository..."
-    (cd $repository_path && git pull)
+    (cd $repository_path && git fetch && git reset --hard origin/master)
   else
     echo "initializing plugin repository..."
     git clone $repository_url $repository_path
