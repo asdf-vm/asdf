@@ -228,10 +228,9 @@ initialize_or_update_repository() {
 }
 
 get_plugin_source_url() {
-  local plugin_name
+  local plugin_name=$1
   local plugin_config
 
-  plugin_name=$1
   plugin_config="$(asdf_dir)/repository/plugins/$plugin_name"
 
 
