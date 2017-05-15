@@ -25,7 +25,7 @@ teardown() {
 @test "plugin_remove_command should exit with 1 when not passed any arguments" {
   run plugin_remove_command
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No plugin given" ]
 }
 
 @test "plugin_remove_command should exit with 1 when passed invalid plugin name" {

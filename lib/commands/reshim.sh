@@ -97,17 +97,17 @@ generate_shims_for_version() {
   local install_path=$(get_install_path $plugin_name $install_type $version)
 
   if [ -f ${plugin_path}/bin/list-bin-paths ]; then
-    local space_seperated_list_of_bin_paths=$(
+    local space_separated_list_of_bin_paths=$(
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
       bash ${plugin_path}/bin/list-bin-paths
     )
   else
-    local space_seperated_list_of_bin_paths="bin"
+    local space_separated_list_of_bin_paths="bin"
   fi
 
-  IFS=' ' read -a all_bin_paths <<< "$space_seperated_list_of_bin_paths"
+  IFS=' ' read -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
 
   for bin_path in "${all_bin_paths[@]}"; do
     for executable_file in $install_path/$bin_path/*; do

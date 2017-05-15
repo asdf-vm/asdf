@@ -8,7 +8,7 @@ Supported languages include Ruby, Node.js, Elixir and more. Supporting a new lan
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
 ```
 
 Depending on your OS, run the following
@@ -49,7 +49,7 @@ mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.con
 Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 | Language  | Repository  | CI Status
-|-----------|-------------|---------- 
+|-----------|-------------|----------
 | Clojure   | [vic/asdf-clojure](https://github.com/vic/asdf-clojure) | [![Build Status](https://travis-ci.org/vic/asdf-clojure.svg?branch=master)](https://travis-ci.org/vic/asdf-clojure)
 | Crystal   | [marciogm/asdf-crystal](https://github.com/marciogm/asdf-crystal) | [![Build Status](https://travis-ci.org/marciogm/asdf-crystal.svg?branch=master)](https://travis-ci.org/marciogm/asdf-crystal)
 | D (DMD)   | [sylph01/asdf-dmd](https://github.com/sylph01/asdf-dmd) | [![Build Status](https://travis-ci.org/sylph01/asdf-dmd.svg?branch=master)](https://travis-ci.org/sylph01/asdf-dmd)
@@ -193,6 +193,7 @@ The versions can be in the following format:
 * `0.12.3` - an actual version. Plugins that support downloading binaries, will download binaries.
 * `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
 * `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
+* `system` - this keyword causes asdf to passthrough to the version of the tool on the system that is not managed by asdf.
 
 To install all the tools defined in a `.tool-versions` file run the `asdf install` command with no other arguments in the directory containing the `.tool-versions` file.
 
@@ -212,14 +213,14 @@ legacy_version_file = yes
 
 ## Credits
 
-Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
+Me ([@HashNuke](https://github.com/HashNuke)), High-fever, cold, cough.
 
 Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
 
 ### Maintainers
 
-- [@HashNuke](http://github.com/HashNuke)
-- [@tuvistavie](http://github.com/tuvistavie)
+- [@HashNuke](https://github.com/HashNuke)
+- [@tuvistavie](https://github.com/tuvistavie)
 - [@Stratus3D](https://github.com/Stratus3D)
 - [@vic](https://github.com/vic)
 

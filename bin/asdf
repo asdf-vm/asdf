@@ -3,6 +3,7 @@
 source $(dirname $(dirname $0))/lib/utils.sh
 
 source $(dirname $(dirname $0))/lib/commands/help.sh
+source $(dirname $(dirname $0))/lib/commands/update.sh
 source $(dirname $(dirname $0))/lib/commands/install.sh
 source $(dirname $(dirname $0))/lib/commands/uninstall.sh
 source $(dirname $(dirname $0))/lib/commands/current.sh
@@ -30,6 +31,9 @@ case $1 in
 
 "help")
     help_command $callback_args;;
+
+"update")
+    update_command $callback_args;;
 
 "install")
     install_command $callback_args;;
