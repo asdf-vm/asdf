@@ -17,7 +17,7 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 
 #### bin/list-all
 
-Must print a string with a space-seperated list of versions. Example output would be the following:
+Must print a string with a space-separated list of versions. Example output would be the following:
 
 ```
 1.0.1 1.0.2 1.3.0 1.4
@@ -36,7 +36,7 @@ This script should install the version, in the path mentioned in `ASDF_INSTALL_P
 
 #### bin/list-bin-paths
 
-List executables for the specified version of the tool. Must print a string with a space-seperated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
+List executables for the specified version of the tool. Must print a string with a space-separated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
 
 ```
 bin tools veggies
@@ -56,7 +56,7 @@ Uninstalls a specific version of a tool.
 
 #### bin/list-legacy-filenames
 
-Register additional setter files for this plugin. Must print a string with a space-seperated list of filenames.
+Register additional setter files for this plugin. Must print a string with a space-separated list of filenames.
 
 ```
 .ruby-version .rvmrc

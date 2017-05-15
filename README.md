@@ -49,7 +49,7 @@ mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.con
 Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 | Language  | Repository  | CI Status
-|-----------|-------------|---------- 
+|-----------|-------------|----------
 | Clojure   | [vic/asdf-clojure](https://github.com/vic/asdf-clojure) | [![Build Status](https://travis-ci.org/vic/asdf-clojure.svg?branch=master)](https://travis-ci.org/vic/asdf-clojure)
 | Crystal   | [marciogm/asdf-crystal](https://github.com/marciogm/asdf-crystal) | [![Build Status](https://travis-ci.org/marciogm/asdf-crystal.svg?branch=master)](https://travis-ci.org/marciogm/asdf-crystal)
 | D (DMD)   | [sylph01/asdf-dmd](https://github.com/sylph01/asdf-dmd) | [![Build Status](https://travis-ci.org/sylph01/asdf-dmd.svg?branch=master)](https://travis-ci.org/sylph01/asdf-dmd)
@@ -213,14 +213,14 @@ legacy_version_file = yes
 
 ## Credits
 
-Me ([@HashNuke](http://github.com/HashNuke)), High-fever, cold, cough.
+Me ([@HashNuke](https://github.com/HashNuke)), High-fever, cold, cough.
 
 Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
 
 ### Maintainers
 
-- [@HashNuke](http://github.com/HashNuke)
-- [@tuvistavie](http://github.com/tuvistavie)
+- [@HashNuke](https://github.com/HashNuke)
+- [@tuvistavie](https://github.com/tuvistavie)
 - [@Stratus3D](https://github.com/Stratus3D)
 - [@vic](https://github.com/vic)
 
