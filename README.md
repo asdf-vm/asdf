@@ -71,6 +71,7 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 | PHP  | [odarriba/asdf-php](https://github.com/odarriba/asdf-php) | [![Build Status](https://travis-ci.org/odarriba/asdf-php.svg?branch=master)](https://travis-ci.org/odarriba/asdf-php)
 | Postgres  | [smashedtoatoms/asdf-postgres](https://github.com/smashedtoatoms/asdf-postgres) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-postgres.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-postgres)
 | Python    | [tuvistavie/asdf-python](https://github.com/tuvistavie/asdf-python) | [![Build Status](https://travis-ci.org/tuvistavie/asdf-python.svg?branch=master)](https://travis-ci.org/tuvistavie/asdf-python)
+| Rebar     | [Stratus3D/asdf-rebar](https://github.com/Stratus3D/asdf-rebar) | [![Build Status](https://travis-ci.org/Stratus3D/asdf-rebar.svg?branch=master)](https://travis-ci.org/Stratus3D/asdf-rebar)
 | Redis     | [smashedtoatoms/asdf-redis](https://github.com/smashedtoatoms/asdf-redis) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-redis.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-redis)
 | Riak      | [smashedtoatoms/asdf-riak](https://github.com/smashedtoatoms/asdf-riak) | [![Build Status](https://travis-ci.org/smashedtoatoms/asdf-riak.svg?branch=master)](https://travis-ci.org/smashedtoatoms/asdf-riak)
 | Ruby      | [asdf-vm/asdf-ruby](https://github.com/asdf-vm/asdf-ruby) | [![Build Status](https://travis-ci.org/asdf-vm/asdf-ruby.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf-ruby)
