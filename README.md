@@ -161,7 +161,7 @@ asdf current <name>
 ```bash
 asdf global <name> <version>
 asdf local <name> <version>
-asdf global elixir 1.2.4
+# asdf global elixir 1.2.4
 ```
 
 `global` writes the version to `$HOME/.tool-versions`.
