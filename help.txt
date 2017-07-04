@@ -13,6 +13,7 @@ MANAGE PACKAGES
   asdf uninstall <name> <version>      Remove a specific version of a package
   asdf current <name>                  Display current version set or being used for package
   asdf where <name> <version>          Display install path for an installed version
+  asdf which <name>                    Display install path for current version
   asdf local <name> <version>          Set the package local version
   asdf global <name> <version>         Set the package global version
   asdf list <name>                     List installed versions of a package

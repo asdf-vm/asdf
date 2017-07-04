@@ -32,7 +32,7 @@ _asdf () {
       fi
       ;;
     *)
-      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall update current where list list-all local global reshim'
+      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall update current where which list list-all local global reshim'
       COMPREPLY=($(compgen -W "$cmds" -- $cur))
       ;;
   esac
