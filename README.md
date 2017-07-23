@@ -218,7 +218,7 @@ legacy_version_file = yes
 
 ## Docker images
 
-The [asdf-alpine](https://github.com/vic/asdf-alpine) project is an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
+The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) projects are an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
 
 ## Credits
 
