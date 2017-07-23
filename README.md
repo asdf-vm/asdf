@@ -216,6 +216,10 @@ legacy_version_file = yes
 
 * `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
+## Docker images
+
+The [asdf-alpine](https://github.com/vic/asdf-alpine) project is an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
+
 ## Credits
 
 Me ([@HashNuke](https://github.com/HashNuke)), High-fever, cold, cough.
