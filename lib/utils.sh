@@ -260,3 +260,35 @@ get_asdf_config_value() {
     get_asdf_config_value_from_file $default_config_path $key
   fi
 }
+
+asdf_repository_url() {
+  echo "https://github.com/asdf-vm/asdf-plugins.git"
+}
+
+initialize_or_update_repository() {
+  local repository_url
+  local repository_path
+
+  repository_url=$(asdf_repository_url)
+  repository_path=$(asdf_dir)/repository
+
+  if [ -d "$repository_path" ]; then
+    echo "updating plugin repository..."
+    (cd "$repository_path" && git fetch && git reset --hard origin/master)
+  else
+    echo "initializing plugin repository..."
+    git clone "$repository_url" "$repository_path"
+  fi
+}
+
+get_plugin_source_url() {
+  local plugin_name=$1
+  local plugin_config
+
+  plugin_config="$(asdf_dir)/repository/plugins/$plugin_name"
+
+
+  if [ -f "$plugin_config" ]; then
+    grep "repository" "$plugin_config" | awk -F'=' '{print $2}' | sed 's/ //'
+  fi
+}

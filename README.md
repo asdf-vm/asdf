@@ -88,8 +88,15 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 ##### Add a plugin
 
 ```bash
+asdf plugin-add <name>
+# asdf plugin-add erlang
+```
+
+If the plugin you want to install is not part of the official plugins list, you can add it using its repository URL:
+
+```bash
 asdf plugin-add <name> <git-url>
-# asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+# asdf plugin-add elm https://github.com/vic/asdf-elm
 ```
 
 ##### List installed plugins
