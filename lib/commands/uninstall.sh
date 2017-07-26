@@ -21,6 +21,8 @@ uninstall_command() {
     exit 1
   fi
 
+  remove_shims_for_version "$plugin_name" "$full_version"
+
   if [ -f ${plugin_path}/bin/uninstall ]; then
     (
       export ASDF_INSTALL_TYPE=$install_type
@@ -31,11 +33,4 @@ uninstall_command() {
   else
     rm -rf $install_path
   fi
-
-  # remove plugin shims if no other version of this plugin is installed
-  local count_installed=$(list_installed_versions $plugin_name | wc -l)
-  if [ 0 -eq $count_installed ]; then
-    grep -l "asdf-plugin: ${plugin_name}" $(asdf_dir)/shims/* 2>/dev/null | xargs rm -f
-  fi
-
 }
