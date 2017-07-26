@@ -59,7 +59,7 @@ asdf plugin-add <name>
 # asdf plugin-add erlang
 ```
 
-If the plugin you want to install is not part of the official plugins list, you can add it using its repository URL:
+If the plugin you want to install is not part of the plugins repository, you can add it using its repository URL:
 
 ```bash
 asdf plugin-add <name> <git-url>
