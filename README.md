@@ -49,7 +49,7 @@ mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.con
 Plugins are how asdf understands how to handle different packages. Below is a list of plugins for languages. There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
 
 | Language  | Repository  | CI Status
-|-----------|-------------|---------- 
+|-----------|-------------|----------
 | Clojure   | [vic/asdf-clojure](https://github.com/vic/asdf-clojure) | [![Build Status](https://travis-ci.org/vic/asdf-clojure.svg?branch=master)](https://travis-ci.org/vic/asdf-clojure)
 | Crystal   | [marciogm/asdf-crystal](https://github.com/marciogm/asdf-crystal) | [![Build Status](https://travis-ci.org/marciogm/asdf-crystal.svg?branch=master)](https://travis-ci.org/marciogm/asdf-crystal)
 | D (DMD)   | [sylph01/asdf-dmd](https://github.com/sylph01/asdf-dmd) | [![Build Status](https://travis-ci.org/sylph01/asdf-dmd.svg?branch=master)](https://travis-ci.org/sylph01/asdf-dmd)
@@ -83,8 +83,15 @@ Plugins are how asdf understands how to handle different packages. Below is a li
 ##### Add a plugin
 
 ```bash
+asdf plugin-add <name>
+# asdf plugin-add erlang
+```
+
+If the plugin you want to install is not part of the official plugins list, you can add it using its repository URL:
+
+```bash
 asdf plugin-add <name> <git-url>
-# asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+# asdf plugin-add elm https://github.com/vic/asdf-elm
 ```
 
 ##### List installed plugins

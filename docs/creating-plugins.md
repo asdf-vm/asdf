@@ -117,3 +117,11 @@ os:
   - linux
   - osx
 ```
+
+## Submitting plugins to the official plugins repository
+
+`asdf` can easily install plugins by specifying the plugin repository url, e.g. `plugin-add my-plugin https://github.com/user/asdf-my-plugin.git`.
+
+To make it easier on your users, you can add your plugin to the official plugins repository to have your plugin listed and easily installable using a shorter command, e.g. `asdf plugin-add my-plugin`.
+
+Follow the instruction at the plugins repository: [asdf-vm/asdf-plugins](https://github.com/asdf-vm/asdf-plugins).
