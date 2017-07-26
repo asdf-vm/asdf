@@ -208,7 +208,7 @@ get_asdf_config_value() {
 }
 
 asdf_repository_url() {
-  echo "https://github.com/doughsay/asdf-plugins.git"
+  echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
 initialize_or_update_repository() {
