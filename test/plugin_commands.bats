@@ -20,3 +20,9 @@ teardown() {
   run plugin_list_command
   [ "$output" = "elixir" ]
 }
+
+@test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
+  run plugin_add_command "does-not-exist"
+  [ "$status" -eq 1 ]
+  echo "$output" | grep "plugin does-not-exist not found in repository"
+}
