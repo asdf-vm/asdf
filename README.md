@@ -224,7 +224,8 @@ The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://
 
 To develop the project, you can simply `git clone` the master branch.
 If you want to try out your changes without making change to your installed `asdf`,
-you can set the `$ASDF_DIR` variable to the path where you cloned the repository.
+you can set the `$ASDF_DIR` variable to the path where you cloned the repository,
+and temporarily prepend the `bin` and `shims` directory of the directory to your path.
 
 We use [bats](https://github.com/sstephenson/bats) for testing,
 so make sure `bats test/` passes after you made your changes.
