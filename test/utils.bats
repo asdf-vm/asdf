@@ -41,6 +41,14 @@ teardown() {
   [ "$output" = "" ]
 }
 
+@test "check_if_version_exists should be ok for ref:version install" {
+  mkdir -p $ASDF_DIR/plugins/foo
+  mkdir -p $ASDF_DIR/installs/foo/ref-master
+  run check_if_version_exists "foo" "ref:master"
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
+
 @test "check_if_plugin_exists should exit with 1 when plugin is empty string" {
   run check_if_plugin_exists
   [ "$status" -eq 1 ]
@@ -174,6 +182,18 @@ teardown() {
   chmod +x $executable_path
 
   run get_executable_path "foo" "1.0.0" "bin/dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$executable_path" ]
+}
+
+@test "get_executable_path for ref:version installed version should resolve to ref-version" {
+  mkdir -p $ASDF_DIR/plugins/foo
+  mkdir -p $ASDF_DIR/installs/foo/ref-master/bin
+  executable_path=$ASDF_DIR/installs/foo/ref-master/bin/dummy
+  touch $executable_path
+  chmod +x $executable_path
+
+  run get_executable_path "foo" "ref:master" "bin/dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "$executable_path" ]
 }
