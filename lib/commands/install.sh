@@ -94,7 +94,7 @@ install_tool_version() {
     if [ $exit_code -eq 0 ]; then
       reshim_command $plugin_name $full_version
     else
-      handle_failure
+      handle_failure "$install_path"
     fi
   fi
 }
