@@ -204,6 +204,10 @@ and temporarily prepend the `bin` and `shims` directory of the directory to your
 We use [bats](https://github.com/sstephenson/bats) for testing,
 so make sure `bats test/` passes after you made your changes.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution guidelines.
+
 ## Credits
 
 Me ([@HashNuke](https://github.com/HashNuke)), High-fever, cold, cough.
