@@ -3,3 +3,4 @@ plugins
 shims
 repository
 .vagrant
+keyrings
