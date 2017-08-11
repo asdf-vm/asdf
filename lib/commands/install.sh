@@ -1,3 +1,15 @@
+handle_failure() {
+  local install_path="$1"
+  rm -rf "$install_path"
+  exit 1
+}
+
+handle_cancel() {
+  local install_path="$1"
+  echo -e "\nreceived sigint, cleaning up"
+  handle_failure "$install_path"
+}
+
 install_command() {
   local plugin_name=$1
   local full_version=$2
@@ -15,7 +27,7 @@ install_command() {
 get_concurrency() {
   if which nproc > /dev/null 2>&1; then
     echo $(nproc)
-  elif which sysctl > /dev/null 2>&1; then
+  elif which sysctl > /dev/null 2>&1 && sysctl hw.ncpu > /dev/null 2>&1; then
     echo $(sysctl -n hw.ncpu)
   elif [ -f /proc/cpuinfo ]; then
     echo $(grep -c processor /proc/cpuinfo)
@@ -64,7 +76,9 @@ install_tool_version() {
 
   local install_path=$(get_install_path $plugin_name $install_type $version)
   local concurrency=$(get_concurrency)
-  if [ -d $install_path ]; then
+  trap 'handle_cancel $install_path' INT
+
+  if [ -d "$install_path" ]; then
     echo "$plugin_name $full_version is already installed"
   else
     (
@@ -72,16 +86,15 @@ install_tool_version() {
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
       export ASDF_CONCURRENCY=$concurrency
-      mkdir $install_path
-      bash ${plugin_path}/bin/install
+      mkdir "$install_path"
+      bash "${plugin_path}"/bin/install
     )
 
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
       reshim_command $plugin_name $full_version
     else
-      rm -rf $install_path
-      exit 1
+      handle_failure "$install_path"
     fi
   fi
 }

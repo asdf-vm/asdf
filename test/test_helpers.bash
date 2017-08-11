@@ -6,6 +6,8 @@ setup_asdf_dir() {
   ASDF_DIR=$HOME/.asdf
   mkdir -p $ASDF_DIR/plugins
   mkdir -p $ASDF_DIR/installs
+  mkdir -p $ASDF_DIR/shims
+  PATH=$ASDF_DIR/shims:$PATH
 }
 
 install_dummy_plugin() {

@@ -23,7 +23,7 @@ _asdf () {
         COMPREPLY=($(compgen -W "$plugins" -- $cur))
       fi
       ;;
-    uninstall|where|reshim)
+    uninstall|where|reshim|local|global)
       if [[ "$plugins" == *"$prev"* ]] ; then
         local versions=$(asdf list $prev)
         COMPREPLY=($(compgen -W "$versions" -- $cur))
@@ -32,7 +32,7 @@ _asdf () {
       fi
       ;;
     *)
-      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall current where list list-all reshim'
+      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall update current where which list list-all local global reshim'
       COMPREPLY=($(compgen -W "$cmds" -- $cur))
       ;;
   esac

@@ -1,5 +1,5 @@
 MANAGE PLUGINS
-  asdf plugin-add <name> <git-url>     Add git repo as plugin
+  asdf plugin-add <name> [<git-url>]   Add a plugin
   asdf plugin-list                     List installed plugins
   asdf plugin-remove <name>            Remove plugin and package versions
   asdf plugin-update <name>            Update plugin
@@ -13,6 +13,7 @@ MANAGE PACKAGES
   asdf uninstall <name> <version>      Remove a specific version of a package
   asdf current <name>                  Display current version set or being used for package
   asdf where <name> <version>          Display install path for an installed version
+  asdf which <name>                    Display install path for current version
   asdf local <name> <version>          Set the package local version
   asdf global <name> <version>         Set the package global version
   asdf list <name>                     List installed versions of a package
@@ -21,6 +22,8 @@ MANAGE PACKAGES
 
 UTILS
   asdf reshim <name> <version>         Recreate shims for version of a package
+  asdf update                          Update asdf to the latest stable release
+  asdf update --head                   Update asdf to the latest on the master branch
 
 
 "Late but latest"
