@@ -3,6 +3,7 @@
 load test_helpers
 
 . $(dirname $BATS_TEST_DIRNAME)/lib/commands/current.sh
+. $(dirname $BATS_TEST_DIRNAME)/lib/commands/plugin-list.sh
 
 setup() {
   setup_asdf_dir
@@ -57,4 +58,23 @@ teardown() {
   run current_command "dummy"
   [ "$status" -eq 1 ]
   [ "$output" = "version 9.9.9 is not installed for dummy" ]
+}
+
+@test "should output all plugins when no plugin passed" {
+
+  install_dummy_plugin
+  install_dummy_version "1.1.0"
+
+  install_mock_plugin "foobar"
+  install_mock_plugin_version "foobar" "1.0.0"
+
+  cd $PROJECT_DIR
+  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
+  echo 'foobar 1.0.0' >> $PROJECT_DIR/.tool-versions
+
+  run current_command
+  expected="dummy 1.1.0 (set by $PROJECT_DIR/.tool-versions)
+foobar 1.0.0 (set by $PROJECT_DIR/.tool-versions)"
+
+  [ "$expected" = "$output" ]
 }
