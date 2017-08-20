@@ -14,6 +14,10 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 * `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
 * `ASDF_INSTALL_PATH` - the dir where the it *has been* installed (or *should* be installed in case of the `bin/install` script)
 
+These additional environment variables the `bin/install` script will also have accesss to:
+
+* `ASDF_CONCURRENCY` - the number of cores to use when compiling the source code. Useful for setting `make -j`.
+
 
 #### bin/list-all
 
