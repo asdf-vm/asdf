@@ -1,4 +1,4 @@
-current_command() {
+plugin_current_command() {
   local plugin_name=$1
 
   check_if_plugin_exists $plugin_name
@@ -16,6 +16,17 @@ current_command() {
     exit 1
   else
     echo "$version (set by $version_file_path)"
+  fi
+}
+
+current_command() {
+  if [ $# -eq 0 ]; then
+    for plugin in $(plugin_list_command); do
+      echo "$plugin $(plugin_current_command $plugin)"
+    done
+  else
+    local plugin=$1
+    plugin_current_command $plugin
   fi
 }
 
