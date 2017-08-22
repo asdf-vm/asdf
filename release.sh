@@ -70,20 +70,14 @@ sed -i.bak "s|^\(git clone.*--branch \).*$|\1$new_tag_name|" README.md
 # Update version in utils.sh
 # TODO: Hardcode version until.sh since not all asdf will include the Git repo
 
+echo "INFO: Committing and tagging new version"
+
 # Commit the changed files before tagging the new release
 git add README.md
 git add lib/utils.sh
 git commit -m "Update version to $new_version"
 
-#git tag -fa ${VERSION} -m "Version ${VERSION}"
-#git tag -fa -a RELEASE -m "Current RELEASE"
-#
-#NEW_VERSION="${VERSION%.*}.$((${VERSION##*.}+1))"
-#set -ex
-#sed -i.bak "s/${VERSION}/${NEW_VERSION}/" setup.py
-#
-#git commit -m "Auto-increasing the version number after a release."
-
-#git push --force origin --tags
+git tag -a "$new_tag_name" -m "Version ${new_version}"
 
 echo "INFO: done."
+echo "INFO: Now you can push this local branch to the GitHub repository."
