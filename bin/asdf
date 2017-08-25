@@ -15,6 +15,7 @@ source $(dirname $(dirname $0))/lib/commands/list-all.sh
 source $(dirname $(dirname $0))/lib/commands/reshim.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-add.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-list.sh
+source $(dirname $(dirname $0))/lib/commands/plugin-list-all.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-update.sh
 source $(dirname $(dirname $0))/lib/commands/plugin-remove.sh
 
@@ -49,7 +50,7 @@ case $1 in
 
 "which")
     which_command $callback_args;;
-    
+
 "local")
     local_command $callback_args;;
 
@@ -73,6 +74,9 @@ case $1 in
 
 "plugin-list")
     plugin_list_command $callback_args;;
+
+"plugin-list-all")
+    plugin_list_all_command $callback_args;;
 
 "plugin-update")
     plugin_update_command $callback_args;;

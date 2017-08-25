@@ -261,6 +261,14 @@ asdf_repository_url() {
   echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
+repository_needs_update() {
+  local update_file_dir="$(asdf_dir)/tmp"
+  local update_file_name="repo-updated"
+  # `find` outputs filename if it has not been modified in the last day
+  local find_result=$(find $update_file_dir -name "$update_file_name" -type f -mtime +1 -print)
+  [ -n "$find_result" ]
+}
+
 initialize_or_update_repository() {
   local repository_url
   local repository_path
@@ -268,13 +276,16 @@ initialize_or_update_repository() {
   repository_url=$(asdf_repository_url)
   repository_path=$(asdf_dir)/repository
 
-  if [ -d "$repository_path" ]; then
-    echo "updating plugin repository..."
-    (cd "$repository_path" && git fetch && git reset --hard origin/master)
-  else
+  if [ ! -d "$repository_path" ]; then
     echo "initializing plugin repository..."
     git clone "$repository_url" "$repository_path"
+  elif repository_needs_update; then
+    echo "updating plugin repository..."
+    (cd "$repository_path" && git fetch && git reset --hard origin/master)
   fi
+
+  mkdir -p "$(asdf_dir)/tmp"
+  touch "$(asdf_dir)/tmp/repo-updated"
 }
 
 get_plugin_source_url() {
