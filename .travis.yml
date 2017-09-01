@@ -1,5 +1,7 @@
 language: c
-script: bats test
+script:
+  - bats test
+  - ./lint.sh
 before_script:
   - git clone https://github.com/sstephenson/bats.git /tmp/bats
   - export PATH=/tmp/bats/bin:$PATH
