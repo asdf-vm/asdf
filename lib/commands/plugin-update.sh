@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 plugin_update_command() {
   if [ "$#" -ne 1 ]; then
     display_error "usage: asdf plugin-update {<name> | --all}"

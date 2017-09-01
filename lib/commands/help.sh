@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 help_command () {
   echo "version: $(asdf_version)"
   echo ""

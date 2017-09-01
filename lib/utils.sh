@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # We shouldn't rely on the user's grep settings to be correct. If we set these
 # here anytime asdf invokes grep it will be invoked with these options
 GREP_OPTIONS="--color=never"
@@ -12,7 +14,7 @@ asdf_version() {
 }
 
 asdf_dir() {
-  if [ -z $ASDF_DIR ]; then
+  if [ -z "$ASDF_DIR" ]; then
     local current_script_path=${BASH_SOURCE[0]}
     export ASDF_DIR=$(cd $(dirname $(dirname $current_script_path)); echo $(pwd))
   fi
@@ -24,9 +26,9 @@ get_install_path() {
   local plugin=$1
   local install_type=$2
   local version=$3
-  mkdir -p $(asdf_dir)/installs/${plugin}
+  mkdir -p "$(asdf_dir)/installs/${plugin}"
 
-  if [ $install_type = "version" ]
+  if [ "$install_type" = "version" ]
   then
     echo $(asdf_dir)/installs/${plugin}/${version}
   else

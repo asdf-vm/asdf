@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 current_version() {
   local plugin_name=$1
 

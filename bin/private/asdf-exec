@@ -1,47 +1,49 @@
 #!/usr/bin/env bash
 
-source $(dirname $(dirname $(dirname $0)))/lib/utils.sh
+# shellcheck source=lib/utils.sh
+source "$(dirname "$(dirname "$(dirname "$0")")")/lib/utils.sh"
 
 plugin_name=$1
 executable_path=$2
 
-plugin_path=$(get_plugin_path $plugin_name)
-check_if_plugin_exists $plugin_name
+plugin_path=$(get_plugin_path "$plugin_name")
+check_if_plugin_exists "$plugin_name"
 
-full_version=$(get_preset_version_for $plugin_name)
+full_version=$(get_preset_version_for "$plugin_name")
 
 if [ "$full_version" == "" ]; then
   echo "No version set for ${plugin_name}"
   exit -1
 fi
 
+# shellcheck disable=SC2162
 IFS=' ' read -a versions <<< "$full_version"
 
 for version in "${versions[@]}"; do
-  install_path=$(find_install_path $plugin_name $version)
+  install_path=$(find_install_path "$plugin_name" "$version")
 
-  if [ $version != "system" ] && [ ! -d "$install_path" ]; then
+  if [ "$version" != "system" ] && [ ! -d "$install_path" ]; then
     echo "$plugin_name $version not installed"
     exit 1
   fi
 
-  full_executable_path=$(get_executable_path $plugin_name $version $executable_path)
+  if full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path"); then
+    if [ -f "$full_executable_path" ]; then
+      if [ -f "${plugin_path}/bin/exec-env" ]; then
+        export ASDF_INSTALL_TYPE=$install_type
+        export ASDF_INSTALL_VERSION=$version
+        export ASDF_INSTALL_PATH=$install_path
 
-  if [ $? -eq 0 -a -f "$full_executable_path" ]; then
-    if [ -f ${plugin_path}/bin/exec-env ]; then
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
+        source "${plugin_path}/bin/exec-env"
 
-      source ${plugin_path}/bin/exec-env
+        # unset everything, we don't want to pollute
+        unset ASDF_INSTALL_TYPE
+        unset ASDF_INSTALL_VERSION
+        unset ASDF_INSTALL_PATH
+      fi
 
-      # unset everything, we don't want to pollute
-      unset ASDF_INSTALL_TYPE
-      unset ASDF_INSTALL_VERSION
-      unset ASDF_INSTALL_PATH
+      exec "$full_executable_path" "${@:3}"
     fi
-
-    exec $full_executable_path "${@:3}"
   fi
 done
 

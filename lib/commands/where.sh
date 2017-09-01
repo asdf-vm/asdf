@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 where_command() {
   local plugin_name=$1
   local full_version=$2

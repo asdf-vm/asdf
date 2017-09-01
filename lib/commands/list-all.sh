@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 list_all_command() {
   local plugin_name=$1
   local plugin_path=$(get_plugin_path $plugin_name)

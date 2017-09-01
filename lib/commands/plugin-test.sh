@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 fail_test() {
     echo "FAILED: $1"
     rm -rf $ASDF_DIR
