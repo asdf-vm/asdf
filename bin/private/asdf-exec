@@ -34,6 +34,7 @@ for version in "${versions[@]}"; do
         export ASDF_INSTALL_VERSION=$version
         export ASDF_INSTALL_PATH=$install_path
 
+        # shellcheck source=/dev/null
         source "${plugin_path}/bin/exec-env"
 
         # unset everything, we don't want to pollute
