@@ -196,7 +196,7 @@ parse_asdf_version_file() {
   local plugin_name=$2
 
   if [ -f "$file_path" ]; then
-    local version=$(grep "${plugin_name} " $file_path | sed -e "s/^${plugin_name} //")
+    local version=$(grep "${plugin_name} " "$file_path" | sed -e "s/^${plugin_name} //")
     if [ -n "$version" ]; then
       echo $version
       return 0
@@ -211,7 +211,7 @@ parse_legacy_version_file() {
   local plugin_path=$(get_plugin_path "$plugin_name")
   local parse_legacy_script="${plugin_path}/bin/parse-legacy-file"
 
-  if [ -f $file_path ]; then
+  if [ -f "$file_path" ]; then
     if [ -f $parse_legacy_script ]; then
       echo $(bash "$parse_legacy_script" "$file_path")
     else
