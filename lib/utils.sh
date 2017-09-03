@@ -4,6 +4,7 @@
 # here anytime asdf invokes grep it will be invoked with these options
 # shellcheck disable=SC2034
 GREP_OPTIONS="--color=never"
+# shellcheck disable=SC2034
 GREP_COLORS=
 
 asdf_version() {
