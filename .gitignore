@@ -1,6 +1,7 @@
 installs
-plugins
+/plugins
 shims
 repository
 .vagrant
 keyrings
+/tmp
