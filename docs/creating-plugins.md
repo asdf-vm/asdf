@@ -14,6 +14,10 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 * `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
 * `ASDF_INSTALL_PATH` - the dir where the it *has been* installed (or *should* be installed in case of the `bin/install` script)
 
+These additional environment variables the `bin/install` script will also have accesss to:
+
+* `ASDF_CONCURRENCY` - the number of cores to use when compiling the source code. Useful for setting `make -j`.
+
 
 #### bin/list-all
 
@@ -29,8 +33,11 @@ If versions are being pulled from releases page on a website it's recommended to
 
 #### bin/install
 
-This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`
+This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`.
 
+The install script should exit with a status of `0` when the installation is successful. If the installation fails the script should exit with any non-zero exit status.
+
+If possible the script should only place files in the `ASDF_INSTALL_PATH` directory once the build and installation of the tool is deemed successful by the install script. asdf [checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) of the `ASDF_INSTALL_PATH` directory in order to determine if that version of the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the beginning of the installation process other asdf commands run in other terminals during the installation may consider that version of the tool installed, even when it is not fully installed.
 
 ### Optional scripts
 

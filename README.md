@@ -1,7 +1,7 @@
 # asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
 ### _extendable version manager_
 
-Supported languages include Ruby, Node.js, Elixir and more. Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
+Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/asdf-vm/asdf-plugins). Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
 
 ## SETUP
 
@@ -203,6 +203,10 @@ and temporarily prepend the `bin` and `shims` directory of the directory to your
 
 We use [bats](https://github.com/sstephenson/bats) for testing,
 so make sure `bats test/` passes after you made your changes.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution guidelines.
 
 ## Credits
 

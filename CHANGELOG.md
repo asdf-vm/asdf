@@ -2,6 +2,12 @@
 
 ## 0.3.1-dev
 
+Features
+
+* Add CONTRIBUTING guidelines and GitHub issue and pull request templates
+
+Fixed Bugs
+
 ## 0.3.0
 
 Features
