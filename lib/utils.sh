@@ -149,7 +149,7 @@ find_install_path() {
 
   IFS=':' read -a version_info <<< "$version"
 
-  if [ $version = "system" ]; then
+  if [ "$version" = "system" ]; then
     echo ""
   elif [ "${version_info[0]}" = "ref" ]; then
     local install_type="${version_info[0]}"
@@ -177,7 +177,7 @@ get_executable_path() {
 
   check_if_version_exists $plugin_name $version
 
-  if [ $version = "system" ]; then
+  if [ "$version" = "system" ]; then
     path=$(echo $PATH | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
     cmd=$(basename $executable_path)
     cmd_path=$(PATH=$path which $cmd 2>&1)

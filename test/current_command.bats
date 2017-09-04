@@ -68,12 +68,15 @@ teardown() {
   install_mock_plugin "foobar"
   install_mock_plugin_version "foobar" "1.0.0"
 
+  install_mock_plugin "baz"
+
   cd $PROJECT_DIR
   echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
   echo 'foobar 1.0.0' >> $PROJECT_DIR/.tool-versions
 
   run current_command
-  expected="dummy 1.1.0 (set by $PROJECT_DIR/.tool-versions)
+  expected="baz No version set for baz
+dummy 1.1.0 (set by $PROJECT_DIR/.tool-versions)
 foobar 1.0.0 (set by $PROJECT_DIR/.tool-versions)"
 
   [ "$expected" = "$output" ]
