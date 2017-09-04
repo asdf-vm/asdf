@@ -43,12 +43,33 @@ teardown() {
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
 
-@test "install_command should create a shim with metadada" {
+@test "install_command should create a shim with asdf-plugin metadata" {
   run install_command dummy 1.0
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
   run grep "asdf-plugin: dummy" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
+
+  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+}
+
+@test "install_command should create a shim with asdf-plugin-version metadata" {
+  run install_command dummy 1.1
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+
+  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 1 ]
+
+  run install_command dummy 1.0
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+
+  lines_count=$(grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy | wc -l)
+  [ "$lines_count" -eq "1" ]
 }
 
 

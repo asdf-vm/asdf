@@ -62,6 +62,20 @@ teardown() {
   [ -f $ASDF_DIR/shims/dummy ]
 }
 
+@test "uninstall_command should remove relevant asdf-plugin-version metadata" {
+  run install_command dummy 1.0
+  [ -f $ASDF_DIR/installs/dummy/1.0/bin/dummy ]
+
+  run install_command dummy 1.1
+  [ -f $ASDF_DIR/installs/dummy/1.1/bin/dummy ]
+
+  run uninstall_command dummy 1.0
+  run grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 1 ]
+}
+
 @test "uninstall_command should not remove other unrelated shims" {
   run install_command dummy 1.0
   [ -f $ASDF_DIR/shims/dummy ]
