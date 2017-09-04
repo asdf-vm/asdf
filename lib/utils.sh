@@ -289,10 +289,13 @@ asdf_repository_url() {
 }
 
 repository_needs_update() {
-  local update_file_dir="$(asdf_dir)/tmp"
-  local update_file_name="repo-updated"
+  local update_file_dir
+  update_file_dir="$(asdf_dir)/tmp"
+  local update_file_name
+  update_file_name="repo-updated"
   # `find` outputs filename if it has not been modified in the last day
-  local find_result=$(find $update_file_dir -name "$update_file_name" -type f -mtime +1 -print)
+  local find_result
+  find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mtime +1 -print)
   [ -n "$find_result" ]
 }
 
