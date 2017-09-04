@@ -51,7 +51,7 @@ write_shim_script() {
     cp "$plugin_shims_path/$executable_name" "$shim_path"
   elif [ -f "$shim_path" ]; then
     if ! grep "# asdf-plugin-version: $version" "$shim_path" > /dev/null; then
-      sed "$shim_path" -i'' -e "s/\(asdf-plugin: $plugin_name\)/\1\n# asdf-plugin-version: $version/"
+     sed -i'' -e "s/\(asdf-plugin: $plugin_name\)/\1\\"$'\n'"# asdf-plugin-version: $version/" "$shim_path"
     fi
   else
     cat <<EOF > "$shim_path"
@@ -191,7 +191,7 @@ remove_shim_for_version() {
     return 0
   fi
 
-  sed "$shim_path" -i'' -e "/# asdf-plugin-version: $version/d"
+  sed -i'' -e "/# asdf-plugin-version: $version/d" "$shim_path"
 
   if [ ! -f "$plugin_shims_path/$executable_name" ] && \
         ! grep "# asdf-plugin-version" "$shim_path" > /dev/null || \

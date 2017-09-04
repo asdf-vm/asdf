@@ -69,7 +69,7 @@ teardown() {
   [ "$status" -eq 0 ]
 
   lines_count=$(grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy | wc -l)
-  [ "$lines_count" = "1" ]
+  [ "$lines_count" -eq "1" ]
 }
 
 
