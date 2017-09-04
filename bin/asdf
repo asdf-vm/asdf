@@ -47,7 +47,7 @@ callback_args="${@:2}"
 case $1 in
 
 "--version")
-  asdf_version "$callback_args";;
+    asdf_version "$callback_args";;
 
 "help")
     help_command "$callback_args";;

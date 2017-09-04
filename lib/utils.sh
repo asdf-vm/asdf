@@ -57,7 +57,7 @@ list_installed_versions() {
 
 check_if_plugin_exists() {
   # Check if we have a non-empty argument
-  if [ -z "${1+set}" ]; then
+  if [ -z "${1}" ]; then
     display_error "No plugin given"
     exit 1
   fi
