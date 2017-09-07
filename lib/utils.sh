@@ -20,6 +20,10 @@ asdf_dir() {
   echo $ASDF_DIR
 }
 
+asdf_repository_url() {
+  echo "https://github.com/asdf-vm/asdf-plugins.git"
+}
+
 get_install_path() {
   local plugin=$1
   local install_type=$2
@@ -255,10 +259,6 @@ get_asdf_config_value() {
   else
     get_asdf_config_value_from_file $default_config_path $key
   fi
-}
-
-asdf_repository_url() {
-  echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
 repository_needs_update() {
