@@ -18,6 +18,23 @@ This script updates the hardcoded versions in the source code and README and
 then commits them on the current branch. It then tags that commit with the
 specified version.
 
+If you run this script in error, or with the wrong version, you can undo the
+changes by finding the original state in the list of actions listed in the
+reflog:
+
+    git reflog
+
+Then revert to the original state by running `git checkout` with the reference
+previous to the release tagging changes:
+
+    git checkout HEAD@{21}
+
+Then checkout the original branch again:
+
+    git checkout master
+
+You are back to the original state!
+
 EOF
 }
 
