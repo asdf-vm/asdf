@@ -67,8 +67,8 @@ fi
 # Update version in README
 sed -i.bak "s|^\(git clone.*--branch \).*$|\1$new_tag_name|" README.md
 
-# Update version in utils.sh
-# TODO: Hardcode version until.sh since not all asdf will include the Git repo
+# Update version in utils.she
+echo "$new_tag_name" > VERSION
 
 echo "INFO: Committing and tagging new version"
 
