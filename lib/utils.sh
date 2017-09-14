@@ -137,6 +137,14 @@ find_version() {
   done
 
   get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
+
+  if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
+    version=$(parse_asdf_version_file "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugin_name")
+    if [ -n "$version" ]; then
+      echo "$version|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+      return 0
+    fi
+  fi
 }
 
 get_version_from_env () {
