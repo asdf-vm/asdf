@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.3.2-dev
+## 0.4.1-dev
 
-## 0.3.1
+## 0.4.0
 
 Features
 
