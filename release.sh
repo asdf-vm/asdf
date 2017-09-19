@@ -18,6 +18,23 @@ This script updates the hardcoded versions in the source code and README and
 then commits them on the current branch. It then tags that commit with the
 specified version.
 
+If you run this script in error, or with the wrong version, you can undo the
+changes by finding the original state in the list of actions listed in the
+reflog:
+
+    git reflog
+
+Then revert to the original state by running `git checkout` with the reference
+previous to the release tagging changes:
+
+    git checkout HEAD@{21}
+
+Then checkout the original branch again:
+
+    git checkout master
+
+You are back to the original state!
+
 EOF
 }
 
@@ -67,14 +84,14 @@ fi
 # Update version in README
 sed -i.bak "s|^\(git clone.*--branch \).*$|\1$new_tag_name|" README.md
 
-# Update version in utils.sh
-# TODO: Hardcode version until.sh since not all asdf will include the Git repo
+# Update version in the VERSION file
+echo "$new_tag_name" > VERSION
 
 echo "INFO: Committing and tagging new version"
 
 # Commit the changed files before tagging the new release
 git add README.md
-git add lib/utils.sh
+git add VERSION
 git commit -m "Update version to $new_version"
 
 git tag -a "$new_tag_name" -m "Version ${new_version}"
