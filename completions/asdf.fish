@@ -18,12 +18,12 @@ end
 
 function __fish_asdf_arg_number -a number
     set -l cmd (commandline -opc)
-	test (count $cmd) -eq $number
+    test (count $cmd) -eq $number
 end
 
 function __fish_asdf_arg_at -a number
     set -l cmd (commandline -opc)
-	echo $cmd[$number]
+    echo $cmd[$number]
 end
 
 # plugin-add completion
