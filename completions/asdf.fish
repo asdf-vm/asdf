@@ -26,6 +26,14 @@ function __fish_asdf_arg_at -a number
     echo $cmd[$number]
 end
 
+function __fish_asdf_dir
+    if test -n "$ASDF_DIR"
+        echo $ASDF_DIR
+    else
+        echo "$HOME/.asdf"
+    end
+end
+
 # plugin-add completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-add -d "Add git repo as plugin"
 complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 2' -a '(asdf plugin-list-all)'
@@ -63,6 +71,10 @@ complete -f -c asdf -n '__fish_asdf_using_command current; and __fish_asdf_arg_n
 complete -f -c asdf -n '__fish_asdf_needs_command' -a where -d "Display install path for an installed version"
 complete -f -c asdf -n '__fish_asdf_using_command where; and __fish_asdf_arg_number 2' -a '(asdf plugin-list)'
 complete -f -c asdf -n '__fish_asdf_using_command where; and __fish_asdf_arg_number 3' -a '(asdf list (__fish_asdf_arg_at 3))'
+
+# which completion
+complete -f -c asdf -n '__fish_asdf_needs_command' -a which -d "Display install path for a shims"
+complete -f -c asdf -n '__fish_asdf_using_command which; and __fish_asdf_arg_number 2' -a '(ls (__fish_asdf_dir)/shims)'
 
 # list completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a list -d "List installed versions of a package"
