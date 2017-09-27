@@ -26,16 +26,15 @@ function __fish_asdf_arg_at -a number
 	echo $cmd[$number]
 end
 
-set -l official_plugins ruby erlang nodejs elixir
-
-
 # plugin-add completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-add -d "Add git repo as plugin"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 2' -a (echo $official_plugins)
-complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 3' -a '(echo https://github.com/asdf-vm/asdf-(__fish_asdf_arg_at 3).git)'
+complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 2' -a '(asdf plugin-list-all)'
 
 # plugin-list completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-list -d "List installed plugins"
+
+# plugin-list-all completion
+complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-list-all -d "List all existing plugins"
 
 # plugin-remove completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-remove -d "Remove plugin and package versions"
