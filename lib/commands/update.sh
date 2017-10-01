@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 update_command() {
   local update_to_head=$1
 

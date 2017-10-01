@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 list_command() {
   local plugin_name=$1
   check_if_plugin_exists "$plugin_name"

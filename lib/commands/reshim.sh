@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 shim_command() {
   local plugin_name=$1
   local executable_path=$2

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-exec shellcheck -x \
+exec shellcheck -s bash -x \
      asdf.sh lint.sh release.sh \
      bin/asdf bin/private/asdf-exec \
      lib/utils.sh lib/commands/*.sh \

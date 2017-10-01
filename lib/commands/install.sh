@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 handle_failure() {
   local install_path="$1"
   rm -rf "$install_path"

@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 plugin_list_all_command() {
   initialize_or_update_repository
 

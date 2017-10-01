@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 plugin_push_command() {
   local plugin_name=$1
   if [ "$plugin_name" = "--all" ]; then

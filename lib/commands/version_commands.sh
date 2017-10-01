@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 version_command() {
   local cmd=$1
   local plugin=$2

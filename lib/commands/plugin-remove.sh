@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 plugin_remove_command() {
   local plugin_name=$1
   check_if_plugin_exists "$plugin_name"

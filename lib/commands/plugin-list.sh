@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 plugin_list_command() {
   local plugins_path
   plugins_path=$(get_plugin_path)

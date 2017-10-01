@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 plugin_current_command() {
   local plugin_name=$1
 
