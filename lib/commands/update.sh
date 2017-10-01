@@ -6,6 +6,17 @@ update_command() {
   (
   cd "$(asdf_dir)" || exit 1
 
+  if [ -f asdf_updates_disabled ]; then
+    echo "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf."
+  else
+    do_update "$update_to_head"
+  fi
+  )
+}
+
+do_update() {
+  local update_to_head=$1
+
   if [ "$update_to_head" = "--head" ]; then
     # Update to latest on the master branch
     git checkout master
@@ -22,7 +33,6 @@ update_command() {
     git checkout "$tag" || exit 1
     echo "Updated asdf to release $tag"
   fi
-  )
 }
 
 # stolen from https://github.com/rbenv/ruby-build/pull/631/files#diff-fdcfb8a18714b33b07529b7d02b54f1dR942

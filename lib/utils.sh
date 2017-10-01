@@ -8,11 +8,7 @@ GREP_OPTIONS="--color=never"
 GREP_COLORS=
 
 asdf_version() {
-  # Move to the asdf repo, then report the current tag
-  (
-  cd "$(asdf_dir)" || exit
-  git describe --tags
-  )
+  cat "$(asdf_dir)/VERSION"
 }
 
 asdf_dir() {
@@ -23,6 +19,10 @@ asdf_dir() {
   fi
 
   echo "$ASDF_DIR"
+}
+
+asdf_repository_url() {
+  echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
 get_install_path() {
@@ -282,10 +282,6 @@ get_asdf_config_value() {
   else
     get_asdf_config_value_from_file "$default_config_path" "$key"
   fi
-}
-
-asdf_repository_url() {
-  echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
 repository_needs_update() {
