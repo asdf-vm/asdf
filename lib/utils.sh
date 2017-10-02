@@ -31,9 +31,9 @@ get_install_path() {
 
   if [ "$install_type" = "version" ]
   then
-    echo "$(asdf_dir)"/installs/"${plugin}"/"${version}"
+    echo "$(asdf_dir)/installs/${plugin}/${version}"
   else
-    echo "$(asdf_dir)"/installs/"${plugin}"/"${install_type}"-"${version}"
+    echo "$(asdf_dir)/installs/${plugin}/${install_type}-${version}"
   fi
 }
 
@@ -60,7 +60,7 @@ check_if_plugin_exists() {
     exit 1
   fi
 
-  if [ ! -d "$(asdf_dir)"/plugins/"$1" ]; then
+  if [ ! -d "$(asdf_dir)/plugins/$1" ]; then
     display_error "No such plugin"
     exit 1
   fi
@@ -82,7 +82,7 @@ check_if_version_exists() {
 }
 
 get_plugin_path() {
-  echo "$(asdf_dir)"/plugins/"$1"
+  echo "$(asdf_dir)/plugins/$1"
 }
 
 display_error() {
