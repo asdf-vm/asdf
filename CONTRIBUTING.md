@@ -26,12 +26,12 @@ Travis CI.
 
 ## Did you create a plugin for asdf?
 
-Please read the [creating plugins](doc/creating-plugins.md) guide.
+Please read the [creating plugins](docs/creating-plugins.md) guide.
 
 ## Do you want to contribute the asdf documentation?
 
 Documentation can always be improved! Right now there is just the
-[README](README.md) and the [creating plugins](doc/creating-plugins.md) guide.
+[README](README.md) and the [creating plugins](docs/creating-plugins.md) guide.
 The [wiki](https://github.com/asdf-vm/asdf/wiki) exists but is in a state of
 disrepair. If you see something that can be improved please submit a pull
 request or edit the wiki.

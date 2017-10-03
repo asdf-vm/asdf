@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-echo $(cat $1 | tr -d "dummy-")
+# shellcheck disable=SC2020
+< "$1" tr -d "dummy-"

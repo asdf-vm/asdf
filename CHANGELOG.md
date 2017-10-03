@@ -1,17 +1,21 @@
 # Changelog
 
-## 0.3.1-dev
+## 0.4.1-dev
+
+## 0.4.0
 
 Features
 
-* Add CONTRIBUTING guidelines and GitHub issue and pull request templates
+* Add CONTRIBUTING guidelines and GitHub issue and pull request templates (#217)
 * Add `plugin-list-all` command to list plugins from asdf-plugins repo. (#221)
 * `asdf current` shows all current tool versions when given no args (#219)
 * Add asdf-plugin-version metadata to shims (#212)
+* Add release.sh script to automate release of new versions (#220)
 
 Fixed Bugs
 
 * Allow spaces on path containing the `.tool-versions` file (#224)
+* Fixed bug in `--version` functionality so it works regardless of how asdf was installed (#198)
 
 ## 0.3.0
 

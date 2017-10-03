@@ -26,15 +26,16 @@ plugin_add_command() {
     exit 1
   fi
 
-  local plugin_path=$(get_plugin_path $plugin_name)
+  local plugin_path
+  plugin_path=$(get_plugin_path "$plugin_name")
 
-  mkdir -p $(asdf_dir)/plugins
+  mkdir -p "$(asdf_dir)/plugins"
 
-  if [ -d $plugin_path ]; then
+  if [ -d "$plugin_path" ]; then
     display_error "Plugin named $plugin_name already added"
     exit 1
   else
-    git clone -b $plugin_branch $source_url $plugin_path
+    git clone -b "$plugin_branch" "$source_url" "$plugin_path"
     if [ ! $? -eq 0 ]; then
       exit 1
     fi
