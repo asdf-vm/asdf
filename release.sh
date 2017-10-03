@@ -6,6 +6,7 @@ set -euo pipefail
 #ORIGINAL_IFS=$IFS
 IFS=$'\t\n' # Stricter IFS settings
 
+# shellcheck disable=SC2006
 usage() {
     cat <<EOF
 
