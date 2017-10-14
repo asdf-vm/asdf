@@ -24,7 +24,7 @@ do_update() {
     echo "Updated asdf to latest on the master branch"
   else
     # Update to latest release
-    git fetch --tags || exit 1
+    git fetch origin --tags || exit 1
     tag=$(git tag | sort_versions | sed '$!d') || exit 1
 
     # Update
