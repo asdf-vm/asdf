@@ -97,3 +97,19 @@ teardown() {
   [ "$output" = "You must specify a name and a version to install" ]
   [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
 }
+
+@test "install_command uses a parent directory .tool-versions file if present" {
+  # asdf lib needed to run generated shims
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
+
+  echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
+  mkdir -p $PROJECT_DIR/child
+
+  cd $PROJECT_DIR/child
+
+  run install_command
+
+  # execute the generated shim
+  [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
+  [ "$status" -eq 0 ]
+}

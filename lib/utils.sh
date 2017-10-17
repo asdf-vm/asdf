@@ -323,3 +323,15 @@ get_plugin_source_url() {
     grep "repository" "$plugin_config" | awk -F'=' '{print $2}' | sed 's/ //'
   fi
 }
+
+find_tool_versions() {
+    local search_path
+    search_path=$(pwd)
+    while [ "$search_path" != "/" ]; do
+        if [ -f "$search_path/.tool-versions" ]; then
+            echo "${search_path}/.tool-versions"
+            return 0
+        fi
+        search_path=$(dirname "$search_path")
+    done
+}
