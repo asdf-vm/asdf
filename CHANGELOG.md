@@ -2,6 +2,15 @@
 
 ## 0.4.1-dev
 
+Features
+
+* `asdf install` will also search for `.tool-versions` in parent directories (#237)
+
+Fixed Bugs
+
+* `asdf update` will explicitly use the `origin` remote when updating tags (#231)
+* All code is now linted by shellcheck (#223)
+
 ## 0.4.0
 
 Features
