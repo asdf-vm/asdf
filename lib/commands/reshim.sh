@@ -184,11 +184,12 @@ remove_obsolete_shims() {
   local install_path
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
 
-  for shim_path in "$shims_path"/*; do
+  local target_shims
+  target_shims=($(grep -lr "# asdf-plugin: $plugin_name" $shims_path))
+  for shim_path in "${target_shims[@]}"; do
     local shim_name
     shim_name="$(basename "$shim_path")"
-    if grep "# asdf-plugin: $plugin_name" "$shim_path" > /dev/null && \
-        grep "# asdf-plugin-version: $version" "$shim_path" > /dev/null && \
+    if grep "# asdf-plugin-version: $version" "$shim_path" > /dev/null && \
         ! shim_still_exists "$shim_name" "$install_path" "$space_separated_list_of_bin_paths"; then
       remove_shim_for_version "$plugin_name" "$shim_name" "$version"
     fi
