@@ -190,6 +190,10 @@ legacy_version_file = yes
 
 * `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
+## Uninstall
+
+[Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/uninstall.md).
+
 ## Docker images
 
 The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) projects are an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
