@@ -59,4 +59,8 @@ teardown() {
   run reshim_command dummy
   [ "$status" -eq 0 ]
   [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+
+  run reshim_command dummy
+  [ "$status" -eq 0 ]
+  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
 }
