@@ -48,7 +48,10 @@ teardown() {
 }
 
 @test "reshim should not duplicate shims" {
-  run install_command dummy 1.0
+  cd $PROJECT_DIR
+  echo "dummy 1.0" > .tool-versions
+
+  run install_command
   [ "$status" -eq 0 ]
   [ -f "$ASDF_DIR/shims/dummy" ]
 
