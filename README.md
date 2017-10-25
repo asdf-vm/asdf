@@ -11,25 +11,35 @@ Copy-paste the following into command line:
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.4.0
 ```
 
-Depending on your OS, run the following
-```bash
-# For Ubuntu or other linux distros
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+Depending on your OS and shell, run the following:
 
-# OR for macOS
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
-```
+* Bash on Ubuntu (and other Linux distros):
 
-If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+  ```
 
-For fish, you can use the following:
+* Bash on macOS:
 
-```
-echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
-mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
-```
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
+  ```
+  
+* Zsh:
+
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
+  ```
+
+* Fish:
+
+  ```bash
+  echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+  mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+  ```
 
 > For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
