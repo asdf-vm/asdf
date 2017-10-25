@@ -43,7 +43,7 @@ Depending on your OS and shell, run the following:
 
 > For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
-> * **OS X**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
+> * **macOS**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
 > * **Ubuntu**: `automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev`
 > * **Fedora**: `automake autoconf readline-devel ncurses-devel openssl-devel libyaml-devel libxslt-devel libffi-devel libtool unixODBC-devel`
 

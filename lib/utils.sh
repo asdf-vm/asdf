@@ -48,7 +48,7 @@ list_installed_versions() {
   if [ -d "$plugin_installs_path" ]; then
 	# shellcheck disable=SC2045
     for install in $(ls -d "${plugin_installs_path}"/*/ 2>/dev/null); do
-		basename "$install"
+		basename "$install" | sed 's/^ref-/ref:/'
     done
   fi
 }
