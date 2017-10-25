@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 shim_command() {
   local plugin_name=$1
   local executable_path=$2

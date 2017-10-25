@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 handle_failure() {
   local install_path="$1"
   rm -rf "$install_path"

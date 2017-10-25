@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 # We shouldn't rely on the user's grep settings to be correct. If we set these
 # here anytime asdf invokes grep it will be invoked with these options
 # shellcheck disable=SC2034

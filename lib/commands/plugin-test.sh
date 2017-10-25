@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 fail_test() {
     echo "FAILED: $1"
     rm -rf "$ASDF_DIR"

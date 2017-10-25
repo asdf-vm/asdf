@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 plugin_push_command() {
   local plugin_name=$1
   if [ "$plugin_name" = "--all" ]; then

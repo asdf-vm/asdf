@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 plugin_update_command() {
   if [ "$#" -ne 1 ]; then
     display_error "usage: asdf plugin-update {<name> | --all}"
