@@ -243,7 +243,7 @@ parse_legacy_version_file() {
 get_preset_version_for() {
   local plugin_name=$1
   local search_path
-  search_path=$(realpath "$(pwd)")
+  search_path=$(pwd)
   local version_and_path
   version_and_path=$(find_version "$plugin_name" "$search_path")
   local version
