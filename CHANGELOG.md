@@ -8,6 +8,7 @@ Features
 
 Fixed Bugs
 
+* bad use of `sed` caused shims and `.tool-versions` to be duplicated with `-e` (#242)
 * `asdf list` now outputs ref-versions as used on `.tool-versions` file (#243)
 * `asdf update` will explicitly use the `origin` remote when updating tags (#231)
 * All code is now linted by shellcheck (#223)
