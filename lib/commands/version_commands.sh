@@ -25,7 +25,8 @@ version_command() {
   done
 
   if [ -f "$file" ] && grep "$plugin" "$file" > /dev/null; then
-    sed -i -e "s/$plugin .*/$plugin ${versions[*]}/" "$file"
+    sed -i.bak -e "s/$plugin .*/$plugin ${versions[*]}/" "$file"
+    rm "$file".bak
   else
     echo "$plugin ${versions[*]}" >> "$file"
   fi

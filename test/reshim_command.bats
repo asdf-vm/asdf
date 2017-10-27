@@ -46,3 +46,24 @@ teardown() {
   run grep "asdf-plugin-version: 1.1" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 0 ]
 }
+
+@test "reshim should not duplicate shims" {
+  cd $PROJECT_DIR
+
+  run install_command dummy 1.0
+  run install_command dummy 1.1
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
+
+  run rm $ASDF_DIR/shims/*
+  [ "$status" -eq 0 ]
+  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+
+  run reshim_command dummy
+  [ "$status" -eq 0 ]
+  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+
+  run reshim_command dummy
+  [ "$status" -eq 0 ]
+  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+}
