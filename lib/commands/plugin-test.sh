@@ -53,7 +53,7 @@ plugin_test_command() {
     fi
 
     if [ -n "$plugin_command" ]; then
-        (PATH="$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH" eval "$plugin_command")
+        (PATH="$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH" "$plugin_command")
         local exit_code
         exit_code=$?
         if [ $exit_code != 0 ]; then

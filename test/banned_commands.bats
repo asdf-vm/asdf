@@ -2,7 +2,7 @@
 
 load test_helpers
 
-banned_commands=(realpath)
+banned_commands=(realpath eval)
 
 setup() {
   setup_asdf_dir
