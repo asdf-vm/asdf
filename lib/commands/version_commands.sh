@@ -24,8 +24,8 @@ version_command() {
     check_if_version_exists "$plugin" "$version"
   done
 
-  if [ -f "$file" ] && grep "$plugin" "$file" > /dev/null; then
-    sed -i.bak -e "s/$plugin .*/$plugin ${versions[*]}/" "$file"
+  if [ -f "$file" ] && grep "^$plugin " "$file" > /dev/null; then
+    sed -i.bak -e "s/^$plugin .*$/^$plugin ${versions[*]}$/" "$file"
     rm "$file".bak
   else
     echo "$plugin ${versions[*]}" >> "$file"
