@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.4.1-dev
+## 0.4.2-dev
+
+Fixed Bugs
+
+## 0.4.1
 
 Features
 
@@ -8,11 +12,11 @@ Features
 
 Fixed Bugs
 
-* bad use of `sed` caused shims and `.tool-versions` to be duplicated with `-e` (#242)
+* bad use of `sed` caused shims and `.tool-versions` to be duplicated with `-e` (#242, #250)
 * `asdf list` now outputs ref-versions as used on `.tool-versions` file (#243)
 * `asdf update` will explicitly use the `origin` remote when updating tags (#231)
 * All code is now linted by shellcheck (#223)
-* Fixed duplicate shim bug (#242, #250)
+* Add test to fail builds if banned commands are found (#251)
 
 ## 0.4.0
 
