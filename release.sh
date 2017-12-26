@@ -89,7 +89,7 @@ if ! git diff-index --cached --exit-code -r --ignore-submodules HEAD -- >&2; the
 fi
 
 # Update version in README
-sed -i.bak "s|^\\(git clone.*--branch \\).*$|\1$new_tag_name|" README.md
+sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" README.md
 rm README.md.bak
 
 # Update version in the VERSION file
