@@ -68,7 +68,7 @@ if git tag | grep "$new_tag_name" > /dev/null; then
 fi
 
 # Make sure the changelog already contains details on the new version
-if grep "$new_version^" CHANGELOG.md; then
+if ! grep "$new_version$" CHANGELOG.md; then
     echo >&2 "ERROR: changelog entry for this version is missing"
     exit 1
 fi
