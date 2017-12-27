@@ -6,7 +6,7 @@ handle_failure() {
 
 handle_cancel() {
   local install_path="$1"
-  echo -e "\nreceived sigint, cleaning up"
+  echo -e "\\nreceived sigint, cleaning up"
   handle_failure "$install_path"
 }
 
