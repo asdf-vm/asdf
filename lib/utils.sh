@@ -261,7 +261,7 @@ get_asdf_config_value_from_file() {
   fi
 
   local result
-  result=$(grep -E "^\s*$key\s*=" "$config_path" | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
+  result=$(grep -E "^\\s*$key\\s*=" "$config_path" | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
   if [ -n "$result" ]; then
     echo "$result"
   fi
