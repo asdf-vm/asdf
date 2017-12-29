@@ -1,3 +1,4 @@
+#测试使用，请忽略提交，还望见谅
 # asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
 ### _extendable version manager_
 
