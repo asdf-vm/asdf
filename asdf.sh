@@ -8,7 +8,9 @@ fi
 
 export ASDF_DIR
 ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
-export PATH="${ASDF_DIR}/bin:${ASDF_DIR}/shims:$PATH"
+
+[[ ":$PATH:" != *":${ASDF_DIR}/bin:"* ]] && PATH="${ASDF_DIR}/bin:$PATH"
+[[ ":$PATH:" != *":${ASDF_DIR}/shims:"* ]] && PATH="${ASDF_DIR}/shims:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
   autoload -U bashcompinit
