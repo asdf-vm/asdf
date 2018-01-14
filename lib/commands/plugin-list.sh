@@ -4,9 +4,11 @@ plugin_list_command() {
 
   if ls "$plugins_path" &> /dev/null; then
     for plugin_path in $plugins_path/* ; do
-      basename "$plugin_path"
+      plugin_name=$(basename "$plugin_path")
+      source_url=$(get_plugin_source_url "$plugin_name")
+      printf "%-15s %s\n" "$plugin_name" "$source_url"
     done
   else
-    echo 'Oohes nooes ~! No plugins installed'
+    printf "%s\n" "Oohes nooes ~! No plugins installed"
   fi
 }
