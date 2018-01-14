@@ -8,9 +8,9 @@ if ls "$plugins_path" &> /dev/null; then
   for plugin in $plugins_path/*; do
     plugin_name=$(basename "$plugin")
     source_url=$(get_plugin_source_url "$plugin_name")
-    printf "%-15s %s\n" "$plugin_name" "$source_url"
+    printf "%-15s %s\\n" "$plugin_name" "$source_url"
   done
 else
-  printf "%s%s\n" "error: index of plugins not found at " "$plugins_path"
+  printf "%s%s\\n" "error: index of plugins not found at " "$plugins_path"
 fi
 }
