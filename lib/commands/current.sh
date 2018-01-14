@@ -16,20 +16,17 @@ plugin_current_command() {
   check_for_deprecated_plugin "$plugin_name"
 
   if [ -z "$version" ]; then
-    printf "No version set for $plugin_name"
+    printf "%s\\n" "No version set for $plugin_name"
     exit 1
   else
-    printf "%-8s%s" "$version" "(set by" "$version_file_path)"
+    printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
   fi
 }
 
 current_command() {
   if [ $# -eq 0 ]; then
     for plugin in $(plugin_list_command); do
-      #plugin_list_command returns <name url> pairs, so filter urls
-      if [[ $plugin != *"http"* ]] ; then
-        printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")"
-      fi
+      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")"
     done
   else
     local plugin=$1
