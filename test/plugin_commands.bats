@@ -18,7 +18,8 @@ teardown() {
   [ "$status" -eq 0 ]
 
   run plugin_list_command
-  [ "$output" = "elixir" ]
+  # whitespace between 'elixir' and url is from printf %-15s %s format
+  [ "$output" = "elixir          https://github.com/asdf-vm/asdf-elixir" ]
 }
 
 @test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
