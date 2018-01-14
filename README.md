@@ -91,6 +91,8 @@ asdf plugin-add <name> <git-url>
 ```bash
 asdf plugin-list
 # asdf plugin-list
+# java            https://github.com/skotchpine/asdf-java.git
+# nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
 ##### Remove a plugin
