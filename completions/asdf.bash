@@ -25,6 +25,12 @@ _asdf () {
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
       ;;
+    plugin-add)
+      local available_plugins
+      available_plugins=$((asdf plugin-list && asdf plugin-list-all) | sort | uniq -u)
+      # shellcheck disable=SC2207
+      COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
+      ;;
     install)
       if [[ "$plugins" == *"$prev"* ]] ; then
         local versions
@@ -35,6 +41,10 @@ _asdf () {
         # shellcheck disable=SC2207
         COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
       fi
+      ;;
+    update)
+      # shellcheck disable=SC2207
+      COMPREPLY=($(compgen -W "--head" -- "$cur"))
       ;;
     uninstall|where|reshim|local|global)
       if [[ "$plugins" == *"$prev"* ]] ; then
@@ -48,7 +58,7 @@ _asdf () {
       fi
       ;;
     *)
-      local cmds='plugin-add plugin-list plugin-remove plugin-update install uninstall update current where which list list-all local global reshim'
+      local cmds='current global help install list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim uninstall update where which '
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$cmds" -- "$cur"))
       ;;
