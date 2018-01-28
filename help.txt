@@ -13,6 +13,7 @@ MANAGE PACKAGES
                                        with no arguments, install all the package
                                        versions listed in the .tool-versions file
   asdf uninstall <name> <version>      Remove a specific version of a package
+  asdf current                         Display current version set or being used for all packages
   asdf current <name>                  Display current version set or being used for package
   asdf where <name> <version>          Display install path for an installed version
   asdf which <name>                    Display install path for current version
