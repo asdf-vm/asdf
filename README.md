@@ -1,4 +1,5 @@
 # asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
+
 ### _extendable version manager_
 
 Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/asdf-vm/asdf-plugins). Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
@@ -26,24 +27,25 @@ Depending on your OS and shell, run the following:
   echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
   echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
   ```
-  
+
 * Zsh:
 
-    If you are using a framework, such as oh-my-zsh, use these lines. (Be sure that if
-    you make future changes to .zshrc these lines remain *below* the line where you source
-    your framework.)
-    
+  If you are using a framework, such as oh-my-zsh, use these lines. (Be sure that if
+  you make future changes to .zshrc these lines remain _below_ the line where you source
+  your framework.)
+
   ```bash
   echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
   echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
   ```
+
   If you are not using a framework, or if on starting your shell you get an error message
   like 'command not found: compinit', then add this line before the ones above.
-  
+
   ```bash
   autoload -Uz compinit && compinit
   ```
-  
+
 * Fish:
 
   ```bash
@@ -59,8 +61,7 @@ Depending on your OS and shell, run the following:
 
 **That's all ~! You are ready to use asdf**
 
------------------------
-
+---
 
 ## USAGE
 
@@ -100,7 +101,6 @@ asdf plugin-remove <name>
 # asdf plugin-remove erlang
 ```
 
-
 ##### Update plugins
 
 ```bash
@@ -120,6 +120,11 @@ asdf plugin-update <name>
 asdf install <name> <version>
 # asdf install erlang 17.3
 
+asdf current
+# asdf current
+# erlang 17.3 (set by /Users/kim/.tool-versions)
+# nodejs 6.11.5 (set by /Users/kim/cool-node-project/.tool-versions)
+
 asdf current <name>
 # asdf current erlang
 # 17.3 (set by /Users/kim/.tool-versions)
@@ -128,7 +133,7 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
-*If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit).* You'll have to use the same name when uninstalling too.
+_If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit)._ You'll have to use the same name when uninstalling too.
 
 ##### Lists installed versions
 
@@ -240,11 +245,11 @@ Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf
 
 ### Maintainers
 
-- [@HashNuke](https://github.com/HashNuke)
-- [@tuvistavie](https://github.com/tuvistavie)
-- [@Stratus3D](https://github.com/Stratus3D)
-- [@vic](https://github.com/vic)
+* [@HashNuke](https://github.com/HashNuke)
+* [@tuvistavie](https://github.com/tuvistavie)
+* [@Stratus3D](https://github.com/Stratus3D)
+* [@vic](https://github.com/vic)
 
--------
+---
 
 Read the [ballad](https://github.com/asdf-vm/asdf/blob/master/ballad-of-asdf.md).
