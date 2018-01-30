@@ -16,17 +16,17 @@ plugin_current_command() {
   check_for_deprecated_plugin "$plugin_name"
 
   if [ -z "$version" ]; then
-    echo "No version set for $plugin_name"
+    printf "%s\\n" "No version set for $plugin_name"
     exit 1
   else
-    echo "$version (set by $version_file_path)"
+    printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
   fi
 }
 
 current_command() {
   if [ $# -eq 0 ]; then
     for plugin in $(plugin_list_command); do
-      echo "$plugin $(plugin_current_command "$plugin")"
+      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")"
     done
   else
     local plugin=$1
