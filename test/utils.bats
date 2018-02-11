@@ -124,6 +124,26 @@ teardown() {
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
+@test "find_version should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  echo "dummy 0.1.0" > $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+
+  run find_version "dummy" $PROJECT_DIR
+  [ "$status" -eq 0 ]
+  [ "$output" = "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]
+}
+
+@test "find_version should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  echo "dummy 0.2.0" > $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  echo "dummy 0.1.0" > $HOME/.dummy-version
+  echo "legacy_version_file = yes" > $HOME/.asdfrc
+
+  run find_version "dummy" $PROJECT_DIR
+  [ "$status" -eq 0 ]
+  [ "$output" = "0.1.0|$HOME/.dummy-version" ]
+}
+
 @test "get_preset_version_for returns the current version" {
   cd $PROJECT_DIR
   echo "dummy 0.2.0" > .tool-versions

@@ -122,3 +122,20 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }
+
+@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  run global_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/.tool-versions)" = "" ]
+}
+
+@test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  run global_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/.tool-versions)" = "" ]
+}
