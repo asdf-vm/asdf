@@ -4,6 +4,7 @@
 
 Features
 
+* Add support for `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` environment variable (#201, #228)
 * Only add asdf to `PATH` once (#261, #271)
 * Add `--urls` flag to `plugin-list` commands (#273)
 
