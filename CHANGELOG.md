@@ -2,6 +2,10 @@
 
 ## 0.4.2-dev
 
+Features
+
+* Only add asdf to `PATH` once (#261, #271)
+
 Fixed Bugs
 
 * Incorrect `grep` command caused version command to look at the wrong tool when reporting the version (#262)
