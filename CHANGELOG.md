@@ -5,6 +5,7 @@
 Features
 
 * Only add asdf to `PATH` once (#261, #271)
+* Add `--urls` flag to `plugin-list` commands (#273)
 
 Fixed Bugs
 
