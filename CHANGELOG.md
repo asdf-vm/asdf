@@ -1,17 +1,44 @@
 # Changelog
 
-## 0.3.1-dev
+## 0.4.2-dev
 
 Features
 
-* Add CONTRIBUTING guidelines and GitHub issue and pull request templates
+* Only add asdf to `PATH` once (#261, #271)
+* Add `--urls` flag to `plugin-list` commands (#273)
+
+Fixed Bugs
+
+* Incorrect `grep` command caused version command to look at the wrong tool when reporting the version (#262)
+
+## 0.4.1
+
+Features
+
+* `asdf install` will also search for `.tool-versions` in parent directories (#237)
+
+Fixed Bugs
+
+* bad use of `sed` caused shims and `.tool-versions` to be duplicated with `-e` (#242, #250)
+* `asdf list` now outputs ref-versions as used on `.tool-versions` file (#243)
+* `asdf update` will explicitly use the `origin` remote when updating tags (#231)
+* All code is now linted by shellcheck (#223)
+* Add test to fail builds if banned commands are found (#251)
+
+## 0.4.0
+
+Features
+
+* Add CONTRIBUTING guidelines and GitHub issue and pull request templates (#217)
 * Add `plugin-list-all` command to list plugins from asdf-plugins repo. (#221)
 * `asdf current` shows all current tool versions when given no args (#219)
 * Add asdf-plugin-version metadata to shims (#212)
+* Add release.sh script to automate release of new versions (#220)
 
 Fixed Bugs
 
 * Allow spaces on path containing the `.tool-versions` file (#224)
+* Fixed bug in `--version` functionality so it works regardless of how asdf was installed (#198)
 
 ## 0.3.0
 

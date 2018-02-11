@@ -1,4 +1,5 @@
 # asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
+
 ### _extendable version manager_
 
 Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/asdf-vm/asdf-plugins). Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
@@ -8,39 +9,59 @@ Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.4.1
 ```
 
-Depending on your OS, run the following
-```bash
-# For Ubuntu or other linux distros
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+Depending on your OS and shell, run the following:
 
-# OR for Mac OSX
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
-```
+* Bash on Ubuntu (and other Linux distros):
 
-If you use zsh or any other shell, replace `.bashrc` with the config file for the respective shell.
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+  ```
 
-For fish, you can use the following:
+* Bash on macOS:
 
-```
-echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
-mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
-```
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
+  ```
+
+* Zsh:
+
+  If you are using a framework, such as oh-my-zsh, use these lines. (Be sure that if
+  you make future changes to .zshrc these lines remain _below_ the line where you source
+  your framework.)
+
+  ```bash
+  echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+  echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
+  ```
+
+  If you are not using a framework, or if on starting your shell you get an error message
+  like 'command not found: compinit', then add this line before the ones above.
+
+  ```bash
+  autoload -Uz compinit && compinit
+  ```
+
+* Fish:
+
+  ```bash
+  echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+  mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+  ```
 
 > For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
-> * **OS X**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
+> * **macOS**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
 > * **Ubuntu**: `automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev`
 > * **Fedora**: `automake autoconf readline-devel ncurses-devel openssl-devel libyaml-devel libxslt-devel libffi-devel libtool unixODBC-devel`
 
 **That's all ~! You are ready to use asdf**
 
------------------------
-
+---
 
 ## USAGE
 
@@ -71,6 +92,15 @@ asdf plugin-add <name> <git-url>
 ```bash
 asdf plugin-list
 # asdf plugin-list
+# java
+# nodejs
+```
+
+```bash
+asdf plugin-list --urls
+# asdf plugin-list
+# java            https://github.com/skotchpine/asdf-java.git
+# nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
 ##### Remove a plugin
@@ -79,7 +109,6 @@ asdf plugin-list
 asdf plugin-remove <name>
 # asdf plugin-remove erlang
 ```
-
 
 ##### Update plugins
 
@@ -100,6 +129,11 @@ asdf plugin-update <name>
 asdf install <name> <version>
 # asdf install erlang 17.3
 
+asdf current
+# asdf current
+# erlang 17.3 (set by /Users/kim/.tool-versions)
+# nodejs 6.11.5 (set by /Users/kim/cool-node-project/.tool-versions)
+
 asdf current <name>
 # asdf current erlang
 # 17.3 (set by /Users/kim/.tool-versions)
@@ -108,7 +142,7 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
-*If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit).* You'll have to use the same name when uninstalling too.
+_If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit)._ You'll have to use the same name when uninstalling too.
 
 ##### Lists installed versions
 
@@ -190,6 +224,10 @@ legacy_version_file = yes
 
 * `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
+## Uninstall
+
+[Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/uninstall.md).
+
 ## Docker images
 
 The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) projects are an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
@@ -216,11 +254,11 @@ Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf
 
 ### Maintainers
 
-- [@HashNuke](https://github.com/HashNuke)
-- [@tuvistavie](https://github.com/tuvistavie)
-- [@Stratus3D](https://github.com/Stratus3D)
-- [@vic](https://github.com/vic)
+* [@HashNuke](https://github.com/HashNuke)
+* [@tuvistavie](https://github.com/tuvistavie)
+* [@Stratus3D](https://github.com/Stratus3D)
+* [@vic](https://github.com/vic)
 
--------
+---
 
 Read the [ballad](https://github.com/asdf-vm/asdf/blob/master/ballad-of-asdf.md).

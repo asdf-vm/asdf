@@ -63,6 +63,14 @@ teardown() {
   [ "$tool_version_contents" = "dummy 1.1.0" ]
 }
 
+@test "local should not create a duplicate .tool-versions file if such file exists" {
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+
+  run local_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(ls $PROJECT_DIR/.tool-versions* | wc -l)" -eq 1 ]
+}
+
 @test "local should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
   run local_command "dummy" "1.1.0"

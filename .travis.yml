@@ -1,8 +1,17 @@
 language: c
-script: bats test
+
+script:
+  - bats test
+  - ./lint.sh
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install shellcheck; fi
+
 before_script:
   - git clone https://github.com/sstephenson/bats.git /tmp/bats
   - export PATH=/tmp/bats/bin:$PATH
+
 os:
   - linux
   - osx

@@ -227,3 +227,22 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "$executable_path" ]
 }
+
+@test "find_tool_versions will find a .tool-versions path if it exists in current directory" {
+  echo "dummy 0.1.0" > $PROJECT_DIR/.tool-versions
+  cd $PROJECT_DIR
+
+  run find_tool_versions
+  [ "$status" -eq 0 ]
+  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+}
+
+@test "find_tool_versions will find a .tool-versions path if it exists in parent directory" {
+  echo "dummy 0.1.0" > $PROJECT_DIR/.tool-versions
+  mkdir -p $PROJECT_DIR/child
+  cd $PROJECT_DIR/child
+
+  run find_tool_versions
+  [ "$status" -eq 0 ]
+  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+}

@@ -1,13 +1,16 @@
+#!/usr/bin/env bash
+
+# shellcheck source=lib/utils.sh
 . $(dirname $BATS_TEST_DIRNAME)/lib/utils.sh
 
 setup_asdf_dir() {
   BASE_DIR=$(mktemp -dt asdf.XXXX)
   HOME=$BASE_DIR/home
   ASDF_DIR=$HOME/.asdf
-  mkdir -p $ASDF_DIR/plugins
-  mkdir -p $ASDF_DIR/installs
-  mkdir -p $ASDF_DIR/shims
-  mkdir -p $ASDF_DIR/tmp
+  mkdir -p "$ASDF_DIR/plugins"
+  mkdir -p "$ASDF_DIR/installs"
+  mkdir -p "$ASDF_DIR/shims"
+  mkdir -p "$ASDF_DIR/tmp"
   PATH=$ASDF_DIR/shims:$PATH
 }
 
@@ -31,11 +34,11 @@ install_dummy_version() {
 }
 
 clean_asdf_dir() {
-  rm -rf $BASE_DIR
+  rm -rf "$BASE_DIR"
   unset ASDF_DIR
 }
 
 setup_repo() {
-  cp -r $BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo $ASDF_DIR/repository
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/repository"
   touch "$(asdf_dir)/tmp/repo-updated"
 }

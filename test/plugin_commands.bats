@@ -18,6 +18,7 @@ teardown() {
   [ "$status" -eq 0 ]
 
   run plugin_list_command
+  # whitespace between 'elixir' and url is from printf %-15s %s format
   [ "$output" = "elixir" ]
 }
 
