@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.4.2-dev
+## 0.4.3-dev
+
+## 0.4.2
 
 Features
 
