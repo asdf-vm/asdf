@@ -11,7 +11,7 @@ version_command() {
   local versions=("$@")
 
   local file
-  if [ $cmd = "global" ]; then
+  if [ "$cmd" = "global" ]; then
     file=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-$HOME/.tool-versions}
   else
     file="$(pwd)/.tool-versions"

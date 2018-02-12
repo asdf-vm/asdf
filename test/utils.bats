@@ -141,7 +141,7 @@ teardown() {
 
   run find_version "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [ "$output" = "0.1.0|$HOME/.dummy-version" ]
+  [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
 }
 
 @test "get_preset_version_for returns the current version" {
