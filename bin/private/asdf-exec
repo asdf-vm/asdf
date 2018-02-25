@@ -12,7 +12,7 @@ check_if_plugin_exists "$plugin_name"
 full_version=$(get_preset_version_for "$plugin_name")
 
 if [ "$full_version" == "" ]; then
-  echo "No version set for ${plugin_name}"
+  echo "No version set for ${plugin_name}: please run `asdf <global|local> ${plugin_name} <version>`"
   exit -1
 fi
 
