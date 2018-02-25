@@ -120,7 +120,11 @@ find_version() {
   local version
   version=$(get_version_from_env "$plugin_name")
   if [ -n "$version" ]; then
-      echo "$version"
+      local upcase_name
+      upcase_name=$(echo "$plugin_name" | tr '[:lower:]' '[:upper:]')
+      local version_env_var="ASDF_${upcase_name}_VERSION"
+
+      echo "$version|$version_env_var environment variable"
       return 0
   fi
 
