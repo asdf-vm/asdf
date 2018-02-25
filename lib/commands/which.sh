@@ -1,4 +1,4 @@
-current_version() {
+which_command() {
   local plugin_name=$1
 
   check_if_plugin_exists "$plugin_name"
@@ -9,6 +9,7 @@ current_version() {
   version_and_path=$(find_version "$plugin_name" "$search_path")
   local version
   version=$(cut -d '|' -f 1 <<< "$version_and_path");
+  local install_type="version"
 
   check_if_version_exists "$plugin_name" "$version"
   check_for_deprecated_plugin "$plugin_name"
@@ -16,21 +17,10 @@ current_version() {
   if [ -z "$version" ]; then
     display_no_version_set "$plugin_name"
     exit 1
-  else
-    echo "$version"
-    exit 0
   fi
-}
-
-which_command() {
-  local plugin_name=$1
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
-  check_if_plugin_exists "$plugin_name"
-  local install_type="version"
 
   local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$(current_version "$plugin_name")")
+  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
 
   if [ -d "$install_path" ]; then
     echo "$install_path/bin/$plugin_name"
