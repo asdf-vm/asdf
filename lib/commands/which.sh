@@ -14,7 +14,7 @@ current_version() {
   check_for_deprecated_plugin "$plugin_name"
 
   if [ -z "$version" ]; then
-    echo "No version set for $plugin_name: please run \`asdf <global|local> ${plugin_name} <version>\`"
+    display_no_version_set "$plugin_name"
     exit 1
   else
     echo "$version"
