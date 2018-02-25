@@ -16,7 +16,7 @@ plugin_current_command() {
   check_for_deprecated_plugin "$plugin_name"
 
   if [ -z "$version" ]; then
-    printf "%s\\n" "No version set for $plugin_name: please run `asdf <global|local> ${plugin_name} <version>`"
+    printf "%s\\n" "No version set for $plugin_name: please run \`asdf <global|local> ${plugin_name} <version>\`"
     exit 1
   else
     printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
