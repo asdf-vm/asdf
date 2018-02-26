@@ -15,8 +15,8 @@ teardown() {
 
 @test "plugin_list_all list all plugins in the repository" {
   run plugin_list_all_command
-  local expected="bar
-foo"
+  local expected="bar              http://example.com/bar
+foo              http://example.com/foo"
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
