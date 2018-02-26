@@ -75,7 +75,7 @@ teardown() {
   echo 'foobar 1.0.0' >> $PROJECT_DIR/.tool-versions
 
   run current_command
-  expected="baz            No version set for baz: please run \`asdf <global|local> baz <version>\`
+  expected="baz            No version set for baz; please run \`asdf <global | local> baz <version>\`
 dummy          1.1.0   (set by $PROJECT_DIR/.tool-versions)
 foobar         1.0.0   (set by $PROJECT_DIR/.tool-versions)"
 
