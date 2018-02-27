@@ -286,8 +286,8 @@ get_asdf_config_value_from_file() {
 
 get_asdf_config_value() {
   local key=$1
-  local config_path=${AZDF_CONFIG_FILE:-"$HOME/.asdfrc"}
-  local default_config_path=${AZDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
+  local config_path=${ASDF_CONFIG_FILE:-"$HOME/.asdfrc"}
+  local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
 
   local result
   result=$(get_asdf_config_value_from_file "$config_path" "$key")
