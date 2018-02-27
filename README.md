@@ -226,7 +226,7 @@ legacy_version_file = yes
 
 ## Environment Variables
 
-* `AZDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
+* `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
 * `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The name of the file storing the tool names and versions. Defaults to `.tool-versions`. Can be any valid file name.
 
 ## Uninstall
