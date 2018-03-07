@@ -9,8 +9,17 @@ fi
 export ASDF_DIR
 ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
 
-[[ ":$PATH:" != *":${ASDF_DIR}/bin:"* ]] && PATH="${ASDF_DIR}/bin:$PATH"
-[[ ":$PATH:" != *":${ASDF_DIR}/shims:"* ]] && PATH="${ASDF_DIR}/shims:$PATH"
+# Add asdf to PATH
+#
+# if in $PATH, remove, regardless of if it is in the right place (at the front) or not.
+# replace all occurrences - ${parameter//pattern/string}
+ASDF_BIN="${ASDF_DIR}/bin:"
+ASDF_SHIMS="${ASDF_DIR}/shims:"
+[[ "$PATH:" == *"${ASDF_BIN}"* ]] && PATH="${PATH//$ASDF_BIN/}"
+[[ "$PATH:" == *"${ASDF_SHIMS}"* ]] && PATH="${PATH//$ASDF_SHIMS/}"
+# add to front of $PATH
+PATH="${ASDF_BIN}$PATH"
+PATH="${ASDF_SHIMS}$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
   autoload -U bashcompinit
