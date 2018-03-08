@@ -18,8 +18,8 @@ ASDF_SHIMS="${ASDF_DIR}/shims"
 [[ ":$PATH:" == *":${ASDF_BIN}:"* ]] && PATH="${PATH//$ASDF_BIN:/}"
 [[ ":$PATH:" == *":${ASDF_SHIMS}:"* ]] && PATH="${PATH//$ASDF_SHIMS:/}"
 # add to front of $PATH
-PATH="${ASDF_BIN}$PATH"
-PATH="${ASDF_SHIMS}$PATH"
+PATH="${ASDF_BIN}:$PATH"
+PATH="${ASDF_SHIMS}:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
   autoload -U bashcompinit
