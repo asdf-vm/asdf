@@ -15,8 +15,8 @@ ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
 # replace all occurrences - ${parameter//pattern/string}
 ASDF_BIN="${ASDF_DIR}/bin:"
 ASDF_SHIMS="${ASDF_DIR}/shims:"
-[[ "$PATH:" == *"${ASDF_BIN}"* ]] && PATH="${PATH//$ASDF_BIN/}"
-[[ "$PATH:" == *"${ASDF_SHIMS}"* ]] && PATH="${PATH//$ASDF_SHIMS/}"
+[[ ":$PATH:" == *"${ASDF_BIN}"* ]] && PATH="${PATH//$ASDF_BIN/}"
+[[ ":$PATH:" == *"${ASDF_SHIMS}"* ]] && PATH="${PATH//$ASDF_SHIMS/}"
 # add to front of $PATH
 PATH="${ASDF_BIN}$PATH"
 PATH="${ASDF_SHIMS}$PATH"
