@@ -105,4 +105,4 @@ git commit -m "Update version to $new_version"
 git tag -a "$new_tag_name" -m "Version ${new_version}"
 
 echo "INFO: done."
-echo "INFO: Now you can push this local branch to the GitHub repository."
+echo "INFO: Now you can push this local branch to the GitHub repository: \`git push <remote> master $new_tag_name\`"
