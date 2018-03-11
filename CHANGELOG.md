@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.4.3-dev
+## 0.4.4-dev
+
+## 0.4.3
+
+Features
+
+* Suggest action when no version is set (#291, #293)
+
+Fixed Bugs
+
+* Fix issue with asdf not always being added to beginning of `$PATH` (#288, #303, #304)
+* Fix incorrect `ASDF_CONFIG_FILE` environment variable name (#300)
+* Fix `asdf current` so it shows environment variables that are setting versions (#292, 294)
 
 ## 0.4.2
 
