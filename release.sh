@@ -73,6 +73,14 @@ if ! grep "$new_version$" CHANGELOG.md; then
     exit 1
 fi
 
+# Make sure the changelog doesn't contain duplicate issue numbers
+nonunique_issue_numbers=$(grep -o -P '#[\d]+' CHANGELOG.md | sort)
+unique_issue_numbers=$(grep -o -P '#[\d]+' CHANGELOG.md | sort -u)
+if [ "$nonunique_issue_numbers" != "$unique_issue_numbers" ]; then
+    echo >&2 "ERROR: Duplicate issue numbers in changelog."
+    exit 1
+fi
+
 echo "INFO: Checking that all changes are commited and pushed"
 git pull
 
