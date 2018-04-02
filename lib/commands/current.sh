@@ -26,7 +26,7 @@ plugin_current_command() {
 current_command() {
   if [ $# -eq 0 ]; then
     for plugin in $(plugin_list_command); do
-      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")"
+      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")" >&2
     done
   else
     local plugin=$1
