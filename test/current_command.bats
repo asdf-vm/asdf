@@ -48,7 +48,7 @@ teardown() {
   cd $PROJECT_DIR
 
   run current_command "dummy"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 126 ]
 }
 
 @test "current should error when a version is set that isn't installed" {
