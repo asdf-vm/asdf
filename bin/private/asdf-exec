@@ -13,7 +13,7 @@ full_version=$(get_preset_version_for "$plugin_name")
 
 if [ "$full_version" == "" ]; then
   display_no_version_set "$plugin_name"
-  exit -1
+  exit 126
 fi
 
 # shellcheck disable=SC2162
@@ -24,7 +24,7 @@ for version in "${versions[@]}"; do
 
   if [ "$version" != "system" ] && [ ! -d "$install_path" ]; then
     echo "$plugin_name $version not installed"
-    exit 1
+    exit 127
   fi
 
   if full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path"); then

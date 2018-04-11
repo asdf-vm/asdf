@@ -17,7 +17,7 @@ plugin_current_command() {
 
   if [ -z "$version" ]; then
     printf "%s\\n" "$(display_no_version_set "$plugin_name")"
-    exit 1
+    exit 126
   else
     printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
   fi
