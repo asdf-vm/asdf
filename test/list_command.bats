@@ -14,13 +14,21 @@ teardown() {
   clean_asdf_dir
 }
 
-@test "list_command should output error when plugin is not installed" {
+@test "list_command should list plugins with installed versions" {
+  run install_command dummy 1.0
+  run install_command dummy 1.1
+  run list_command
+  [ "$(echo -e "dummy\n1.0\n1.1")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
+
+@test "list_command with plugin should output error when plugin is not installed" {
   run list_command dummy
   [ "No versions installed" == "$output" ]
   [ "$status" -eq 1 ]
 }
 
-@test "list_command should list installed versions" {
+@test "list_command with plugin should list installed versions" {
   run install_command dummy 1.0
   run install_command dummy 1.1
   run list_command dummy
