@@ -14,8 +14,15 @@ install_command() {
   local plugin_name=$1
   local full_version=$2
 
-  if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
-    install_local_tool_versions
+  if [[ ( "$plugin_name" = "" || "$plugin_name" = "--add" ) && "$full_version" = "" ]]; then
+    local add_plugins
+    if [[ $plugin_name = "--add" ]]; then
+      add_plugins=true
+    else
+      add_plugins=false
+    fi
+
+    install_local_tool_versions "$add_plugins"
   elif [[ $# -eq 1 ]]; then
     display_error "You must specify a name and a version to install"
     exit 1
@@ -37,6 +44,8 @@ get_concurrency() {
 }
 
 install_local_tool_versions() {
+  local add_plugins=$1
+
   local plugins_path
   plugins_path=$(get_plugin_path)
 
@@ -54,6 +63,11 @@ install_local_tool_versions() {
       plugin_version_and_path="$(find_version "$plugin_name" "$search_path")"
 
       if [ -n "$plugin_version_and_path" ]; then
+
+        if [ "$add_plugins" = true ]; then
+          install_add_tool_plugin "$plugin_name"
+        fi
+
         local plugin_version
         some_tools_installed='yes'
         plugin_version=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
@@ -73,6 +87,15 @@ install_local_tool_versions() {
   fi
 }
 
+install_add_tool_plugin() {
+  local plugin_name=$1
+  local plugin_path
+  plugin_path=$(get_plugin_path "$plugin_name")
+
+  if ! [ -d "$plugin_path" ]; then
+    plugin_add_command $plugin_name
+  fi
+}
 
 install_tool_version() {
   local plugin_name=$1
