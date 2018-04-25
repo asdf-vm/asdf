@@ -93,7 +93,7 @@ install_add_tool_plugin() {
   plugin_path=$(get_plugin_path "$plugin_name")
 
   if ! [ -d "$plugin_path" ]; then
-    plugin_add_command $plugin_name
+    plugin_add_command "$plugin_name"
   fi
 }
 
