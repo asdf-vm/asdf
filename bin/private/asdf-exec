@@ -27,6 +27,12 @@ for version in "${versions[@]}"; do
     exit 127
   fi
 
+  # custom plugin hook for executable path
+  if [ -f "${plugin_path}/bin/exec-path" ]; then
+    cmd=$(basename "$executable_path")
+    executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
+  fi
+
   if full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path"); then
     if [ -f "$full_executable_path" ]; then
       if [ -f "${plugin_path}/bin/exec-env" ]; then
