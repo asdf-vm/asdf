@@ -41,7 +41,7 @@ teardown() {
 @test "current should error when the plugin doesn't exist" {
   run current_command "foobar"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No such plugin: foobar" ]
 }
 
 @test "current should error when no version is set" {

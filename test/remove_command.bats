@@ -31,7 +31,7 @@ teardown() {
 @test "plugin_remove_command should exit with 1 when passed invalid plugin name" {
   run plugin_remove_command "does-not-exist"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No such plugin: does-not-exist" ]
 }
 
 @test "plugin_remove_command should remove installed versions" {
