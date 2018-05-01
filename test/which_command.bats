@@ -43,5 +43,5 @@ teardown() {
 @test "which should error when the plugin doesn't exist" {
   run which_command "foobar"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No such plugin: foobar" ]
 }

@@ -30,7 +30,7 @@ teardown() {
 @test "local should emit an error when plugin does not exist" {
   run local_command "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No such plugin: inexistent" ]
 }
 
 @test "local should emit an error when plugin version does not exist" {

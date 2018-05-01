@@ -19,7 +19,7 @@ teardown() {
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
   run check_if_version_exists "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin" ]
+  [ "$output" = "No such plugin: inexistent" ]
 }
 
 @test "check_if_version_exists should exit with 1 if version does not exist" {
