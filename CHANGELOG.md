@@ -5,6 +5,7 @@
 Features
 
 * Changed exit codes for shims so we use codes with special meanings when possible (#305, #310)
+* Include plugin name in error message if plugin doesn't exist (#315)
 
 Fixed Bugs
 
