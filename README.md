@@ -19,6 +19,7 @@ Depending on your OS and shell, run the following:
   ```bash
   echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
   echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
+  exec $SHELL
   ```
 
 * Bash on macOS:
