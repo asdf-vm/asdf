@@ -57,6 +57,21 @@ If this script is not specified, asdf will look for the `bin` dir in an installa
 
 Setup the env to run the binaries in the package.
 
+#### bin/exec-path
+
+Get the executable path for the specified version of the tool. Must print a string with the relative executable path. This allows the plugin to conditionally override the shim's specified executable path, otherwise return the default path specified by the shim.
+
+```
+Usage:
+  plugin/bin/exec-path <install-path> <command> <executable-path>
+
+Example Call:
+  ~/.asdf/plugins/foo/bin/exec-path "~/.asdf/installs/foo/1.0" "foo" "bin/foo"
+
+Output:
+  bin/foox
+```
+
 #### bin/uninstall
 
 Uninstalls a specific version of a tool.
