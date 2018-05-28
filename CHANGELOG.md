@@ -6,8 +6,13 @@ Features
 
 * Changed exit codes for shims so we use codes with special meanings when possible (#305, #310)
 * Include plugin name in error message if plugin doesn't exist (#315)
+* Add support for custom executable paths (#314)
+* `asdf list` with no arguments should list all installed versions of all plugins (#311)
 
 Fixed Bugs
+
+* Print "No version set" message to stderr (#309)
+* Fix check for asdf directories in path for Fish shell (#306)
 
 ## 0.4.3
 
