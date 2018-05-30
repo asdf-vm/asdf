@@ -52,6 +52,7 @@ Depending on your OS and shell, run the following:
   echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
   mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
   ```
+Restart your shell so that PATH changes take effect. (Opening a new terminal tab will usually do it.)
 
 > For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
