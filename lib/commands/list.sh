@@ -26,7 +26,7 @@ display_installed_versions() {
 
   if [ -n "${versions}" ]; then
     for version in $versions; do
-      echo "$version"
+      echo "  $version"
     done
   else
     display_error 'No versions installed'
