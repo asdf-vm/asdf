@@ -170,7 +170,7 @@ display_no_version_set() {
 get_version_from_env () {
   local plugin_name=$1
   local upcase_name
-  upcase_name=$(echo "$plugin_name" | tr '[:lower:]' '[:upper:]')
+  upcase_name=$(echo "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
   local version_env_var="ASDF_${upcase_name}_VERSION"
   local version=${!version_env_var}
   echo "$version"
