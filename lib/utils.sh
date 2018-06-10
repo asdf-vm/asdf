@@ -23,17 +23,40 @@ asdf_repository_url() {
   echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
+get_install_type(){
+  local install_type
+  install_type=$(get_asdf_config_value "install_type")
+
+  echo "$install_type"
+}
+
+asdf_data_dir(){
+  local data_dir
+
+  if [ "$(get_install_type)" = "user" ]; then
+    data_dir="${HOME}/.asdf"
+  else
+    data_dir="$(asdf_dir)"
+  fi
+
+  echo "$data_dir"
+}
+
 get_install_path() {
   local plugin=$1
   local install_type=$2
   local version=$3
-  mkdir -p "$(asdf_dir)/installs/${plugin}"
+
+  local install_dir
+  install_dir="$(asdf_data_dir)/installs"
+
+  mkdir -p "${install_dir}/${plugin}"
 
   if [ "$install_type" = "version" ]
   then
-    echo "$(asdf_dir)/installs/${plugin}/${version}"
+    echo "${install_dir}/${plugin}/${version}"
   else
-    echo "$(asdf_dir)/installs/${plugin}/${install_type}-${version}"
+    echo "${install_dir}/${plugin}/${install_type}-${version}"
   fi
 }
 
@@ -42,8 +65,11 @@ list_installed_versions() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
 
+  local install_dir
+  install_dir="$(asdf_data_dir)/installs"
+
   local plugin_installs_path
-  plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+  plugin_installs_path=${install_dir}/${plugin_name}
 
   if [ -d "$plugin_installs_path" ]; then
 	# shellcheck disable=SC2045
@@ -62,7 +88,7 @@ check_if_plugin_exists() {
     exit 1
   fi
 
-  if [ ! -d "$(asdf_dir)/plugins/$plugin_name" ]; then
+  if [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
     display_error "No such plugin: $plugin_name"
     exit 1
   fi
@@ -84,7 +110,7 @@ check_if_version_exists() {
 }
 
 get_plugin_path() {
-  echo "$(asdf_dir)/plugins/$1"
+  echo "$(asdf_data_dir)/plugins/$1"
 }
 
 display_error() {
@@ -303,7 +329,7 @@ get_asdf_config_value() {
 
 repository_needs_update() {
   local update_file_dir
-  update_file_dir="$(asdf_dir)/tmp"
+  update_file_dir="$(asdf_data_dir)/tmp"
   local update_file_name
   update_file_name="repo-updated"
   # `find` outputs filename if it has not been modified in the last day
@@ -317,7 +343,7 @@ initialize_or_update_repository() {
   local repository_path
 
   repository_url=$(asdf_repository_url)
-  repository_path=$(asdf_dir)/repository
+  repository_path=$(asdf_data_dir)/repository
 
   if [ ! -d "$repository_path" ]; then
     echo "initializing plugin repository..."
@@ -327,15 +353,15 @@ initialize_or_update_repository() {
     (cd "$repository_path" && git fetch && git reset --hard origin/master)
   fi
 
-  mkdir -p "$(asdf_dir)/tmp"
-  touch "$(asdf_dir)/tmp/repo-updated"
+  mkdir -p "$(asdf_data_dir)/tmp"
+  touch "$(asdf_data_dir)/tmp/repo-updated"
 }
 
 get_plugin_source_url() {
   local plugin_name=$1
   local plugin_config
 
-  plugin_config="$(asdf_dir)/repository/plugins/$plugin_name"
+  plugin_config="$(asdf_data_dir)/repository/plugins/$plugin_name"
 
 
   if [ -f "$plugin_config" ]; then

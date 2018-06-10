@@ -6,7 +6,7 @@ plugin_update_command() {
 
   local plugin_name=$1
   if [ "$plugin_name" = "--all" ]; then
-    for dir in "$(asdf_dir)"/plugins/*; do
+    for dir in "$(asdf_data_dir)"/plugins/*; do
       echo "Updating $(basename "$dir")..."
       (cd "$dir" && git pull)
     done

@@ -2,7 +2,7 @@ update_command() {
   local update_to_head=$1
 
   (
-  cd "$(asdf_dir)" || exit 1
+  cd "$(asdf_data_dir)" || exit 1
 
   if [ -f asdf_updates_disabled ]; then
     echo "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf."

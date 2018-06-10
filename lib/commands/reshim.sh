@@ -23,7 +23,7 @@ reshim_command() {
   else
     # generate for all versions of the package
     local plugin_installs_path
-    plugin_installs_path="$(asdf_dir)/installs/${plugin_name}"
+    plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
     for install in "${plugin_installs_path}"/*/; do
       local full_version_name
@@ -37,8 +37,8 @@ reshim_command() {
 
 ensure_shims_dir() {
   # Create shims dir if doesn't exist
-  if [ ! -d "$(asdf_dir)/shims" ]; then
-    mkdir "$(asdf_dir)/shims"
+  if [ ! -d "$(asdf_data_dir)/shims" ]; then
+    mkdir "$(asdf_data_dir)/shims"
   fi
 }
 
@@ -52,7 +52,7 @@ write_shim_script() {
   local plugin_shims_path
   plugin_shims_path=$(get_plugin_path "$plugin_name")/shims
   local shim_path
-  shim_path="$(asdf_dir)/shims/$executable_name"
+  shim_path="$(asdf_data_dir)/shims/$executable_name"
 
   if [ -f "$plugin_shims_path/$executable_name" ]; then
     cp "$plugin_shims_path/$executable_name" "$shim_path"
@@ -169,7 +169,7 @@ remove_obsolete_shims() {
   local plugin_name=$1
   local full_version=$2
   local shims_path
-  shims_path="$(asdf_dir)/shims"
+  shims_path="$(asdf_data_dir)/shims"
 
   IFS=':' read -r -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
@@ -203,7 +203,7 @@ remove_shim_for_version() {
   local plugin_shims_path
   plugin_shims_path=$(get_plugin_path "$plugin_name")/shims
   local shim_path
-  shim_path="$(asdf_dir)/shims/$executable_name"
+  shim_path="$(asdf_data_dir)/shims/$executable_name"
   local count_installed
   count_installed=$(list_installed_versions "$plugin_name" | wc -l)
 

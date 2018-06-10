@@ -2,7 +2,7 @@ plugin_list_all_command() {
   initialize_or_update_repository
 
   local plugins_index_path
-  plugins_index_path="$(asdf_dir)/repository/plugins"
+  plugins_index_path="$(asdf_data_dir)/repository/plugins"
 
   local plugins_local_path
   plugins_local_path="$(get_plugin_path)"
