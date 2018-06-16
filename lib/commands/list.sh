@@ -6,7 +6,7 @@ list_command() {
     plugins_path=$(get_plugin_path)
 
     if ls "$plugins_path" &> /dev/null; then
-      for plugin_path in $plugins_path/* ; do
+      for plugin_path in "$plugins_path"/* ; do
         plugin_name=$(basename "$plugin_path")
         echo "$plugin_name"
         display_installed_versions "$plugin_name"
