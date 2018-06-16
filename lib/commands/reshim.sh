@@ -139,7 +139,7 @@ generate_shims_for_version() {
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
 
   for bin_path in "${all_bin_paths[@]}"; do
-    for executable_file in $install_path/$bin_path/*; do
+    for executable_file in "$install_path/$bin_path"/*; do
       # because just $executable_file gives absolute path; We don't want version hardcoded in shim
       local executable_path_relative_to_install_path
       executable_path_relative_to_install_path="$bin_path"/$(basename "$executable_file")
@@ -238,7 +238,7 @@ remove_shims_for_version() {
   IFS=' ' read -r -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
 
   for bin_path in "${all_bin_paths[@]}"; do
-    for executable_file in $install_path/$bin_path/*; do
+    for executable_file in "$install_path/$bin_path"/*; do
       local executable_name
       executable_name="$(basename "$executable_file")"
       remove_shim_for_version "$plugin_name" "$executable_name" "$version"
