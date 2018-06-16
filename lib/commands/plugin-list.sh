@@ -2,14 +2,14 @@ plugin_list_command() {
   local flag=$1
 
   # 0 || 1 with flag
-  if [ $# -eq 0 ] || ([ $# -eq 1 ] && [ "$flag" == "--urls" ]); then
+  if [ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$flag" = "--urls" ]; }; then
     # valid command
 
     local plugins_path
     plugins_path=$(get_plugin_path)
 
     if ls "$plugins_path" &> /dev/null; then
-      for plugin_path in $plugins_path/* ; do
+      for plugin_path in "$plugins_path"/* ; do
         plugin_name=$(basename "$plugin_path")
 
         if [ $# -eq 0 ]; then

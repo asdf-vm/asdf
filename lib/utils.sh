@@ -214,7 +214,7 @@ get_executable_path() {
   if [ "$version" = "system" ]; then
     path=$(echo "$PATH" | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
     cmd=$(basename "$executable_path")
-    cmd_path=$(PATH=$path which "$cmd" 2>&1)
+    cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
 	# shellcheck disable=SC2181
     if [ $? -ne 0 ]; then
       return 1
