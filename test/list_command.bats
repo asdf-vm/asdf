@@ -18,7 +18,7 @@ teardown() {
   run install_command dummy 1.0
   run install_command dummy 1.1
   run list_command
-  [ "$(echo -e "dummy\n1.0\n1.1")" == "$output" ]
+  [ "$(echo -e "dummy\n  1.0\n  1.1")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 
@@ -32,6 +32,6 @@ teardown() {
   run install_command dummy 1.0
   run install_command dummy 1.1
   run list_command dummy
-  [ "$(echo -e "1.0\n1.1")" == "$output" ]
+  [ "$(echo -e "  1.0\n  1.1")" == "$output" ]
   [ "$status" -eq 0 ]
 }
