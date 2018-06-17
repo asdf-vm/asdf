@@ -139,3 +139,47 @@ teardown() {
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
 }
+
+@test "local should preserve symlinks when setting versions" {
+  mkdir other-dir
+  touch other-dir/.tool-versions
+  ln -s other-dir/.tool-versions .tool-versions
+  run local_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ -L .tool-versions ]
+  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "local should preserve symlinks when updating versions" {
+  mkdir other-dir
+  touch other-dir/.tool-versions
+  ln -s other-dir/.tool-versions .tool-versions
+  run local_command "dummy" "1.1.0"
+  run local_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ -L .tool-versions ]
+  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should preserve symlinks when setting versions" {
+  mkdir other-dir
+  touch other-dir/.tool-versions
+  ln -s other-dir/.tool-versions $HOME/.tool-versions
+
+  run global_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ -L $HOME/.tool-versions ]
+  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should preserve symlinks when updating versions" {
+  mkdir other-dir
+  touch other-dir/.tool-versions
+  ln -s other-dir/.tool-versions $HOME/.tool-versions
+
+  run global_command "dummy" "1.1.0"
+  run global_command "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ -L $HOME/.tool-versions ]
+  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+}
