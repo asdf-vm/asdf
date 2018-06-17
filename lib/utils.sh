@@ -354,3 +354,12 @@ find_tool_versions() {
         search_path=$(dirname "$search_path")
     done
 }
+
+resolve_symlink() {
+    local symlink
+    symlink="$1"
+
+    # This seems to be the only cross-platform way to resolve symlink paths to
+    # the real file path
+    ls -l "$symlink" | sed -e "s|.*-> \(.*\)|\1|"
+}
