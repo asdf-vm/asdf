@@ -17,12 +17,18 @@ version_command() {
     file="$(pwd)/.tool-versions"
   fi
 
+  if [ -L "$file" ]; then
+      # Resolve file path if symlink
+      file="$(resolve_symlink "$file")"
+  fi
+
   check_if_plugin_exists "$plugin"
 
   local version
   for version in "${versions[@]}"; do
     check_if_version_exists "$plugin" "$version"
   done
+
 
   if [ -f "$file" ] && grep "^$plugin " "$file" > /dev/null; then
     sed -i.bak -e "s/^$plugin .*$/$plugin ${versions[*]}/" "$file"
