@@ -2,7 +2,14 @@
 
 load test_helpers
 
-banned_commands=(realpath eval)
+banned_commands=(
+    realpath
+    # readlink on OSX behaves differently from readlink on other Unix systems
+    readlink
+    # It's best to avoid eval as it makes it easier to accidentally execute
+    # arbitrary strings
+    eval
+    )
 
 setup() {
   setup_asdf_dir
