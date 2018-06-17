@@ -360,6 +360,7 @@ resolve_symlink() {
     symlink="$1"
 
     # This seems to be the only cross-platform way to resolve symlink paths to
-    # the real file path
+    # the real file path.
+    # shellcheck disable=SC2012
     ls -l "$symlink" | sed -e "s|.*-> \(.*\)|\1|"
 }
