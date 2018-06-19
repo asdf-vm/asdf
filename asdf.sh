@@ -7,7 +7,7 @@ else
 fi
 
 export ASDF_DIR
-ASDF_DIR="$(cd "$(dirname "$current_script_path")" &> /dev/null || exit 1; pwd)"
+ASDF_DIR="$(dirname "$(readlink -m "$current_script_path")")"
 
 # Add asdf to PATH
 #
