@@ -8,6 +8,7 @@ fi
 
 export ASDF_DIR
 ASDF_DIR="$(dirname "$current_script_path")"
+# shellcheck disable=SC2016
 [ -d "$ASDF_DIR" ] || echo '$ASDF_DIR is not a directory'
 
 # Add asdf to PATH
