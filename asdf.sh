@@ -8,7 +8,7 @@ fi
 
 export ASDF_DIR
 ASDF_DIR="$(dirname "$current_script_path")"
-[ -d "$ASDF_DIR" ] || exit 1
+[ -d "$ASDF_DIR" ] || echo '$ASDF_DIR is not a directory'
 
 # Add asdf to PATH
 #
