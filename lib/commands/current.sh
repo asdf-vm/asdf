@@ -19,14 +19,18 @@ plugin_current_command() {
     printf "%s\\n" "$(display_no_version_set "$plugin_name")"
     exit 126
   else
-    printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
+    width=$(( 1 + ${#version} ))
+    [[ $width -ge 8 ]] || width=8
+    printf "%-*s%s\\n" $width "$version" "(set by $version_file_path)"
   fi
 }
 
 current_command() {
   if [ $# -eq 0 ]; then
     for plugin in $(plugin_list_command); do
-      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")" >&2
+      width=$(( 1 + ${#plugin} ))
+      [[ $width -ge 15 ]] || width=15
+      printf "%-*s%s\\n" $width "$plugin" "$(plugin_current_command "$plugin")" >&2
     done
   else
     local plugin=$1
