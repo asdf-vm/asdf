@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.5.1-dev
+## 0.5.2-dev
+
+## 0.5.1
+
+Features
+
+* Better formatting for `asdf list` output (#330, #331)
+
+Fixed Bugs
+
+* Correct environment variable name used for version lookup (#319, #326 #328)
+* Remove unnecessary `cd` in `asdf.sh` (#333, #334)
+* Correct Fish shell load script (#340)
 
 ## 0.5.0
 
