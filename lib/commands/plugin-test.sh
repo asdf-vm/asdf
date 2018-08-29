@@ -27,11 +27,11 @@ plugin_test_command() {
 
     local versions
     # shellcheck disable=SC2046
-    if ! read -r -a versions <<< $(asdf list-all "$plugin_name"); then
+    if ! versions=($(asdf list-all "$plugin_name")); then
         fail_test "list-all exited with an error"
     fi
 
-    if [ ${#versions} -eq 0 ]; then
+    if [ ${#versions[@]} -eq 0 ]; then
         fail_test "list-all did not return any version"
     fi
 
