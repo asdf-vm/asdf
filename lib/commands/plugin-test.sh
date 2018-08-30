@@ -36,6 +36,31 @@ plugin_test_command() {
         fi
 
 
+        local plugin_path
+        plugin_path=$(get_plugin_path "$plugin_name")
+        local list_all="$plugin_path/bin/list-all"
+        if grep api.github.com "$list_all" >/dev/null; then
+            if ! grep Authorization "$list_all" >/dev/null; then
+                echo
+                echo "Looks like ${plugin_name}/bin/list-all relies on GitHub releases"
+                echo "but it does not properly sets an Authorization header to prevent"
+                echo "GitHub API rate limiting."
+                echo
+                echo "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting"
+
+                fail_test "$plugin_name/bin/list-all does not set GitHub Authorization token"
+            fi
+
+            # test for most common token names we have on plugins
+            if [ -z "$OAUTH_TOKEN" ] || [ -z "$GITHUB_API_TOKEN" ] ; then
+                echo "$plugin_name/bin/list-all is using GitHub API, just be sure you provide an API Authorization token"
+                echo "via your travis settings. This is the current rate_limit:"
+                echo
+                curl -s https://api.github.com/rate_limit
+                echo
+            fi
+        fi
+
         local versions
         # shellcheck disable=SC2046
         if ! read -r -a versions <<< $(asdf list-all "$plugin_name"); then

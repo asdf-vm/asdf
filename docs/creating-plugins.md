@@ -140,6 +140,27 @@ os:
   - osx
 ```
 
+## GitHub API Rate Limiting
+
+If your plugin's `list-all` depends on accessing the GitHub API, make sure you provide
+an Authorization token when accessing it, otherwise your tests might fail due to rate limiting.
+
+To do so, create a [new personal token](https://github.com/settings/tokens/new) with only `public_repo` access.
+
+Then on your travis.ci build settings add a *secure* environment variable for it
+named something like `GITHUB_API_TOKEN`. And *DO NOT* EVER publish your token in your code.
+
+Finally, add something like the following to `bin/list-all`
+
+```shell
+cmd="curl -s"
+if [ -n "$GITHUB_API_TOKEN" ]; then
+ cmd="$cmd -H 'Authorization: token $GITHUB_API_TOKEN'"
+fi
+
+cmd="$cmd $releases_path"
+```
+
 ## Submitting plugins to the official plugins repository
 
 `asdf` can easily install plugins by specifying the plugin repository url, e.g. `plugin-add my-plugin https://github.com/user/asdf-my-plugin.git`.
