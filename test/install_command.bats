@@ -75,7 +75,7 @@ teardown() {
 
 @test "install_command generated shim should pass all arguments to executable" {
   # asdf lib needed to run generated shims
-  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib,init.sh} $ASDF_DIR/
 
   cd $PROJECT_DIR
   echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
@@ -100,7 +100,7 @@ teardown() {
 
 @test "install_command uses a parent directory .tool-versions file if present" {
   # asdf lib needed to run generated shims
-  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib,init.sh} $ASDF_DIR/
 
   echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
   mkdir -p $PROJECT_DIR/child

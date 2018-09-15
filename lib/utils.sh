@@ -6,17 +6,7 @@ GREP_OPTIONS="--color=never"
 GREP_COLORS=
 
 asdf_version() {
-  cat "$(asdf_dir)/VERSION"
-}
-
-asdf_dir() {
-  if [ -z "$ASDF_DIR" ]; then
-    local current_script_path=${BASH_SOURCE[0]}
-    export ASDF_DIR
-	ASDF_DIR=$(cd "$(dirname "$(dirname "$current_script_path")")" || exit; pwd)
-  fi
-
-  echo "$ASDF_DIR"
+  cat "$ASDF_DIR/VERSION"
 }
 
 asdf_repository_url() {
@@ -27,13 +17,17 @@ get_install_path() {
   local plugin=$1
   local install_type=$2
   local version=$3
-  mkdir -p "$(asdf_dir)/installs/${plugin}"
+
+  local install_dir
+  install_dir="${ASDF_DATA_DIR}/installs/${plugin}"
+
+  mkdir -p "$install_dir"
 
   if [ "$install_type" = "version" ]
   then
-    echo "$(asdf_dir)/installs/${plugin}/${version}"
+    echo "${install_dir}/${version}"
   else
-    echo "$(asdf_dir)/installs/${plugin}/${install_type}-${version}"
+    echo "${install_dir}/${install_type}-${version}"
   fi
 }
 
@@ -43,7 +37,7 @@ list_installed_versions() {
   plugin_path=$(get_plugin_path "$plugin_name")
 
   local plugin_installs_path
-  plugin_installs_path=$(asdf_dir)/installs/${plugin_name}
+  plugin_installs_path="${ASDF_DATA_DIR}/installs/${plugin_name}"
 
   if [ -d "$plugin_installs_path" ]; then
 	# shellcheck disable=SC2045
@@ -62,7 +56,7 @@ check_if_plugin_exists() {
     exit 1
   fi
 
-  if [ ! -d "$(asdf_dir)/plugins/$plugin_name" ]; then
+  if [ ! -d "${ASDF_DATA_DIR}/plugins/$plugin_name" ]; then
     display_error "No such plugin: $plugin_name"
     exit 1
   fi
@@ -84,7 +78,7 @@ check_if_version_exists() {
 }
 
 get_plugin_path() {
-  echo "$(asdf_dir)/plugins/$1"
+  echo "${ASDF_DATA_DIR}/plugins/$1"
 }
 
 display_error() {
@@ -212,7 +206,7 @@ get_executable_path() {
   check_if_version_exists "$plugin_name" "$version"
 
   if [ "$version" = "system" ]; then
-    path=$(echo "$PATH" | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
+    path=$(echo "$PATH" | sed -e "s|$ASDF_DATA_DIR/shims||g; s|::|:|g")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
 	# shellcheck disable=SC2181
@@ -289,7 +283,7 @@ get_asdf_config_value_from_file() {
 get_asdf_config_value() {
   local key=$1
   local config_path=${ASDF_CONFIG_FILE:-"$HOME/.asdfrc"}
-  local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
+  local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$ASDF_DIR/defaults"}
 
   local result
   result=$(get_asdf_config_value_from_file "$config_path" "$key")
@@ -303,7 +297,7 @@ get_asdf_config_value() {
 
 repository_needs_update() {
   local update_file_dir
-  update_file_dir="$(asdf_dir)/tmp"
+  update_file_dir="${ASDF_DATA_DIR}/tmp"
   local update_file_name
   update_file_name="repo-updated"
   # `find` outputs filename if it has not been modified in the last day
@@ -317,7 +311,7 @@ initialize_or_update_repository() {
   local repository_path
 
   repository_url=$(asdf_repository_url)
-  repository_path=$(asdf_dir)/repository
+  repository_path="${ASDF_DATA_DIR}/repository"
 
   if [ ! -d "$repository_path" ]; then
     echo "initializing plugin repository..."
@@ -327,15 +321,15 @@ initialize_or_update_repository() {
     (cd "$repository_path" && git fetch && git reset --hard origin/master)
   fi
 
-  mkdir -p "$(asdf_dir)/tmp"
-  touch "$(asdf_dir)/tmp/repo-updated"
+  mkdir -p "${ASDF_DATA_DIR}/tmp"
+  touch "${ASDF_DATA_DIR}/tmp/repo-updated"
 }
 
 get_plugin_source_url() {
   local plugin_name=$1
   local plugin_config
 
-  plugin_config="$(asdf_dir)/repository/plugins/$plugin_name"
+  plugin_config="${ASDF_DATA_DIR}/repository/plugins/$plugin_name"
 
 
   if [ -f "$plugin_config" ]; then

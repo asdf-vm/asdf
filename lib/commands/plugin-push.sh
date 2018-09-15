@@ -1,7 +1,7 @@
 plugin_push_command() {
   local plugin_name=$1
   if [ "$plugin_name" = "--all" ]; then
-    for dir in "$(asdf_dir)"/plugins/*; do
+    for dir in "${ASDF_DATA_DIR}"/plugins/*; do
       echo "Pushing $(basename "$dir")..."
       (cd "$dir" && git push)
     done
