@@ -33,10 +33,10 @@ get_install_type(){
 asdf_data_dir(){
   local data_dir
 
-  if [ "$(get_install_type)" = "user" ]; then
-    data_dir="${HOME}/.asdf"
+  if ! [ -z "${ASDF_DATA_DIR}" ]; then
+    data_dir="${ASDF_DATA_DIR}"
   else
-    data_dir="$(asdf_dir)"
+    data_dir="$HOME/.asdf"
   fi
 
   echo "$data_dir"
@@ -65,16 +65,13 @@ list_installed_versions() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
 
-  local install_dir
-  install_dir="$(asdf_data_dir)/installs"
-
   local plugin_installs_path
-  plugin_installs_path=${install_dir}/${plugin_name}
+  plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
   if [ -d "$plugin_installs_path" ]; then
-	# shellcheck disable=SC2045
+  # shellcheck disable=SC2045
     for install in $(ls -d "${plugin_installs_path}"/*/ 2>/dev/null); do
-		basename "$install" | sed 's/^ref-/ref:/'
+    basename "$install" | sed 's/^ref-/ref:/'
     done
   fi
 }

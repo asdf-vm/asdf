@@ -125,11 +125,11 @@ teardown() {
 }
 
 @test "asdf_data_dir should return user dir if configured" {
-  echo "install_type = user" > $HOME/.asdfrc
+  ASDF_DATA_DIR="/tmp/wadus"
 
   run asdf_data_dir
   [ "$status" -eq 0 ]
-  [ "$output" = "$HOME/.asdf" ]
+  [ "$output" = "$ASDF_DATA_DIR" ]
 }
 
 @test "find_version should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
