@@ -6,7 +6,7 @@ plugin_remove_command() {
   plugin_path=$(get_plugin_path "$plugin_name")
 
   rm -rf "$plugin_path"
-  rm -rf "$(asdf_dir)/installs/${plugin_name}"
+  rm -rf "$(asdf_data_dir)/installs/${plugin_name}"
 
-  grep -l "asdf-plugin: ${plugin_name}" "$(asdf_dir)"/shims/* 2>/dev/null | xargs rm -f
+  grep -l "asdf-plugin: ${plugin_name}" "$(asdf_data_dir)"/shims/* 2>/dev/null | xargs rm -f
 }
