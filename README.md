@@ -1,4 +1,4 @@
-# asdf [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
+# asdf [![Build Status](https://travis-ci.org/teixeiradiego/asdf.svg?branch=master)](https://travis-ci.org/teixeiradiego/asdf)
 
 ### _extendable version manager_
 
