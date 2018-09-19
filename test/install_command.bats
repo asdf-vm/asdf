@@ -72,6 +72,15 @@ teardown() {
   [ "$lines_count" -eq "1" ]
 }
 
+@test "install_command should not generate shim for subdir" {
+  cd $PROJECT_DIR
+  echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
+
+  run install_command
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
+  [ ! -f "$ASDF_DIR/shims/subdir" ]
+}
 
 @test "install_command generated shim should pass all arguments to executable" {
   # asdf lib needed to run generated shims
