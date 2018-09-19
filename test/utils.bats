@@ -132,6 +132,20 @@ teardown() {
   [ "$output" = "$ASDF_DATA_DIR" ]
 }
 
+@test "check_if_plugin_exists should work with a custom data directory" {
+  ASDF_DATA_DIR=$HOME/asdf-data
+
+  mkdir -p "$ASDF_DATA_DIR/plugins"
+  mkdir -p "$ASDF_DATA_DIR/installs"
+
+  install_mock_plugin "dummy2" "$ASDF_DATA_DIR"
+  install_mock_plugin_version "dummy2" "0.1.0" "$ASDF_DATA_DIR"
+
+  run check_if_plugin_exists "dummy2"
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
+
 @test "find_version should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
   echo "dummy 0.1.0" > $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
