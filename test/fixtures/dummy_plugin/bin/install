@@ -10,3 +10,4 @@ cat <<EOF > "$ASDF_INSTALL_PATH/bin/dummy"
 echo This is Dummy ${ASDF_INSTALL_VERSION}! \$2 \$1
 EOF
 chmod +x "$ASDF_INSTALL_PATH/bin/dummy"
+mkdir -p "$ASDF_INSTALL_PATH/bin/subdir"

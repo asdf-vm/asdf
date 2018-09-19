@@ -67,3 +67,24 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
 }
+
+@test "reshim should create shims only for files and not folders" {
+  cd $PROJECT_DIR
+
+  run install_command dummy 1.0
+  run install_command dummy 1.1
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
+  [ ! -f "$ASDF_DIR/shims/subdir" ]
+
+  run rm $ASDF_DIR/shims/*
+  [ "$status" -eq 0 ]
+  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "0" -eq "$(ls $ASDF_DIR/shims/subdir* | wc -l)" ]
+
+  run reshim_command dummy
+  [ "$status" -eq 0 ]
+  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "0" -eq "$(ls $ASDF_DIR/shims/subdir* | wc -l)" ]
+
+}
