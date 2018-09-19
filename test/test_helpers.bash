@@ -16,13 +16,15 @@ setup_asdf_dir() {
 
 install_mock_plugin() {
   local plugin_name=$1
-  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$ASDF_DIR/plugins/$plugin_name"
+  local location="${2:-$ASDF_DIR}"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$location/plugins/$plugin_name"
 }
 
 install_mock_plugin_version() {
   local plugin_name=$1
   local plugin_version=$2
-  mkdir -p "$ASDF_DIR/installs/$plugin_name/$plugin_version"
+  local location="${3:-$ASDF_DIR}"
+  mkdir -p "$location/installs/$plugin_name/$plugin_version"
 }
 
 install_dummy_plugin() {
@@ -36,6 +38,7 @@ install_dummy_version() {
 clean_asdf_dir() {
   rm -rf "$BASE_DIR"
   unset ASDF_DIR
+  unset ASDF_DATA_DIR
 }
 
 setup_repo() {
