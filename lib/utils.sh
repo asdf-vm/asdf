@@ -13,7 +13,7 @@ asdf_dir() {
   if [ -z "$ASDF_DIR" ]; then
     local current_script_path=${BASH_SOURCE[0]}
     export ASDF_DIR
-	ASDF_DIR=$(cd "$(dirname "$(dirname "$current_script_path")")" || exit; pwd)
+    ASDF_DIR=$(cd "$(dirname "$(dirname "$current_script_path")")" || exit; pwd)
   fi
 
   echo "$ASDF_DIR"
@@ -21,13 +21,6 @@ asdf_dir() {
 
 asdf_repository_url() {
   echo "https://github.com/asdf-vm/asdf-plugins.git"
-}
-
-get_install_type(){
-  local install_type
-  install_type=$(get_asdf_config_value "install_type")
-
-  echo "$install_type"
 }
 
 asdf_data_dir(){
@@ -69,9 +62,9 @@ list_installed_versions() {
   plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
   if [ -d "$plugin_installs_path" ]; then
-  # shellcheck disable=SC2045
+    # shellcheck disable=SC2045
     for install in $(ls -d "${plugin_installs_path}"/*/ 2>/dev/null); do
-    basename "$install" | sed 's/^ref-/ref:/'
+      basename "$install" | sed 's/^ref-/ref:/'
     done
   fi
 }
@@ -129,7 +122,7 @@ get_version_in_dir() {
 
   for filename in $legacy_filenames; do
     local legacy_version
-	legacy_version=$(parse_legacy_version_file "$search_path/$filename" "$plugin_name")
+    legacy_version=$(parse_legacy_version_file "$search_path/$filename" "$plugin_name")
 
     if [ -n "$legacy_version" ]; then
       echo "$legacy_version|$search_path/$filename"
@@ -238,14 +231,14 @@ get_executable_path() {
     path=$(echo "$PATH" | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
-	# shellcheck disable=SC2181
+    # shellcheck disable=SC2181
     if [ $? -ne 0 ]; then
       return 1
     fi
     echo "$cmd_path"
   else
     local install_path
-	install_path=$(find_install_path "$plugin_name" "$version")
+    install_path=$(find_install_path "$plugin_name" "$version")
     echo "${install_path}"/"${executable_path}"
   fi
 }
@@ -256,7 +249,7 @@ parse_asdf_version_file() {
 
   if [ -f "$file_path" ]; then
     local version
-	version=$(grep "^${plugin_name} " "$file_path" | sed -e "s/^${plugin_name} //")
+    version=$(grep "^${plugin_name} " "$file_path" | sed -e "s/^${plugin_name} //")
     if [ -n "$version" ]; then
       echo "$version"
       return 0
@@ -367,23 +360,23 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-    local search_path
-    search_path=$(pwd)
-    while [ "$search_path" != "/" ]; do
-        if [ -f "$search_path/.tool-versions" ]; then
-            echo "${search_path}/.tool-versions"
-            return 0
-        fi
-        search_path=$(dirname "$search_path")
-    done
+  local search_path
+  search_path=$(pwd)
+  while [ "$search_path" != "/" ]; do
+    if [ -f "$search_path/.tool-versions" ]; then
+        echo "${search_path}/.tool-versions"
+        return 0
+    fi
+    search_path=$(dirname "$search_path")
+  done
 }
 
 resolve_symlink() {
-    local symlink
-    symlink="$1"
+  local symlink
+  symlink="$1"
 
-    # This seems to be the only cross-platform way to resolve symlink paths to
-    # the real file path.
-    # shellcheck disable=SC2012
-    ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|'
+  # This seems to be the only cross-platform way to resolve symlink paths to
+  # the real file path.
+  # shellcheck disable=SC2012
+  ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|'
 }
