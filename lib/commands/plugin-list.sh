@@ -21,9 +21,10 @@ plugin_list_command() {
 
       done
     else
-      printf "%s\\n" 'Oohes nooes ~! No plugins installed'
+      display_error 'Oohes nooes ~! No plugins installed'
+      exit 1
     fi
-  
+
   else
     display_error "usage: asdf plugin-list [--urls]"
     exit 1
