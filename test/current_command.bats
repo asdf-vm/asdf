@@ -98,4 +98,9 @@ foobar         1.0.0   (set by $PROJECT_DIR/.tool-versions)"
   [[ "$output" =~ "2.1.0" ]]
 }
 
-
+@test "with no plugins prints an error" {
+  clean_asdf_dir
+  run current_command
+  [ "$status" -eq 0 ]
+  echo "$output" | grep "Oohes nooes ~! No plugins installed"
+}

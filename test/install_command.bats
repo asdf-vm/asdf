@@ -122,3 +122,9 @@ teardown() {
   [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
+
+@test "install_command doesn't install system version" {
+  run install_command dummy system
+  [ "$status" -eq 0 ]
+  [ ! -f $ASDF_DIR/installs/dummy/system/version ]
+}

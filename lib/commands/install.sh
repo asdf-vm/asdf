@@ -67,6 +67,9 @@ install_tool_version() {
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
 
+  if [ "$full_version" = "system" ]; then
+    return
+  fi
 
   IFS=':' read -r -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
