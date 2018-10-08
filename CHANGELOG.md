@@ -1,6 +1,20 @@
 # Changelog
 
-## 0.5.2-dev
+## 0.6.1-dev
+
+## 0.6.0
+
+Features
+
+* Add support for `ASDF_DATA_DIR` environment variable (#275, #335, #361, #364, #365)
+
+Fixed Bugs
+
+* Fix `asdf current` so it works when no versions are installed (#368, #353)
+* Don't try to install system version (#369, #351)
+* Make `resolve_symlink` function work with relative symlinks (#370, #366)
+* Fix version changing code so it preserves symlinks (#329, #337)
+* Fix ShellCheck warnings (#336)
 
 ## 0.5.1
 
