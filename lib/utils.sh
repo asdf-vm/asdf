@@ -383,10 +383,10 @@ resolve_symlink() {
   # Check if resolved path is relative or not by looking at the first character.
   # If it is a slash we can assume it's root and absolute. Otherwise we treat it
   # as relative
-  if [ ${resolved_path:0:1} = "/" ]; then
+  if [ "${resolved_path:0:1}" = "/" ]; then
     echo "$resolved_path"
   else
-    dir=$(cd $(dirname "$symlink"); pwd)
+    dir=$(cd "$(dirname "$symlink")" || return; pwd)
     echo "$dir/$resolved_path"
   fi
 }
