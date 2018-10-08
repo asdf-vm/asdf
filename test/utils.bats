@@ -268,3 +268,25 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "$PROJECT_DIR/.tool-versions" ]
 }
+
+@test "resolve_symlink converts the symlink path to the real file path" {
+  touch foo
+  ln -s $(pwd)/foo bar
+
+  run resolve_symlink bar
+  [ "$status" -eq 0 ]
+  echo $status
+  [ "$output" = $(pwd)/foo ]
+  rm -f foo bar
+}
+
+@test "resolve_symlink converts relative symlink path to the real file path" {
+  touch foo
+  ln -s foo bar
+
+  run resolve_symlink bar
+  [ "$status" -eq 0 ]
+  echo $status
+  [ "$output" = $(pwd)/foo ]
+  rm -f foo bar
+}
