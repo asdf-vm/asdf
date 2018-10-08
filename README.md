@@ -9,7 +9,7 @@ Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.0
 ```
 
 Depending on your OS and shell, run the following:
