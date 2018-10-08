@@ -378,5 +378,15 @@ resolve_symlink() {
   # This seems to be the only cross-platform way to resolve symlink paths to
   # the real file path.
   # shellcheck disable=SC2012
-  ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|'
+  resolved_path=$(ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|')
+
+  # Check if resolved path is relative or not by looking at the first character.
+  # If it is a slash we can assume it's root and absolute. Otherwise we treat it
+  # as relative
+  if [ ${resolved_path:0:1} = "/" ]; then
+    echo "$resolved_path"
+  else
+    dir=$(cd $(dirname "$symlink"); pwd)
+    echo "$dir/$resolved_path"
+  fi
 }
