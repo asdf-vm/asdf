@@ -19,7 +19,7 @@ plugin_current_command() {
     printf "%s\\n" "$(display_no_version_set "$plugin_name")"
     exit 126
   else
-    printf "%-8s%s\\n" "$version" "(set by $version_file_path)"
+    printf "%-8s (set by %s)\\n" "$version" "$version_file_path"
   fi
 }
 
