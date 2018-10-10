@@ -10,6 +10,7 @@ setup() {
   install_dummy_plugin
   install_dummy_version "1.1.0"
   install_dummy_version "1.2.0"
+  install_dummy_version "nightly-2000-01-01"
 
   PROJECT_DIR=$HOME/project
   mkdir $PROJECT_DIR
@@ -25,7 +26,16 @@ teardown() {
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.1.0   (set by $PROJECT_DIR/.tool-versions)" ]
+  [ "$output" = "1.1.0    (set by $PROJECT_DIR/.tool-versions)" ]
+}
+
+@test "current should handle long version name" {
+  cd $PROJECT_DIR
+  echo "dummy nightly-2000-01-01" >> $PROJECT_DIR/.tool-versions
+
+  run current_command "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "nightly-2000-01-01 (set by $PROJECT_DIR/.tool-versions)" ]
 }
 
 @test "current should derive from the legacy file if enabled" {
@@ -35,7 +45,7 @@ teardown() {
 
   run current_command "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "1.2.0   (set by $PROJECT_DIR/.dummy-version)" ]
+  [ "$output" = "1.2.0    (set by $PROJECT_DIR/.dummy-version)" ]
 }
 
 @test "current should error when the plugin doesn't exist" {
@@ -76,8 +86,8 @@ teardown() {
 
   run current_command
   expected="baz            No version set for baz; please run \`asdf <global | local> baz <version>\`
-dummy          1.1.0   (set by $PROJECT_DIR/.tool-versions)
-foobar         1.0.0   (set by $PROJECT_DIR/.tool-versions)"
+dummy          1.1.0    (set by $PROJECT_DIR/.tool-versions)
+foobar         1.0.0    (set by $PROJECT_DIR/.tool-versions)"
 
   [ "$expected" = "$output" ]
 }
