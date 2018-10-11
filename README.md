@@ -262,7 +262,7 @@ Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf
 ### Maintainers
 
 * [@HashNuke](https://github.com/HashNuke)
-* [@tuvistavie](https://github.com/tuvistavie)
+* [@danpher](https://github.com/danhper)
 * [@Stratus3D](https://github.com/Stratus3D)
 * [@vic](https://github.com/vic)
 
