@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-set -l asdf_data_dir $HOME/.asdf (dirname (status -f))
+set -l asdf_data_dir $HOME/.asdf (dirname (status -f)) $ASDF_DATA_DIR
 
 # we get an ugly warning when setting the path if shims does not exist
 mkdir -p $asdf_data_dir/shims
