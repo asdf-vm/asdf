@@ -66,6 +66,8 @@ Restart your shell so that PATH changes take effect. (Opening a new terminal tab
 
 ## USAGE
 
+These instructions are for a specific version of asdf. Make sure the version README you refer to matches the version of asdf you have installed. Checkout a specific tagged version in the GitHub branches/tags drop-down if you need to.
+
 ### Manage plugins
 
 Plugins are how asdf understands how to handle different packages.
