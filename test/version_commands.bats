@@ -13,6 +13,9 @@ setup() {
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
 
+  CHILD_DIR=$PROJECT_DIR/child-dir
+  mkdir -p $CHILD_DIR
+
   cd $PROJECT_DIR
 }
 
@@ -89,6 +92,47 @@ teardown() {
     run local_command "dummy" "path:$PROJECT_DIR/local"
     [ "$status" -eq 0 ]
     [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
+}
+
+@test "local -p/--parent should set should emit an error when called with incorrect arity" {
+  run local_command -p "dummy"
+  [ "$status" -eq 1 ]
+  [ "$output" = "Usage: asdf local <name> <version>" ]
+}
+
+@test "local -p/--parent should emit an error when plugin does not exist" {
+  run local_command -p "inexistent" "1.0.0"
+  [ "$status" -eq 1 ]
+  [ "$output" = "No such plugin: inexistent" ]
+}
+
+@test "local -p/--parent should emit an error when plugin version does not exist" {
+  run local_command -p "dummy" "0.0.1"
+  [ "$status" -eq 1 ]
+  [ "$output" = "version 0.0.1 is not installed for dummy" ]
+}
+
+@test "local -p/--parent should allow multiple versions" {
+  cd $CHILD_DIR
+  run local_command -p "dummy" "1.1.0" "1.0.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
+}
+
+@test "local -p/--parent should overwrite the existing version if it's set" {
+  cd $CHILD_DIR
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run local_command -p "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "local -p/--parent should set the version if it's unset" {
+  cd $CHILD_DIR
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run local_command -p "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should create a global .tool-versions file if it doesn't exist" {
