@@ -8,24 +8,25 @@ plugin_test_command() {
     local exit_code
     local TEST_DIR
 
-    TEST_DIR=$(mktemp -dt asdf.XXXX)
-    git clone "$ASDF_DIR/.git" "$TEST_DIR"
-
     fail_test() {
         echo "FAILED: $1"
         rm -rf "$TEST_DIR"
         exit 1
     }
 
+    if [ -z "$plugin_name" ] || [ -z "$plugin_url" ]; then
+      fail_test "please provide a plugin name and url"
+    fi
+
+    TEST_DIR=$(mktemp -dt asdf.XXXX)
+    git clone "$ASDF_DIR/.git" "$TEST_DIR"
+
     plugin_test() {
         export ASDF_DIR=$TEST_DIR
+        export ASDF_DATA_DIR=$TEST_DIR
 
         # shellcheck disable=SC1090
         source "$ASDF_DIR/asdf.sh"
-
-        if [ -z "$plugin_name" ] || [ -z "$plugin_url" ]; then
-            fail_test "please provide a plugin name and url"
-        fi
 
         if ! (asdf plugin-add "$plugin_name" "$plugin_url"); then
             fail_test "could not install $plugin_name from $plugin_url"
