@@ -1,9 +1,29 @@
-
 plugin_test_command() {
 
     local plugin_name=$1
     local plugin_url=$2
-    local plugin_command="${*:3}"
+    local plugin_command_array=()
+    local plugin_command
+    local tool_version
+    # shellcheck disable=SC2086
+    set -- ${*:3}
+
+    while [[ $# -gt 0 ]]
+    do
+      case $1 in
+        --asdf-tool-version)
+          tool_version=$2
+          shift # past flag
+          shift # past value
+          ;;
+        *)
+          plugin_command_array+=("$1") # save it in an array for later
+          shift # past argument
+          ;;
+      esac
+    done
+
+    plugin_command="${plugin_command_array[*]}"
 
     local exit_code
     local TEST_DIR
@@ -72,16 +92,23 @@ plugin_test_command() {
             fail_test "list-all did not return any version"
         fi
 
-        local latest_version
-        latest_version=${versions[${#versions[@]} - 1]}
+        local version
 
-        if ! (asdf install "$plugin_name" "$latest_version"); then
+        # Use the version passed in if it was set. Otherwise grab the latest
+        # version from the versions list
+        if [ -n "$tool_version" ]; then
+          version="$tool_version"
+        else
+          version=${versions[${#versions[@]} - 1]}
+        fi
+
+        if ! (asdf install "$plugin_name" "$version"); then
             fail_test "install exited with an error"
         fi
 
         cd "$TEST_DIR" || fail_test "could not cd $TEST_DIR"
 
-        if ! (asdf local "$plugin_name" "$latest_version"); then
+        if ! (asdf local "$plugin_name" "$version"); then
             fail_test "install did not add the requested version"
         fi
 
