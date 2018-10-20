@@ -98,7 +98,7 @@ asdf allows custom shim templates. For an executable called `foo`, if there's a 
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
 
-**Important: Shim metadata **
+**Important: Shim metadata**
 
 If you create a custom shim, be sure to include a comment like the following (replacing your plugin name) in it:
 
@@ -114,15 +114,21 @@ asdf uses this `asdf-plugin` metadata to remove unused shims when uninstalling.
 You can use it as follows
 
 ```sh
-asdf plugin-test <plugin-name> <plugin-url> [test-command]
+asdf plugin-test <plugin-name> <plugin-url> [test-command] [--asdf-tool-version version]
 ```
 
-The two first arguments are required. A command can also be passed to check it runs correctly.
+The two first arguments are required. The second two arguments are optional. The third is a
+command can also be passed to check it runs correctly.
 For example to test the NodeJS plugin, we could run
 
 ```sh
 asdf plugin-test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
 ```
+
+The fourth is a tool version that can be specified if you want the test to install a
+specific version of the tool. This can be useful if not all versions are compatible
+with all the operating systems you are testing on. If you do not specify a version the
+last version in the `list-all` output will be used.
 
 We strongly recommend you test your plugin on TravisCI, to make sure it works
 on both Linux and OSX.
