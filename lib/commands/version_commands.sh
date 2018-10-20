@@ -3,7 +3,11 @@ version_command() {
   local plugin=$2
 
   if [ "$#" -lt "3" ]; then
-    echo "Usage: asdf $cmd <name> <version>"
+    if [ "$cmd" = "global" ]; then
+      echo "Usage: asdf global <name> <version>"
+    else
+      echo "Usage: asdf local <name> <version>"
+    fi
     exit 1
   fi
 
@@ -13,7 +17,9 @@ version_command() {
   local file
   if [ "$cmd" = "global" ]; then
     file=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-$HOME/.tool-versions}
-  else
+  elif [ "$cmd" = "local-tree" ]; then
+    file=$(find_tool_versions)
+  else # cmd = local
     file="$(pwd)/.tool-versions"
   fi
 
@@ -39,8 +45,32 @@ version_command() {
 }
 
 local_command() {
-  # shellcheck disable=2068
-  version_command "local" $@
+  local parent=false
+  local positional=()
+
+  while [[ $# -gt 0 ]]
+  do
+    case $1 in
+      -p|--parent)
+        parent="true"
+        shift # past value
+        ;;
+      *)
+        positional+=("$1") # save it in an array for later
+        shift # past argument
+        ;;
+    esac
+  done
+
+  set -- "${positional[@]}" # restore positional parameters
+
+  if [ $parent = true ]; then
+    # shellcheck disable=2068
+    version_command "local-tree" $@
+  else
+    # shellcheck disable=2068
+    version_command "local" $@
+  fi
 }
 
 global_command() {

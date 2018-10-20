@@ -114,6 +114,7 @@ teardown() {
 
 @test "local -p/--parent should allow multiple versions" {
   cd $CHILD_DIR
+  touch $PROJECT_DIR/.tool-versions
   run local_command -p "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
@@ -129,7 +130,7 @@ teardown() {
 
 @test "local -p/--parent should set the version if it's unset" {
   cd $CHILD_DIR
-  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  touch $PROJECT_DIR/.tool-versions
   run local_command -p "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
