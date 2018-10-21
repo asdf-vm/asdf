@@ -7,17 +7,20 @@ which_command() {
     for plugin_path in "$plugins_path"/* ; do
       plugin_name=$(basename "$plugin_path")
       full_version=$(get_preset_version_for "$plugin_name")
+      # shellcheck disable=SC2162
       IFS=' ' read -a versions <<< "$full_version"
       for version in "${versions[@]}"; do
         if [ -f "${plugin_path}/bin/exec-path" ]; then
           echo "EXEC_PATH"
           cmd=$(basename "$executable_path")
+          install_path=$(find_install_path "$plugin_name" "$version")
           executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
         fi
         full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
-        local location=$(find $full_executable_path -name $command -type f -perm -u+x | sed -e 's|//|/|g')
+        local location
+        location=$(find "$full_executable_path" -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
         if [ ! -z "$location" ]; then
-          echo $location
+          echo "$location"
           not_found=0
         else
           not_found=1
