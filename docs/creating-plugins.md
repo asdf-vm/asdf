@@ -137,7 +137,7 @@ Here is a sample `.travis.yml` file, customize it to your needs
 
 ```yaml
 language: c
-script: asdf plugin-test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
+script: asdf plugin-test nodejs $TRAVIS_BUILD_DIR 'node --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git asdf
   - . asdf/asdf.sh
@@ -145,6 +145,14 @@ os:
   - linux
   - osx
 ```
+
+Note: 
+When using another CI, you will need to check what variable maps to the repo path.
+
+You also have the option to pass a relative path to `plugin-test`.
+
+For example, if the test script is ran in the repo directory: `asdf plugin-test nodejs . 'node --version'`.
+
 
 ## GitHub API Rate Limiting
 
