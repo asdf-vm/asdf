@@ -13,10 +13,7 @@ plugin_list_all_command() {
       source_url=$(get_plugin_source_url "$index_plugin_name")
       installed_flag=""
 
-      for local_plugin in "$plugins_local_path"/*; do
-      local_plugin_name=$(basename "$local_plugin")
-        [[ "$index_plugin_name" == "$local_plugin_name" ]] && installed_flag="*"
-      done
+      [[ -d "${plugins_local_path}/${index_plugin_name}" ]] && installed_flag='*'
 
       printf "%-15s %-1s%s\\n" "$index_plugin_name" "$installed_flag" "$source_url"
     done
