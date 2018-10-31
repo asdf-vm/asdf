@@ -192,6 +192,38 @@ The version format is the same supported by the `.tool-versions` file.
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
+### Shims
+
+When asdf installs a package it creates shims for every executable program in
+that package in a `$ASDF_DATA_DIR/shims` directory (default `~/.asdf/shims`).
+This directory being on the `$PATH` (by means of `asdf.sh` or `asdf.fish`) is
+how the installed programs are made available in the environment.
+
+The shims themselves are really simple wrappers that `exec` a helper program
+`asdf-exec` passing it the name of the plugin and path to the executable in
+the installed package that the shim is wrapping.
+
+The `asdf-exec` helper determines the version of tha package to use (as
+specified in `.tool-versions` file, selected by `asdf local ...` or
+`asdf global ...`), the final path to the executable in the package
+installation directory (this can be manipulated by the `exec-path` callback in
+the plugin) and the environment to execute in (also provided by the plugin -
+`exec-env` script), and finally it executes it.
+
+Note that because this system uses `exec` calls, any scripts in the package
+that are meant to be sourced by the shell instead of executed need to be
+accessed directly instead of via the shim wrapper. The two asdf commands:
+`which` and `where` can help with this by returning the path to the installed
+package:
+
+``` sh
+# returns path to main executable in current version
+source $(asdf which ${PLUGIN})/../script.sh
+
+# returns path to the package installation directory
+source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
+```
+
 ## The `.tool-versions` file
 
 Add a `.tool-versions` file to your project dir and versions of those tools will be used.
