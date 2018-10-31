@@ -181,6 +181,8 @@ asdf local <name> <version>
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
+See [The `.tool-versions` file](#the-tool-versions-file) for details.
+
 Alternatively, if you want to set a version only for the current shell session
 or for executing just a command under a particular tool version, you
 can set an environment variable like `ASDF_${TOOL}_VERSION`.
@@ -226,7 +228,7 @@ source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
 
 ## The `.tool-versions` file
 
-Add a `.tool-versions` file to your project dir and versions of those tools will be used.
+Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
 **Global defaults can be set in the file `$HOME/.tool-versions`**
 
 This is what a `.tool-versions` file looks like:
