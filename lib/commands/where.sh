@@ -3,13 +3,26 @@ where_command() {
   local full_version=$2
   check_if_plugin_exists "$plugin_name"
 
-  IFS=':' read -r -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    local install_type="${version_info[0]}"
-    local version="${version_info[1]}"
+  local version
+  local install_type="version"
+  if [[ -z ${full_version} ]]; then
+    local version_and_path
+    version_and_path=$(find_version "$plugin_name" "$PWD")
+    version=$(cut -d '|' -f 1 <<< "$version_and_path");
   else
-    local install_type="version"
-    local version="${version_info[0]}"
+    local -a version_info
+    IFS=':' read -r -a version_info <<< "$full_version"
+    if [ "${version_info[0]}" = "ref" ]; then
+      install_type="${version_info[0]}"
+      version="${version_info[1]}"
+    else
+      version="${version_info[0]}"
+    fi
+  fi
+
+  if [ -z "$version" ]; then
+    display_no_version_set "$plugin_name"
+    exit 1
   fi
 
   local install_path
