@@ -54,6 +54,8 @@ Depending on your OS and shell, run the following:
   ```
 Restart your shell so that PATH changes take effect. (Opening a new terminal tab will usually do it.)
 
+Also if you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the bottom of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`.  It needs to be sourced *after* you've set your `$PATH.`
+
 > For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
 > * **macOS**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
