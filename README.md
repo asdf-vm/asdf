@@ -128,6 +128,18 @@ asdf plugin-update <name>
 # asdf plugin-update erlang
 ```
 
+##### Update asdf itself
+
+```bash
+asdf update
+```
+
+If you want the latest changes that aren't yet included in a stable release:
+
+```bash
+asdf update --head
+```
+
 ### Manage versions
 
 ```bash
