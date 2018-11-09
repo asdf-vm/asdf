@@ -2,7 +2,11 @@
 
 ### _extendable version manager_
 
-Supported languages include Ruby, Node.js, Elixir and [more](https://github.com/asdf-vm/asdf-plugins). Supporting a new language is as simple as [this plugin API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md).
+Supported languages include Ruby, Node.js, Elixir and [more][plugins].
+Supporting a new language is as simple as [this plugin API][plugin_api].
+
+[plugins]: https://github.com/asdf-vm/asdf-plugins
+[plugin_api]: https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md
 
 ## SETUP
 
@@ -30,17 +34,18 @@ Depending on your OS and shell, run the following:
 
 * Zsh:
 
-  If you are using a framework, such as oh-my-zsh, use these lines. (Be sure that if
-  you make future changes to .zshrc these lines remain _below_ the line where you source
-  your framework.)
+  If you are using a framework, such as oh-my-zsh, use these lines. (Be sure
+  that if you make future changes to .zshrc these lines remain _below_ the line
+  where you source your framework.)
 
   ```bash
   echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
   echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
   ```
 
-  If you are not using a framework, or if on starting your shell you get an error message
-  like 'command not found: compinit', then add this line before the ones above.
+  If you are not using a framework, or if on starting your shell you get an
+  error message like 'command not found: compinit', then add this line before
+  the ones above.
 
   ```bash
   autoload -Uz compinit && compinit
@@ -52,11 +57,17 @@ Depending on your OS and shell, run the following:
   echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
   mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
   ```
-Restart your shell so that PATH changes take effect. (Opening a new terminal tab will usually do it.)
+Restart your shell so that PATH changes take effect. (Opening a new terminal
+tab will usually do it.)
 
-Also if you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the bottom of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`.  It needs to be sourced *after* you've set your `$PATH.`
+Also if you're having issues with it not detecting the shims you've installed
+it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not
+being at the bottom of your `~/.bash_profile`, `~/.zshrc`, or
+`~/.config/fish/config.fish`. It needs to be sourced *after* you've set your
+`$PATH.`
 
-> For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
+> For most plugins, it is good if you have installed the following packages OR
+> their equivalent on your OS
 
 > * **macOS**: Install these via homebrew `coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc`
 > * **Ubuntu**: `automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev`
@@ -68,15 +79,15 @@ Also if you're having issues with it not detecting the shims you've installed it
 
 ## USAGE
 
-These instructions are for a specific version of asdf. Make sure the version README you refer to matches the version of asdf you have installed. Checkout a specific tagged version in the GitHub branches/tags drop-down if you need to.
+These instructions are for a specific version of asdf. Make sure the version
+README you refer to matches the version of asdf you have installed. Checkout a
+specific tagged version in the GitHub branches/tags drop-down if you need to.
 
 ### Manage plugins
 
-Plugins are how asdf understands how to handle different packages.
-
-You can find a list of all asdf plugins in the [plugins repository](https://github.com/asdf-vm/asdf-plugins).
-
-There is a [super-simple API](https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md) for supporting more languages.
+Plugins are how asdf understands how to handle different packages. The [plugins
+repository][plugins] lists all of the asdf plugins we know of and there is a
+[super-simple API][plugin_api] for supporting more languages.
 
 ##### Add a plugin
 
@@ -85,7 +96,8 @@ asdf plugin-add <name>
 # asdf plugin-add erlang
 ```
 
-If the plugin you want to install is not part of the plugins repository, you can add it using its repository URL:
+If the plugin you want to install is not part of the plugins repository, you
+can add it using its repository URL:
 
 ```bash
 asdf plugin-add <name> <git-url>
@@ -147,7 +159,9 @@ asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
 
-_If a plugin supports downloading & compiling from source, you can also do this `ref:foo` (replace `foo` with the branch/tag/commit)._ You'll have to use the same name when uninstalling too.
+_If a plugin supports downloading & compiling from source, you can specify
+`ref:foo` where `foo` is a specific branch, tag, or commit._ You'll need to use
+the same name and reference when uninstalling too.
 
 ##### Lists installed versions
 
@@ -230,7 +244,8 @@ source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
 
 ## The `.tool-versions` file
 
-Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
+Whenever `.tool-versions` file is present in a directory, the tool versions it
+declares will be used in that directory and any subdirectories.
 **Global defaults can be set in the file `$HOME/.tool-versions`**
 
 This is what a `.tool-versions` file looks like:
@@ -242,18 +257,24 @@ nodejs 0.12.3
 
 The versions can be in the following format:
 
-* `0.12.3` - an actual version. Plugins that support downloading binaries, will download binaries.
-* `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
-* `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
-* `system` - this keyword causes asdf to passthrough to the version of the tool on the system that is not managed by asdf.
+* `0.12.3` - an actual version. Plugins that support downloading binaries, will
+  download binaries.
+* `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from
+  github and compile
+* `path:/src/elixir` - a path to custom compiled version of a tool to use. For
+  use by language developers and such.
+* `system` - this keyword causes asdf to passthrough to the version of the tool
+  on the system that is not managed by asdf.
 
-To install all the tools defined in a `.tool-versions` file run the `asdf install` command with no other arguments in the directory containing the `.tool-versions` file.
+To install all the tools defined in a `.tool-versions` file run `asdf install`
+with no other arguments in the directory containing the `.tool-versions` file.
 
-You can view/modify the file by hand or use `asdf local` and `asdf global` to manage it.
+Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 ## The `$HOME/.asdfrc` config file
 
-Add a `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file should be formatted like this:
+Add a `.asdfrc` file to your home directory and asdf will use the settings
+specified in the file. The file should be formatted like this:
 
 ```
 legacy_version_file = yes
@@ -261,13 +282,19 @@ legacy_version_file = yes
 
 **Settings**
 
-* `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
+* `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins
+that support this feature to read the version files used by other version
+managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
 ## Environment Variables
 
-* `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
-* `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The name of the file storing the tool names and versions. Defaults to `.tool-versions`. Can be any valid file name.
-* `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install plugins, shims and installs. Can be set to any location before sourcing `asdf.sh` or `asdf.fish` mentioned in the section above.
+* `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set
+  to any location.
+* `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The name of the file storing the tool
+  names and versions. Defaults to `.tool-versions`. Can be any valid file name.
+* `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install
+  plugins, shims and installs. Can be set to any location before sourcing
+  `asdf.sh` or `asdf.fish` mentioned in the section above.
 
 ## Uninstall
 
@@ -275,17 +302,24 @@ legacy_version_file = yes
 
 ## Docker images
 
-The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) projects are an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
+The [asdf-alpine][asdf-alpine] and [asdf-ubuntu][asdf-ubuntu] projects are an
+ongoing effort to provide Dockerized images of some asdf tools. You can use
+these docker images as base for your development servers, or for running your
+production apps.
+
+[asdf-alpine]: https://github.com/vic/asdf-alpine
+[asdf-ubuntu]: https://github.com/vic/asdf-ubuntu
 
 ## Development
 
-To develop the project, you can simply `git clone` the master branch.
-If you want to try out your changes without making change to your installed `asdf`,
-you can set the `$ASDF_DIR` variable to the path where you cloned the repository,
-and temporarily prepend the `bin` and `shims` directory of the directory to your path.
+To develop the project, you can simply `git clone` the master branch. If you
+want to try out your changes without making change to your installed `asdf`,
+you can set the `$ASDF_DIR` variable to the path where you cloned the
+repository, and temporarily prepend the `bin` and `shims` directory of the
+directory to your path.
 
-We use [bats](https://github.com/sstephenson/bats) for testing,
-so make sure `bats test/` passes after you made your changes.
+We use [bats](https://github.com/sstephenson/bats) for testing, so make sure
+`bats test/` passes after you made your changes.
 
 ## Contributing
 
