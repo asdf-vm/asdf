@@ -38,6 +38,16 @@ teardown() {
   [ "$output" = "nightly-2000-01-01 (set by $PROJECT_DIR/.tool-versions)" ]
 }
 
+@test "current should handle multiple versions" {
+  cd $PROJECT_DIR
+  echo "dummy 1.2.0 1.1.0" >> $PROJECT_DIR/.tool-versions
+
+  run current_command "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "1.2.0 1.1.0 (set by $PROJECT_DIR/.tool-versions)" ]
+}
+
+
 @test "current should derive from the legacy file if enabled" {
   cd $PROJECT_DIR
   echo 'legacy_version_file = yes' > $HOME/.asdfrc
