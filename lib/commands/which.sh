@@ -1,6 +1,5 @@
 which_command() {
-  local command=$1
-  local plugins_path
+  local command=$1 plugins_path not_found plugin_name full_version location
   plugins_path=$(get_plugin_path)
 
   if ls "$plugins_path" &> /dev/null; then
@@ -11,26 +10,25 @@ which_command() {
       IFS=' ' read -a versions <<< "$full_version"
       for version in "${versions[@]}"; do
         if [ -f "${plugin_path}/bin/exec-path" ]; then
-          echo "EXEC_PATH"
           cmd=$(basename "$executable_path")
           install_path=$(find_install_path "$plugin_name" "$version")
           executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
         fi
         full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
-        local location
-        location=$(find "$full_executable_path" -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
-        if [ ! -z "$location" ]; then
+        location=$(find -L "$full_executable_path" -name "$command" -type f -perm -u+x -maxdepth 4 | sed -e 's|//|/|g')
+        if [ -n "$location" ]; then
           echo "$location"
           not_found=0
+          break 2
         else
           not_found=1
         fi
       done
     done
-    if [ $not_found -eq 1 ]; then
-      echo "No executable binary found for $command"
-      exit 1
-    fi
+  fi
+  if [ $not_found -eq 1 ]; then
+    echo "No executable binary found for $command"
+    exit 1
   fi
   exit 0
 }
