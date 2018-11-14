@@ -1,6 +1,23 @@
 # Changelog
 
-## 0.6.1-dev
+## 0.6.2-dev
+
+## 0.6.1
+
+Features
+
+* Make `where` command default to current version (#389)
+* Optimize code for listing all plugins (#388)
+* Document `$TRAVIS_BUILD_DIR` in the plugin guide (#386)
+* Add `--asdf-tool-version` flag to plugin-test command (#381)
+* Add `-p` flag to `local` command (#377)
+
+Fixed Bugs
+
+* Fix behavior of `current` command when multiple versions are set (#401)
+* Fix fish shell init code (#392)
+* Fix `plugin-test` command (#379)
+* Add space before parenthesis in `current` command output (#371)
 
 ## 0.6.0
 
