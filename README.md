@@ -13,7 +13,7 @@ Supporting a new language is as simple as [this plugin API][plugin_api].
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.1
 ```
 
 Depending on your OS and shell, run the following:
