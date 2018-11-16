@@ -23,6 +23,14 @@ teardown() {
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
 }
 
+@test "install_command installs even if the user is terrible and does not use newlines" {
+  cd $PROJECT_DIR
+  echo -n 'dummy 1.2' > ".tool-versions"
+  run install_command
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
+}
+
 @test "install_command set ASDF_CONCURRENCY" {
   run install_command dummy 1.0
   [ "$status" -eq 0 ]
