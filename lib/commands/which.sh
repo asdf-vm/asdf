@@ -15,7 +15,7 @@ which_command() {
           executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
         fi
         full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
-        location=$(find -L "$full_executable_path" -name "$command" -type f -perm -u+x -maxdepth 4 | sed -e 's|//|/|g')
+        location=$(find -L "$full_executable_path" -maxdepth 4 -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
         if [ -n "$location" ]; then
           echo "$location"
           not_found=0
