@@ -228,7 +228,7 @@ get_executable_path() {
   check_if_version_exists "$plugin_name" "$version"
 
   if [ "$version" = "system" ]; then
-    path=$(echo "$PATH" | sed -e "s|$ASDF_DIR/shims||g; s|::|:|g")
+    path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
