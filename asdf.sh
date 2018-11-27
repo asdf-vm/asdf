@@ -16,14 +16,11 @@ ASDF_DIR="$(dirname "$current_script_path")"
 # if in $PATH, remove, regardless of if it is in the right place (at the front) or not.
 # replace all occurrences - ${parameter//pattern/string}
 ASDF_BIN="${ASDF_DIR}/bin"
-ASDF_SHIMS="${ASDF_DIR}/shims"
 ASDF_USER_SHIMS="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
 [[ ":$PATH:" == *":${ASDF_BIN}:"* ]] && PATH="${PATH//$ASDF_BIN:/}"
-[[ ":$PATH:" == *":${ASDF_SHIMS}:"* ]] && PATH="${PATH//$ASDF_SHIMS:/}"
 [[ ":$PATH:" == *":${ASDF_USER_SHIMS}:"* ]] && PATH="${PATH//$ASDF_USER_SHIMS:/}"
 # add to front of $PATH
 PATH="${ASDF_BIN}:$PATH"
-PATH="${ASDF_SHIMS}:$PATH"
 PATH="${ASDF_USER_SHIMS}:$PATH"
 
 if [ -n "$ZSH_VERSION" ]; then
