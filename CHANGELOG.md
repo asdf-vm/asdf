@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.6.2-dev
+## 0.6.3-dev
+
+## 0.6.2
+
+Fixed Bugs
+
+Fix `system` logic so shims directory is removed from `PATH` properly (#402, #406)
+Support `.tool-versions` files that don't end in a newline (#403)
 
 ## 0.6.1
 
