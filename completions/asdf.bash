@@ -8,7 +8,7 @@ _asdf () {
   local prev
   prev=${COMP_WORDS[COMP_CWORD-1]}
   local plugins
-  plugins=$(asdf plugin-list | tr '\n' ' ')
+  plugins=$(asdf plugin-list 2> /dev/null | tr '\n' ' ')
 
   # We can safely ignore warning SC2207 since it warns that it will uses the
   # shell's sloppy word splitting and globbing. The possible commands here are
@@ -27,14 +27,14 @@ _asdf () {
       ;;
     plugin-add)
       local available_plugins
-      available_plugins=$( (asdf plugin-list && asdf plugin-list-all) | sort | uniq -u)
+      available_plugins=$( (asdf plugin-list 2> /dev/null && asdf plugin-list-all 2> /dev/null) | sort | uniq -u)
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
       ;;
     install)
       if [[ "$plugins" == *"$prev"* ]] ; then
         local versions
-        versions=$(asdf list-all "$prev")
+        versions=$(asdf list-all "$prev" 2> /dev/null)
         # shellcheck disable=SC2207
         COMPREPLY=($(compgen -W "$versions" -- "$cur"))
       else
@@ -49,7 +49,7 @@ _asdf () {
     uninstall|where|reshim|local|global)
       if [[ "$plugins" == *"$prev"* ]] ; then
         local versions
-        versions=$(asdf list "$prev")
+        versions=$(asdf list "$prev" 2> /dev/null)
         # shellcheck disable=SC2207
         COMPREPLY=($(compgen -W "$versions" -- "$cur"))
       else
