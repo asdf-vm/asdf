@@ -9,6 +9,9 @@ which_command() {
       # shellcheck disable=SC2162
       IFS=' ' read -a versions <<< "$full_version"
       for version in "${versions[@]}"; do
+        if [ "$version" = "system" ]; then
+          continue
+        fi
         if [ -f "${plugin_path}/bin/exec-path" ]; then
           cmd=$(basename "$executable_path")
           install_path=$(find_install_path "$plugin_name" "$version")

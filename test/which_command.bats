@@ -35,6 +35,15 @@ teardown() {
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/subdir/other_bin" ]
 }
 
+@test "which should ignore system version" {
+  echo 'dummy system 1.0' > $PROJECT_DIR/.tool-versions
+  cd $PROJECT_DIR
+
+  run which_command "other_bin"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/subdir/other_bin" ]
+}
+
 @test "which should inform when no binary is found" {
   cd $PROJECT_DIR
 
