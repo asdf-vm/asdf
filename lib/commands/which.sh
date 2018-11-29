@@ -1,51 +1,34 @@
 which_command() {
-  local plugin_name=$1
+  local command=$1 plugins_path not_found plugin_name full_version location
+  plugins_path=$(get_plugin_path)
 
-  check_if_plugin_exists "$plugin_name"
-
-  local search_path
-  search_path=$(pwd)
-  local version_and_path
-  version_and_path=$(find_version "$plugin_name" "$search_path")
-  local version
-  version=$(cut -d '|' -f 1 <<< "$version_and_path");
-  local install_type="version"
-
-  check_if_version_exists "$plugin_name" "$version"
-  check_for_deprecated_plugin "$plugin_name"
-
-  if [ -z "$version" ]; then
-    display_no_version_set "$plugin_name"
+  if ls "$plugins_path" &> /dev/null; then
+    for plugin_path in "$plugins_path"/* ; do
+      plugin_name=$(basename "$plugin_path")
+      full_version=$(get_preset_version_for "$plugin_name")
+      # shellcheck disable=SC2162
+      IFS=' ' read -a versions <<< "$full_version"
+      for version in "${versions[@]}"; do
+        if [ -f "${plugin_path}/bin/exec-path" ]; then
+          cmd=$(basename "$executable_path")
+          install_path=$(find_install_path "$plugin_name" "$version")
+          executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
+        fi
+        full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
+        location=$(find -L "$full_executable_path" -maxdepth 4 -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
+        if [ -n "$location" ]; then
+          echo "$location"
+          not_found=0
+          break 2
+        else
+          not_found=1
+        fi
+      done
+    done
+  fi
+  if [ $not_found -eq 1 ]; then
+    echo "No executable binary found for $command"
     exit 1
   fi
-
-  local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
-
-  if [ -d "$install_path" ]; then
-    echo "$install_path/bin/$plugin_name"
-    exit 0
-  else
-    echo "Version not installed"
-    exit 1
-  fi
-}
-
-# Warn if the plugin isn't using the updated legacy file api.
-check_for_deprecated_plugin() {
-  local plugin_name=$1
-
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
-  local legacy_config
-  legacy_config=$(get_asdf_config_value "legacy_version_file")
-  local deprecated_script="${plugin_path}/bin/get-version-from-legacy-file"
-  local new_script="${plugin_path}/bin/list-legacy-filenames"
-
-  if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    echo "Heads up! It looks like your $plugin_name plugin is out of date. You can update it with:"
-    echo ""
-    echo "  asdf plugin-update $plugin_name"
-    echo ""
-  fi
+  exit 0
 }
