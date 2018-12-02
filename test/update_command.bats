@@ -11,13 +11,10 @@ setup() {
   setup_asdf_dir
   install_dummy_plugin
 
-  # Copy over git repo so we have something to test with
-  cp -r .git $ASDF_DIR
   (
   cd $ASDF_DIR
-  git remote remove origin
+  git init
   git remote add origin https://github.com/asdf-vm/asdf.git
-  git checkout .
   )
 
   PROJECT_DIR=$HOME/project
@@ -32,8 +29,7 @@ teardown() {
   run update_command --head
   [ "$status" -eq 0 ]
   cd $ASDF_DIR
-  # TODO: Figure out why this is failing
-  #[ $(git rev-parse --abbrev-ref HEAD) = "master" ]
+  [ $(git rev-parse --abbrev-ref HEAD) = "master" ]
 }
 
 @test "update_command should checkout the latest tag" {
