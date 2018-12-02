@@ -6,6 +6,7 @@ update_command() {
 
   if [ -f asdf_updates_disabled ] || ! git rev-parse --is-inside-work-tree &> /dev/null; then
     echo "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf."
+    exit 1
   else
     do_update "$update_to_head"
   fi
