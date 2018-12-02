@@ -11,13 +11,10 @@ setup() {
   setup_asdf_dir
   install_dummy_plugin
 
-  # Copy over git repo so we have something to test with
-  cp -r .git $ASDF_DIR
   (
   cd $ASDF_DIR
-  git remote remove origin
+  git init
   git remote add origin https://github.com/asdf-vm/asdf.git
-  git checkout .
   )
 
   PROJECT_DIR=$HOME/project
@@ -32,8 +29,7 @@ teardown() {
   run update_command --head
   [ "$status" -eq 0 ]
   cd $ASDF_DIR
-  # TODO: Figure out why this is failing
-  #[ $(git rev-parse --abbrev-ref HEAD) = "master" ]
+  [ $(git rev-parse --abbrev-ref HEAD) = "master" ]
 }
 
 @test "update_command should checkout the latest tag" {
@@ -43,6 +39,13 @@ teardown() {
   local tag=$(git describe --tag)
   echo $(git tag) | grep $tag
   [ "$status" -eq 0 ]
+}
+
+@test "update_command is a noop for non-git repos" {
+  (cd $ASDF_DIR && rm -r .git/)
+  run update_command
+  [ "$status" -eq 1 ]
+  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" == "$output" ]
 }
 
 @test "update_command should not remove plugin versions" {
