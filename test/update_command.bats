@@ -41,6 +41,13 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "update_command is a noop for non-git repos" {
+  (cd $ASDF_DIR && rm -r .git/)
+  run update_command
+  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "update_command should not remove plugin versions" {
   run install_command dummy 1.1
   [ "$status" -eq 0 ]
