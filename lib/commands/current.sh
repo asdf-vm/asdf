@@ -13,7 +13,7 @@ plugin_current_command() {
   version_file_path=$(cut -d '|' -f 2  <<< "$version_and_path");
 
   IFS=' ' read -r -a versions <<< "$full_version"
-  for version in $versions; do
+  for version in "${versions[@]}"; do
     check_if_version_exists "$plugin_name" "$version"
   done
   check_for_deprecated_plugin "$plugin_name"
