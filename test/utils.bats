@@ -124,6 +124,15 @@ teardown() {
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
+@test "find_version should return the version set by envrionment variable" {
+  export ASDF_DUMMY_VERSION=0.2.0
+
+  run find_version "dummy" $PROJECT_DIR
+  [ "$status" -eq 0 ]
+  echo $output
+  [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
+}
+
 @test "asdf_data_dir should return user dir if configured" {
   ASDF_DATA_DIR="/tmp/wadus"
 
@@ -267,6 +276,21 @@ teardown() {
   run find_tool_versions
   [ "$status" -eq 0 ]
   [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+}
+
+@test "get_version_from_env returns the version set in the environment variable" {
+  export ASDF_DUMMY_VERSION=0.1.0
+  run get_version_from_env 'dummy'
+
+  [ "$status" -eq 0 ]
+  [ "$output" = '0.1.0' ]
+}
+
+@test "get_version_from_env returns nothing when environment variable is not set" {
+  run get_version_from_env 'dummy'
+
+  [ "$status" -eq 0 ]
+  [ "$output" = '' ]
 }
 
 @test "resolve_symlink converts the symlink path to the real file path" {
