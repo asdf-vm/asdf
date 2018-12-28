@@ -22,10 +22,15 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "list_command with plugin should output error when plugin is not installed" {
-  run list_command dummy
-  [ "No versions installed" == "$output" ]
-  [ "$status" -eq 1 ]
+@test "list_command should continue listing even when no version is installed for any of the plugins" {
+  run install_mock_plugin "dummy"
+  run install_mock_plugin "mummy"
+  run install_mock_plugin "tummy"
+  run install_command dummy 1.0
+  run install_command tummy 2.0
+  run list_command
+  [ "$(echo -e "dummy\n  1.0\nmummy\nNo versions installed\ntummy\n  2.0")" == "$output" ]
+  [ "$status" -eq 0 ]
 }
 
 @test "list_command with plugin should list installed versions" {

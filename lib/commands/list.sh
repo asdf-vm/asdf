@@ -30,6 +30,5 @@ display_installed_versions() {
     done
   else
     display_error 'No versions installed'
-    exit 1
   fi
 }
