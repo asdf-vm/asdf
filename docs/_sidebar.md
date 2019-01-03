@@ -1,12 +1,24 @@
 <!-- docs/_sidebar.md -->
 
-- [Home](/)
-- [Install asdf vm](install-asdf-vm)
-- [Manage Plugins](manage-plugins)
-- [Manage Versions](manage-versions)
-- [Configuration](configuration) <!-- tool-versions & .asdfrc & env vars-->
-- [All Commands](commands)
-- [Contributing](contributing)
-- [Creating Plugins](create-plugins)
-  <!-- pulls in asdf-vm/asdf-plugins readme -->
-- [All Plugins](all-plugins)
+- [Home](/) <!-- ballad of asdf here -->
+
+- Core
+
+  - [Install](core-install)
+  - [Manage Plugins](core-manage-plugins)
+  - [Manage Versions](core-manage-versions)
+  - [Configuration](core-configuration) <!-- tool-versions & .asdfrc & env vars-->
+  - [All Commands](core-commands) <!-- include uninstall instructions -->
+
+- Plugins
+
+  - [Creating Plugins](plugins-create)
+  - [All Plugins](plugins-all) <!-- pulls in asdf-vm/asdf-plugins readme -->
+
+- Contributing
+
+  - [Core asdf vm](contributing-core-asdf-vm)
+  - [Documentation Site](contributing-doc-site)
+
+- [Changelog](changelog) <!-- pulls in changelog from repo -->
+- [Thanks](thanks) <!-- credits, maintainers, contributors -->
