@@ -27,10 +27,10 @@
         repo: "asdf-vm/asdf/",
         el: "#app",
         coverpage: true,
+        // onlyCover: true,
         loadNavbar: true,
         loadSidebar: true,
-        maxLevel: 2,
-        // subMaxLevel: 2,
+        subMaxLevel: 2,
         auto2top: true,
         homepage: "home.md",
         logo: "/_media/asdf-vm-icon.svg",
@@ -50,6 +50,8 @@
         alias: {
           ".*?/all-plugins":
             "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
+          ".*?/changelog":
+            "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md",
         },
         markdown: {
           smartypants: true,
