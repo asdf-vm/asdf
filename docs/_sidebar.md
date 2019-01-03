@@ -4,7 +4,7 @@
 
 - Core
 
-  - [Install](core-install)
+  - [Manage asdf-vm](core-manage-asdf-vm)
   - [Manage Plugins](core-manage-plugins)
   - [Manage Versions](core-manage-versions)
   - [Configuration](core-configuration) <!-- tool-versions & .asdfrc & env vars-->
