@@ -36,17 +36,21 @@
         logo: "/_media/asdf-vm-icon.svg",
         coverpage: {
           "/": "_coverpage.md",
-          "/zh-cn/": "_coverpage.md",
+          // "/zh-cn/": "_coverpage.md",
         },
         nameLink: {
           "/": "/",
-          "/zh-cn/": "/zh-cn/",
+          // "/zh-cn/": "/zh-cn/",
         },
         notFoundPage: {
           "/": "_404.md",
-          "/zh-cn": "zh-cn/_404.md",
+          // "/zh-cn": "zh-cn/_404.md",
         },
         // fallbackLanguages: ["en"],
+        alias: {
+          ".*?/all-plugins":
+            "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
+        },
         markdown: {
           smartypants: true,
         },
