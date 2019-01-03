@@ -4,7 +4,6 @@ See [All plugins](plugins-all) for the plugins repository which lists all asdf-v
 
 See [Creating Plugins](plugins-create) for the super-simple API for supporting more languages.
 
-
 ## Add
 
 ```shell
