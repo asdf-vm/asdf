@@ -9,4 +9,4 @@
 - Simple plugin system
 
 [GitHub](https://github.com/asdf-vm/asdf)
-[Get Started](#quick-start)
+[Get Started](install-asdf-vm)
