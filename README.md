@@ -10,7 +10,7 @@ Supporting a new language is as simple as [this plugin API][plugin_api].
 
 ## INSTALLATION
 
-If you're on macOS you can [Install using Homebrew](https://github.com/asdf-vm/asdf#homebrew-with-macos)
+If you're on macOS you can [Install using Homebrew](https://github.com/asdf-vm/asdf#homebrew-on-macos)
 
 ### Basic Installation
 
@@ -318,11 +318,15 @@ managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
 [Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/uninstall.md).
 
-### Homebrew on macOS
+## Homebrew on macOS
+
 You can also install asdf using the Homebrew package manager for macOS.
 
-$ brew update
-$ brew install asdf
+```bash
+brew update
+brew install asdf
+```
+
 To upgrade asdf in the future, use upgrade instead of install.
 
 Then follow the rest of the post-installation steps under the [Setup](https://github.com/asdf-vm/asdf#setup) section above.
