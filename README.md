@@ -20,9 +20,9 @@ Copy-paste the following into command line:
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
 ```
 
-Depending on your OS and shell, run the following:
-
 ### Setup
+
+Depending on your OS and shell, run the following:
 
 * Bash on Ubuntu (and other Linux distros):
 
