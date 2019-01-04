@@ -8,13 +8,19 @@ Supporting a new language is as simple as [this plugin API][plugin_api].
 [plugins]: https://github.com/asdf-vm/asdf-plugins
 [plugin_api]: https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md
 
-## SETUP
+## INSTALLATION
+
+If you're on macOS you can [Install using Homebrew](https://github.com/asdf-vm/asdf#homebrew-on-macos)
+
+### Basic Installation
 
 Copy-paste the following into command line:
 
 ```bash
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
 ```
+
+### Setup
 
 Depending on your OS and shell, run the following:
 
@@ -311,6 +317,19 @@ managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 ## Uninstall
 
 [Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/uninstall.md).
+
+## Homebrew on macOS
+
+You can also install asdf using the Homebrew package manager for macOS.
+
+```bash
+brew update
+brew install asdf
+```
+
+To upgrade asdf in the future, use upgrade instead of install.
+
+Then follow the rest of the post-installation steps under the [Setup](https://github.com/asdf-vm/asdf#setup) section above.
 
 ## Docker images
 
