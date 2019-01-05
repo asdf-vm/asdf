@@ -12,13 +12,11 @@ which_command() {
         if [ "$version" = "system" ]; then
           continue
         fi
-        if [ -f "${plugin_path}/bin/exec-path" ]; then
-          cmd=$(basename "$executable_path")
-          install_path=$(find_install_path "$plugin_name" "$version")
-          executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
-        fi
+
+        executable_path="$(get_custom_executable_path "$plugin_path" "$install_path" "$executable_path")"
         full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
         location=$(find -L "$full_executable_path" -maxdepth 4 -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
+
         if [ -n "$location" ]; then
           echo "$location"
           not_found=0

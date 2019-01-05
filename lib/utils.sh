@@ -220,6 +220,20 @@ find_install_path() {
   fi
 }
 
+get_custom_executable_path() {
+  local plugin_path=$1
+  local install_path=$2
+  local executable_path=$3
+
+  # custom plugin hook for executable path
+  if [ -f "${plugin_path}/bin/exec-path" ]; then
+    cmd=$(basename "$executable_path")
+    executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
+  fi
+
+  echo $executable_path
+}
+
 get_executable_path() {
   local plugin_name=$1
   local version=$2
