@@ -51,3 +51,12 @@ teardown() {
   [ "$status" -eq 1 ]
   [ "$output" = "No executable binary found for bazbat" ]
 }
+
+@test "which should use path returned by exec-path when present" {
+  cd $PROJECT_DIR
+  install_dummy_exec_path_script "dummy"
+
+  run which_command "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/custom/dummy" ]
+}

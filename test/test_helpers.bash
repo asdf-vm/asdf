@@ -35,6 +35,17 @@ install_dummy_version() {
   install_mock_plugin_version "dummy" "$1"
 }
 
+install_dummy_exec_path_script() {
+  local name=$1
+  local exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
+  local custom_dir="$ASDF_DIR/installs/dummy/1.0/bin/custom"
+  mkdir "$custom_dir"
+  touch "$custom_dir/$name"
+  chmod +x "$custom_dir/$name"
+  echo "echo 'bin/custom'" > "$exec_path"
+  chmod +x "$exec_path"
+}
+
 clean_asdf_dir() {
   rm -rf "$BASE_DIR"
   unset ASDF_DIR
