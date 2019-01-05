@@ -231,7 +231,7 @@ get_custom_executable_path() {
     executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
   fi
 
-  echo $executable_path
+  echo "$executable_path"
 }
 
 get_executable_path() {
