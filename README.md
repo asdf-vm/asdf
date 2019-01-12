@@ -69,7 +69,7 @@ Depending on your OS and shell, run the following:
   If installed using `brew install asdf`:
   
   ```bash
-  echo 'source /usr/local/share/fish/vendor_completions.d/asdf.fish' >> ~/.config/fish/config.fish
+  echo 'source /usr/local/opt/asdf/asdf.fish' >> ~/.config/fish/config.fish
   mkdir -p ~/.config/fish/completions && cp /usr/local/share/fish/vendor_completions.d/asdf.fish ~/.config/fish/completions
   ```
   
