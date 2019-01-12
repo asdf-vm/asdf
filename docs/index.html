@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>asdf vm - An extendable version manager</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="An extendable version manager" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <!-- site theme -->
+    <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
+    <!-- prismjs theme -->
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/prismjs@1.15.0/themes/prism-coy.css"
+    />
+  </head>
+  <body>
+    <div id="app">asdf-vm loading</div>
+    <!-- edit on github plugin must appear here -->
+    <script src="//unpkg.com/docsify-edit-on-github@1.0.1/index.js"></script>
+    <script>
+      window.$docsify = {
+        name: "asdf-vm",
+        repo: "asdf-vm/asdf/",
+        el: "#app",
+        coverpage: true,
+        loadNavbar: true,
+        loadSidebar: true,
+        subMaxLevel: 2,
+        auto2top: true,
+        homepage: "https://raw.githubusercontent.com/asdf-vm/asdf/master/README.md",
+        logo: "/_media/asdf-vm-icon.svg",
+        coverpage: {
+          "/": "_coverpage.md",
+          // "/zh-cn/": "_coverpage.md",
+        },
+        nameLink: {
+          "/": "/",
+          // "/zh-cn/": "/zh-cn/",
+        },
+        notFoundPage: {
+          "/": "_404.md",
+          // "/zh-cn": "zh-cn/_404.md",
+        },
+        // fallbackLanguages: ["en"],
+        alias: {
+          ".*?/plugins-all":
+            "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
+          ".*?/changelog":
+            "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md",
+        },
+        markdown: {
+          smartypants: true,
+        },
+        themeColor: "#AA00D4",
+        formatUpdated: "{MM}/{DD} {HH}:{mm}",
+        tabs: {
+          theme: "material",
+        },
+        search: {
+          paths: "auto",
+          placeholder: {
+            "/": "Type to search",
+            // "/zh-cn/": "搜索",
+          },
+          noData: {
+            "/": "No Results",
+            // "/zh-cn/": "找不到结果",
+          },
+        },
+        plugins: [
+          EditOnGithubPlugin.create(
+            "https://github.com/asdf-vm/asdf/blob/master/docs/"
+          ),
+        ],
+      };
+    </script>
+    <!-- docsify core -->
+    <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+    <!-- docsify core plugins -->
+    <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+    <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+    <script src="//unpkg.com/docsify/lib/plugins/zoom-image.min.js"></script>
+    <!-- 3rd party plugins -->
+    <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+    <script src="//unpkg.com/prismjs/components/prism-markdown.min.js"></script>
+    <script src="//unpkg.com/docsify-copy-code@2"></script>
+    <script src="//unpkg.com/docsify-tabs@1"></script>
+  </body>
+</html>
