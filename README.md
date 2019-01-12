@@ -59,10 +59,20 @@ Depending on your OS and shell, run the following:
 
 * Fish:
 
+  If installed using `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2`:
+
   ```bash
   echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
-  mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+  mkdir -p ~/.config/fish/completions && cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
   ```
+  
+  If installed using `brew install asdf`:
+  
+  ```bash
+  echo 'source /usr/local/share/fish/vendor_completions.d/asdf.fish' >> ~/.config/fish/config.fish
+  mkdir -p ~/.config/fish/completions && cp /usr/local/share/fish/vendor_completions.d/asdf.fish ~/.config/fish/completions
+  ```
+  
 Restart your shell so that PATH changes take effect. (Opening a new terminal
 tab will usually do it.)
 
