@@ -6,7 +6,7 @@ Supported languages include Ruby, Node.js, Elixir and [more][plugins].
 Supporting a new language is as simple as [this plugin API][plugin_api].
 
 [plugins]: https://github.com/asdf-vm/asdf-plugins
-[plugin_api]: https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md
+[plugin_api]: https://github.com/asdf-vm/asdf/blob/master/docs/plugins-create.md
 
 ## INSTALLATION
 
