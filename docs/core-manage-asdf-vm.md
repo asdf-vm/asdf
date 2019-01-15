@@ -111,6 +111,8 @@ asdf update --head
 
 ## Remove
 
+Uninstalling `asdf` is as simple as:
+
 1.  In your `.bashrc` (or `.bash_profile` if you are on OSX) or `.zshrc` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
 
         . $HOME/.asdf/asdf.sh
