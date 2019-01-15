@@ -316,7 +316,7 @@ managers (e.g. `.ruby-version` in the case of Ruby's rbenv).
 
 ## Uninstall
 
-[Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/uninstall.md).
+[Uninstalling asdf is easy](https://github.com/asdf-vm/asdf/blob/master/docs/core-manage-asdf-vm.md#remove).
 
 ## Homebrew on macOS
 
