@@ -33,6 +33,7 @@ Features
   for most common use case: (versions on local .tool-versions file) but fallbacks to
   slower `get_preset_version_for` which takes legacy formats into account.
 * Shim exec recommends which plugins or versions to set when command is not found.
+* `asdf reshim` without arguments now reshims all installed plugins (#407)
 
 Fixed Bugs
 
