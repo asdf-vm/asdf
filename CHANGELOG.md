@@ -2,24 +2,6 @@
 
 ## 0.6.4-dev
 
-## 0.6.3
-
-Features
-
-* Make `which` command work with any binary included in a plugin installation (#205, #382)
-* Add documentation for documentation website (#274, #396, #422, #423, #427, #430)
-
-Fixed Bugs
-
-* Silence errors during tab completion (#404)
-* Remove unused asdf shims directory from `PATH` (#408)
-* Fix issues with update command that prevented updates for installations in custom locations (#411)
-* Fix shellcheck warnings on OSX (#416)
-* Add tests for versions set by environment variables (#417, #327)
-* Continue `list` output even when version is not found (#419)
-* Fixed user paths for fish (#420, #421)
-* Custom exec path tests (#324, #424)
-
 Features
 
 * New shim version meta-data allows shims to not depend on a particular plugin
@@ -38,6 +20,25 @@ Features
 Fixed Bugs
 
 * Allow many plugins to provide shims with same executable name (#431)
+
+
+## 0.6.3
+
+Features
+
+* Make `which` command work with any binary included in a plugin installation (#205, #382)
+* Add documentation for documentation website (#274, #396, #422, #423, #427, #430)
+
+Fixed Bugs
+
+* Silence errors during tab completion (#404)
+* Remove unused asdf shims directory from `PATH` (#408)
+* Fix issues with update command that prevented updates for installations in custom locations (#411)
+* Fix shellcheck warnings on OSX (#416)
+* Add tests for versions set by environment variables (#417, #327)
+* Continue `list` output even when version is not found (#419)
+* Fixed user paths for fish (#420, #421)
+* Custom exec path tests (#324, #424)
 
 
 ## 0.6.2
