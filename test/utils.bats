@@ -79,10 +79,10 @@ teardown() {
 }
 
 @test "parse_asdf_version_file should output path version with spaces" {
-    echo "dummy path:/some/dummy path" > $PROJECT_DIR/.tool-versions
-    run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
-    [ "$status" -eq 0 ]
-    [ "$output" == "path:/some/dummy path" ]
+  echo "dummy path:/some/dummy path" > $PROJECT_DIR/.tool-versions
+  run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
+  [ "$status" -eq 0 ]
+  [ "$output" == "path:/some/dummy path" ]
 }
 
 @test "find_version should return .tool-versions if legacy is disabled" {

@@ -1,54 +1,16 @@
 #!/usr/bin/env bash
 
+# remove this asdf-exec file when v0.7 becomes the stable version
+echo "asdf is self upgrading shims to new asdf-tool-exec"
+
+asdf_dir="$(dirname "$(dirname "$(dirname "$0")")")"
 # shellcheck source=lib/utils.sh
-source "$(dirname "$(dirname "$(dirname "$0")")")/lib/utils.sh"
+source "$asdf_dir/lib/utils.sh"
+rm "$(asdf_data_dir)"/shims/*
+"$asdf_dir"/bin/asdf reshim
+shim_name=$(basename "$2")
 
-plugin_name=$1
-executable_path=$2
+echo "asdf: now running $shim_name"
 
-plugin_path=$(get_plugin_path "$plugin_name")
-check_if_plugin_exists "$plugin_name"
+exec "$shim_name" "${@:3}"
 
-full_version=$(get_preset_version_for "$plugin_name")
-
-if [ "$full_version" == "" ]; then
-  display_no_version_set "$plugin_name"
-  exit 126
-fi
-
-# shellcheck disable=SC2162
-IFS=' ' read -a versions <<< "$full_version"
-
-for version in "${versions[@]}"; do
-  install_path=$(find_install_path "$plugin_name" "$version")
-
-  if [ "$version" != "system" ] && [ ! -d "$install_path" ]; then
-    echo "$plugin_name $version not installed"
-    exit 127
-  fi
-
-  executable_path=$(get_custom_executable_path "$plugin_path" "$install_path" "$executable_path")
-
-  if full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path"); then
-    if [ -f "$full_executable_path" ]; then
-      if [ -f "${plugin_path}/bin/exec-env" ]; then
-        export ASDF_INSTALL_TYPE=$install_type
-        export ASDF_INSTALL_VERSION=$version
-        export ASDF_INSTALL_PATH=$install_path
-
-        # shellcheck source=/dev/null
-        source "${plugin_path}/bin/exec-env"
-
-        # unset everything, we don't want to pollute
-        unset ASDF_INSTALL_TYPE
-        unset ASDF_INSTALL_VERSION
-        unset ASDF_INSTALL_PATH
-      fi
-
-      exec "$full_executable_path" "${@:3}"
-    fi
-  fi
-done
-
-echo "No such command in $full_version of $plugin_name"
-exit 1

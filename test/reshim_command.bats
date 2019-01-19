@@ -41,9 +41,9 @@ teardown() {
   run reshim_command dummy
   [ "$status" -eq 0 ]
   [ -f "$ASDF_DIR/shims/dummy" ]
-  run grep "asdf-plugin-version: 1.0" "$ASDF_DIR/shims/dummy"
+  run grep "asdf-plugin: dummy 1.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 1 ]
-  run grep "asdf-plugin-version: 1.1" "$ASDF_DIR/shims/dummy"
+  run grep "asdf-plugin: dummy 1.1" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 0 ]
 }
 
@@ -87,4 +87,14 @@ teardown() {
   [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
   [ "0" -eq "$(ls $ASDF_DIR/shims/subdir* | wc -l)" ]
 
+}
+
+@test "reshim without arguments reshims all installed plugins" {
+  run install_command dummy 1.0
+  run rm $ASDF_DIR/shims/*
+  [ "$status" -eq 0 ]
+  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  run reshim_command
+  [ "$status" -eq 0 ]
+  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
 }

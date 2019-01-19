@@ -20,6 +20,25 @@ Fixed Bugs
 * Fixed user paths for fish (#420, #421)
 * Custom exec path tests (#324, #424)
 
+Features
+
+* New shim version meta-data allows shims to not depend on a particular plugin
+  nor on its relative executable path (#431)
+  Upgrading requires shim re-generation and should happen automatically by `asdf-exec`:
+  `rm -rf ~/.asdf/shims/` followed by `asdf reshim`
+* Added lots of tests for shim execution.
+  We now make sure that shim execution obeys plugins hooks like `list-bin-paths` and
+  `exec-path`. 
+* Shim exec is now performed by a new `bin/private/asdf-tool-exec` that might be faster
+  for most common use case: (versions on local .tool-versions file) but fallbacks to
+  slower `get_preset_version_for` which takes legacy formats into account.
+* Shim exec recommends which plugins or versions to set when command is not found.
+
+Fixed Bugs
+
+* Allow many plugins to provide shims with same executable name (#431)
+
+
 ## 0.6.2
 
 Fixed Bugs

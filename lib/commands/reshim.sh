@@ -1,19 +1,20 @@
-shim_command() {
-  local plugin_name=$1
-  local executable_path=$2
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
-  check_if_plugin_exists "$plugin_name"
-  ensure_shims_dir
-
-  generate_shim_for_executable "$plugin_name" "$executable_path"
-}
-
 reshim_command() {
   local plugin_name=$1
   local full_version=$2
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
+
+  if [ -z "$plugin_name" ]; then
+    local plugins_path
+    plugins_path=$(get_plugin_path)
+
+    if ls "$plugins_path" &> /dev/null; then
+      for plugin_path in "$plugins_path"/* ; do
+        plugin_name=$(basename "$plugin_path")
+        reshim_command "$plugin_name"
+      done
+    fi
+    return 0
+  fi
+
   check_if_plugin_exists "$plugin_name"
   ensure_shims_dir
 
@@ -47,26 +48,27 @@ write_shim_script() {
   local plugin_name=$1
   local version=$2
   local executable_path=$3
+
+  if ! is_executable "$executable_path"; then
+    return 0
+  fi
+
   local executable_name
   executable_name=$(basename "$executable_path")
-  local plugin_shims_path
-  plugin_shims_path=$(get_plugin_path "$plugin_name")/shims
+
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
-  if [ -f "$plugin_shims_path/$executable_name" ]; then
-    cp "$plugin_shims_path/$executable_name" "$shim_path"
-  elif [ -f "$shim_path" ]; then
-    if ! grep "# asdf-plugin-version: $version" "$shim_path" > /dev/null; then
-     sed -i.bak -e "s/\\(asdf-plugin: $plugin_name\\)/\\1\\"$'\n'"# asdf-plugin-version: $version/" "$shim_path"
+  if [ -f "$shim_path" ]; then
+    if ! grep "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
+     sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
      rm "$shim_path".bak
     fi
   else
     cat <<EOF > "$shim_path"
 #!/usr/bin/env bash
-# asdf-plugin: ${plugin_name}
-# asdf-plugin-version: ${version}
-exec $(asdf_dir)/bin/private/asdf-exec ${plugin_name} ${executable_path} "\$@"
+# asdf-plugin: ${plugin_name} ${version}
+exec $(asdf_dir)/bin/private/asdf-tool-exec "${executable_name}" "\$@"
 EOF
   fi
 
@@ -77,145 +79,67 @@ EOF
 generate_shim_for_executable() {
   local plugin_name=$1
   local executable=$2
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
 
   check_if_plugin_exists "$plugin_name"
 
+  local version
   IFS=':' read -r -a version_info <<< "$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
-    local install_type="${version_info[0]}"
-    local version="${version_info[1]}"
+    version="${version_info[1]}"
   else
-    local install_type="version"
-    local version="${version_info[0]}"
+    version="${version_info[0]}"
   fi
 
   write_shim_script "$plugin_name" "$version" "$executable"
 }
 
-list_plugin_bin_paths() {
-  local plugin_name=$1
-  local version=$2
-  local install_type=$3
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
-  local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
-
-  if [ -f "${plugin_path}/bin/list-bin-paths" ]; then
-    local space_separated_list_of_bin_paths
-    space_separated_list_of_bin_paths=$(
-      export ASDF_INSTALL_TYPE=$install_type
-      export ASDF_INSTALL_VERSION=$version
-      export ASDF_INSTALL_PATH=$install_path
-      bash "${plugin_path}/bin/list-bin-paths"
-    )
-  else
-    local space_separated_list_of_bin_paths="bin"
-  fi
-  echo "$space_separated_list_of_bin_paths"
-}
-
-
 generate_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
-  check_if_plugin_exists "$plugin_name"
-
-
-  IFS=':' read -r -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    local install_type="${version_info[0]}"
-    local version="${version_info[1]}"
-  else
-    local install_type="version"
-    local version="${version_info[0]}"
-  fi
-  space_separated_list_of_bin_paths="$(list_plugin_bin_paths "$plugin_name" "$version" "$install_type")"
-  IFS=' ' read -r -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
-
-  local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
-
-  for bin_path in "${all_bin_paths[@]}"; do
-    for executable_file in "$install_path/$bin_path"/*; do
-      # because just $executable_file gives absolute path; We don't want version hardcoded in shim
-      local executable_path_relative_to_install_path
-      executable_path_relative_to_install_path="$bin_path"/$(basename "$executable_file")
-      if [[ (-f "$executable_file") && (-x "$executable_file") ]]; then
-        write_shim_script "$plugin_name" "$version" "$executable_path_relative_to_install_path"
-      fi
-    done
+  for executable_path in $(plugin_executables "$plugin_name" "$full_version"); do
+    write_shim_script "$plugin_name" "$full_version" "$executable_path"
   done
-}
-
-shim_still_exists() {
-  local shim_name=$1
-  local install_path=$2
-  local space_separated_list_of_bin_paths=$3
-  IFS=' ' read -r -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
-
-
-  for bin_path in "${all_bin_paths[@]}"; do
-    if [ -x "$install_path/$bin_path/$shim_name" ]; then
-      return 0
-    fi
-  done
-  return 1
 }
 
 remove_obsolete_shims() {
   local plugin_name=$1
   local full_version=$2
-  local shims_path
-  shims_path="$(asdf_data_dir)/shims"
 
-  IFS=':' read -r -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    local install_type="${version_info[0]}"
-    local version="${version_info[1]}"
-  else
-    local install_type="version"
-    local version="${version_info[0]}"
-  fi
+  local shims
+  shims=$(plugin_shims "$plugin_name" "$full_version" | xargs -IX basename X | sort)
 
-  space_separated_list_of_bin_paths="$(list_plugin_bin_paths "$plugin_name" "$version" "$install_type")"
+  local exec_names
+  exec_names=$(plugin_executables "$plugin_name" "$full_version" | xargs -IX basename X | sort)
 
-  local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+  local obsolete_shims
+  obsolete_shims=$(comm -23 <(echo "$shims") <(echo "$exec_names"))
 
-  for shim_path in "$shims_path"/*; do
-    local shim_name
-    shim_name="$(basename "$shim_path")"
-    if grep "# asdf-plugin: $plugin_name" "$shim_path" > /dev/null && \
-        grep "# asdf-plugin-version: $version" "$shim_path" > /dev/null && \
-        ! shim_still_exists "$shim_name" "$install_path" "$space_separated_list_of_bin_paths"; then
-      remove_shim_for_version "$plugin_name" "$shim_name" "$version"
-    fi
+  for shim_name in $obsolete_shims; do
+    remove_shim_for_version "$plugin_name" "$version" "$shim_name"
   done
 }
 
 remove_shim_for_version() {
   local plugin_name=$1
-  local executable_name=$2
-  local version=$3
-  local plugin_shims_path
-  plugin_shims_path=$(get_plugin_path "$plugin_name")/shims
+  local version=$2
+  local shim_name
+
+  shim_name=$(basename "$3")
+
   local shim_path
-  shim_path="$(asdf_data_dir)/shims/$executable_name"
+  shim_path="$(asdf_data_dir)/shims/$shim_name"
+
   local count_installed
   count_installed=$(list_installed_versions "$plugin_name" | wc -l)
 
-  if ! grep "# asdf-plugin: $plugin_name" "$shim_path" > /dev/null 2>&1; then
+  if ! grep "# asdf-plugin: $plugin_name $version" "$shim_path" > /dev/null 2>&1; then
     return 0
   fi
 
-  sed -i.bak -e "/# asdf-plugin-version: $version/d" "$shim_path"
+  sed -i.bak -e "/# asdf-plugin: $plugin_name $version/d" "$shim_path"
   rm "$shim_path".bak
 
-  if [ ! -f "$plugin_shims_path/$executable_name" ] && \
-        ! grep "# asdf-plugin-version" "$shim_path" > /dev/null || \
+  if ! grep "# asdf-plugin:" "$shim_path" > /dev/null || \
       [ "$count_installed" -eq 0 ]; then
     rm "$shim_path"
   fi
@@ -224,24 +148,7 @@ remove_shim_for_version() {
 remove_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
-  check_if_plugin_exists "$plugin_name"
-
-  IFS=':' read -r -a version_info <<< "$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    local install_type="${version_info[0]}"
-    local version="${version_info[1]}"
-  else
-    local install_type="version"
-    local version="${version_info[0]}"
-  fi
-  space_separated_list_of_bin_paths="$(list_plugin_bin_paths "$plugin_name" "$version" "$install_type")"
-  IFS=' ' read -r -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
-
-  for bin_path in "${all_bin_paths[@]}"; do
-    for executable_file in "$install_path/$bin_path"/*; do
-      local executable_name
-      executable_name="$(basename "$executable_file")"
-      remove_shim_for_version "$plugin_name" "$executable_name" "$version"
-    done
+  for shim_path in $(plugin_shims "$plugin_name" "$full_version"); do
+    remove_shim_for_version "$plugin_name" "$version" "$shim_path"
   done
 }
