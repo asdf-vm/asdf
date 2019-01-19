@@ -86,3 +86,24 @@ teardown() {
   run uninstall_command dummy 1.0
   [ -f $ASDF_DIR/shims/gummy ]
 }
+
+@test "uninstall command executes configured pre hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_uninstall_dummy = echo will uninstall dummy $1
+EOM
+
+  run install_command dummy 1.0
+  run uninstall_command dummy 1.0
+  [ "$output" == "will uninstall dummy 1.0" ]
+}
+
+@test "uninstall command executes configured post hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_uninstall_dummy = echo removed dummy $1
+EOM
+
+  run install_command dummy 1.0
+  run uninstall_command dummy 1.0
+  echo $output
+  [ "$output" == "removed dummy 1.0" ]
+}

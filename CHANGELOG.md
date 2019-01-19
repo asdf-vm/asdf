@@ -17,6 +17,9 @@ Features
     
     pre_foo_bar = echo about to execute command bar from foo with args: ${@}
     post_foo_bar = echo just executed command bar from foo with args: ${@}
+
+    pre_asdf_uninstall_foo = echo will remove foo version ${1}
+    post_asdf_uninstall_foo = echo removed foo version ${1}
     ```
 * New shim version meta-data allows shims to not depend on a particular plugin
   nor on its relative executable path (#431)
