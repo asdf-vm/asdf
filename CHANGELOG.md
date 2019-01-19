@@ -33,6 +33,8 @@ Features
   slower `get_preset_version_for` which takes legacy formats into account.
 * Shim exec recommends which plugins or versions to set when command is not found.
 * `asdf reshim` without arguments now reshims all installed plugins (#407)
+* Add `asdf shim-versions <executable>` to list on which plugins and versions is a command
+  available. (#380)
 
 Fixed Bugs
 

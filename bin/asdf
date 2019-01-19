@@ -17,6 +17,8 @@ source "$(dirname "$(dirname "$0")")/lib/commands/current.sh"
 source "$(dirname "$(dirname "$0")")/lib/commands/where.sh"
 # shellcheck source=lib/commands/which.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/which.sh"
+# shellcheck source=lib/commands/shim_versions.sh
+source "$(dirname "$(dirname "$0")")/lib/commands/shim_versions.sh"
 # shellcheck source=lib/commands/version_commands.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/version_commands.sh"
 # shellcheck source=lib/commands/list.sh
@@ -83,9 +85,6 @@ case $1 in
 "list-all")
     list_all_command $callback_args;;
 
-"shim")
-    shim_command $callback_args;;
-
 "reshim")
     reshim_command $callback_args;;
 
@@ -111,6 +110,8 @@ case $1 in
 "plugin-test")
     plugin_test_command $callback_args;;
 
+"shim-versions")
+    shim_versions_command $callback_args;;
 *)
   help_command
   exit 1;;
