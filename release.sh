@@ -111,6 +111,7 @@ echo "INFO: Committing and tagging new version"
 
 # Commit the changed files before tagging the new release
 git add README.md
+git add docs/core-manage-asdf-vm.md
 git add VERSION
 git commit -m "Update version to $new_version"
 
