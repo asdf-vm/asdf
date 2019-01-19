@@ -17,7 +17,7 @@ If you're on macOS you can [Install using Homebrew](https://github.com/asdf-vm/a
 Copy-paste the following into command line:
 
 ```bash
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.3
 ```
 
 ### Setup
