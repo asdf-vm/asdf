@@ -55,28 +55,29 @@ teardown() {
   run install_command dummy 1.0
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
-  run grep "asdf-plugin: dummy" $ASDF_DIR/shims/dummy
-  [ "$status" -eq 0 ]
-
-  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 }
 
-@test "install_command should create a shim with asdf-plugin-version metadata" {
+@test "install_command on two versions should create a shim with asdf-plugin metadata" {
   run install_command dummy 1.1
   [ "$status" -eq 0 ]
-  run grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy
+
+  run grep "asdf-plugin: dummy 1.1" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 
-  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 1 ]
 
   run install_command dummy 1.0
   [ "$status" -eq 0 ]
-  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 
-  lines_count=$(grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy | wc -l)
+  run grep "# asdf-plugin: dummy 1.0"$'\n'"# asdf-plugin: dummy 1.1" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+
+  lines_count=$(grep "asdf-plugin: dummy 1.1" $ASDF_DIR/shims/dummy | wc -l)
   [ "$lines_count" -eq "1" ]
 }
 
@@ -99,8 +100,9 @@ teardown() {
   run install_command
 
   # execute the generated shim
-  [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
+  run $ASDF_DIR/shims/dummy world hello
   [ "$status" -eq 0 ]
+  [ "$output" == "This is Dummy 1.0! hello world" ]
 }
 
 @test "install_command fails when the name or version are not specified" {
@@ -135,4 +137,22 @@ teardown() {
   run install_command dummy system
   [ "$status" -eq 0 ]
   [ ! -f $ASDF_DIR/installs/dummy/system/version ]
+}
+
+@test "install command executes configured pre plugin install hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_install_dummy = echo will install dummy $1
+EOM
+
+  run install_command dummy 1.0
+  [ "$output" == "will install dummy 1.0" ]
+}
+
+@test "install command executes configured post plugin install hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_install_dummy = echo HEY $version FROM $plugin_name
+EOM
+
+  run install_command dummy 1.0
+  [ "$output" == "HEY 1.0 FROM dummy" ]
 }

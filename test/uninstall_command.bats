@@ -62,7 +62,7 @@ teardown() {
   [ -f $ASDF_DIR/shims/dummy ]
 }
 
-@test "uninstall_command should remove relevant asdf-plugin-version metadata" {
+@test "uninstall_command should remove relevant asdf-plugin metadata" {
   run install_command dummy 1.0
   [ -f $ASDF_DIR/installs/dummy/1.0/bin/dummy ]
 
@@ -70,9 +70,9 @@ teardown() {
   [ -f $ASDF_DIR/installs/dummy/1.1/bin/dummy ]
 
   run uninstall_command dummy 1.0
-  run grep "asdf-plugin-version: 1.1" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.1" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
-  run grep "asdf-plugin-version: 1.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 1 ]
 }
 
@@ -85,4 +85,25 @@ teardown() {
 
   run uninstall_command dummy 1.0
   [ -f $ASDF_DIR/shims/gummy ]
+}
+
+@test "uninstall command executes configured pre hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_uninstall_dummy = echo will uninstall dummy $1
+EOM
+
+  run install_command dummy 1.0
+  run uninstall_command dummy 1.0
+  [ "$output" == "will uninstall dummy 1.0" ]
+}
+
+@test "uninstall command executes configured post hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_uninstall_dummy = echo removed dummy $1
+EOM
+
+  run install_command dummy 1.0
+  run uninstall_command dummy 1.0
+  echo $output
+  [ "$output" == "removed dummy 1.0" ]
 }

@@ -23,6 +23,7 @@ uninstall_command() {
     exit 1
   fi
 
+  asdf_run_hook "pre_asdf_uninstall_${plugin_name}" "$full_version"
   remove_shims_for_version "$plugin_name" "$full_version"
 
   if [ -f "${plugin_path}/bin/uninstall" ]; then
@@ -35,4 +36,6 @@ uninstall_command() {
   else
     rm -rf "$install_path"
   fi
+
+  asdf_run_hook "post_asdf_uninstall_${plugin_name}" "$full_version"
 }

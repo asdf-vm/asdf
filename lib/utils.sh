@@ -226,7 +226,7 @@ get_custom_executable_path() {
   local executable_path=$3
 
   # custom plugin hook for executable path
-  if [ -f "${plugin_path}/bin/exec-path" ]; then
+  if [ -x "${plugin_path}/bin/exec-path" ]; then
     cmd=$(basename "$executable_path")
     executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
   fi
@@ -310,7 +310,7 @@ get_asdf_config_value_from_file() {
   fi
 
   local result
-  result=$(grep -E "^\\s*$key\\s*=" "$config_path" | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
+  result=$(grep -E "^\\s*$key\\s*=\\s*" "$config_path" | head | awk -F '=' '{print $2}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
     echo "$result"
   fi
@@ -405,4 +405,150 @@ resolve_symlink() {
       echo "$PWD/$resolved_path"
       ;;
   esac
+}
+
+list_plugin_bin_paths() {
+  local plugin_name=$1
+  local version=$2
+  local install_type=$3
+  local plugin_path
+  plugin_path=$(get_plugin_path "$plugin_name")
+  local install_path
+  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+
+  if [ -f "${plugin_path}/bin/list-bin-paths" ]; then
+    local space_separated_list_of_bin_paths
+
+    # shellcheck disable=SC2030
+    space_separated_list_of_bin_paths=$(
+      export ASDF_INSTALL_TYPE=$install_type
+      export ASDF_INSTALL_VERSION=$version
+      export ASDF_INSTALL_PATH=$install_path
+      bash "${plugin_path}/bin/list-bin-paths"
+                                     )
+  else
+    local space_separated_list_of_bin_paths="bin"
+  fi
+  echo "$space_separated_list_of_bin_paths"
+}
+
+list_plugin_exec_paths() {
+  local plugin_name=$1
+  local full_version=$2
+  check_if_plugin_exists "$plugin_name"
+
+  IFS=':' read -r -a version_info <<< "$full_version"
+  if [ "${version_info[0]}" = "ref" ]; then
+    local install_type="${version_info[0]}"
+    local version="${version_info[1]}"
+  else
+    local install_type="version"
+    local version="${version_info[0]}"
+  fi
+
+  local plugin_shims_path
+  plugin_shims_path=$(get_plugin_path "$plugin_name")/shims
+  if [ -d "$plugin_shims_path" ]; then
+    echo "$plugin_shims_path"
+  fi
+
+  space_separated_list_of_bin_paths="$(list_plugin_bin_paths "$plugin_name" "$version" "$install_type")"
+  IFS=' ' read -r -a all_bin_paths <<< "$space_separated_list_of_bin_paths"
+
+  local install_path
+  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+
+  for bin_path in "${all_bin_paths[@]}"; do
+    echo "$install_path/$bin_path"
+  done
+}
+
+plugin_exec_env() {
+  local plugin_name=$1
+  local version=$2
+
+  if [ "$version" = "system" ]; then
+    PATH=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
+    export PATH
+    return 0
+  fi
+
+  check_if_plugin_exists "$plugin_name"
+
+  local plugin_path
+  plugin_path=$(get_plugin_path "$plugin_name")
+
+  PATH="$(list_plugin_exec_paths "$plugin_name" "$version" | tr '\n' ':'):$PATH"
+  export PATH
+
+  if [ -f "${plugin_path}/bin/exec-env" ]; then
+    ASDF_INSTALL_TYPE=$install_type
+    ASDF_INSTALL_VERSION=$version
+    ASDF_INSTALL_PATH=$install_path
+
+    export ASDF_INSTALL_TYPE
+    export ASDF_INSTALL_VERSION
+    export ASDF_INSTALL_PATH
+    # shellcheck source=/dev/null
+    source "${plugin_path}/bin/exec-env"
+
+    # unset everything, we don't want to pollute
+    unset ASDF_INSTALL_TYPE
+    unset ASDF_INSTALL_VERSION
+    unset ASDF_INSTALL_PATH
+  fi
+}
+
+plugin_executables() {
+  local plugin_name=$1
+  local full_version=$2
+  for bin_path in $(list_plugin_exec_paths "$plugin_name" "$full_version"); do
+    for executable_file in "$bin_path"/*; do
+      if is_executable "$executable_file"; then
+        echo "$executable_file"
+      fi
+    done
+  done
+}
+
+
+is_executable() {
+  local executable_path=$1
+  if [[ (-f "$executable_path") && (-x "$executable_path") ]]; then
+    return 0
+  fi
+  return 1
+}
+
+plugin_shims() {
+  local plugin_name=$1
+  local full_version=$2
+  grep -l "# asdf-plugin: $plugin_name $full_version" "$(asdf_data_dir)/shims"/* 2>/dev/null
+}
+
+shim_plugin_versions() {
+  local executable_name
+  executable_name=$(basename "$1")
+  local shim_path
+  shim_path="$(asdf_data_dir)/shims/${executable_name}"
+  if [ -x "$shim_path" ]; then
+    grep -y "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
+  else
+    echo "asdf: unknown shim $executable_name"
+    return 1
+  fi
+}
+
+
+asdf_run_hook() {
+  local hook_name=$1
+  local hook_cmd
+  hook_cmd="$(get_asdf_config_value "$hook_name")"
+  if [ -n "$hook_cmd" ]; then
+    asdf_hook_fun() {
+      unset asdf_hook_fun
+      ev'al' "$hook_cmd" # ignore banned command just here
+    }
+    asdf_hook_fun "${@:2}"
+  fi
 }

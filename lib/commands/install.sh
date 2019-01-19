@@ -96,12 +96,14 @@ install_tool_version() {
       export ASDF_INSTALL_PATH=$install_path
       export ASDF_CONCURRENCY=$concurrency
       mkdir "$install_path"
+      asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
       bash "${plugin_path}"/bin/install
     )
 
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
       reshim_command "$plugin_name" "$full_version"
+      asdf_run_hook "post_asdf_install_${plugin_name}" "$full_version"
     else
       handle_failure "$install_path"
     fi

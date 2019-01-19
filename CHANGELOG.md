@@ -2,6 +2,45 @@
 
 ## 0.6.4-dev
 
+Features
+
+* Configurable command hooks from `.asdfrc`
+  Suppose a `foo` plugin is installed and provides a `bar` executable,
+  The following hooks will be executed when set:
+
+    ```shell
+    pre_asdf_install_foo = echo will install foo version ${1}
+    post_asdf_install_foo = echo installed foo version ${1}
+
+    pre_asdf_reshim_foo = echo will reshim foo version ${1}
+    post_asdf_reshim_foo = echo reshimmed foo version ${1}
+    
+    pre_foo_bar = echo about to execute command bar from foo with args: ${@}
+    post_foo_bar = echo just executed command bar from foo with args: ${@}
+
+    pre_asdf_uninstall_foo = echo will remove foo version ${1}
+    post_asdf_uninstall_foo = echo removed foo version ${1}
+    ```
+* New shim version meta-data allows shims to not depend on a particular plugin
+  nor on its relative executable path (#431)
+  Upgrading requires shim re-generation and should happen automatically by `asdf-exec`:
+  `rm -rf ~/.asdf/shims/` followed by `asdf reshim`
+* Added lots of tests for shim execution.
+  We now make sure that shim execution obeys plugins hooks like `list-bin-paths` and
+  `exec-path`. 
+* Shim exec is now performed by a new `bin/private/asdf-tool-exec` that might be faster
+  for most common use case: (versions on local .tool-versions file) but fallbacks to
+  slower `get_preset_version_for` which takes legacy formats into account.
+* Shim exec recommends which plugins or versions to set when command is not found.
+* `asdf reshim` without arguments now reshims all installed plugins (#407)
+* Add `asdf shim-versions <executable>` to list on which plugins and versions is a command
+  available. (#380)
+
+Fixed Bugs
+
+* Allow many plugins to provide shims with same executable name (#431)
+
+
 ## 0.6.3
 
 Features
@@ -19,6 +58,26 @@ Fixed Bugs
 * Continue `list` output even when version is not found (#419)
 * Fixed user paths for fish (#420, #421)
 * Custom exec path tests (#324, #424)
+
+
+Features
+
+* New shim version meta-data allows shims to not depend on a particular plugin
+  nor on its relative executable path (#431)
+  Upgrading requires shim re-generation and should happen automatically by `asdf-exec`:
+  `rm -rf ~/.asdf/shims/` followed by `asdf reshim`
+* Added lots of tests for shim execution.
+  We now make sure that shim execution obeys plugins hooks like `list-bin-paths` and
+  `exec-path`. 
+* Shim exec is now performed by a new `bin/private/asdf-tool-exec` that might be faster
+  for most common use case: (versions on local .tool-versions file) but fallbacks to
+  slower `get_preset_version_for` which takes legacy formats into account.
+* Shim exec recommends which plugins or versions to set when command is not found.
+
+Fixed Bugs
+
+* Allow many plugins to provide shims with same executable name (#431)
+
 
 ## 0.6.2
 

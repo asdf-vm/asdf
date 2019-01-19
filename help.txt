@@ -17,7 +17,7 @@ MANAGE PACKAGES
   asdf current                         Display current version set or being used for all packages
   asdf current <name>                  Display current version set or being used for package
   asdf where <name> [<version>]        Display install path for an installed or current version
-  asdf which <name>                    Display install path for current version
+  asdf which <executable>              Display the path to an executable
   asdf local <name> <version>          Set the package local version
   asdf global <name> <version>         Set the package global version
   asdf list <name>                     List installed versions of a package
@@ -26,6 +26,7 @@ MANAGE PACKAGES
 
 UTILS
   asdf reshim <name> <version>         Recreate shims for version of a package
+  asdf shim-versions <executable>      List on which plugins and versions is an executable provided.
   asdf update                          Update asdf to the latest stable release
   asdf update --head                   Update asdf to the latest on the master branch
 
