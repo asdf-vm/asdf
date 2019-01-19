@@ -310,7 +310,7 @@ get_asdf_config_value_from_file() {
   fi
 
   local result
-  result=$(grep -E "^\\s*$key\\s*=" "$config_path" | awk -F '=' '{ gsub(/ /, "", $2); print $2 }')
+  result=$(grep -E "^\\s*$key\\s*=\\s*" "$config_path" | head | awk -F '=' '{print $2}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
     echo "$result"
   fi
@@ -540,3 +540,15 @@ shim_plugin_versions() {
 }
 
 
+asdf_run_hook() {
+  local hook_name=$1
+  local hook_cmd
+  hook_cmd="$(get_asdf_config_value "$hook_name")"
+  if [ -n "$hook_cmd" ]; then
+    asdf_hook_fun() {
+      unset asdf_hook_fun
+      ev'al' "$hook_cmd" # ignore banned command just here
+    }
+    asdf_hook_fun "${@:2}"
+  fi
+}

@@ -4,6 +4,17 @@
 
 Features
 
+* Configurable command hooks from `.asdfrc`
+  Suppose a `foo` plugin is installed and provides a `bar` executable,
+  The following hooks will be executed when set:
+
+    ```shell
+    post_asdf_install_foo = echo installed foo version ${1}
+    post_asdf_reshim_foo = echo reshimmed foo version ${1}
+    
+    pre_foo_bar = echo about to execute command bar from foo with args: ${@}
+    post_foo_bar = echo just executed command bar from foo with args: ${@}
+    ```
 * New shim version meta-data allows shims to not depend on a particular plugin
   nor on its relative executable path (#431)
   Upgrading requires shim re-generation and should happen automatically by `asdf-exec`:

@@ -102,6 +102,7 @@ install_tool_version() {
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
       reshim_command "$plugin_name" "$full_version"
+      asdf_run_hook "post_asdf_install_${plugin_name}" "$full_version"
     else
       handle_failure "$install_path"
     fi

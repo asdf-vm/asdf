@@ -98,3 +98,14 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
 }
+
+@test "reshim command executes configured post hook" {
+  run install_command dummy 1.0
+
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_reshim_dummy = echo RESHIM
+EOM
+
+  run reshim_command dummy 1.0
+  [ "$output" == "RESHIM" ]
+}

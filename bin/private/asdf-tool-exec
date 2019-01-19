@@ -35,19 +35,29 @@ if [ -z "$selected_version" ]; then
 fi
 
 if [ ! -z "$selected_version" ]; then
-  plugin=$(cut -d ' ' -f 1 <<< "$selected_version");
+  plugin_name=$(cut -d ' ' -f 1 <<< "$selected_version");
   version=$(cut -d ' ' -f 2- <<< "$selected_version");
-  plugin_path=$(get_plugin_path "$plugin")
+  plugin_path=$(get_plugin_path "$plugin_name")
 
-  plugin_exec_env $plugin $version
+  plugin_exec_env $plugin_name $version
   executable_path=$(command -v "$shim_name")
 
   if [ -x "${plugin_path}/bin/exec-path" ]; then
-    install_path=$(find_install_path "$plugin" "$version")
+    install_path=$(find_install_path "$plugin_name" "$version")
     executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path}")
   fi
 
-  exec "$executable_path" "${@:2}"
+  asdf_run_hook "pre_${plugin_name}_${shim_name}" "${@:2}"
+  pre_status=$?
+  if [ "$pre_status" -eq 0 ]; then
+    "$executable_path" "${@:2}"
+    exit_status=$?
+  fi
+  if [ "${exit_status:-${pre_status}}" -eq 0 ]; then
+    asdf_run_hook "post_${plugin_name}_${shim_name}" "${@:2}"
+    post_status=$?
+  fi
+  exit "${post_status:-${exit_status:-${pre_status}}}"
 fi
 
 (

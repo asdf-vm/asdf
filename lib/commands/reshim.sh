@@ -21,6 +21,7 @@ reshim_command() {
   if [ "$full_version" != "" ]; then
     # generate for the whole package version
     generate_shims_for_version "$plugin_name" "$full_version"
+    asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version"
   else
     # generate for all versions of the package
     local plugin_installs_path
@@ -31,8 +32,10 @@ reshim_command() {
       full_version_name=$(basename "$install" | sed 's/ref\-/ref\:/')
       generate_shims_for_version "$plugin_name" "$full_version_name"
       remove_obsolete_shims "$plugin_name" "$full_version_name"
+      asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version_name"
     done
   fi
+
 }
 
 

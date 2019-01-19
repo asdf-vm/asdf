@@ -279,3 +279,65 @@ teardown() {
   run $ASDF_DIR/shims/dummy
   [ "$output" == "CUSTOM" ]
 }
+
+@test "shim exec executes configured pre-hook" {
+  run install_command dummy 1.0
+  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
+
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_dummy_dummy = echo PRE $version $1 $2
+EOM
+
+  run $ASDF_DIR/shims/dummy hello world
+  [ "$status" -eq 0 ]
+  echo "$output" | grep "PRE 1.0 hello world"
+  echo "$output" | grep "This is Dummy 1.0! world hello"
+}
+
+@test "shim exec doesnt execute command if pre-hook failed" {
+  run install_command dummy 1.0
+  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
+
+  mkdir $HOME/hook
+  pre_cmd="$HOME/hook/pre"
+  echo 'echo $* && false' > "$pre_cmd"
+  chmod +x "$pre_cmd"
+
+  cat > $HOME/.asdfrc <<'EOM'
+pre_dummy_dummy = pre $1 no $plugin_name $2
+EOM
+
+  run env PATH=$PATH:$HOME/hook $ASDF_DIR/shims/dummy hello world
+  [ "$output" == "hello no dummy world" ]
+  [ "$status" -eq 1 ]
+}
+
+@test "shim exec executes configured post-hook if command was successful" {
+  run install_command dummy 1.0
+  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
+
+  cat > $HOME/.asdfrc <<-'EOM'
+post_dummy_dummy = echo POST $version $1 $2
+EOM
+
+  run $ASDF_DIR/shims/dummy hello world
+  [ "$status" -eq 0 ]
+  echo "$output" | grep "This is Dummy 1.0! world hello"
+  echo "$output" | grep "POST 1.0 hello world"
+}
+
+@test "shim exec does not executes configured post-hook if command failed" {
+  run install_command dummy 1.0
+  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
+
+  cat > $HOME/.asdfrc <<-'EOM'
+post_dummy_dummy = echo POST
+EOM
+
+  echo "false" > $ASDF_DIR/installs/dummy/1.0/bin/dummy
+  chmod +x $ASDF_DIR/installs/dummy/1.0/bin/dummy
+
+  run $ASDF_DIR/shims/dummy hello world
+  [ "$status" -eq 1 ]
+  [ "$output" == "" ]
+}
