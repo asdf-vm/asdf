@@ -99,6 +99,17 @@ teardown() {
   [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
 }
 
+@test "reshim command executes configured pre hook" {
+  run install_command dummy 1.0
+
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_reshim_dummy = echo RESHIM
+EOM
+
+  run reshim_command dummy 1.0
+  [ "$output" == "RESHIM" ]
+}
+
 @test "reshim command executes configured post hook" {
   run install_command dummy 1.0
 

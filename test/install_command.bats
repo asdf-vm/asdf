@@ -139,9 +139,18 @@ teardown() {
   [ ! -f $ASDF_DIR/installs/dummy/system/version ]
 }
 
+@test "install command executes configured pre plugin install hook" {
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_install_dummy = echo will install dummy $1
+EOM
+
+  run install_command dummy 1.0
+  [ "$output" == "will install dummy 1.0" ]
+}
+
 @test "install command executes configured post plugin install hook" {
   cat > $HOME/.asdfrc <<-'EOM'
-post_asdf_install_dummy = eval echo HEY $version FROM $plugin_name
+post_asdf_install_dummy = echo HEY $version FROM $plugin_name
 EOM
 
   run install_command dummy 1.0

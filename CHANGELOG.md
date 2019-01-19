@@ -9,7 +9,10 @@ Features
   The following hooks will be executed when set:
 
     ```shell
+    pre_asdf_install_foo = echo will install foo version ${1}
     post_asdf_install_foo = echo installed foo version ${1}
+
+    pre_asdf_reshim_foo = echo will reshim foo version ${1}
     post_asdf_reshim_foo = echo reshimmed foo version ${1}
     
     pre_foo_bar = echo about to execute command bar from foo with args: ${@}
