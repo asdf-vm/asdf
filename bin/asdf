@@ -7,6 +7,8 @@ source "$(dirname "$(dirname "$0")")/lib/utils.sh"
 source "$(dirname "$(dirname "$0")")/lib/commands/help.sh"
 # shellcheck source=lib/commands/shim-exec.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/shim-exec.sh"
+# shellcheck source=lib/commands/shim-env.sh
+source "$(dirname "$(dirname "$0")")/lib/commands/shim-env.sh"
 # shellcheck source=lib/commands/update.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/update.sh"
 # shellcheck source=lib/commands/install.sh
@@ -56,6 +58,9 @@ case $1 in
 
   "exec")
     shim_exec_command $callback_args;;
+
+  "env")
+    shim_env_command $callback_args;;
 
   "help")
     help_command $callback_args;;
