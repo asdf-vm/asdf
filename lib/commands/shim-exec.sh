@@ -33,7 +33,7 @@ shim_exec_command() {
   fi
 
 
-  if [ ! -z "$selected_version" ]; then
+  if [ -n "$selected_version" ]; then
     plugin_name=$(cut -d ' ' -f 1 <<< "$selected_version");
     version=$(cut -d ' ' -f 2- <<< "$selected_version");
     plugin_path=$(get_plugin_path "$plugin_name")
