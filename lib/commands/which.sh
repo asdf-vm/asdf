@@ -1,36 +1,25 @@
 which_command() {
-  local command=$1 plugins_path not_found plugin_name full_version location
-  plugins_path=$(get_plugin_path)
+  local shim_name
+  shim_name=$(basename "$1")
 
-  if ls "$plugins_path" &> /dev/null; then
-    for plugin_path in "$plugins_path"/* ; do
-      plugin_name=$(basename "$plugin_path")
-      full_version=$(get_preset_version_for "$plugin_name")
-      # shellcheck disable=SC2162
-      IFS=' ' read -a versions <<< "$full_version"
-      for version in "${versions[@]}"; do
-        if [ "$version" = "system" ]; then
-          continue
-        fi
-
-        install_path=$(find_install_path "$plugin_name" "$version")
-        executable_path="$(get_custom_executable_path "$plugin_path" "$install_path" "$executable_path")"
-        full_executable_path=$(get_executable_path "$plugin_name" "$version" "$executable_path")
-        location=$(find -L "$full_executable_path" -maxdepth 4 -name "$command" -type f -perm -u+x | sed -e 's|//|/|g')
-
-        if [ -n "$location" ]; then
-          echo "$location"
-          not_found=0
-          break 2
-        else
-          not_found=1
-        fi
-      done
-    done
-  fi
-  if [ $not_found -eq 1 ]; then
-    echo "No executable binary found for $command"
+  if [ -z "$shim_name" ]; then
+    echo "usage: asdf which <command>"
     exit 1
   fi
-  exit 0
+
+  print_exec() {
+    local plugin_name="$1"
+    local version="$2"
+    local executable_path="$3"
+
+    if [ ! -x "$executable_path" ]; then
+      echo "No ${shim_name} executable found for ${plugin_name} ${version}" >&2
+      exit 1
+    fi
+
+    echo "$executable_path"
+    exit 0
+  }
+
+  with_shim_executable "$shim_name" print_exec || exit 1
 }

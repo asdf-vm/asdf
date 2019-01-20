@@ -27,21 +27,46 @@ teardown() {
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
 
+@test "which should fail for unknown binary" {
+  cd $PROJECT_DIR
+
+  run asdf which "sunny"
+  [ "$status" -eq 1 ]
+  [ "$output" == "unknown command: sunny. Perhaps you have to reshim?" ]
+}
+
 @test "which should show dummy 1.0 other binary" {
   cd $PROJECT_DIR
+
+  echo "echo bin bin/subdir" > "$ASDF_DIR/plugins/dummy/bin/list-bin-paths"
+  chmod +x "$ASDF_DIR/plugins/dummy/bin/list-bin-paths"
+  run asdf reshim dummy 1.0
 
   run asdf which "other_bin"
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/subdir/other_bin" ]
 }
 
-@test "which should ignore system version" {
-  echo 'dummy system 1.0' > $PROJECT_DIR/.tool-versions
+@test "which should show path of system version" {
+  echo 'dummy system' > $PROJECT_DIR/.tool-versions
   cd $PROJECT_DIR
 
-  run asdf which "other_bin"
+  mkdir $PROJECT_DIR/sys
+  touch $PROJECT_DIR/sys/dummy
+  chmod +x $PROJECT_DIR/sys/dummy
+
+  run env PATH=$PATH:$PROJECT_DIR/sys asdf which "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/subdir/other_bin" ]
+  [ "$output" == "$PROJECT_DIR/sys/dummy" ]
+}
+
+@test "which report when missing executable on system version" {
+  echo 'dummy system' > $PROJECT_DIR/.tool-versions
+  cd $PROJECT_DIR
+
+  run asdf which "dummy"
+  [ "$status" -eq 1 ]
+  [ "$output" == "No dummy executable found for dummy system" ]
 }
 
 @test "which should inform when no binary is found" {
@@ -49,7 +74,7 @@ teardown() {
 
   run asdf which "bazbat"
   [ "$status" -eq 1 ]
-  [ "$output" = "No executable binary found for bazbat" ]
+  [ "$output" == "unknown command: bazbat. Perhaps you have to reshim?" ]
 }
 
 @test "which should use path returned by exec-path when present" {

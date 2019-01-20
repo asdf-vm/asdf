@@ -2,9 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/reshim.sh
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/install.sh
-
 setup() {
   setup_asdf_dir
   install_dummy_plugin
@@ -295,11 +292,12 @@ teardown() {
   run asdf install dummy 1.0
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
-  custom_dummy="$PROJECT_DIR/custom"
+  custom_dummy="$ASDF_DIR/installs/dummy/1.0/custom/dummy"
 
-  echo "echo $custom_dummy" > $exec_path
+  echo "echo custom/dummy" > $exec_path
   chmod +x $exec_path
 
+  mkdir $(dirname $custom_dummy)
   echo "echo CUSTOM" > $custom_dummy
   chmod +x $custom_dummy
 
@@ -307,6 +305,20 @@ teardown() {
 
   run $ASDF_DIR/shims/dummy
   [ "$output" == "CUSTOM" ]
+}
+
+@test "shim exec uses plugin custom exec-path hook that defaults" {
+  run asdf install dummy 1.0
+
+  exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
+
+  echo 'echo $3 # always same path' > $exec_path
+  chmod +x $exec_path
+
+  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+
+  run $ASDF_DIR/shims/dummy
+  [ "$output" == "This is Dummy 1.0!" ]
 }
 
 @test "shim exec executes configured pre-hook" {

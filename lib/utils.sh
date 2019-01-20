@@ -228,7 +228,11 @@ get_custom_executable_path() {
   # custom plugin hook for executable path
   if [ -x "${plugin_path}/bin/exec-path" ]; then
     cmd=$(basename "$executable_path")
-    executable_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$executable_path")"
+    local relative_path
+    # shellcheck disable=SC2001
+    relative_path=$(echo "$executable_path" | sed -e "s|${install_path}/||")
+    relative_path="$("${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$relative_path")"
+    executable_path="$install_path/$relative_path"
   fi
 
   echo "$executable_path"
@@ -306,14 +310,17 @@ get_asdf_config_value_from_file() {
   local key=$2
 
   if [ ! -f "$config_path" ]; then
-    return 0
+    return 1
   fi
 
   local result
   result=$(grep -E "^\\s*$key\\s*=\\s*" "$config_path" | head | awk -F '=' '{print $2}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
     echo "$result"
+    return 0
   fi
+
+  return 2
 }
 
 get_asdf_config_value() {
@@ -321,14 +328,12 @@ get_asdf_config_value() {
   local config_path=${ASDF_CONFIG_FILE:-"$HOME/.asdfrc"}
   local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
 
-  local result
-  result=$(get_asdf_config_value_from_file "$config_path" "$key")
+  local local_config_path
+  local_config_path="$(find_file_upwards ".asdfrc")"
 
-  if [ -n "$result" ]; then
-    echo "$result"
-  else
+  get_asdf_config_value_from_file "$local_config_path" "$key" ||
+    get_asdf_config_value_from_file "$config_path" "$key" ||
     get_asdf_config_value_from_file "$default_config_path" "$key"
-  fi
 }
 
 repository_needs_update() {
@@ -374,11 +379,16 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
+  find_file_upwards ".tool-versions"
+}
+
+find_file_upwards() {
+  local name="$1"
   local search_path
   search_path=$(pwd)
   while [ "$search_path" != "/" ]; do
-    if [ -f "$search_path/.tool-versions" ]; then
-        echo "${search_path}/.tool-versions"
+    if [ -f "$search_path/$name" ]; then
+        echo "${search_path}/$name"
         return 0
     fi
     search_path=$(dirname "$search_path")
@@ -551,4 +561,71 @@ asdf_run_hook() {
     }
     asdf_hook_fun "${@:2}"
   fi
+}
+
+with_shim_executable() {
+
+  tool_versions() {
+    env | awk -F= '/^ASDF_[A-Z]+_VERSION/ {print $1" "$2}' | sed -e "s/^ASDF_//" | sed -e "s/_VERSION / /" | tr "[:upper:]_" "[:lower:]-"
+    local asdf_versions_path
+    asdf_versions_path="$(find_tool_versions)"
+    [ -f "${asdf_versions_path}" ] && cat "${asdf_versions_path}"
+  }
+
+  shim_versions() {
+    shim_plugin_versions "${shim_name}"
+    shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
+  }
+
+  select_from_tool_versions() {
+    grep -f <(shim_versions) <(tool_versions) | head -n 1 | xargs echo
+  }
+
+  preset_versions() {
+    shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c "source $(asdf_dir)/lib/utils.sh; echo PLUGIN \$(get_preset_version_for PLUGIN)"
+  }
+
+  select_from_preset_version() {
+    grep -f <(shim_versions) <(preset_versions) | head -n 1 | xargs echo
+  }
+
+
+  local shim_name
+  shim_name=$(basename "$1")
+  local shim_exec="${2}"
+
+  if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
+    echo "unknown command: ${shim_name}. Perhaps you have to reshim?" >&2
+    return 1
+  fi
+
+  selected_version=$(select_from_tool_versions)
+  if [ -z "$selected_version" ]; then
+    selected_version=$(select_from_preset_version)
+  fi
+
+  if [ -n "$selected_version" ]; then
+    plugin_name=$(cut -d ' ' -f 1 <<< "$selected_version");
+    version=$(cut -d ' ' -f 2- <<< "$selected_version");
+    plugin_path=$(get_plugin_path "$plugin_name")
+
+    plugin_exec_env "$plugin_name" "$version"
+    executable_path=$(command -v "$shim_name")
+
+    if [ -x "${plugin_path}/bin/exec-path" ]; then
+      install_path=$(find_install_path "$plugin_name" "$version")
+      executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:${shim_name}}")
+    fi
+
+    "$shim_exec" "$plugin_name" "$version" "$executable_path" "${@:3}"
+    return $?
+  fi
+
+  (
+    echo "asdf: No version set for command ${shim_name}"
+    echo "you might want to add one of the following in your .tool-versions file:"
+    echo ""
+    shim_plugin_versions "${shim_name}"
+  ) >&2
+  return 126
 }
