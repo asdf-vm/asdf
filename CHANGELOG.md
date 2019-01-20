@@ -5,7 +5,8 @@
 Features
 
 
-* Shims can be invoked directly via `asdf exec <tool> [args...]` without requiring to have all shims on path (#374).
+* Shims can be invoked directly via `asdf exec <command> [args...]` without requiring to have all shims on path (#374).
+* New `asdf env <command>` can be used to print or execute with the env that would be used to execute a shim.
 * Configurable command hooks from `.asdfrc`
   Suppose a `foo` plugin is installed and provides a `bar` executable,
   The following hooks will be executed when set:
@@ -30,7 +31,7 @@ Features
 * Added lots of tests for shim execution.
   We now make sure that shim execution obeys plugins hooks like `list-bin-paths` and
   `exec-path`. 
-* Shim exec is now performed by a new `bin/private/asdf-tool-exec` that might be faster
+* Shims now are thin wrappers around `asdf exec` that might be faster
   for most common use case: (versions on local .tool-versions file) but fallbacks to
   slower `get_preset_version_for` which takes legacy formats into account.
 * Shim exec recommends which plugins or versions to set when command is not found.
