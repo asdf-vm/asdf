@@ -30,6 +30,20 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "asdf exec should pass all arguments to executable even if shim is not in PATH" {
+  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  run install_command
+
+  path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
+  run env PATH=$path which dummy
+  [ "$output" == "" ]
+  [ "$status" -eq 1 ]
+
+  run env PATH=$path $ASDF_DIR/bin/asdf exec dummy world hello
+  [ "$output" == "This is Dummy 1.0! hello world" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "shim exec should pass all arguments to executable" {
   echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
   run install_command

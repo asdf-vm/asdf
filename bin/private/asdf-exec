@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# remove this asdf-exec file when v0.7 becomes the stable version
-echo "asdf is self upgrading shims to new asdf-tool-exec"
+# remove this asdf-exec file when releasing >=0.6.5
+echo "asdf is self upgrading shims to new asdf exec ..."
 
 asdf_dir="$(dirname "$(dirname "$(dirname "$0")")")"
 # shellcheck source=lib/utils.sh

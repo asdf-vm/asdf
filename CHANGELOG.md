@@ -4,6 +4,8 @@
 
 Features
 
+
+* Shims can be invoked directly via `asdf exec <tool> [args...]` without requiring to have all shims on path (#374).
 * Configurable command hooks from `.asdfrc`
   Suppose a `foo` plugin is installed and provides a `bar` executable,
   The following hooks will be executed when set:
