@@ -73,7 +73,7 @@ write_shim_script() {
     cat <<EOF > "$shim_path"
 #!/usr/bin/env bash
 # asdf-plugin: ${plugin_name} ${version}
-exec $(asdf_dir)/bin/private/asdf-tool-exec "${executable_name}" "\$@"
+exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@"
 EOF
   fi
 

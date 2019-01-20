@@ -25,6 +25,7 @@ MANAGE PACKAGES
 
 
 UTILS
+  asdf exec <executable> [args..]      Run an executable command shim
   asdf reshim <name> <version>         Recreate shims for version of a package
   asdf shim-versions <executable>      List on which plugins and versions is an executable provided.
   asdf update                          Update asdf to the latest stable release

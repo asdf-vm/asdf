@@ -21,6 +21,15 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "asdf exec should pass all arguments to executable" {
+  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  run install_command
+
+  run $ASDF_DIR/bin/asdf exec dummy world hello
+  [ "$output" == "This is Dummy 1.0! hello world" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "shim exec should pass all arguments to executable" {
   echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
   run install_command

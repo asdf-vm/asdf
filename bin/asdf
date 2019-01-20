@@ -5,6 +5,8 @@ source "$(dirname "$(dirname "$0")")/lib/utils.sh"
 
 # shellcheck source=lib/commands/help.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/help.sh"
+# shellcheck source=lib/commands/shim-exec.sh
+source "$(dirname "$(dirname "$0")")/lib/commands/shim-exec.sh"
 # shellcheck source=lib/commands/update.sh
 source "$(dirname "$(dirname "$0")")/lib/commands/update.sh"
 # shellcheck source=lib/commands/install.sh
@@ -49,70 +51,73 @@ callback_args="${@:2}"
 # shellcheck disable=SC2086
 case $1 in
 
-"--version")
+  "--version")
     asdf_version $callback_args;;
 
-"help")
+  "exec")
+    shim_exec_command $callback_args;;
+
+  "help")
     help_command $callback_args;;
 
-"update")
+  "update")
     update_command $callback_args;;
 
-"install")
+  "install")
     install_command $callback_args;;
 
-"uninstall")
+  "uninstall")
     uninstall_command $callback_args;;
 
-"current")
+  "current")
     current_command $callback_args;;
 
-"where")
+  "where")
     where_command $callback_args;;
 
-"which")
+  "which")
     which_command $callback_args;;
 
-"local")
+  "local")
     local_command $callback_args;;
 
-"global")
+  "global")
     global_command $callback_args;;
 
-"list")
+  "list")
     list_command $callback_args;;
 
-"list-all")
+  "list-all")
     list_all_command $callback_args;;
 
-"reshim")
+  "reshim")
     reshim_command $callback_args;;
 
-"plugin-add")
+  "plugin-add")
     plugin_add_command $callback_args;;
 
-"plugin-list")
+  "plugin-list")
     plugin_list_command $callback_args;;
 
-"plugin-list-all")
+  "plugin-list-all")
     plugin_list_all_command $callback_args;;
 
-"plugin-update")
+  "plugin-update")
     plugin_update_command $callback_args;;
 
-"plugin-remove")
+  "plugin-remove")
     plugin_remove_command $callback_args;;
 
-# Undocumented commands for development
-"plugin-push")
+  # Undocumented commands for development
+  "plugin-push")
     plugin_push_command $callback_args;;
 
-"plugin-test")
+  "plugin-test")
     plugin_test_command $callback_args;;
 
-"shim-versions")
+  "shim-versions")
     shim_versions_command $callback_args;;
-*)
-  help_command
-  exit 1;;
+  *)
+    help_command
+    exit 1;;
 esac
