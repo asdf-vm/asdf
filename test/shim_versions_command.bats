@@ -21,11 +21,11 @@ teardown() {
 
 @test "shim_versions_command should list plugins and versions where command is available" {
   cd $PROJECT_DIR
-  run install_command dummy 3.0
-  run install_command dummy 1.0
-  run reshim_command dummy
+  run asdf install dummy 3.0
+  run asdf install dummy 1.0
+  run asdf reshim dummy
 
-  run shim_versions_command dummy
+  run asdf shim-versions dummy
   [ "$status" -eq 0 ]
 
   echo "$output" | grep "dummy 3.0"

@@ -3,49 +3,12 @@
 # shellcheck source=lib/utils.sh
 source "$(dirname "$(dirname "$0")")/lib/utils.sh"
 
-# shellcheck source=lib/commands/help.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/help.sh"
-# shellcheck source=lib/commands/shim-exec.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/shim-exec.sh"
-# shellcheck source=lib/commands/shim-env.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/shim-env.sh"
-# shellcheck source=lib/commands/update.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/update.sh"
-# shellcheck source=lib/commands/install.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/install.sh"
-# shellcheck source=lib/commands/uninstall.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/uninstall.sh"
-# shellcheck source=lib/commands/current.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/current.sh"
-# shellcheck source=lib/commands/where.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/where.sh"
-# shellcheck source=lib/commands/which.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/which.sh"
-# shellcheck source=lib/commands/shim_versions.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/shim_versions.sh"
-# shellcheck source=lib/commands/version_commands.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/version_commands.sh"
-# shellcheck source=lib/commands/list.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/list.sh"
-# shellcheck source=lib/commands/list-all.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/list-all.sh"
-# shellcheck source=lib/commands/reshim.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/reshim.sh"
-# shellcheck source=lib/commands/plugin-add.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-add.sh"
-# shellcheck source=lib/commands/plugin-list.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-list.sh"
-# shellcheck source=lib/commands/plugin-list-all.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-list-all.sh"
-# shellcheck source=lib/commands/plugin-update.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-update.sh"
-# shellcheck source=lib/commands/plugin-remove.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-remove.sh"
-
-# shellcheck source=lib/commands/plugin-push.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-push.sh"
-# shellcheck source=lib/commands/plugin-test.sh
-source "$(dirname "$(dirname "$0")")/lib/commands/plugin-test.sh"
+load_cmd() {
+  for cmd in "$@"; do
+    # shellcheck disable=SC1091
+    source "$(dirname "$(dirname "$0")")/lib/commands/$cmd.sh"
+  done
+}
 
 # shellcheck disable=SC2124
 callback_args="${@:2}"
@@ -53,76 +16,96 @@ callback_args="${@:2}"
 # shellcheck disable=SC2086
 case $1 in
 
-  "--version")
-    asdf_version $callback_args;;
-
   "exec")
+    load_cmd "shim-exec"
     shim_exec_command $callback_args;;
 
   "env")
+    load_cmd "shim-exec" "shim-env"
     shim_env_command $callback_args;;
 
-  "help")
-    help_command $callback_args;;
-
   "update")
+    load_cmd "update"
     update_command $callback_args;;
 
   "install")
+    load_cmd "install" "reshim"
     install_command $callback_args;;
 
   "uninstall")
+    load_cmd "uninstall" "reshim"
     uninstall_command $callback_args;;
 
   "current")
+    load_cmd "current" "plugin-list"
     current_command $callback_args;;
 
   "where")
+    load_cmd "where"
     where_command $callback_args;;
 
   "which")
+    load_cmd "which"
     which_command $callback_args;;
 
   "local")
+    load_cmd "version_commands"
     local_command $callback_args;;
 
   "global")
+    load_cmd "version_commands"
     global_command $callback_args;;
 
   "list")
+    load_cmd "list"
     list_command $callback_args;;
 
   "list-all")
+    load_cmd "list-all"
     list_all_command $callback_args;;
 
   "reshim")
+    load_cmd "reshim"
     reshim_command $callback_args;;
 
   "plugin-add")
+    load_cmd "plugin-add"
     plugin_add_command $callback_args;;
 
   "plugin-list")
+    load_cmd "plugin-list"
     plugin_list_command $callback_args;;
 
   "plugin-list-all")
+    load_cmd "plugin-list-all"
     plugin_list_all_command $callback_args;;
 
   "plugin-update")
+    load_cmd "plugin-update"
     plugin_update_command $callback_args;;
 
   "plugin-remove")
+    load_cmd "plugin-remove"
     plugin_remove_command $callback_args;;
 
   # Undocumented commands for development
   "plugin-push")
+    load_cmd "plugin-push"
     plugin_push_command $callback_args;;
 
   "plugin-test")
+    load_cmd "plugin-test"
     plugin_test_command $callback_args;;
 
   "shim-versions")
+    load_cmd "shim_versions"
     shim_versions_command $callback_args;;
+
+  "--version")
+    asdf_version $callback_args;;
+
   *)
+    load_cmd "help"
     help_command
     exit 1;;
 esac

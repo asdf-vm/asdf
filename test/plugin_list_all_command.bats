@@ -2,8 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/plugin-list-all.sh
-
 setup() {
   setup_asdf_dir
   setup_repo
@@ -15,7 +13,7 @@ teardown() {
 }
 
 @test "plugin_list_all list all plugins in the repository" {
-  run plugin_list_all_command
+  run asdf plugin-list-all
   local expected="bar              http://example.com/bar
 dummy           *http://example.com/dummy
 foo              http://example.com/foo"

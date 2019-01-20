@@ -25,31 +25,31 @@ teardown() {
 
 # Warn users who invoke the old style command without arguments.
 @test "local should emit an error when called with incorrect arity" {
-  run local_command "dummy"
+  run asdf local "dummy"
   [ "$status" -eq 1 ]
   [ "$output" = "Usage: asdf local <name> <version>" ]
 }
 
 @test "local should emit an error when plugin does not exist" {
-  run local_command "inexistent" "1.0.0"
+  run asdf local "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: inexistent" ]
 }
 
 @test "local should emit an error when plugin version does not exist" {
-  run local_command "dummy" "0.0.1"
+  run asdf local "dummy" "0.0.1"
   [ "$status" -eq 1 ]
   [ "$output" = "version 0.0.1 is not installed for dummy" ]
 }
 
 @test "local should create a local .tool-versions file if it doesn't exist" {
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "local should allow multiple versions" {
-  run local_command "dummy" "1.1.0" "1.0.0"
+  run asdf local "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
 }
@@ -59,7 +59,7 @@ teardown() {
   mkdir -p "$WHITESPACE_DIR"
   cd "$WHITESPACE_DIR"
 
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
 
   tool_version_contents=$(cat "$WHITESPACE_DIR/.tool-versions")
   [ "$status" -eq 0 ]
@@ -69,45 +69,45 @@ teardown() {
 @test "local should not create a duplicate .tool-versions file if such file exists" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
 
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(ls $PROJECT_DIR/.tool-versions* | wc -l)" -eq 1 ]
 }
 
 @test "local should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "local should fail to set a path:dir if dir does not exists " {
-    run local_command "dummy" "path:$PROJECT_DIR/local"
-    [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
-    [ "$status" -eq 1 ]
+  run asdf local "dummy" "path:$PROJECT_DIR/local"
+  [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+  [ "$status" -eq 1 ]
 }
 
 @test "local should set a path:dir if dir exists " {
-    mkdir -p $PROJECT_DIR/local
-    run local_command "dummy" "path:$PROJECT_DIR/local"
-    [ "$status" -eq 0 ]
-    [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
+  mkdir -p $PROJECT_DIR/local
+  run asdf local "dummy" "path:$PROJECT_DIR/local"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }
 
 @test "local -p/--parent should set should emit an error when called with incorrect arity" {
-  run local_command -p "dummy"
+  run asdf local -p "dummy"
   [ "$status" -eq 1 ]
   [ "$output" = "Usage: asdf local <name> <version>" ]
 }
 
 @test "local -p/--parent should emit an error when plugin does not exist" {
-  run local_command -p "inexistent" "1.0.0"
+  run asdf local -p "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: inexistent" ]
 }
 
 @test "local -p/--parent should emit an error when plugin version does not exist" {
-  run local_command -p "dummy" "0.0.1"
+  run asdf local -p "dummy" "0.0.1"
   [ "$status" -eq 1 ]
   [ "$output" = "version 0.0.1 is not installed for dummy" ]
 }
@@ -115,7 +115,7 @@ teardown() {
 @test "local -p/--parent should allow multiple versions" {
   cd $CHILD_DIR
   touch $PROJECT_DIR/.tool-versions
-  run local_command -p "dummy" "1.1.0" "1.0.0"
+  run asdf local -p "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
 }
@@ -123,7 +123,7 @@ teardown() {
 @test "local -p/--parent should overwrite the existing version if it's set" {
   cd $CHILD_DIR
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
-  run local_command -p "dummy" "1.1.0"
+  run asdf local -p "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
@@ -131,65 +131,67 @@ teardown() {
 @test "local -p/--parent should set the version if it's unset" {
   cd $CHILD_DIR
   touch $PROJECT_DIR/.tool-versions
-  run local_command -p "dummy" "1.1.0"
+  run asdf local -p "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should create a global .tool-versions file if it doesn't exist" {
-  run global_command "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should accept multiple versions" {
-  run global_command "dummy" "1.1.0" "1.0.0"
+  run asdf global "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0 1.0.0" ]
 }
 
 @test "global should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $HOME/.tool-versions
-  run global_command "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should fail to set a path:dir if dir does not exists " {
-    run global_command "dummy" "path:$PROJECT_DIR/local"
-    [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
-    [ "$status" -eq 1 ]
+  run asdf global "dummy" "path:$PROJECT_DIR/local"
+  [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+  [ "$status" -eq 1 ]
 }
 
 @test "global should set a path:dir if dir exists " {
-    mkdir -p $PROJECT_DIR/local
-    run global_command "dummy" "path:$PROJECT_DIR/local"
-    [ "$status" -eq 0 ]
-    [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
+  mkdir -p $PROJECT_DIR/local
+  run asdf global "dummy" "path:$PROJECT_DIR/local"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }
 
 @test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  run global_command "dummy" "1.1.0"
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
 @test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
   echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
-  run global_command "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
 @test "local should preserve symlinks when setting versions" {
   mkdir other-dir
   touch other-dir/.tool-versions
   ln -s other-dir/.tool-versions .tool-versions
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L .tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
@@ -199,8 +201,8 @@ teardown() {
   mkdir other-dir
   touch other-dir/.tool-versions
   ln -s other-dir/.tool-versions .tool-versions
-  run local_command "dummy" "1.1.0"
-  run local_command "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L .tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
@@ -211,7 +213,7 @@ teardown() {
   touch other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
-  run global_command "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
@@ -222,8 +224,8 @@ teardown() {
   touch other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
-  run global_command "dummy" "1.1.0"
-  run global_command "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
+  run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]

@@ -2,9 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/plugin-add.sh
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/plugin-list.sh
-
 setup() {
   setup_asdf_dir
 }
@@ -14,16 +11,16 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {
-  run plugin_add_command "elixir"
+  run asdf plugin-add "elixir"
   [ "$status" -eq 0 ]
 
-  run plugin_list_command
+  run asdf plugin-list
   # whitespace between 'elixir' and url is from printf %-15s %s format
   [ "$output" = "elixir" ]
 }
 
 @test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
-  run plugin_add_command "does-not-exist"
+  run asdf plugin-add "does-not-exist"
   [ "$status" -eq 1 ]
   echo "$output" | grep "plugin does-not-exist not found in repository"
 }

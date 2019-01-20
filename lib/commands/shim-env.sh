@@ -2,6 +2,11 @@ shim_env_command() {
   local shim_name="$1"
   local env_cmd="${2}"
 
+  if [ -z "$shim_name" ]; then
+    echo "usage: asdf env <command>"
+    exit 1
+  fi
+
   if [ -z "$env_cmd" ]; then
     env_cmd="env"
   fi

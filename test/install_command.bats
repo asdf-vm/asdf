@@ -2,9 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/reshim.sh
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/install.sh
-
 setup() {
   setup_asdf_dir
   install_dummy_plugin
@@ -18,7 +15,7 @@ teardown() {
 }
 
 @test "install_command installs the correct version" {
-  run install_command dummy 1.1
+  run asdf install dummy 1.1
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
 }
@@ -26,13 +23,13 @@ teardown() {
 @test "install_command installs even if the user is terrible and does not use newlines" {
   cd $PROJECT_DIR
   echo -n 'dummy 1.2' > ".tool-versions"
-  run install_command
+  run asdf install
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
 
 @test "install_command set ASDF_CONCURRENCY" {
-  run install_command dummy 1.0
+  run asdf install dummy 1.0
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
   run grep ASDF_CONCURRENCY $ASDF_DIR/installs/dummy/1.0/env
@@ -45,14 +42,14 @@ teardown() {
   cd "$WHITESPACE_DIR"
   echo 'dummy 1.2' >> "$WHITESPACE_DIR/.tool-versions"
 
-  run install_command
+  run asdf install
 
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
 
 @test "install_command should create a shim with asdf-plugin metadata" {
-  run install_command dummy 1.0
+  run asdf install dummy 1.0
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
   run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
@@ -60,7 +57,7 @@ teardown() {
 }
 
 @test "install_command on two versions should create a shim with asdf-plugin metadata" {
-  run install_command dummy 1.1
+  run asdf install dummy 1.1
   [ "$status" -eq 0 ]
 
   run grep "asdf-plugin: dummy 1.1" $ASDF_DIR/shims/dummy
@@ -69,7 +66,7 @@ teardown() {
   run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 1 ]
 
-  run install_command dummy 1.0
+  run asdf install dummy 1.0
   [ "$status" -eq 0 ]
   run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
@@ -85,7 +82,7 @@ teardown() {
   cd $PROJECT_DIR
   echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
 
-  run install_command
+  run asdf install
   [ "$status" -eq 0 ]
   [ -f "$ASDF_DIR/shims/dummy" ]
   [ ! -f "$ASDF_DIR/shims/subdir" ]
@@ -97,7 +94,7 @@ teardown() {
 
   cd $PROJECT_DIR
   echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
-  run install_command
+  run asdf install
 
   # execute the generated shim
   run $ASDF_DIR/shims/dummy world hello
@@ -106,12 +103,12 @@ teardown() {
 }
 
 @test "install_command fails when the name or version are not specified" {
-  run install_command dummy
+  run asdf install dummy
   [ "$status" -eq 1 ]
   [ "$output" = "You must specify a name and a version to install" ]
   [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
 
-  run install_command 1.1
+  run asdf install 1.1
   [ "$status" -eq 1 ]
   [ "$output" = "You must specify a name and a version to install" ]
   [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
@@ -126,7 +123,7 @@ teardown() {
 
   cd $PROJECT_DIR/child
 
-  run install_command
+  run asdf install
 
   # execute the generated shim
   [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0! hello world" ]
@@ -134,7 +131,7 @@ teardown() {
 }
 
 @test "install_command doesn't install system version" {
-  run install_command dummy system
+  run asdf install dummy system
   [ "$status" -eq 0 ]
   [ ! -f $ASDF_DIR/installs/dummy/system/version ]
 }
@@ -144,7 +141,7 @@ teardown() {
 pre_asdf_install_dummy = echo will install dummy $1
 EOM
 
-  run install_command dummy 1.0
+  run asdf install dummy 1.0
   [ "$output" == "will install dummy 1.0" ]
 }
 
@@ -153,6 +150,6 @@ EOM
 post_asdf_install_dummy = echo HEY $version FROM $plugin_name
 EOM
 
-  run install_command dummy 1.0
+  run asdf install dummy 1.0
   [ "$output" == "HEY 1.0 FROM dummy" ]
 }

@@ -3,9 +3,6 @@
 load test_helpers
 
 . $(dirname "$BATS_TEST_DIRNAME")/lib/commands/update.sh
-. $(dirname "$BATS_TEST_DIRNAME")/lib/commands/reshim.sh
-. $(dirname "$BATS_TEST_DIRNAME")/lib/commands/install.sh
-. $(dirname "$BATS_TEST_DIRNAME")/lib/commands/uninstall.sh
 
 setup() {
   setup_asdf_dir
@@ -49,7 +46,7 @@ teardown() {
 }
 
 @test "update_command should not remove plugin versions" {
-  run install_command dummy 1.1
+  run asdf install dummy 1.1
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
   run update_command
@@ -71,7 +68,7 @@ teardown() {
 }
 
 @test "update_command should not remove shims" {
-  run install_command dummy 1.1
+  run asdf install dummy 1.1
   [ -f $ASDF_DIR/shims/dummy ]
   run update_command
   [ "$status" -eq 0 ]

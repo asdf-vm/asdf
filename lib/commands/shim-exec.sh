@@ -26,6 +26,11 @@ select_from_preset_version() {
 shim_exec_command() {
   local shim_name="$1"
 
+  if [ -z "$shim_name" ]; then
+    echo "usage: asdf exec <command>"
+    exit 1
+  fi
+
   selected_version=$(select_from_tool_versions)
 
   if [ -z "$selected_version" ]; then

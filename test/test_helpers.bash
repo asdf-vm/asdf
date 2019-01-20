@@ -11,7 +11,8 @@ setup_asdf_dir() {
   mkdir -p "$ASDF_DIR/installs"
   mkdir -p "$ASDF_DIR/shims"
   mkdir -p "$ASDF_DIR/tmp"
-  PATH=$ASDF_DIR/shims:$PATH
+  ASDF_BIN=$(dirname "$BATS_TEST_DIRNAME")/bin
+  PATH=$ASDF_DIR/shims:$ASDF_BIN:$PATH
 }
 
 install_mock_plugin() {
@@ -56,3 +57,4 @@ setup_repo() {
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/repository"
   touch "$(asdf_dir)/tmp/repo-updated"
 }
+

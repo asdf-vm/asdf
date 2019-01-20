@@ -17,13 +17,13 @@ function teardown() {
 }
 
 @test "where shows install location of selected version" {
-  run where_command 'dummy' '1.0'
+  run asdf where 'dummy' '1.0'
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0" ]
 }
 
 @test "where understands versions installed by ref" {
-  run where_command 'dummy' 'ref:master'
+  run asdf where 'dummy' 'ref:master'
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/ref-master" ]
 }
@@ -31,26 +31,26 @@ function teardown() {
 @test "where shows install location of current version if no version specified" {
   echo 'dummy 2.1' >> $HOME/.tool-versions
 
-  run where_command 'dummy'
+  run asdf where 'dummy'
 
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
 }
 
 @test "where should error when the plugin doesn't exist" {
-  run where_command "foobar"
+  run asdf where "foobar"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: foobar" ]
 }
 
 @test "where should error when version is not installed" {
-  run where_command 'dummy' '1.6'
+  run asdf where 'dummy' '1.6'
   [ "$status" -eq 1 ]
   [ "$output" = "Version not installed" ]
 }
 
 @test "where should error when no current version selected and version not specified" {
-  run where_command 'dummy'
+  run asdf where 'dummy'
 
   local expected
   expected="No version set for dummy; please run \`asdf <global | local> dummy <version>\`"
