@@ -12,7 +12,9 @@ setup_asdf_dir() {
   mkdir -p "$ASDF_DIR/shims"
   mkdir -p "$ASDF_DIR/tmp"
   ASDF_BIN=$(dirname "$BATS_TEST_DIRNAME")/bin
-  PATH=$ASDF_DIR/shims:$ASDF_BIN:$PATH
+
+  # shellcheck disable=SC2031
+  PATH=$ASDF_BIN:$ASDF_DIR/shims:$PATH
 }
 
 install_mock_plugin() {

@@ -206,6 +206,19 @@ teardown() {
   [ "$output" == "sourced custom" ]
 }
 
+@test "shim exec with custom exec-env using ASDF_INSTALL_PATH" {
+  run asdf install dummy 2.0
+  echo 'export FOO=$ASDF_INSTALL_PATH/foo' > $ASDF_DIR/plugins/dummy/bin/exec-env
+  mkdir $ASDF_DIR/plugins/dummy/shims
+  echo 'echo $FOO custom' > $ASDF_DIR/plugins/dummy/shims/foo
+  chmod +x $ASDF_DIR/plugins/dummy/shims/foo
+  run asdf reshim dummy 2.0
+
+  echo "dummy 2.0" > $PROJECT_DIR/.tool-versions
+  run $ASDF_DIR/shims/foo
+  [ "$output" == "$ASDF_DIR/installs/dummy/2.0/foo custom" ]
+}
+
 @test "shim exec doest not use custom exec-env for system version" {
   run asdf install dummy 2.0
   echo "export FOO=sourced" > $ASDF_DIR/plugins/dummy/bin/exec-env

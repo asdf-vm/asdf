@@ -473,40 +473,67 @@ list_plugin_exec_paths() {
   done
 }
 
-plugin_exec_env() {
+with_plugin_env() {
   local plugin_name=$1
-  local version=$2
+  local full_version=$2
+  local callback=$3
 
-  if [ "$version" = "system" ]; then
-    PATH=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-    export PATH
-    return 0
+  IFS=':' read -r -a version_info <<< "$full_version"
+  if [ "${version_info[0]}" = "ref" ]; then
+    local install_type="${version_info[0]}"
+    local version="${version_info[1]}"
+  else
+    local install_type="version"
+    local version="${version_info[0]}"
   fi
 
-  check_if_plugin_exists "$plugin_name"
+  # create a new subshell to keep env
+  (
 
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
+    # first remove asdf shims from the path
+    PATH=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
+    export PATH
 
-  PATH="$(list_plugin_exec_paths "$plugin_name" "$version" | tr '\n' ':'):$PATH"
-  export PATH
+    if [ "$version" = "system" ]; then
+      # execute as is for system
+      "$callback"
+      exit $?
+    fi
 
-  if [ -f "${plugin_path}/bin/exec-env" ]; then
+    local plugin_path
+    plugin_path=$(get_plugin_path "$plugin_name")
+
+    # add the plugin listed exec paths to PATH
+    PATH="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
+    export PATH
+
+    # If no custom exec-env transform, just execute callback
+    if [ ! -f "${plugin_path}/bin/exec-env" ]; then
+      "$callback"
+      exit $?
+    fi
+
+    # Load the plugin custom environment
+    local install_path
+    install_path=$(find_install_path "$plugin_name" "$full_version")
+
     ASDF_INSTALL_TYPE=$install_type
     ASDF_INSTALL_VERSION=$version
     ASDF_INSTALL_PATH=$install_path
-
     export ASDF_INSTALL_TYPE
     export ASDF_INSTALL_VERSION
     export ASDF_INSTALL_PATH
+
     # shellcheck source=/dev/null
     source "${plugin_path}/bin/exec-env"
 
-    # unset everything, we don't want to pollute
     unset ASDF_INSTALL_TYPE
     unset ASDF_INSTALL_VERSION
     unset ASDF_INSTALL_PATH
-  fi
+
+    "$callback"
+    exit $?
+  )
 }
 
 plugin_executables() {
@@ -564,7 +591,6 @@ asdf_run_hook() {
 }
 
 with_shim_executable() {
-
   tool_versions() {
     env | awk -F= '/^ASDF_[A-Z]+_VERSION/ {print $1" "$2}' | sed -e "s/^ASDF_//" | sed -e "s/_VERSION / /" | tr "[:upper:]_" "[:lower:]-"
     local asdf_versions_path
@@ -589,7 +615,6 @@ with_shim_executable() {
     grep -f <(shim_versions) <(preset_versions) | head -n 1 | xargs echo
   }
 
-
   local shim_name
   shim_name=$(basename "$1")
   local shim_exec="${2}"
@@ -606,18 +631,22 @@ with_shim_executable() {
 
   if [ -n "$selected_version" ]; then
     plugin_name=$(cut -d ' ' -f 1 <<< "$selected_version");
-    version=$(cut -d ' ' -f 2- <<< "$selected_version");
+    full_version=$(cut -d ' ' -f 2- <<< "$selected_version");
+
     plugin_path=$(get_plugin_path "$plugin_name")
 
-    plugin_exec_env "$plugin_name" "$version"
-    executable_path=$(command -v "$shim_name")
+    run_within_env() {
+      executable_path=$(command -v "$shim_name")
 
-    if [ -x "${plugin_path}/bin/exec-path" ]; then
-      install_path=$(find_install_path "$plugin_name" "$version")
-      executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:${shim_name}}")
-    fi
+      if [ -x "${plugin_path}/bin/exec-path" ]; then
+        install_path=$(find_install_path "$plugin_name" "$full_version")
+        executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:${shim_name}}")
+      fi
 
-    "$shim_exec" "$plugin_name" "$version" "$executable_path" "${@:3}"
+      "$shim_exec" "$plugin_name" "$full_version" "$executable_path"
+    }
+
+    with_plugin_env "$plugin_name" "$full_version" run_within_env
     return $?
   fi
 
