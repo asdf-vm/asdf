@@ -5,6 +5,8 @@ GREP_OPTIONS="--color=never"
 # shellcheck disable=SC2034
 GREP_COLORS=
 
+ASDF_DIR=${ASDF_DIR:-''}
+
 asdf_version() {
   cat "$(asdf_dir)/VERSION"
 }
