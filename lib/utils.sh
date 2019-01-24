@@ -502,12 +502,12 @@ with_plugin_env() {
     plugin_path=$(get_plugin_path "$plugin_name")
 
     # add the plugin listed exec paths to PATH
-    PATH="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
-    export PATH
+    local path
+    path="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
 
     # If no custom exec-env transform, just execute callback
     if [ ! -f "${plugin_path}/bin/exec-env" ]; then
-      "$callback"
+      PATH=$path "$callback"
       exit $?
     fi
 
@@ -529,7 +529,7 @@ with_plugin_env() {
     unset ASDF_INSTALL_VERSION
     unset ASDF_INSTALL_PATH
 
-    "$callback"
+    PATH=$path "$callback"
     exit $?
   )
 }
