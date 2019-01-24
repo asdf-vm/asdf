@@ -63,6 +63,6 @@ teardown() {
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
-  [ "$output" == "" ]
-  [ "$status" -eq 1 ]
+  [ "$output" == "$ASDF_DIR/shims/dummy" ]
+  [ "$status" -eq 0 ]
 }

@@ -251,6 +251,34 @@ teardown() {
   [ "$output" == "$ASDF_DIR/installs/dummy/2.0/bin/dummy" ]
 }
 
+@test "shim exec should be able to find other shims in path" {
+  cp -rf $ASDF_DIR/plugins/dummy $ASDF_DIR/plugins/gummy
+
+  echo "dummy 2.0" > $PROJECT_DIR/.tool-versions
+  echo "gummy 2.0" >> $PROJECT_DIR/.tool-versions
+
+  run asdf install
+
+  mkdir $ASDF_DIR/plugins/{dummy,gummy}/shims
+
+  echo 'which dummy' > $ASDF_DIR/plugins/dummy/shims/foo
+  chmod +x $ASDF_DIR/plugins/dummy/shims/foo
+
+  echo 'which gummy' > $ASDF_DIR/plugins/dummy/shims/bar
+  chmod +x $ASDF_DIR/plugins/dummy/shims/bar
+
+  touch $ASDF_DIR/plugins/gummy/shims/gummy
+  chmod +x $ASDF_DIR/plugins/gummy/shims/gummy
+
+  run asdf reshim
+
+  run $ASDF_DIR/shims/foo
+  [ "$output" == "$ASDF_DIR/installs/dummy/2.0/bin/dummy" ]
+
+  run $ASDF_DIR/shims/bar
+  [ "$output" == "$ASDF_DIR/shims/gummy" ]
+}
+
 @test "shim exec should remove shim_path from path on system version execution" {
   run asdf install dummy 2.0
 
@@ -261,7 +289,8 @@ teardown() {
   chmod +x $PROJECT_DIR/sys/dummy
 
   run env PATH=$PATH:$PROJECT_DIR/sys $ASDF_DIR/shims/dummy
-  [ "$output" == "$PROJECT_DIR/sys/dummy" ]
+  echo $status $output
+  [ "$output" == "$ASDF_DIR/shims/dummy" ]
 }
 
 

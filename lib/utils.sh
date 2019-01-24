@@ -492,10 +492,6 @@ with_plugin_env() {
   # create a new subshell to keep env
   (
 
-    # first remove asdf shims from the path
-    PATH=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-    export PATH
-
     if [ "$version" = "system" ]; then
       # execute as is for system
       "$callback"
@@ -638,7 +634,12 @@ with_shim_executable() {
     plugin_path=$(get_plugin_path "$plugin_name")
 
     run_within_env() {
-      executable_path=$(command -v "$shim_name")
+      local path=$PATH
+      if [ "system" == "$full_version" ]; then
+        path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
+      fi
+
+      executable_path=$(PATH=$path command -v "$shim_name")
 
       if [ -x "${plugin_path}/bin/exec-path" ]; then
         install_path=$(find_install_path "$plugin_name" "$full_version")
