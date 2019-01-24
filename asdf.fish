@@ -1,12 +1,12 @@
 #!/usr/bin/env fish
 
-set -l asdf_dir (dirname (status -f))
+set -x ASDF_DIR (dirname (status -f))
 set -l asdf_data_dir (
   if test -n "$ASDF_DATA_DIR"; echo $ASDF_DATA_DIR;
   else; echo $HOME/.asdf; end)
 
 # Add asdf to PATH
-set -l asdf_bin_dirs $asdf_dir/bin $asdf_dir/shims $asdf_data_dir/shims
+set -l asdf_bin_dirs $ASDF_DIR/bin $ASDF_DIR/shims $asdf_data_dir/shims
 
 for x in $asdf_bin_dirs
   if begin not contains $x $fish_user_paths; and test -d $x; end
