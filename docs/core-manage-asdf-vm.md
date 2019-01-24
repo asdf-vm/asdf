@@ -120,6 +120,6 @@ Uninstalling `asdf` is as simple as:
 
     Remove these lines and save the file.
 
-2.  Run `rm -rf ~/.asdf/` to completely remove all the asdf files from your system.
+2.  Run `rm -rf ~/.asdf/ ~/.tool-versions` to completely remove all the asdf files from your system.
 
 That's it!
