@@ -1,5 +1,7 @@
 <!-- docs/_sidebar.md -->
 
+[Why asdf](/)
+
 - Core
 
   - [Manage asdf-vm](core-manage-asdf-vm)
