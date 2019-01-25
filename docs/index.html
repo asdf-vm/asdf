@@ -10,42 +10,33 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <!-- site theme -->
-    <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
-    <!-- prismjs theme -->
     <link
       rel="stylesheet"
-      href="//unpkg.com/prismjs@1.15.0/themes/prism-coy.css"
+      href="https://unpkg.com/docsify-themeable@0/dist/css/theme-simple.css"
+      title="light"
     />
+    <!-- prismjs theme -->
+    <!-- <link rel="stylesheet" href="//unpkg.com/prismjs@1.15.0/themes/prism.css" /> -->
+    <!-- <link rel="stylesheet" href="//unpkg.com/prismjs@1.15.0/themes/prism-coy.css" /> -->
+    <!-- <link rel="stylesheet" href="//unpkg.com/prism-themes/themes/prism-ghcolors.css" /> -->
+    <!-- <link rel="stylesheet" href="//unpkg.com/prism-themes/themes/prism-atom-dark.css" /> -->
   </head>
   <body>
-    <div id="app">asdf-vm loading</div>
+    <div id="app"></div>
     <!-- edit on github plugin must appear here -->
     <script src="//unpkg.com/docsify-edit-on-github@1.0.1/index.js"></script>
     <script>
       window.$docsify = {
         name: "asdf-vm",
-        repo: "asdf-vm/asdf/",
+        repo: "https://github.com/asdf-vm/asdf",
         el: "#app",
+        homepage: "homepage.md",
         coverpage: true,
         loadNavbar: true,
         loadSidebar: true,
+        notFoundPage: true,
         subMaxLevel: 2,
         auto2top: true,
-        homepage: "https://raw.githubusercontent.com/asdf-vm/asdf/master/README.md",
-        logo: "/_media/asdf-vm-icon.svg",
-        coverpage: {
-          "/": "_coverpage.md",
-          // "/zh-cn/": "_coverpage.md",
-        },
-        nameLink: {
-          "/": "/",
-          // "/zh-cn/": "/zh-cn/",
-        },
-        notFoundPage: {
-          "/": "_404.md",
-          // "/zh-cn": "zh-cn/_404.md",
-        },
-        // fallbackLanguages: ["en"],
         alias: {
           ".*?/plugins-all":
             "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
@@ -64,11 +55,9 @@
           paths: "auto",
           placeholder: {
             "/": "Type to search",
-            // "/zh-cn/": "搜索",
           },
           noData: {
             "/": "No Results",
-            // "/zh-cn/": "找不到结果",
           },
         },
         plugins: [
@@ -85,9 +74,24 @@
     <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
     <script src="//unpkg.com/docsify/lib/plugins/zoom-image.min.js"></script>
     <!-- 3rd party plugins -->
-    <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
-    <script src="//unpkg.com/prismjs/components/prism-markdown.min.js"></script>
+    <script src="//unpkg.com/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
     <script src="//unpkg.com/docsify-tabs@1"></script>
+    <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+    <script src="//unpkg.com/prismjs/components/prism-markdown.min.js"></script>
+    <style>
+      :root {
+        /* Reduce the font size */
+        --base-font-size: 14px;
+
+        /* Change the theme color hue */
+        --theme-color: #aa00d4;
+
+        /* generate new cover bg color each load */
+        --cover-background-color: ;
+        /* leave cover page title black */
+        --cover-heading-color: ;
+      }
+    </style>
   </body>
 </html>

@@ -10,6 +10,7 @@ Copyright 2014 to the end of time ([MIT License](https://github.com/asdf-vm/asdf
 - [@danhper](https://github.com/danhper)
 - [@Stratus3D](https://github.com/Stratus3D)
 - [@vic](https://github.com/vic)
+- [@jthegedus](https://github.com/jthegedus)
 
 ## Contributors
 

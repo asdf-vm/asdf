@@ -65,11 +65,11 @@ tab will usually do it.)
 
 ### Having Issues?
 
-If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.`
+!> If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.`
 
 ### Plugin Dependencies
 
-For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
+?> For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
 <!-- tabs:start -->
 
@@ -78,24 +78,30 @@ For most plugins, it is good if you have installed the following packages OR the
 Install these via homebrew:
 
 ```shell
-coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc
+coreutils automake autoconf openssl \
+libyaml readline libxslt libtool unixodbc
 ```
 
 #### ** Ubuntu **
 
 ```shell
-automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev
+sudo apt install \
+  automake autoconf libreadline-dev \
+  libncurses-dev libssl-dev libyaml-dev \
+  libxslt-dev libffi-dev libtool unixodbc-dev
 ```
 
 #### **Fedora**
 
 ```shell
-automake autoconf readline-devel ncurses-devel openssl-devel libyaml-devel libxslt-devel libffi-devel libtool unixODBC-devel
+automake autoconf readline-devel \
+ncurses-devel openssl-devel libyaml-devel \
+libxslt-devel libffi-devel libtool unixODBC-devel
 ```
 
 <!-- tabs:end -->
 
-**That's all ~! You are ready to use asdf**
+That's all! You are ready to use asdf 🎉
 
 ## Update
 
@@ -115,11 +121,13 @@ Uninstalling `asdf` is as simple as:
 
 1.  In your `.bashrc` (or `.bash_profile` if you are on OSX) or `.zshrc` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
 
-        . $HOME/.asdf/asdf.sh
-        . $HOME/.asdf/completions/asdf.bash
+    ```shell
+    . $HOME/.asdf/asdf.sh
+    . $HOME/.asdf/completions/asdf.bash
+    ```
 
     Remove these lines and save the file.
 
 2.  Run `rm -rf ~/.asdf/ ~/.tool-versions` to completely remove all the asdf files from your system.
 
-That's it!
+That's it! 🎉

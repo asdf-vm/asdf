@@ -1,14 +1,12 @@
 <!-- docs/_sidebar.md -->
 
-- [Home](/) <!-- ballad of asdf here -->
-
 - Core
 
   - [Manage asdf-vm](core-manage-asdf-vm)
   - [Manage Plugins](core-manage-plugins)
   - [Manage Versions](core-manage-versions)
-  - [Configuration](core-configuration) <!-- tool-versions & .asdfrc & env vars-->
-  - [All Commands](core-commands) <!-- include uninstall instructions -->
+  - [Configuration](core-configuration)
+  - [All Commands](core-commands)
 
 - Plugins
 
@@ -21,4 +19,4 @@
   - [Documentation Site](contributing-doc-site)
 
 - [Changelog](changelog) <!-- pulls in changelog from repo -->
-- [Thanks](thanks) <!-- credits, maintainers, contributors -->
+- [Thanks](thanks)
