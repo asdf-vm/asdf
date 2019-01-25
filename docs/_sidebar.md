@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [Home](/) <!-- ballad of asdf here -->
+<!-- ballad of asdf here -->
 
 - Core
 
