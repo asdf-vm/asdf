@@ -1,6 +1,8 @@
 ## .tool-versions
 
-Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories. **Global defaults can be set in the file `$HOME/.tool-versions`**
+Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
+
+?> Global defaults can be set in the file `$HOME/.tool-versions`
 
 This is what a `.tool-versions` file looks like:
 

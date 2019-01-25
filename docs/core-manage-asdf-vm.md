@@ -65,11 +65,11 @@ tab will usually do it.)
 
 ### Having Issues?
 
-If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.`
+!> If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.`
 
 ### Plugin Dependencies
 
-For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
+?> For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
 
 <!-- tabs:start -->
 
@@ -101,7 +101,7 @@ libxslt-devel libffi-devel libtool unixODBC-devel
 
 <!-- tabs:end -->
 
-**That's all ~! You are ready to use asdf**
+That's all! You are ready to use asdf 🎉
 
 ## Update
 
@@ -130,4 +130,4 @@ Uninstalling `asdf` is as simple as:
 
 2.  Run `rm -rf ~/.asdf/ ~/.tool-versions` to completely remove all the asdf files from your system.
 
-That's it!
+That's it! 🎉
