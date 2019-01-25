@@ -78,19 +78,25 @@ For most plugins, it is good if you have installed the following packages OR the
 Install these via homebrew:
 
 ```shell
-coreutils automake autoconf openssl libyaml readline libxslt libtool unixodbc
+coreutils automake autoconf openssl \
+libyaml readline libxslt libtool unixodbc
 ```
 
 #### ** Ubuntu **
 
 ```shell
-automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev libxslt-dev libffi-dev libtool unixodbc-dev
+sudo apt install \
+  automake autoconf libreadline-dev \
+  libncurses-dev libssl-dev libyaml-dev \
+  libxslt-dev libffi-dev libtool unixodbc-dev
 ```
 
 #### **Fedora**
 
 ```shell
-automake autoconf readline-devel ncurses-devel openssl-devel libyaml-devel libxslt-devel libffi-devel libtool unixODBC-devel
+automake autoconf readline-devel \
+ncurses-devel openssl-devel libyaml-devel \
+libxslt-devel libffi-devel libtool unixODBC-devel
 ```
 
 <!-- tabs:end -->
@@ -115,8 +121,10 @@ Uninstalling `asdf` is as simple as:
 
 1.  In your `.bashrc` (or `.bash_profile` if you are on OSX) or `.zshrc` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
 
-        . $HOME/.asdf/asdf.sh
-        . $HOME/.asdf/completions/asdf.bash
+    ```shell
+    . $HOME/.asdf/asdf.sh
+    . $HOME/.asdf/completions/asdf.bash
+    ```
 
     Remove these lines and save the file.
 
