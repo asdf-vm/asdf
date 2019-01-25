@@ -1,6 +1,6 @@
 <!-- ![logo](_media.asdf-vm-logo.svg) -->
 
-# asdf vm
+# asdf-vm
 
 > An extendable version manager
 
