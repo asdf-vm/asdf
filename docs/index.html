@@ -28,28 +28,16 @@
     <script>
       window.$docsify = {
         name: "asdf-vm",
-        repo: "asdf-vm/asdf",
+        repo: "https://github.com/asdf-vm/asdf",
         el: "#app",
         coverpage: true,
         loadNavbar: true,
         loadSidebar: true,
+        notFoundPage: true,
         subMaxLevel: 2,
         auto2top: true,
         homepage:
           "https://raw.githubusercontent.com/asdf-vm/asdf/master/README.md",
-        coverpage: {
-          "/": "_coverpage.md",
-          // "/zh-cn/": "_coverpage.md",
-        },
-        nameLink: {
-          "/": "/",
-          // "/zh-cn/": "/zh-cn/",
-        },
-        notFoundPage: {
-          "/": "_404.md",
-          // "/zh-cn": "zh-cn/_404.md",
-        },
-        // fallbackLanguages: ["en"],
         alias: {
           ".*?/plugins-all":
             "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
