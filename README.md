@@ -10,7 +10,7 @@ Supporting a new language is as simple as [this plugin API][plugin_api].
 
 ## INSTALLATION
 
-If you're on macOS you can [Install using Homebrew](https://github.com/asdf-vm/asdf#homebrew-on-macos)
+If you're on macOS, you [can't install using Homebrew](https://github.com/thoughtbot/dotfiles/issues/577) because the installation will be in [a non-standard location](https://github.com/thoughtbot/dotfiles/issues/577#issuecomment-354332924)
 
 ### Basic Installation
 
