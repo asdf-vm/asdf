@@ -2,7 +2,7 @@
 
 **Manage multiple runtimes with a single CLI tool, extendable via plugins**
 
-asdf-vm is a CLI tool that can manage multiple language runtimes on a per-project basis. It is like gvm, nvm, rbenv & pyenv (and more) all in one! Just install your languages plugin!
+asdf-vm is a CLI tool that can manage multiple language runtimes on a per-project basis. It is like `gvm`, `nvm`, `rbenv` & `pyenv` (and more) all in one! Simply install your language's plugin!
 
 ## Why use asdf-vm?
 
