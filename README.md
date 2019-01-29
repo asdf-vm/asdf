@@ -1,16 +1,16 @@
 # asdf-vm [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
 
-**Manage multiple runtimes with a single CLI tool**
+**Manage multiple runtimes with a single CLI tool, extendable via plugins**
 
-asdf-vm is a CLI tool that can manage multiple language runtimes on a per-project basis. It is like gvm, nvm, rbenv & pyenv (and more) all in one!
-
+asdf-vm is a CLI tool that can manage multiple language runtimes on a per-project basis. It is like gvm, nvm, rbenv & pyenv (and more) all in one! Just install your languages plugin!
 
 ## Why use asdf-vm?
 
 - single CLI for multiple languages
 - consistent commands to manage all your languages
-- single `.tool-versions` config file per project
 - single global config keeping defaults in one place
+- single `.tool-versions` config file per project
+- support for existing config files `.node-version`, `.nvmrc`, `.ruby-version` for easy migration
 - automatically switches runtime versions as you trasverse your directories
 - simple plugin system to add support for your language of choice
 - completion scripts managed by the plugin, not you!
