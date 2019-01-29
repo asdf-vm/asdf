@@ -26,4 +26,4 @@ asdf-vm is a CLI tool that can manage multiple language runtimes on a per-projec
 
 ## Contributing
 
-See [CONTRIBUTING.md](/CONTRIBUTING.md)
+See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](http://asdf-vm.github.io/asdf/#/contributing-core-asdf-vm).
