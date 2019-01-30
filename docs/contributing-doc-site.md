@@ -1,3 +1,16 @@
+## Improvements
+
+Here is a list of improvements we are looking at making to the documentation. If you wish to contribute, try something out here:
+
+- customise the docsify theme
+- cover-page background image
+- cover-page/readme gif of a terminal using asdf showing it's features (automatic version switching, .tool-versions with multiple runtime configs)
+- custom doc site domain
+- change the typography
+- get a logo?
+- improve "edit on GitHub" button/link
+- add asdf-vm to awesome-docsify showcase
+
 ## Setup Your Environment
 
 We're using:
