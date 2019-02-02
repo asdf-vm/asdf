@@ -78,8 +78,9 @@ tab will usually do it.)
 Install these via homebrew:
 
 ```shell
-coreutils automake autoconf openssl \
-libyaml readline libxslt libtool unixodbc
+brew install \
+  coreutils automake autoconf openssl \
+  libyaml readline libxslt libtool unixodbc
 ```
 
 #### ** Ubuntu **
@@ -94,9 +95,10 @@ sudo apt install \
 #### **Fedora**
 
 ```shell
-automake autoconf readline-devel \
-ncurses-devel openssl-devel libyaml-devel \
-libxslt-devel libffi-devel libtool unixODBC-devel
+sudo dnf install \
+  automake autoconf readline-devel \
+  ncurses-devel openssl-devel libyaml-devel \
+  libxslt-devel libffi-devel libtool unixODBC-devel
 ```
 
 <!-- tabs:end -->
