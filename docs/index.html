@@ -31,7 +31,10 @@
         repo: "https://github.com/asdf-vm/asdf",
         el: "#app",
         homepage: "homepage.md",
-        coverpage: true,
+        coverpage: {
+          '/': '_coverpage.md',
+          '/pt-br/': '_coverpage.md'
+        },
         loadNavbar: true,
         loadSidebar: true,
         notFoundPage: true,
@@ -42,6 +45,7 @@
             "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md",
           ".*?/changelog":
             "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md",
+          '/pt-br/.*/_sidebar.md': '/pt-br/_sidebar.md'
         },
         markdown: {
           smartypants: true,
