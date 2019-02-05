@@ -1,2 +1,3 @@
 - Translations
   - [:uk: English](/)
+  - [:brazil: Brazilian Portuguese](/pt-br)
