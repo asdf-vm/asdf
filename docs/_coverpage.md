@@ -2,7 +2,7 @@
 
 # asdf-vm
 
-> Manage multiple runtimes with a single CLI tool
+> Manage multiple runtime versions with a single CLI tool
 
 <!-- insert asciinema or other gif here -->
 
