@@ -11,7 +11,7 @@ asdf-vm is a CLI tool that can manage multiple language runtime versions on a pe
 - single global config keeping defaults in one place
 - single `.tool-versions` config file per project
 - support for existing config files `.node-version`, `.nvmrc`, `.ruby-version` for easy migration
-- automatically switches runtime versions as you trasverse your directories
+- automatically switches runtime versions as you traverse your directories
 - simple plugin system to add support for your language of choice
 - completion scripts managed by the plugin, not you!
 
