@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-if [ "${BASH_SOURCE[0]}" != "" ]; then
+_under="$_"
+if [[ "$_under" == *".sh" ]]; then
+  current_script_path="$_under"
+elif [ "${BASH_SOURCE[0]}" != "" ]; then
   current_script_path="${BASH_SOURCE[0]}"
 else
   current_script_path="$0"
