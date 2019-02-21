@@ -75,10 +75,18 @@ tab will usually do it.)
 
 #### ** macOS **
 
-Install these via homebrew:
+Installation via Homebrew:
 
 ```shell
 brew install \
+  coreutils automake autoconf openssl \
+  libyaml readline libxslt libtool unixodbc
+```
+
+Installation via Spack:
+
+```shell
+spack install \
   coreutils automake autoconf openssl \
   libyaml readline libxslt libtool unixodbc
 ```
