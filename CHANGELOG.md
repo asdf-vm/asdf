@@ -1,13 +1,16 @@
 # Changelog
 
-## 0.6.4-dev
+## 0.7.1-dev
+
+Fixed Bugs
+
+## 0.7.0
 
 Features
 
-
 * Shims can be invoked directly via `asdf exec <command> [args...]` without requiring to have all shims on path (#374).
-* New `asdf env <command>` can be used to print or execute with the env that would be used to execute a shim.
-* Configurable command hooks from `.asdfrc`
+* New `asdf env <command>` can be used to print or execute with the env that would be used to execute a shim. (#435)
+* Configurable command hooks from `.asdfrc` (#432, #434)
   Suppose a `foo` plugin is installed and provides a `bar` executable,
   The following hooks will be executed when set:
 
@@ -17,7 +20,7 @@ Features
 
     pre_asdf_reshim_foo = echo will reshim foo version ${1}
     post_asdf_reshim_foo = echo reshimmed foo version ${1}
-    
+
     pre_foo_bar = echo about to execute command bar from foo with args: ${@}
     post_foo_bar = echo just executed command bar from foo with args: ${@}
 
@@ -30,19 +33,19 @@ Features
   `rm -rf ~/.asdf/shims/` followed by `asdf reshim`
 * Added lots of tests for shim execution.
   We now make sure that shim execution obeys plugins hooks like `list-bin-paths` and
-  `exec-path`. 
+  `exec-path`.
 * Shims now are thin wrappers around `asdf exec` that might be faster
   for most common use case: (versions on local .tool-versions file) but fallbacks to
   slower `get_preset_version_for` which takes legacy formats into account.
 * Shim exec recommends which plugins or versions to set when command is not found.
 * `asdf reshim` without arguments now reshims all installed plugins (#407)
 * Add `asdf shim-versions <executable>` to list on which plugins and versions is a command
-  available. (#380)
+  available. (#380, #433)
+* Add documentation on installing dependencies via Spack (#471)
 
 Fixed Bugs
 
-* Allow many plugins to provide shims with same executable name (#431)
-
+* Fix `update` command so it doesn't crash when used on Brew installations (#429, #474, #439, #436)
 
 ## 0.6.3
 
