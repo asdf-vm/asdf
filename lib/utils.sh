@@ -73,6 +73,7 @@ list_installed_versions() {
 
 check_if_plugin_exists() {
   local plugin_name=$1
+  local autoinstall_plugin=$2
 
   # Check if we have a non-empty argument
   if [ -z "${1}" ]; then
@@ -81,8 +82,12 @@ check_if_plugin_exists() {
   fi
 
   if [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
-    display_error "No such plugin: $plugin_name"
-    exit 1
+    if [ "$autoinstall_plugin" == "1" ]; then
+        plugin_add_command "$plugin_name"
+    else
+        display_error "No such plugin: $plugin_name"
+        exit 1
+    fi
   fi
 }
 
