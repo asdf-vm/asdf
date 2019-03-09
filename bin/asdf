@@ -46,6 +46,14 @@ case "$1" in
     load_cmd "current" "plugin-list"
     current_command "${cmd_args[@]}";;
 
+  "sh-shell")
+    load_cmd "version_commands"
+    shell_command "${cmd_args[@]}";;
+
+  "shell")
+    echo "Shell integration is not enabled. Please ensure you source asdf in your shell setup."
+    exit 1;;
+
   "local")
     load_cmd "version_commands"
     local_command "${cmd_args[@]}";;

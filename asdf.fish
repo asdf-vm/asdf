@@ -13,3 +13,18 @@ for x in $asdf_bin_dirs
     set -gx fish_user_paths $fish_user_paths $x
   end
 end
+
+# Add function wrapper so we can export variables
+function asdf
+  set command $argv[1]
+  set -e argv[1]
+
+  switch "$command"
+  case "shell"
+    # eval commands that need to export variables
+    source (env ASDF_SHELL=fish asdf "sh-$command" $argv | psub)
+  case '*'
+    # forward other commands to asdf script
+    command asdf "$command" $argv
+  end
+end

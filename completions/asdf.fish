@@ -105,6 +105,11 @@ complete -f -c asdf -n '__fish_asdf_needs_command' -a global -d "Set global vers
 complete -f -c asdf -n '__fish_asdf_using_command global; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 complete -f -c asdf -n '__fish_asdf_using_command global; and test (count (commandline -opc)) -gt 2' -a '(__fish_asdf_list_versions (__fish_asdf_arg_at 3)) system'
 
+# shell completion
+complete -f -c asdf -n '__fish_asdf_needs_command' -a shell -d "Set version for a plugin in current shell session"
+complete -f -c asdf -n '__fish_asdf_using_command shell; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
+complete -f -c asdf -n '__fish_asdf_using_command shell; and test (count (commandline -opc)) -gt 2' -a '(__fish_asdf_list_versions (__fish_asdf_arg_at 3)) system'
+
 # misc
 complete -f -c asdf -n '__fish_asdf_needs_command' -l "help" -d "Displays help"
 complete -f -c asdf -n '__fish_asdf_needs_command' -l "version" -d "Displays asdf version"

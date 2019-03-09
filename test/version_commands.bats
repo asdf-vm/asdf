@@ -230,3 +230,48 @@ teardown() {
   [ -L $HOME/.tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
+
+@test "shell wrapper function should export ENV var" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "1.1.0"
+  [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
+  unset ASDF_DUMMY_VERSION
+}
+
+@test "shell wrapper function should return an error for missing plugins" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  run asdf shell "nonexistent" "1.0.0"
+  [ "$status" -eq 1 ]
+  [ "$output" = "No such plugin: nonexistent" ]
+}
+
+@test "shell should emit an error when wrapper function is not loaded" {
+  run asdf shell "dummy" "1.1.0"
+  echo $output
+  [ "$status" -eq 1 ]
+  [ "$output" = "Shell integration is not enabled. Please ensure you source asdf in your shell setup." ]
+}
+
+@test "sh-shell should emit an error when plugin does not exist" {
+  run asdf sh-shell "nonexistent" "1.0.0"
+  [ "$status" -eq 1 ]
+  [ "$output" = $'No such plugin: nonexistent\nfalse' ]
+}
+
+@test "sh-shell should emit an error when version does not exist" {
+  run asdf sh-shell "dummy" "nonexistent"
+  [ "$status" -eq 1 ]
+  [ "$output" = $'version nonexistent is not installed for dummy\nfalse' ]
+}
+
+@test "sh-shell should export version if it exists" {
+  run asdf sh-shell "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$output" = "export ASDF_DUMMY_VERSION=\"1.1.0\"" ]
+}
+
+@test "sh-shell should use set when shell is fish" {
+  ASDF_SHELL=fish run asdf sh-shell "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$output" = "set -gx ASDF_DUMMY_VERSION \"1.1.0\"" ]
+}
