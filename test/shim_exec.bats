@@ -116,9 +116,19 @@ teardown() {
 @test "shim exec should execute first plugin that is installed and set" {
   run asdf install dummy 3.0
 
-  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
-  echo "dummy 3.0" >> $PROJECT_DIR/.tool-versions
-  echo "dummy 2.0" >> $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0 3.0 2.0" > $PROJECT_DIR/.tool-versions
+
+  run $ASDF_DIR/shims/dummy world hello
+  [ "$status" -eq 0 ]
+
+  echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
+}
+
+@test "shim exec should only use the first version found for a plugin" {
+  run asdf install dummy 3.0
+
+  echo "dummy 3.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0" >> $PROJECT_DIR/.tool-versions
 
   run $ASDF_DIR/shims/dummy world hello
   [ "$status" -eq 0 ]
