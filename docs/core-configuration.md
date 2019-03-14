@@ -18,6 +18,14 @@ The versions can be in the following format:
 - `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 - `system` - this keyword causes asdf to passthrough to the version of the tool on the system that is not managed by asdf.
 
+Multiple versions can be set by separating them with a space. For example, to use
+Python 3.7.2, fallback to Python 2.7.15 and finally to the system Python, the
+following line can be added to `.tool-versions`.
+
+```
+python 3.7.2 2.7.15 system
+```
+
 To install all the tools defined in a `.tool-versions` file run `asdf install` with no other arguments in the directory containing the `.tool-versions` file.
 
 Edit the file directly or use `asdf local` (or `asdf global`) which updates it.

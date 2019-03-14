@@ -24,8 +24,8 @@ asdf list-all <name>
 ## Set Current Version
 
 ```shell
-asdf global <name> <version>
-asdf local <name> <version>
+asdf global <name> <version> [<version>...]
+asdf local <name> <version> [<version>...]
 # asdf global elixir 1.2.4
 ```
 
