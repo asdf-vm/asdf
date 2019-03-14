@@ -42,6 +42,10 @@ function __fish_asdf_plugin_list_all
     asdf plugin-list-all 2> /dev/null
 end
 
+# update
+complete -f -c asdf -n '__fish_asdf_needs_command' -a update -d "Update asdf"
+complete -f -c asdf -n '__fish_asdf_using_command update; and __fish_asdf_arg_number 2' -l "head" -d "Updates to master HEAD"
+
 # plugin-add completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a plugin-add -d "Add git repo as plugin"
 complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list_all | grep -v \'*\' | awk \'{ print $1 }\')'
