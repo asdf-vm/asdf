@@ -1,22 +1,22 @@
 <!-- docs/_sidebar.md -->
 
-- Core
+- Essencial
 
-  - [Manage asdf-vm](core-manage-asdf-vm)
-  - [Manage Plugins](core-manage-plugins)
-  - [Manage Versions](core-manage-versions)
-  - [Configuration](core-configuration)
-  - [All Commands](core-commands)
+  - [Gerenciar asdf-vm](pt-br/core-manage-asdf-vm)
+  - [Gerenciar Plugins](pt-br/core-manage-plugins)
+  - [Gerenciar Versões](pt-br/core-manage-versions)
+  - [Configuração](pt-br/core-configuration)
+  - [Todos os comandos](pt-br/core-commands)
 
 - Plugins
 
-  - [Creating Plugins](plugins-create)
-  - [All Plugins](plugins-all) <!-- pulls in asdf-vm/asdf-plugins readme -->
+  - [Criando Plugins](pt-br/plugins-create)
+  - [Todos os Plugins](plugins-all)
 
-- Contributing
+- Contribuindo
 
-  - [Core asdf vm](contributing-core-asdf-vm)
-  - [Documentation Site](contributing-doc-site)
+  - [asdf-vm base](pt-br/contributing-core-asdf-vm)
+  - [Site de documentação](pt-br/contributing-doc-site)
 
-- [Changelog](changelog) <!-- pulls in changelog from repo -->
-- [Thanks](thanks)
+- [Changelog](changelog)
+- [Agradecimentos](pt-br/thanks)

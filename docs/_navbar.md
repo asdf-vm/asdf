@@ -1,3 +1,3 @@
 - Translations
   - [:uk: English](/)
-  - [:brazil: Brazilian Portuguese](/pt-br)
+  - [🇧🇷 Brazilian Portuguese](/pt-br/)
