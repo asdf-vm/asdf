@@ -2,7 +2,13 @@
 
 ## 0.7.1-dev
 
+Features
+
+* Add documentation about using multiple versions of the same plugin
+
 Fixed Bugs
+
+* Restore support for legacy file version
 
 ## 0.7.0
 
