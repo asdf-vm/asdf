@@ -589,20 +589,9 @@ asdf_run_hook() {
 }
 
 with_shim_executable() {
-  tool_versions() {
-    env | awk -F= '/^ASDF_[A-Z]+_VERSION/ {print $1" "$2}' | sed -e "s/^ASDF_//" | sed -e "s/_VERSION / /" | tr "[:upper:]_" "[:lower:]-"
-    local asdf_versions_path
-    asdf_versions_path="$(find_tool_versions)"
-    [ -f "${asdf_versions_path}" ] && cat "${asdf_versions_path}"
-  }
-
-  shim_versions() {
+  get_shim_versions() {
     shim_plugin_versions "${shim_name}"
     shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
-  }
-
-  select_from_tool_versions() {
-    grep -f <(shim_versions) <(tool_versions) | head -n 1 | xargs echo
   }
 
   preset_versions() {
@@ -610,7 +599,42 @@ with_shim_executable() {
   }
 
   select_from_preset_version() {
-    grep -f <(shim_versions) <(preset_versions) | head -n 1 | xargs echo
+    grep -f <(get_shim_versions) <(preset_versions) | head -n 1 | xargs echo
+  }
+
+  select_version() {
+    # First, we get the all the plugin/version pairs where the
+    # current shim is available.
+    # Then, we iterate on these and check if the version of the current
+    # plugin is the one currently set.
+    # Note that multiple plugin versions can be set for a single plugin.
+    # These are separated by a space. e.g. python 3.7.2 2.7.15
+    # Therefore, we iterate on all the versions set for the plugin
+    # and return if we find a version which matches the shim plugin/version pair
+    local search_path
+    search_path=$(pwd)
+    local shim_versions
+    IFS=$'\n' read -rd '' -a shim_versions <<< "$(get_shim_versions)"
+
+    for plugin_and_version in "${shim_versions[@]}"; do
+      local plugin_name
+      local plugin_shim_version
+      IFS=' ' read -r plugin_name plugin_shim_version <<< "$plugin_and_version"
+
+      local version_and_path
+      local version_string
+      local usable_plugin_versions
+      local _path
+      version_and_path=$(find_version "$plugin_name" "$search_path")
+      IFS='|' read -r version_string _path <<< "$version_and_path"
+      IFS=' ' read -r -a usable_plugin_versions <<< "$version_string"
+      for plugin_version in "${usable_plugin_versions[@]}"; do
+        if [ "$plugin_version" = "$plugin_shim_version" ]; then
+          echo "$plugin_name $plugin_version"
+          return
+        fi
+      done
+    done
   }
 
   local shim_name
@@ -622,15 +646,19 @@ with_shim_executable() {
     return 1
   fi
 
-  selected_version=$(select_from_tool_versions)
+  local selected_version
+  selected_version="$(select_version)"
+
   if [ -z "$selected_version" ]; then
     selected_version=$(select_from_preset_version)
   fi
 
   if [ -n "$selected_version" ]; then
-    plugin_name=$(cut -d ' ' -f 1 <<< "$selected_version");
-    full_version=$(cut -d ' ' -f 2- <<< "$selected_version");
+    local plugin_name
+    local full_version
+    local plugin_path
 
+    IFS=' ' read -r plugin_name full_version <<< "$selected_version"
     plugin_path=$(get_plugin_path "$plugin_name")
 
     run_within_env() {
