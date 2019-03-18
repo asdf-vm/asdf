@@ -10,10 +10,6 @@ set -l asdf_bin_dirs $ASDF_DIR/bin $ASDF_DIR/shims $asdf_data_dir/shims
 
 for x in $asdf_bin_dirs
   if begin not contains $x $PATH; and test -d $x; end
-    if set -q fish_user_paths
-      set -gx fish_user_paths $fish_user_paths $x
-    else
-      set PATH $PATH $x
-    end
+    set PATH $x $PATH
   end
 end
