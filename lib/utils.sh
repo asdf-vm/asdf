@@ -603,24 +603,30 @@ with_shim_executable() {
   }
 
   select_version() {
-    # First, we get the all the plugin/version pairs where the
+    # First, we get the all the plugins where the
     # current shim is available.
-    # Then, we iterate on these and check if the version of the current
-    # plugin is the one currently set.
+    # Then, we iterate on all versions set for each plugin
     # Note that multiple plugin versions can be set for a single plugin.
     # These are separated by a space. e.g. python 3.7.2 2.7.15
-    # Therefore, we iterate on all the versions set for the plugin
-    # and return if we find a version which matches the shim plugin/version pair
+    # For each plugin/version pair, we check if it is present in the shim
     local search_path
     search_path=$(pwd)
     local shim_versions
     IFS=$'\n' read -rd '' -a shim_versions <<< "$(get_shim_versions)"
 
+    local plugins
+    plugins=()
+
     for plugin_and_version in "${shim_versions[@]}"; do
       local plugin_name
       local plugin_shim_version
-      IFS=' ' read -r plugin_name plugin_shim_version <<< "$plugin_and_version"
+      IFS=' ' read -r plugin_name _plugin_shim_version <<< "$plugin_and_version"
+      if ! [[ " ${plugins[*]} " == *" $plugin_name "* ]]; then
+        plugins+=("$plugin_name")
+      fi
+    done
 
+    for plugin_name in "${plugins[@]}"; do
       local version_and_path
       local version_string
       local usable_plugin_versions
@@ -629,10 +635,16 @@ with_shim_executable() {
       IFS='|' read -r version_string _path <<< "$version_and_path"
       IFS=' ' read -r -a usable_plugin_versions <<< "$version_string"
       for plugin_version in "${usable_plugin_versions[@]}"; do
-        if [ "$plugin_version" = "$plugin_shim_version" ]; then
-          echo "$plugin_name $plugin_version"
-          return
-        fi
+        for plugin_and_version in "${shim_versions[@]}"; do
+          local plugin_shim_name
+          local plugin_shim_version
+          IFS=' ' read -r plugin_shim_name plugin_shim_version <<< "$plugin_and_version"
+          if [[ "$plugin_name" = "$plugin_shim_name" ]] &&
+             [[ "$plugin_version" = "$plugin_shim_version" ]]; then
+            echo "$plugin_name $plugin_version"
+            return
+          fi
+        done
       done
     done
   }
