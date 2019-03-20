@@ -46,7 +46,7 @@ _asdf () {
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "--head" -- "$cur"))
       ;;
-    uninstall|where|reshim|local|global)
+    uninstall|where|reshim|local|global|shell)
       if [[ "$plugins" == *"$prev"* ]] ; then
         local versions
         versions=$(asdf list "$prev" 2> /dev/null)
@@ -58,7 +58,7 @@ _asdf () {
       fi
       ;;
     *)
-      local cmds='current global help install list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim uninstall update where which '
+      local cmds='current global help install list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim shell uninstall update where which '
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$cmds" -- "$cur"))
       ;;
