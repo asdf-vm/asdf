@@ -18,6 +18,7 @@ MANAGE PACKAGES
   asdf current <name>                  Display current version set or being used for package
   asdf where <name> [<version>]        Display install path for an installed or current version
   asdf which <command>                 Display the path to an executable
+  asdf shell <name> <version>          Set the package version in the current shell
   asdf local <name> <version>          Set the package local version
   asdf global <name> <version>         Set the package global version
   asdf list <name>                     List installed versions of a package
