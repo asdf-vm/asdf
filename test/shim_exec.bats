@@ -114,6 +114,7 @@ teardown() {
 }
 
 @test "shim exec should execute first plugin that is installed and set" {
+  run asdf install dummy 2.0
   run asdf install dummy 3.0
 
   echo "dummy 1.0 3.0 2.0" > $PROJECT_DIR/.tool-versions
