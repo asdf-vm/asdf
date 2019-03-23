@@ -567,7 +567,7 @@ shim_plugin_versions() {
   local shim_path
   shim_path="$(asdf_data_dir)/shims/${executable_name}"
   if [ -x "$shim_path" ]; then
-    grep -y "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
+    grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
   else
     echo "asdf: unknown shim $executable_name"
     return 1
