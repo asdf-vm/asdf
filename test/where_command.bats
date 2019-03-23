@@ -49,6 +49,12 @@ function teardown() {
   [ "$output" = "Version not installed" ]
 }
 
+@test "where should error when system version is set" {
+  run asdf where 'dummy' 'system'
+  [ "$status" -eq 1 ]
+  [ "$output" = "System version is selected" ]
+}
+
 @test "where should error when no current version selected and version not specified" {
   run asdf where 'dummy'
 
