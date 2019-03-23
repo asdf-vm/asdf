@@ -1,3 +1,7 @@
+set -x asdf_data_dir (
+  if test -n "$ASDF_DATA_DIR"; echo $ASDF_DATA_DIR;
+  else; echo $HOME/.asdf; end)
+
 function __fish_asdf_needs_command
     set -l cmd (commandline -opc)
     if test (count $cmd) -eq 1
@@ -40,6 +44,10 @@ end
 
 function __fish_asdf_plugin_list_all
     asdf plugin-list-all 2> /dev/null
+end
+
+function __fish_asdf_list_shims
+    ls $asdf_data_dir/shims
 end
 
 # update
@@ -85,6 +93,10 @@ complete -f -c asdf -n '__fish_asdf_using_command current; and __fish_asdf_arg_n
 complete -f -c asdf -n '__fish_asdf_needs_command' -a where -d "Display install path for an installed version"
 complete -f -c asdf -n '__fish_asdf_using_command where; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 complete -f -c asdf -n '__fish_asdf_using_command where; and __fish_asdf_arg_number 3' -a '(__fish_asdf_list_versions (__fish_asdf_arg_at 3))'
+
+# which completion
+complete -f -c asdf -n '__fish_asdf_needs_command' -a which -d "Display executable path for a command"
+complete -f -c asdf -n '__fish_asdf_using_command which; and __fish_asdf_arg_number 2' -a '(__fish_asdf_list_shims)'
 
 # list completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a list -d "List installed versions of a package"
