@@ -32,7 +32,12 @@ where_command() {
     echo "$install_path"
     exit 0
   else
-    echo "Version not installed"
-    exit 1
+    if [ "$version" = "system" ]; then
+      echo "System version is selected"
+      exit 1
+    else
+      echo "Version not installed"
+      exit 1
+    fi
   fi
 }
