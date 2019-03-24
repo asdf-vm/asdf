@@ -26,7 +26,14 @@ do_update() {
   else
     # Update to latest release
     git fetch origin --tags || exit 1
-    tag=$(git tag | sort_versions | sed '$!d') || exit 1
+
+    if [ "$(get_asdf_config_value "use_release_candidates")" = "yes" ]; then
+      # Use the latest tag whether or not it is an RC
+      tag=$(git tag | sort_versions | sed '$!d') || exit 1
+    else
+      # Exclude RC tags when selecting latest tag
+      tag=$(git tag | sort_versions | grep -vi "rc" | sed '$!d') || exit 1
+    fi
 
     # Update
     git checkout "$tag" || exit 1

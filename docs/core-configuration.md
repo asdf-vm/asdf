@@ -41,6 +41,7 @@ legacy_version_file = yes
 **Settings**
 
 - `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's `rbenv`).
+- `use_release_candidates` - defaults to `no`. If set to yes it will cause the `asdf update` command to upgrade to the latest release candidate release instead of the latest semantic version.
 
 ## Environment Variables
 
