@@ -24,7 +24,7 @@
   <body>
     <div id="app"></div>
     <!-- edit on github plugin must appear here -->
-    <script src="//unpkg.com/docsify-edit-on-github@1.0.1/index.js"></script>
+    <script src="scripts/docsify-edit-on-github.js"></script>
     <script>
       window.$docsify = {
         name: "asdf-vm",
@@ -62,8 +62,12 @@
         },
         plugins: [
           EditOnGithubPlugin.create(
-            "https://github.com/asdf-vm/asdf/blob/master/docs/"
-          ),
+            "https://github.com/asdf-vm/asdf/blob/master/docs/", {
+            customURLs: {
+              "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md": "https://github.com/asdf-vm/asdf-plugins/edit/master/README.md",
+              "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md": "https://github.com/asdf-vm/asdf/edit/master/CHANGELOG.md"
+            }
+          })
         ],
       };
     </script>
