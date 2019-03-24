@@ -10,7 +10,7 @@ IFS=$'\t\n' # Stricter IFS settings
 usage() {
     cat <<EOF
 
-Usage: release.sh [new version]
+Usage: tag.sh [new version]
 
 This script is only intended for use by asdf maintainers when releasing new
 versions of asdf. Plugin developers and asdf users do not need this script.
