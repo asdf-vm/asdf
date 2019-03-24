@@ -11,7 +11,8 @@ To tag release candidates
 tagging as well as a dev version things that come after the tag (e.g. a heading
 with the format `<next-version>-dev`).
 2. Run the tests and the linter - `bats test` and `lint.sh`.
-3. Run the release script - `release/release_candidate.sh`
+3. Run the release script. The new version must be in the format `0.0.0-rc0`.
+For example: `release/tag.sh 0.0.0-rc0`.
 4. If the release script succeeds, push to Github. Make sure to use the correct
 remote to push to the official repository
 
@@ -21,6 +22,7 @@ remote to push to the official repository
 tagging as well as a dev version things that come after the tag (e.g. a heading
 with the format `<next-version>-dev`).
 2. Run the tests and the linter - `bats test` and `lint.sh`.
-3. Run the release script - `release/release.sh`
+3. Run the release script. The new version must be in the format `0.0.0`. For
+example: `release/tag.sh 0.0.0`.
 4. If the release script succeeds, push to Github. Make sure to use the correct
 remote to push to the official repository
