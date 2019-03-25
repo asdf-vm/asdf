@@ -141,6 +141,8 @@ sudo dnf install \
 
 That's all! You are ready to use asdf 🎉
 
+?> If you're migrating from other tools and want to use your existing `.node-version` or `.ruby-version` version files, look at the [`legacy_verison_file` flag in the configuration section](core-configuration?id=homeasdfrc).
+
 ## Update
 
 <!-- tabs:start -->
