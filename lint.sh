@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 exec shellcheck -s bash -x \
-     asdf.sh lint.sh release.sh \
+     asdf.sh lint.sh release/tag.sh \
      bin/asdf bin/private/asdf-exec \
      lib/utils.sh lib/commands/*.sh \
      completions/*.bash \

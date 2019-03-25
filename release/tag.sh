@@ -10,7 +10,7 @@ IFS=$'\t\n' # Stricter IFS settings
 usage() {
     cat <<EOF
 
-Usage: release.sh [new version]
+Usage: tag.sh [new version]
 
 This script is only intended for use by asdf maintainers when releasing new
 versions of asdf. Plugin developers and asdf users do not need this script.
@@ -65,6 +65,20 @@ fi
 if git tag | grep "$new_tag_name" > /dev/null; then
     echo >&2 "ERROR: git tag with that version already exists"
     exit 1
+fi
+
+# If not a release candidate version
+if ! (echo "$new_version" | grep -i "rc"); then
+  # Make sure an RC already exists when tagging a major or minor version
+  new_major_and_minor=$(echo "$new_version" | cut -d. -f1,2)
+  if ! git tag | grep "^$new_major_and_minor.[0-9]*$" > /dev/null; then
+    # If the major and minor versions don't already exist, make sure this release
+    # is preceded by an RC release
+    if ! git tag | grep "^$new_major_and_minor.[0-9]*-rc[0-9]*$" > /dev/null; then
+      echo >&2 "ERROR: New major and minor versions must be preceded by an RC version"
+      exit 1
+    fi
+  fi
 fi
 
 # Make sure the changelog already contains details on the new version
