@@ -406,32 +406,3 @@ EOM
   [ "$status" -eq 1 ]
 }
 
-@test "shim exec executes configured post-hook if command was successful" {
-  run asdf install dummy 1.0
-  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
-
-  cat > $HOME/.asdfrc <<-'EOM'
-post_dummy_dummy = echo POST $version $1 $2
-EOM
-
-  run $ASDF_DIR/shims/dummy hello world
-  [ "$status" -eq 0 ]
-  echo "$output" | grep "This is Dummy 1.0! world hello"
-  echo "$output" | grep "POST 1.0 hello world"
-}
-
-@test "shim exec does not executes configured post-hook if command failed" {
-  run asdf install dummy 1.0
-  echo dummy 1.0 > $PROJECT_DIR/.tool-versions
-
-  cat > $HOME/.asdfrc <<-'EOM'
-post_dummy_dummy = echo POST
-EOM
-
-  echo "false" > $ASDF_DIR/installs/dummy/1.0/bin/dummy
-  chmod +x $ASDF_DIR/installs/dummy/1.0/bin/dummy
-
-  run $ASDF_DIR/shims/dummy hello world
-  [ "$status" -eq 1 ]
-  [ "$output" == "" ]
-}

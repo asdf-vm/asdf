@@ -5,10 +5,12 @@
 Features
 
 * Add documentation about using multiple versions of the same plugin
+* Remove post_COMMAND hooks
 
 Fixed Bugs
 
 * Restore support for legacy file version
+* Run executable using `exec`
 
 ## 0.7.0
 

@@ -20,15 +20,10 @@ shim_exec_command() {
 
     asdf_run_hook "pre_${plugin_name}_${shim_name}" "${shim_args[@]}"
     pre_status=$?
-    if [ "$pre_status" -eq 0 ]; then
-      "$executable_path" "${shim_args[@]}"
-      exit_status=$?
+    if [ "$pre_status" -ne 0 ]; then
+      return "$pre_status"
     fi
-    if [ "${exit_status:-${pre_status}}" -eq 0 ]; then
-      asdf_run_hook "post_${plugin_name}_${shim_name}" "${shim_args[@]}"
-      post_status=$?
-    fi
-    exit "${post_status:-${exit_status:-${pre_status}}}"
+    exec "$executable_path" "${shim_args[@]}"
   }
 
   with_shim_executable "$shim_name" exec_shim || exit $?

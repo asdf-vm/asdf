@@ -489,49 +489,36 @@ with_plugin_env() {
     local version="${version_info[0]}"
   fi
 
-  # create a new subshell to keep env
-  (
+  if [ "$version" = "system" ]; then
+    # execute as is for system
+    "$callback"
+    return $?
+  fi
 
-    if [ "$version" = "system" ]; then
-      # execute as is for system
-      "$callback"
-      exit $?
-    fi
+  local plugin_path
+  plugin_path=$(get_plugin_path "$plugin_name")
 
-    local plugin_path
-    plugin_path=$(get_plugin_path "$plugin_name")
+  # add the plugin listed exec paths to PATH
+  local path
+  path="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
 
-    # add the plugin listed exec paths to PATH
-    local path
-    path="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
+  # If no custom exec-env transform, just execute callback
+  if [ ! -f "${plugin_path}/bin/exec-env" ]; then
+    PATH=$path "$callback"
+    return $?
+  fi
 
-    # If no custom exec-env transform, just execute callback
-    if [ ! -f "${plugin_path}/bin/exec-env" ]; then
-      PATH=$path "$callback"
-      exit $?
-    fi
+  # Load the plugin custom environment
+  local install_path
+  install_path=$(find_install_path "$plugin_name" "$full_version")
 
-    # Load the plugin custom environment
-    local install_path
-    install_path=$(find_install_path "$plugin_name" "$full_version")
-
-    ASDF_INSTALL_TYPE=$install_type
-    ASDF_INSTALL_VERSION=$version
-    ASDF_INSTALL_PATH=$install_path
-    export ASDF_INSTALL_TYPE
-    export ASDF_INSTALL_VERSION
-    export ASDF_INSTALL_PATH
-
-    # shellcheck source=/dev/null
+  # shellcheck source=/dev/null
+  ASDF_INSTALL_TYPE=$install_type \
+    ASDF_INSTALL_VERSION=$version \
+    ASDF_INSTALL_PATH=$install_path \
     source "${plugin_path}/bin/exec-env"
 
-    unset ASDF_INSTALL_TYPE
-    unset ASDF_INSTALL_VERSION
-    unset ASDF_INSTALL_PATH
-
-    PATH=$path "$callback"
-    exit $?
-  )
+  PATH=$path "$callback"
 }
 
 plugin_executables() {
