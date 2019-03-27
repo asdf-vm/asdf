@@ -582,7 +582,7 @@ strip_tool_version_comments() {
     new_line="$(echo "$tool_line" | cut -f1 -d"#" | sed -e 's/[[:space:]]*$//')"
 
     # Only print the line if it is not empty
-    if [[ ! -z "$new_line" ]]; then
+    if [[ -n "$new_line" ]]; then
       echo "$new_line"
     fi
   done < "$tool_version_path"
