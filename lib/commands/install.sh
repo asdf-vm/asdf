@@ -40,7 +40,7 @@ install_local_tool_versions() {
   local asdf_versions_path
   asdf_versions_path=$(find_tool_versions)
   if [ -f "${asdf_versions_path}" ]; then
-    while IFS= read -r tool_line || [ -n "$tool_line" ]; do
+    while IFS= read -r tool_line; do
       IFS=' ' read -r -a tool_info <<< "$tool_line"
       local tool_name
       tool_name=$(echo "${tool_info[0]}" | xargs)
@@ -50,7 +50,7 @@ install_local_tool_versions() {
       if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
         install_tool_version "$tool_name" "$tool_version"
       fi
-    done < "$asdf_versions_path"
+    done <<<"$(strip_tool_version_comments "$asdf_versions_path")"
   else
     echo "Either specify a tool & version in the command"
     echo "OR add .tool-versions file in this directory"

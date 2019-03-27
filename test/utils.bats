@@ -314,3 +314,51 @@ teardown() {
   [ "$output" = $(pwd)/foo ]
   rm -f foo bar
 }
+
+@test "strip_tool_version_comments removes lines that only contain comments" {
+  cat <<EOF > test_file
+# comment line
+ruby 2.0.0
+EOF
+  run strip_tool_version_comments test_file
+  [ "$status" -eq 0 ]
+  [ "$output" = "ruby 2.0.0" ]
+}
+@test "strip_tool_version_comments removes lines that only contain comments even with missing newline" {
+  echo -n "# comment line" > test_file
+  run strip_tool_version_comments test_file
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
+
+@test "strip_tool_version_comments removes trailing comments on lines containing version information" {
+  cat <<EOF > test_file
+ruby 2.0.0 # inline comment
+EOF
+  run strip_tool_version_comments test_file
+  [ "$status" -eq 0 ]
+  [ "$output" = "ruby 2.0.0" ]
+}
+
+@test "strip_tool_version_comments removes trailing comments on lines containing version information even with missing newline" {
+  echo -n "ruby 2.0.0 # inline comment" > test_file
+  run strip_tool_version_comments test_file
+  [ "$status" -eq 0 ]
+  [ "$output" = "ruby 2.0.0" ]
+}
+
+@test "strip_tool_version_comments removes all comments from the version file" {
+  cat <<EOF > test_file
+ruby 2.0.0 # inline comment
+# comment line
+erlang 18.2.1 # inline comment
+EOF
+  expected="$(cat <<EOF
+ruby 2.0.0
+erlang 18.2.1
+EOF
+)"
+  run strip_tool_version_comments test_file
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}

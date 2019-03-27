@@ -574,6 +574,19 @@ shim_plugin_versions() {
   fi
 }
 
+strip_tool_version_comments() {
+  local tool_version_path="$1"
+
+  while IFS= read -r tool_line || [ -n "$tool_line" ]; do
+    # Remove whitespace before pound sign, the pound sign, and everything after it
+    new_line="$(echo "$tool_line" | cut -f1 -d"#" | sed -e 's/[[:space:]]*$//')"
+
+    # Only print the line if it is not empty
+    if [[ -n "$new_line" ]]; then
+      echo "$new_line"
+    fi
+  done < "$tool_version_path"
+}
 
 asdf_run_hook() {
   local hook_name=$1

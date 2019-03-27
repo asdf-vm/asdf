@@ -153,3 +153,12 @@ EOM
   run asdf install dummy 1.0
   [ "$output" == "HEY 1.0 FROM dummy" ]
 }
+
+@test "install_command skips comments in .tool-versions file" {
+  cd $PROJECT_DIR
+  echo -n '# dummy 1.2' > ".tool-versions"
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$output" == "" ]
+  [ ! -f $ASDF_DIR/installs/dummy/1.2/version ]
+}
