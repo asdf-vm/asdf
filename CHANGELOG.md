@@ -10,7 +10,7 @@ Features
 
 * Add mksh support
 * Add documentation about using multiple versions of the same plugin
-* Remove post_COMMAND hooks (#502)
+* Remove post_COMMAND hooks
 * Add `adsf shell` command to set a version for the current shell (#480)
 * Ignore comments in .tool-versions (#498)
 
