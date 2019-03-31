@@ -269,7 +269,7 @@ parse_asdf_version_file() {
 
   if [ -f "$file_path" ]; then
     local version
-    version=$(grep "^${plugin_name} " "$file_path" | sed -e "s/^${plugin_name} //")
+    version=$(strip_tool_version_comments "$file_path" | grep "^${plugin_name} "| sed -e "s/^${plugin_name} //")
     if [ -n "$version" ]; then
       echo "$version"
       return 0
