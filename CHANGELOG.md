@@ -1,16 +1,26 @@
 # Changelog
 
-## 0.7.1-dev
-
-Features
-
-* Add documentation about using multiple versions of the same plugin
-* Remove post_COMMAND hooks
+## 0.7.2-dev
 
 Fixed Bugs
 
-* Restore support for legacy file version
-* Run executable using `exec`
+## 0.7.1
+
+Features
+
+* Add mksh support
+* Add documentation about using multiple versions of the same plugin
+* Remove post_COMMAND hooks (#502)
+* Add `adsf shell` command to set a version for the current shell (#480)
+* Ignore comments in .tool-versions (#498)
+
+Fixed Bugs
+
+* Avoid modifying `fish_user_paths`
+* Restore support for legacy file version (#484)
+* Restore support for multiple versions
+* Fix bug when trying to locate shim (#488)
+* Run executable using `exec` (#502)
 
 ## 0.7.0
 
