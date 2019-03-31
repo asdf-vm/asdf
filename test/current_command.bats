@@ -121,3 +121,13 @@ foobar         1.0.0    (set by $PROJECT_DIR/.tool-versions)"
   [ "$status" -eq 0 ]
   echo "$output" | grep "Oohes nooes ~! No plugins installed"
 }
+
+@test "current should handle comments" {
+  cd $PROJECT_DIR
+  echo "dummy 1.2.0  # this is a comment" >> $PROJECT_DIR/.tool-versions
+
+  run asdf current "dummy"
+  echo "$output"
+  [ "$status" -eq 0 ]
+  [ "$output" = "1.2.0    (set by $PROJECT_DIR/.tool-versions)" ]
+}
