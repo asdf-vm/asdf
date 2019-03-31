@@ -5,10 +5,10 @@
 # For Bash, ${BASH_SOURCE[0]} will be used to obtain this script's path.
 # For Zsh and others, $0 (the path to the shell or script) will be used.
 _under="$_"
-if [[ "$_under" == *".sh" ]]; then
-  current_script_path="$_under"
-elif [ "${BASH_SOURCE[0]}" != "" ]; then
+if [ "${BASH_SOURCE[0]}" != "" ]; then
   current_script_path="${BASH_SOURCE[0]}"
+elif [[ "$_under" == *".sh" ]]; then
+  current_script_path="$_under"
 else
   current_script_path="$0"
 fi
