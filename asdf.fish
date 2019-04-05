@@ -9,9 +9,7 @@ set -l asdf_data_dir (
 set -l asdf_bin_dirs $ASDF_DIR/bin $ASDF_DIR/shims $asdf_data_dir/shims
 
 for x in $asdf_bin_dirs
-  if begin not contains $x $PATH; and test -d $x; end
-    set PATH $x $PATH
-  end
+  set PATH $x (string match -v $x $PATH)
 end
 
 # Add function wrapper so we can export variables
