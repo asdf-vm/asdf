@@ -41,6 +41,22 @@ cleaned_path() {
   [ "$output" != "" ]
 }
 
+@test "does not add paths to PATH more than once" {
+  result=$(
+    unset -f asdf
+    unset ASDF_DIR
+    PATH=$(cleaned_path)
+
+    source_asdf_sh
+    source_asdf_sh
+    echo $PATH
+  )
+
+  output=$(echo $PATH | tr ':' '\n' | grep "asdf" | sort | uniq -d)
+  [ "$?" -eq 0 ]
+  [ "$output" = "" ]
+}
+
 @test "defines the asdf function" {
   output=$(
     unset -f asdf
