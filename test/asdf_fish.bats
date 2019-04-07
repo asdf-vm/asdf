@@ -25,23 +25,21 @@ cleaned_path() {
   [ "$result" != "" ]
 }
 
-# Passes for me locally, doesn't work on Travis CI
-#@test "adds asdf dirs to PATH" {
-#  result=$(fish -c "
-#    set -e asdf
-#    set -e ASDF_DIR
-#    set -e ASDF_DATA_DIR
-#    set PATH $(cleaned_path)
-#
-#    source asdf.fish
-#    echo \$PATH
-#  ")
-#
-#  echo $result
-#  output=$(echo "$result" | grep "asdf")
-#  [ "$?" -eq 0 ]
-#  [ "$output" != "" ]
-#}
+@test "adds asdf dirs to PATH" {
+ result=$(fish -c "
+   set -e asdf
+   set -e ASDF_DIR
+   set -e ASDF_DATA_DIR
+   set PATH $(cleaned_path)
+
+   source (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
+   echo \$PATH
+ ")
+
+ output=$(echo "$result" | grep "asdf")
+ [ "$?" -eq 0 ]
+ [ "$output" != "" ]
+}
 
 @test "does not add paths to PATH more than once" {
   result=$(fish -c "
