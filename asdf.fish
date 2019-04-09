@@ -9,8 +9,8 @@ set -l asdf_data_dir (
 set -l asdf_bin_dirs $ASDF_DIR/bin $ASDF_DIR/shims $asdf_data_dir/shims
 
 for x in $asdf_bin_dirs
-  if begin not contains $x $PATH; and test -d $x; end
-    set PATH $x $PATH
+  if test -d $x
+    set PATH $x (echo $PATH | command xargs printf '%s\n' | command grep -v $x)
   end
 end
 
