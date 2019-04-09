@@ -108,7 +108,7 @@ Installation via Homebrew:
 ```shell
 brew install \
   coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc
+  libyaml readline libxslt libtool unixodbc unzip curl
 ```
 
 Installation via Spack:
@@ -116,7 +116,7 @@ Installation via Spack:
 ```shell
 spack install \
   coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc
+  libyaml readline libxslt libtool unixodbc unzip curl
 ```
 
 #### ** Ubuntu **
@@ -125,7 +125,8 @@ spack install \
 sudo apt install \
   automake autoconf libreadline-dev \
   libncurses-dev libssl-dev libyaml-dev \
-  libxslt-dev libffi-dev libtool unixodbc-dev
+  libxslt-dev libffi-dev libtool unixodbc-dev \
+  unzip curl
 ```
 
 #### **Fedora**
@@ -134,7 +135,8 @@ sudo apt install \
 sudo dnf install \
   automake autoconf readline-devel \
   ncurses-devel openssl-devel libyaml-devel \
-  libxslt-devel libffi-devel libtool unixODBC-devel
+  libxslt-devel libffi-devel libtool unixODBC-devel \
+  unzip curl
 ```
 
 <!-- tabs:end -->
