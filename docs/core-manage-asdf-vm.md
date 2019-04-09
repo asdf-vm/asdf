@@ -108,7 +108,8 @@ Installation via Homebrew:
 ```shell
 brew install \
   coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc unzip curl
+  libyaml readline libxslt libtool unixodbc \
+  unzip curl
 ```
 
 Installation via Spack:
@@ -116,7 +117,8 @@ Installation via Spack:
 ```shell
 spack install \
   coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc unzip curl
+  libyaml readline libxslt libtool unixodbc \
+  unzip curl
 ```
 
 #### ** Ubuntu **
