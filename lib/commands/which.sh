@@ -1,6 +1,9 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 which_command() {
   local shim_name
-  shim_name=$(basename "$1")
+  shim_name=$(basename "${1:-}")
 
   if [ -z "$shim_name" ]; then
     echo "usage: asdf which <command>"
