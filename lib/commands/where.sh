@@ -1,6 +1,9 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 where_command() {
-  local plugin_name=$1
-  local full_version=$2
+  local plugin_name=${1:-}
+  local full_version=${2:-}
   check_if_plugin_exists "$plugin_name"
 
   local version
