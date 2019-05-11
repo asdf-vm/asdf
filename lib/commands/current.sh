@@ -1,5 +1,8 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 plugin_current_command() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
   check_if_plugin_exists "$plugin_name"
 
@@ -32,7 +35,7 @@ current_command() {
       printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")" >&2
     done
   else
-    local plugin=$1
+    local plugin=${1:-}
     plugin_current_command "$plugin"
   fi
 }
@@ -44,7 +47,7 @@ check_for_deprecated_plugin() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
   local legacy_config
-  legacy_config=$(get_asdf_config_value "legacy_version_file")
+  legacy_config=$(get_asdf_config_value "legacy_version_file" || true)
   local deprecated_script="${plugin_path}/bin/get-version-from-legacy-file"
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
