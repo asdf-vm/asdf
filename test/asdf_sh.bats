@@ -12,7 +12,10 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
+  # Mimic a real interactive shell, we need to turn off the "Bash strict mode"
+  # settings.
   result=$(
+    set +euo
     unset -f asdf
     unset ASDF_DIR
     PATH=$(cleaned_path)
@@ -27,7 +30,10 @@ cleaned_path() {
 }
 
 @test "adds asdf dirs to PATH" {
+  # Mimic a real interactive shell, we need to turn off the "Bash strict mode"
+  # settings.
   result=$(
+    set +euo
     unset -f asdf
     unset ASDF_DIR
     PATH=$(cleaned_path)
@@ -42,7 +48,10 @@ cleaned_path() {
 }
 
 @test "does not add paths to PATH more than once" {
+  # Mimic a real interactive shell, we need to turn off the "Bash strict mode"
+  # settings.
   result=$(
+    set +euo
     unset -f asdf
     unset ASDF_DIR
     PATH=$(cleaned_path)
@@ -58,7 +67,10 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
+  # Mimic a real interactive shell, we need to turn off the "Bash strict mode"
+  # settings.
   output=$(
+    set +euo
     unset -f asdf
     unset ASDF_DIR
     PATH=$(cleaned_path)
