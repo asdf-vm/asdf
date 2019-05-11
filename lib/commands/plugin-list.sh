@@ -1,5 +1,8 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 plugin_list_command() {
-  local flag=$1
+  local flag=${1:-}
 
   # 0 || 1 with flag
   if [ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$flag" = "--urls" ]; }; then
