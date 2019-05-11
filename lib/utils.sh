@@ -1,3 +1,5 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
 # We shouldn't rely on the user's grep settings to be correct. If we set these
 # here anytime asdf invokes grep it will be invoked with these options
 # shellcheck disable=SC2034
@@ -25,11 +27,11 @@ asdf_repository_url() {
   echo "https://github.com/asdf-vm/asdf-plugins.git"
 }
 
-asdf_data_dir(){
+asdf_data_dir() {
   local data_dir
 
-  if [ -n "${ASDF_DATA_DIR}" ]; then
-    data_dir="${ASDF_DATA_DIR}"
+  if [ -n "${ASDF_DATA_DIR:-}" ]; then
+    data_dir="${ASDF_DATA_DIR:-}"
   else
     data_dir="$HOME/.asdf"
   fi
@@ -72,10 +74,10 @@ list_installed_versions() {
 }
 
 check_if_plugin_exists() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
   # Check if we have a non-empty argument
-  if [ -z "${1}" ]; then
+  if [ -z "${plugin_name}" ]; then
     display_error "No plugin given"
     exit 1
   fi
@@ -157,7 +159,12 @@ find_version() {
   local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f "$legacy_list_filenames_script" ]; then
-    legacy_filenames=$(bash "$legacy_list_filenames_script")
+    set +u
+    # We have to convert spaces to newlines here so we can later loop over the
+    # filenames without changing our IFS settings. These prevents us from having
+    # legacy files with spaces in the name, which should not be a problem.
+    legacy_filenames=$(bash "$legacy_list_filenames_script" | tr " " "\n")
+    set -u
   fi
 
   while [ "$search_path" != "/" ]; do
@@ -171,7 +178,7 @@ find_version() {
 
   get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
 
-  if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
+  if [ -f "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-}" ]; then
     version=$(parse_asdf_version_file "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugin_name")
     if [ -n "$version" ]; then
       echo "$version|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
@@ -188,9 +195,11 @@ display_no_version_set() {
 get_version_from_env () {
   local plugin_name=$1
   local upcase_name
-  upcase_name=$(echo "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
+  upcase_name="$(echo "$plugin_name" | tr '[:lower:]-' '[:upper:]_')"
   local version_env_var="ASDF_${upcase_name}_VERSION"
-  local version=${!version_env_var}
+  # We need to use the := syntax here so Bash will not complain about the
+  # variable being unset if it's not found
+  local version="${!version_env_var:=}"
   echo "$version"
 }
 
@@ -288,7 +297,9 @@ parse_legacy_version_file() {
 
   if [ -f "$file_path" ]; then
     if [ -f "$parse_legacy_script" ]; then
+      set +u
       bash "$parse_legacy_script" "$file_path"
+      set -u
     else
       cat "$file_path"
     fi
@@ -432,12 +443,14 @@ list_plugin_bin_paths() {
     local space_separated_list_of_bin_paths
 
     # shellcheck disable=SC2030
+    set +u
     space_separated_list_of_bin_paths=$(
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
       bash "${plugin_path}/bin/list-bin-paths"
                                      )
+    set -u
   else
     local space_separated_list_of_bin_paths="bin"
   fi
@@ -578,7 +591,7 @@ strip_tool_version_comments() {
 asdf_run_hook() {
   local hook_name=$1
   local hook_cmd
-  hook_cmd="$(get_asdf_config_value "$hook_name")"
+  hook_cmd="$(get_asdf_config_value "$hook_name" || true)"
   if [ -n "$hook_cmd" ]; then
     asdf_hook_fun() {
       unset asdf_hook_fun
@@ -683,7 +696,7 @@ with_shim_executable() {
 
       if [ -x "${plugin_path}/bin/exec-path" ]; then
         install_path=$(find_install_path "$plugin_name" "$full_version")
-        executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:${shim_name}}")
+        executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:-${shim_name}}")
       fi
 
       "$shim_exec" "$plugin_name" "$full_version" "$executable_path"
