@@ -1,6 +1,9 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 shim_env_command() {
-  local shim_name="$1"
-  local env_cmd="${2}"
+  local shim_name="${1:-}"
+  local env_cmd="${2:-}"
   local env_args=("${@:3}")
 
   if [ -z "$shim_name" ]; then
