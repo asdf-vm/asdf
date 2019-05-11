@@ -1,5 +1,8 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 update_command() {
-  local update_to_head=$1
+  local update_to_head=${1:-}
 
   (
   cd "$(asdf_dir)" || exit 1
