@@ -1,5 +1,8 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 list_command() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
   if [ -z "$plugin_name" ]; then
     local plugins_path
