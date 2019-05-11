@@ -1,7 +1,9 @@
-plugin_test_command() {
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
 
-    local plugin_name=$1
-    local plugin_url=$2
+plugin_test_command() {
+    local plugin_name=${1:-}
+    local plugin_url=${2:-}
     local plugin_command_array=()
     local plugin_command
     local tool_version
@@ -30,7 +32,7 @@ plugin_test_command() {
 
     fail_test() {
         echo "FAILED: $1"
-        rm -rf "$TEST_DIR"
+        rm -rf "${TEST_DIR:-}"
         exit 1
     }
 

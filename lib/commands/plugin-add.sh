@@ -1,13 +1,16 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 plugin_add_command() {
   if [[ $# -lt 1 || $# -gt 2 ]]; then
     display_error "usage: asdf plugin-add <name> [<git-url>]"
     exit 1
   fi
 
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
-  if [ -n "$2" ]; then
-    local source_url=$2
+  if [ -n "${2:-}" ]; then
+    local source_url=${2:-}
   else
     initialize_or_update_repository
     local source_url
