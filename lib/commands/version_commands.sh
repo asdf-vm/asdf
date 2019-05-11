@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 version_command() {
   local cmd=$1
   local plugin=$2
@@ -12,7 +15,8 @@ version_command() {
   fi
 
   shift 2
-  local versions=("$@")
+  local versions
+  IFS=$' ' versions=("$@")
 
   local file
   if [ "$cmd" = "global" ]; then
@@ -37,10 +41,10 @@ version_command() {
 
 
   if [ -f "$file" ] && grep "^$plugin " "$file" > /dev/null; then
-    sed -i.bak -e "s/^$plugin .*$/$plugin ${versions[*]}/" "$file"
+    IFS=$' ' sed -i.bak -e "s/^$plugin .*$/$plugin ${versions[*]}/" "$file"
     rm "$file".bak
   else
-    echo "$plugin ${versions[*]}" >> "$file"
+    IFS=$' ' echo "$plugin ${versions[*]}" >> "$file"
   fi
 }
 
@@ -86,8 +90,8 @@ shell_command() {
     exit 1
   fi
 
-  local plugin=$1
-  local version=$2
+  local plugin=${1:-}
+  local version=${2:-}
 
   if ! (check_if_version_exists "$plugin" "$version"); then
     echo 'false'
@@ -98,7 +102,7 @@ shell_command() {
   upcase_name=$(echo "$plugin" | tr '[:lower:]-' '[:upper:]_')
   local version_env_var="ASDF_${upcase_name}_VERSION"
 
-  case $ASDF_SHELL in
+  case ${ASDF_SHELL:-} in
     fish )
       echo "set -gx $version_env_var \"$version\"";;
     * )

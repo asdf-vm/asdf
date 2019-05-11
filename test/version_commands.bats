@@ -23,6 +23,10 @@ teardown() {
   clean_asdf_dir
 }
 
+source_asdf_sh() {
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+}
+
 # Warn users who invoke the old style command without arguments.
 @test "local should emit an error when called with incorrect arity" {
   run asdf local "dummy"
@@ -232,17 +236,27 @@ teardown() {
 }
 
 @test "shell wrapper function should export ENV var" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
-  asdf shell "dummy" "1.1.0"
-  [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
-  unset ASDF_DUMMY_VERSION
+  result=$(
+    set +euo > /dev/null
+    unset -f asdf
+    unset ASDF_DIR
+    source_asdf_sh
+    asdf shell "dummy" "1.1.0"
+    echo $ASDF_DUMMY_VERSION
+  )
+  [ "$result" = "1.1.0" ]
 }
 
 @test "shell wrapper function should return an error for missing plugins" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
-  run asdf shell "nonexistent" "1.0.0"
-  [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: nonexistent" ]
+  result=$(
+    set +euo > /dev/null
+    unset -f asdf
+    unset ASDF_DIR
+    source_asdf_sh
+    asdf shell "nonexistent" "1.0.0" 2>&1
+    echo "; exit status: $?"
+  )
+  [ "$result" = $'No such plugin: nonexistent\n; exit status: 1' ]
 }
 
 @test "shell should emit an error when wrapper function is not loaded" {
