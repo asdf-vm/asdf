@@ -1,3 +1,6 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 handle_failure() {
   local install_path="$1"
   rm -rf "$install_path"
@@ -11,8 +14,8 @@ handle_cancel() {
 }
 
 install_command() {
-  local plugin_name=$1
-  local full_version=$2
+  local plugin_name=${1:-}
+  local full_version=${2:-}
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions
@@ -41,14 +44,19 @@ install_local_tool_versions() {
   asdf_versions_path=$(find_tool_versions)
   if [ -f "${asdf_versions_path}" ]; then
     while IFS= read -r tool_line; do
-      IFS=' ' read -r -a tool_info <<< "$tool_line"
-      local tool_name
-      tool_name=$(echo "${tool_info[0]}" | xargs)
-      local tool_version
-      tool_version=$(echo "${tool_info[1]}" | xargs)
+      if [ -n "${tool_line:-}" ]; then
+        local tool_info
+        IFS=' ' read -r -a tool_info <<< "$tool_line"
+        if [ -n "${tool_info:-}" ]; then
+        local tool_name
+        tool_name=$(echo "${tool_info[0]}" | xargs)
+        local tool_version
+        tool_version=$(echo "${tool_info[1]}" | xargs)
 
-      if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
-        install_tool_version "$tool_name" "$tool_version"
+        if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
+          install_tool_version "$tool_name" "$tool_version"
+        fi
+      fi
       fi
     done <<<"$(strip_tool_version_comments "$asdf_versions_path")"
   else

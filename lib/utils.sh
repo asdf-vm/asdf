@@ -104,7 +104,7 @@ check_if_version_exists() {
 }
 
 get_plugin_path() {
-  echo "$(asdf_data_dir)/plugins/$1"
+  echo "$(asdf_data_dir)/plugins/${1:-}"
 }
 
 display_error() {
@@ -153,7 +153,7 @@ find_version() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
   local legacy_config
-  legacy_config=$(get_asdf_config_value "legacy_version_file")
+  legacy_config=$(get_asdf_config_value "legacy_version_file" || true)
   local legacy_list_filenames_script
   legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
   local legacy_filenames=""
