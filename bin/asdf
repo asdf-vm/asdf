@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
 
 # shellcheck source=lib/utils.sh
 source "$(dirname "$(dirname "$0")")/lib/utils.sh"
