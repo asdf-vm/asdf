@@ -1,6 +1,9 @@
+set -o nounset -o pipefail -o errexit
+IFS=$'\t\n' # Stricter IFS settings
+
 reshim_command() {
-  local plugin_name=$1
-  local full_version=$2
+  local plugin_name=${1:-}
+  local full_version=${2:-}
 
   if [ -z "$plugin_name" ]; then
     local plugins_path
@@ -20,7 +23,7 @@ reshim_command() {
 
   if [ "$full_version" != "" ]; then
     # generate for the whole package version
-    asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version_name"
+    asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version"
     generate_shims_for_version "$plugin_name" "$full_version"
     asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version"
   else
@@ -120,7 +123,7 @@ remove_obsolete_shims() {
   obsolete_shims=$(comm -23 <(echo "$shims") <(echo "$exec_names"))
 
   for shim_name in $obsolete_shims; do
-    remove_shim_for_version "$plugin_name" "$version" "$shim_name"
+    remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"
   done
 }
 
