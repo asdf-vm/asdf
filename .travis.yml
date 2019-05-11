@@ -8,7 +8,7 @@ before_install:
   - ./prepare-travis.sh
 
 before_script:
-  - git clone https://github.com/sstephenson/bats.git /tmp/bats
+  - git clone https://github.com/bats-core/bats-core.git --branch v1.1.0 /tmp/bats
   - export PATH=/tmp/bats/bin:$PATH
 
 os:
