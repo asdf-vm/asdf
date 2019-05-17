@@ -57,6 +57,17 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "reshim should not remove metadata of removed prefix versions" {
+  run asdf install dummy 1.0
+  run asdf install dummy 1.0.1
+  run rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
+  run asdf reshim dummy
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
+  run grep "asdf-plugin: dummy 1.0.1" "$ASDF_DIR/shims/dummy"
+  [ "$status" -eq 0 ]
+}
+
 @test "reshim should not duplicate shims" {
   cd $PROJECT_DIR
 

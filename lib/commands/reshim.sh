@@ -120,7 +120,7 @@ remove_obsolete_shims() {
   obsolete_shims=$(comm -23 <(echo "$shims") <(echo "$exec_names"))
 
   for shim_name in $obsolete_shims; do
-    remove_shim_for_version "$plugin_name" "$version" "$shim_name"
+    remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"
   done
 }
 
@@ -137,11 +137,11 @@ remove_shim_for_version() {
   local count_installed
   count_installed=$(list_installed_versions "$plugin_name" | wc -l)
 
-  if ! grep "# asdf-plugin: $plugin_name $version" "$shim_path" > /dev/null 2>&1; then
+  if ! grep -x "# asdf-plugin: $plugin_name $version" "$shim_path" > /dev/null 2>&1; then
     return 0
   fi
 
-  sed -i.bak -e "/# asdf-plugin: $plugin_name $version/d" "$shim_path"
+  sed -i.bak -e "/# asdf-plugin: $plugin_name $version"'$/d' "$shim_path"
   rm "$shim_path".bak
 
   if ! grep "# asdf-plugin:" "$shim_path" > /dev/null || \
@@ -154,6 +154,6 @@ remove_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
   for shim_path in $(plugin_shims "$plugin_name" "$full_version"); do
-    remove_shim_for_version "$plugin_name" "$version" "$shim_path"
+    remove_shim_for_version "$plugin_name" "$full_version" "$shim_path"
   done
 }
