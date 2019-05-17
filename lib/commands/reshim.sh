@@ -65,7 +65,7 @@ write_shim_script() {
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
   if [ -f "$shim_path" ]; then
-    if ! grep "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
+    if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
      sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
      rm "$shim_path".bak
     fi

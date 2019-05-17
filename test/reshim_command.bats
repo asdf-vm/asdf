@@ -15,6 +15,19 @@ teardown() {
 }
 
 
+@test "reshim should allow prefixes of other versions" {
+  run asdf install dummy 1.0.1
+  run asdf install dummy 1.0
+
+  run asdf reshim
+  [ "$status" -eq 0 ]
+
+  run grep "asdf-plugin: dummy 1.0.1" "$ASDF_DIR/shims/dummy"
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin: dummy 1.0\$" "$ASDF_DIR/shims/dummy"
+  [ "$status" -eq 0 ]
+}
+
 @test "reshim command should remove shims of removed binaries" {
   run asdf install dummy 1.0
   [ "$status" -eq 0 ]
