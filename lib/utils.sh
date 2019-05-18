@@ -545,7 +545,7 @@ is_executable() {
 plugin_shims() {
   local plugin_name=$1
   local full_version=$2
-  grep -l "# asdf-plugin: $plugin_name $full_version" "$(asdf_data_dir)/shims"/* 2>/dev/null
+  grep -lx "# asdf-plugin: $plugin_name $full_version" "$(asdf_data_dir)/shims"/* 2>/dev/null
 }
 
 shim_plugin_versions() {
