@@ -64,8 +64,8 @@ list_installed_versions() {
   plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
   if [ -d "$plugin_installs_path" ]; then
-    # shellcheck disable=SC2045
-    for install in $(ls -d "${plugin_installs_path}"/*/ 2>/dev/null); do
+    for install in "${plugin_installs_path}"/*/; do
+      [[ -e "$install" ]] || break
       basename "$install" | sed 's/^ref-/ref:/'
     done
   fi
