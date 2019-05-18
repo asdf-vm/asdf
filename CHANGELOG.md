@@ -1,8 +1,18 @@
 # Changelog
 
-## 0.7.2-dev
+## 0.7.3-dev
+
+## 0.7.2
+
+Features
+
+* Add unit tests for untested code in asdf.sh and asdf.fish (#286, #507, #508)
+* Switched to a maintained version of BATS (#521)
 
 Fixed Bugs
+
+* Don't iterate on output of `ls` (#513)
+* Check shims for full tool version so adding new versions to a shim works properly (#517, #524)
 
 ## 0.7.1
 
@@ -12,7 +22,7 @@ Features
 * Add documentation about using multiple versions of the same plugin
 * Remove post_COMMAND hooks
 * Add `adsf shell` command to set a version for the current shell (#480)
-* Ignore comments in .tool-versions (#498)
+* Ignore comments in .tool-versions (#498, #504)
 
 Fixed Bugs
 
