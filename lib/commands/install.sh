@@ -37,21 +37,35 @@ get_concurrency() {
 }
 
 install_local_tool_versions() {
-  local asdf_versions_path
-  asdf_versions_path=$(find_tool_versions)
-  if [ -f "${asdf_versions_path}" ]; then
-    while IFS= read -r tool_line; do
-      IFS=' ' read -r -a tool_info <<< "$tool_line"
-      local tool_name
-      tool_name=$(echo "${tool_info[0]}" | xargs)
-      local tool_version
-      tool_version=$(echo "${tool_info[1]}" | xargs)
+  local plugins_path
+  plugins_path=$(get_plugin_path)
 
-      if ! [[ -z "$tool_name" || -z "$tool_version" ]]; then
-        install_tool_version "$tool_name" "$tool_version"
+  local search_path
+  search_path=$(pwd)
+
+  local some_tools_installed
+
+  if ls "$plugins_path" &> /dev/null; then
+    for plugin_path in "$plugins_path"/* ; do
+      local plugin_name
+      plugin_name=$(basename "$plugin_path")
+
+      local plugin_version_and_path
+      plugin_version_and_path="$(find_version "$plugin_name" "$search_path")"
+
+      if [ -n "$plugin_version_and_path" ]; then
+        local plugin_version
+        plugin_version=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
+        install_tool_version "$plugin_name" "$plugin_version"
+        some_tools_installed='yes'
       fi
-    done <<<"$(strip_tool_version_comments "$asdf_versions_path")"
+    done
   else
+    echo "Install plugins first to be able to install tools"
+    exit 1
+  fi
+
+  if [ -z "$some_tools_installed" ]; then
     echo "Either specify a tool & version in the command"
     echo "OR add .tool-versions file in this directory"
     echo "or in a parent directory"
