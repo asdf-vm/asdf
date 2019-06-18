@@ -20,7 +20,7 @@ teardown() {
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
 }
 
-@test "install_command installs even if the user is terrible and does not use newlines" {
+@test "install_command without arguments installs even if the user is terrible and does not use newlines" {
   cd $PROJECT_DIR
   echo -n 'dummy 1.2' > ".tool-versions"
   run asdf install
@@ -36,7 +36,7 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "install_command should work in directory containing whitespace" {
+@test "install_command without arguments should work in directory containing whitespace" {
   WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
   mkdir -p "$WHITESPACE_DIR"
   cd "$WHITESPACE_DIR"
@@ -78,7 +78,7 @@ teardown() {
   [ "$lines_count" -eq "1" ]
 }
 
-@test "install_command should not generate shim for subdir" {
+@test "install_command without arguments should not generate shim for subdir" {
   cd $PROJECT_DIR
   echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
 
@@ -88,7 +88,7 @@ teardown() {
   [ ! -f "$ASDF_DIR/shims/subdir" ]
 }
 
-@test "install_command generated shim should pass all arguments to executable" {
+@test "install_command without arguments should generate shim that passes all arguments to executable" {
   # asdf lib needed to run generated shims
   cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 
@@ -114,7 +114,7 @@ teardown() {
   [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
 }
 
-@test "install_command uses a parent directory .tool-versions file if present" {
+@test "install_command without arguments uses a parent directory .tool-versions file if present" {
   # asdf lib needed to run generated shims
   cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 
@@ -154,11 +154,25 @@ EOM
   [ "$output" == "HEY 1.0 FROM dummy" ]
 }
 
-@test "install_command skips comments in .tool-versions file" {
+@test "install command without arguments installs versions from legacy files" {
+  echo 'legacy_version_file = yes' > $HOME/.asdfrc
+  echo '1.2' >> $PROJECT_DIR/.dummy-version
   cd $PROJECT_DIR
-  echo -n '# dummy 1.2' > ".tool-versions"
   run asdf install
   [ "$status" -eq 0 ]
   [ "$output" == "" ]
-  [ ! -f $ASDF_DIR/installs/dummy/1.2/version ]
+  [ -f $ASDF_DIR/installs/dummy/1.2/version ]
+}
+
+@test "install command without arguments installs versions from legacy files in parent directories" {
+  echo 'legacy_version_file = yes' > $HOME/.asdfrc
+  echo '1.2' >> $PROJECT_DIR/.dummy-version
+
+  mkdir -p $PROJECT_DIR/child
+  cd $PROJECT_DIR/child
+
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$output" == "" ]
+  [ -f $ASDF_DIR/installs/dummy/1.2/version ]
 }
