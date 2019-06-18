@@ -55,9 +55,9 @@ install_local_tool_versions() {
 
       if [ -n "$plugin_version_and_path" ]; then
         local plugin_version
+        some_tools_installed='yes'
         plugin_version=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
         install_tool_version "$plugin_name" "$plugin_version"
-        some_tools_installed='yes'
       fi
     done
   else

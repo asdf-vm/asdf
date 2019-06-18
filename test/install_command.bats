@@ -157,6 +157,7 @@ EOM
 @test "install command without arguments installs versions from legacy files" {
   echo 'legacy_version_file = yes' > $HOME/.asdfrc
   echo '1.2' >> $PROJECT_DIR/.dummy-version
+  cd $PROJECT_DIR
   run asdf install
   [ "$status" -eq 0 ]
   [ "$output" == "" ]
