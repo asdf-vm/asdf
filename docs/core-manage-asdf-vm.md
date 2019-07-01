@@ -105,6 +105,14 @@ the ones above.
 autoload -Uz compinit && compinit
 ```
 
+If you have a function path set up and have a place to put a custom completion
+file, then instead of adding a source of `asdf.bash` to your `.zshrc`, you can
+instead:
+
+```shell
+ln -s ~/.asdf/completions/_asdf.zsh ${fpath[1]}/_asdf
+```
+
 #### ** Fish **
 
 Installation via **Git**:
