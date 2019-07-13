@@ -7,7 +7,7 @@
 Clone only the latest branch:
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.2
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.3
 ```
 
 Alternately, you can clone the whole repo and checkout the latest branch:
