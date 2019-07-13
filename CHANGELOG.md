@@ -1,6 +1,16 @@
 # Changelog
 
-## 0.7.3-dev
+## 0.7.4-dev
+
+## 0.7.3
+
+Features
+
+* Make `asdf install` check for versions in legacy files (#533, #539)
+
+Fixed Bugs
+
+* Address shellcheck warning and use shell globbing instead of `ls` (#525)
 
 ## 0.7.2
 
