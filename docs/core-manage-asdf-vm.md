@@ -82,7 +82,7 @@ the Homebrew docs.
 
 ```bash
 echo -e '\n. $(brew --prefix asdf)/asdf.sh' >> ~/.zshrc
-echo -e '\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash' >> ~/zshrc.
+echo -e '\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash' >> ~/.zshrc
 ```
 
 If you are not using a framework, or if on starting your shell you get an
