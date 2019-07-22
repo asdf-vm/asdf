@@ -28,7 +28,7 @@ plugin_add_command() {
     display_error "Plugin named $plugin_name already added"
     exit 2
   else
-    if ! git clone "$source_url" "$plugin_path"; then
+    if ! git clone -q "$source_url" "$plugin_path"; then
       exit 1
     fi
   fi
