@@ -56,8 +56,8 @@ in Bash](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash)
 in the Homebrew docs.
 
 ```bash
-echo -e '\n. $(brew --prefix asdf)/asdf.sh' >> ~/.bash_profile
-echo -e '\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash' >> ~/.bash_profile
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
 ```
 
 #### ** ZSH **
@@ -80,9 +80,9 @@ unnecessary. See [Configuring Completions in
 ZSH](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) in
 the Homebrew docs.
 
-```bash
-echo -e '\n. $(brew --prefix asdf)/asdf.sh' >> ~/.zshrc
-echo -e '\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash' >> ~/.zshrc
+```shell
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.zshrc
 ```
 
 If you are not using a framework, or if on starting your shell you get an
