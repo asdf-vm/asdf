@@ -109,7 +109,7 @@ shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
 Friendly!
 
 ```shell
-echo 'source (brew --prefix asdf)/asdf.fish' >> ~/.config/fish/config.fish
+echo "source "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
 <!-- tabs:end -->
