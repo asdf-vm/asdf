@@ -95,9 +95,21 @@ autoload -Uz compinit && compinit
 
 #### ** Fish **
 
+Installation via **Git**:
+
 ```shell
 echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
 mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+```
+
+Installation via **Homebrew**:
+
+?> Homebrew takes care of [installing the completions for fish
+shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
+Friendly!
+
+```shell
+echo 'source (brew --prefix asdf)/asdf.fish' >> ~/.config/fish/config.fish
 ```
 
 <!-- tabs:end -->
