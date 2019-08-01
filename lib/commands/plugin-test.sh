@@ -39,7 +39,9 @@ plugin_test_command() {
     fi
 
     TEST_DIR=$(mktemp -dt asdf.XXXX)
-    cp -R "$ASDF_DIR/" "$TEST_DIR"
+    cp -R "$ASDF_DIR/bin" "$TEST_DIR"
+    cp -R "$ASDF_DIR/lib" "$TEST_DIR"
+    cp -R "$ASDF_DIR/asdf.sh" "$TEST_DIR"
 
     plugin_test() {
         export ASDF_DIR=$TEST_DIR
