@@ -39,7 +39,9 @@ plugin_test_command() {
     fi
 
     TEST_DIR=$(mktemp -dt asdf.XXXX)
-    git clone "$ASDF_DIR/.git" "$TEST_DIR"
+    cp -R "$ASDF_DIR/bin" "$TEST_DIR"
+    cp -R "$ASDF_DIR/lib" "$TEST_DIR"
+    cp "$ASDF_DIR/asdf.sh" "$TEST_DIR"
 
     plugin_test() {
         export ASDF_DIR=$TEST_DIR
@@ -72,8 +74,8 @@ plugin_test_command() {
                 fail_test "$plugin_name/bin/list-all does not set GitHub Authorization token"
             fi
 
-            # test for most common token names we have on plugins
-            if [ -z "$OAUTH_TOKEN" ] || [ -z "$GITHUB_API_TOKEN" ] ; then
+            # test for most common token names we have on plugins. If both are empty show this warning
+            if [ -z "$OAUTH_TOKEN" ] && [ -z "$GITHUB_API_TOKEN" ] ; then
                 echo "$plugin_name/bin/list-all is using GitHub API, just be sure you provide an API Authorization token"
                 echo "via your travis settings. This is the current rate_limit:"
                 echo
