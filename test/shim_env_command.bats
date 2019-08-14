@@ -66,3 +66,19 @@ teardown() {
   [ "$output" == "$ASDF_DIR/shims/dummy" ]
   [ "$status" -eq 0 ]
 }
+
+@test "asdf env should set PATH correctly" {
+  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  run asdf install
+
+  run asdf env dummy
+  [ "$status" -eq 0 ]
+
+  # Should set path
+  path_line=$(echo "$output" | grep '^PATH=')
+  [ "$path_line" != "" ]
+
+  # Should not contain duplicate colon
+  run grep '::' <(echo "$path_line")
+  [ "$duplicate_colon" == "" ]
+}
