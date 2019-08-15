@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.7.4-dev
+## 0.7.5-dev
+
+## 0.7.4
+
+Features
+
+* Add quite flag to git clone (#546)
+* Improve docs for Homebrew (#553, #554)
+
+Fixed Bugs
+
+* Don't include the current directory in `PATH` variable in `asdf env` environment (#543, #560)
+* Fix `asdf plugin-test` dependency on Git when installed via Homebrew (#509, #556)
 
 ## 0.7.3
 
