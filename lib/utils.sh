@@ -499,8 +499,12 @@ with_plugin_env() {
   plugin_path=$(get_plugin_path "$plugin_name")
 
   # add the plugin listed exec paths to PATH
-  local path
-  path="$(list_plugin_exec_paths "$plugin_name" "$full_version" | tr '\n' ':'):$PATH"
+  local path exec_paths
+  exec_paths="$(list_plugin_exec_paths "$plugin_name" "$full_version")"
+
+  # exec_paths contains a trailing newline which is converted to a colon, so no
+  # colon is needed between the subshell and the PATH variable in this string
+  path="$(echo "$exec_paths" | tr '\n' ':')$PATH"
 
   # If no custom exec-env transform, just execute callback
   if [ ! -f "${plugin_path}/bin/exec-env" ]; then
