@@ -238,6 +238,15 @@ teardown() {
   unset ASDF_DUMMY_VERSION
 }
 
+@test "shell wrapper function with --unset should unset ENV var" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "1.1.0"
+  [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
+  asdf shell "dummy" "--unset"
+  [ -z "$(echo $ASDF_DUMMY_VERSION)" ]
+  unset ASDF_DUMMY_VERSION
+}
+
 @test "shell wrapper function should return an error for missing plugins" {
   source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   run asdf shell "nonexistent" "1.0.0"

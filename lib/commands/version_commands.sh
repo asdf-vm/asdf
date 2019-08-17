@@ -81,7 +81,7 @@ global_command() {
 # Output from this command must be executable shell code
 shell_command() {
   if [ "$#" -lt "2" ]; then
-    echo "Usage: asdf shell <name> <version>" >&2
+    echo "Usage: asdf shell <name> <version> | --unset" >&2
     echo 'false'
     exit 1
   fi
@@ -89,14 +89,18 @@ shell_command() {
   local plugin=$1
   local version=$2
 
+  local upcase_name
+  upcase_name=$(echo "$plugin" | tr '[:lower:]-' '[:upper:]_')
+  local version_env_var="ASDF_${upcase_name}_VERSION"
+
+  if [ "$version" = "--unset" ]; then
+    echo "unset $version_env_var"
+    exit 0
+  fi
   if ! (check_if_version_exists "$plugin" "$version"); then
     echo 'false'
     exit 1
   fi
-
-  local upcase_name
-  upcase_name=$(echo "$plugin" | tr '[:lower:]-' '[:upper:]_')
-  local version_env_var="ASDF_${upcase_name}_VERSION"
 
   case $ASDF_SHELL in
     fish )
