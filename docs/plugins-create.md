@@ -98,10 +98,10 @@ This must be used wisely. For now AFAIK, it's only being used in the Elixir plug
 
 **Important: Shim metadata**
 
-If you create a custom shim, be sure to include a comment like the following (replacing your plugin name) in it:
+If you create a custom shim, be sure to include a comment like the following (replacing your plugin name and version) in it:
 
 ```
-# asdf-plugin: plugin_name
+# asdf-plugin: plugin_name plugin_version
 ```
 
 asdf uses this `asdf-plugin` metadata to remove unused shims when uninstalling.
