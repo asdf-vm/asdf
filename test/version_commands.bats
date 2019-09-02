@@ -242,7 +242,7 @@ teardown() {
   source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "1.1.0"
   [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
-  asdf shell "dummy" "--unset"
+  asdf shell "dummy" --unset
   [ -z "$(echo $ASDF_DUMMY_VERSION)" ]
   unset ASDF_DUMMY_VERSION
 }
