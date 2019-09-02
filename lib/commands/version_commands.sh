@@ -81,7 +81,7 @@ global_command() {
 # Output from this command must be executable shell code
 shell_command() {
   if [ "$#" -lt "2" ]; then
-    echo "Usage: asdf shell <name> <version> | --unset" >&2
+    echo "Usage: asdf shell <name> {<version>|--unset}" >&2
     echo 'false'
     exit 1
   fi
