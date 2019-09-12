@@ -603,7 +603,7 @@ with_shim_executable() {
   }
 
   select_from_preset_version() {
-    grep -f <(get_shim_versions) <(preset_versions) | head -n 1 | xargs echo
+    grep -f <get_shim_versions <preset_versions | head -n 1 | xargs echo
   }
 
   select_version() {
