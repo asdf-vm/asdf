@@ -80,8 +80,24 @@ check_if_plugin_exists() {
     exit 1
   fi
 
-  if [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
+  if ! (does_plugin_exist "$plugin_name"); then
     display_error "No such plugin: $plugin_name"
+    exit 1
+  fi
+}
+
+check_if_plugin_is_enabled() {
+  local plugin_name=$1
+
+  check_if_plugin_exists "$plugin_name"
+  # Check if we have a non-empty argument
+  if [ -z "${1}" ]; then
+    display_error "No plugin given"
+    exit 1
+  fi
+
+  if is_plugin_disabled "$plugin_name"; then
+    display_error "Plugin is disabled: $plugin_name"
     exit 1
   fi
 }
@@ -99,6 +115,30 @@ check_if_version_exists() {
     display_error "version $version is not installed for $plugin_name"
     exit 1
   fi
+}
+
+does_plugin_exist() {
+  local plugin_path
+  plugin_path=$(get_plugin_path "$1")
+  [ -d "$plugin_path" ]
+}
+
+is_plugin_enabled() {
+  local plugin_name
+  plugin_name=$1
+  does_plugin_exist "$plugin_name" && (! is_plugin_disabled "$plugin_name")
+}
+
+is_plugin_disabled() {
+  local disabled_file
+  disabled_file=$(get_plugin_disabled_file "$1")
+  [ -f "$disabled_file" ]
+}
+
+get_plugin_disabled_file() {
+  local plugin_path
+  plugin_path=$(get_plugin_path "$1")
+  echo "$plugin_path/__asdf_plugin_disabled__"
 }
 
 get_plugin_path() {

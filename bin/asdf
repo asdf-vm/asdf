@@ -103,6 +103,14 @@ case "$1" in
     load_cmd "plugin-test"
     plugin_test_command "${cmd_args[@]}";;
 
+  "plugin-disable")
+    load_cmd "plugin-disable"
+    plugin_disable_command "${cmd_args[@]}";;
+
+  "plugin-enable")
+    load_cmd "plugin-enable" "reshim"
+    plugin_enable_command "${cmd_args[@]}";;
+
   "shim-versions")
     load_cmd "shim_versions"
     shim_versions_command "${cmd_args[@]}";;

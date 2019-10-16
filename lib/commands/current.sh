@@ -1,7 +1,7 @@
 plugin_current_command() {
   local plugin_name=$1
 
-  check_if_plugin_exists "$plugin_name"
+  check_if_plugin_is_enabled "$plugin_name"
 
   local search_path
   search_path=$(pwd)

@@ -8,14 +8,17 @@ reshim_command() {
 
     if ls "$plugins_path" &> /dev/null; then
       for plugin_path in "$plugins_path"/* ; do
-        plugin_name=$(basename "$plugin_path")
-        reshim_command "$plugin_name"
+          if [ ! -f "$plugin_path/disable" ]
+          then
+              plugin_name=$(basename "$plugin_path")
+              reshim_command "$plugin_name"
+          fi
       done
     fi
     return 0
   fi
 
-  check_if_plugin_exists "$plugin_name"
+  check_if_plugin_is_enabled "$plugin_name"
   ensure_shims_dir
 
   if [ "$full_version" != "" ]; then

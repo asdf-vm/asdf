@@ -7,6 +7,8 @@ MANAGE PLUGINS
   asdf plugin-remove <name>            Remove plugin and package versions
   asdf plugin-update <name>            Update plugin
   asdf plugin-update --all             Update all plugins
+  asdf plugin-disable <name>           Disable plugin
+  asdf plugin-enable <name>            Enable a disabled plugin
 
 
 MANAGE PACKAGES

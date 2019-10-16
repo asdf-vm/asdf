@@ -8,7 +8,11 @@ list_command() {
     if ls "$plugins_path" &> /dev/null; then
       for plugin_path in "$plugins_path"/* ; do
         plugin_name=$(basename "$plugin_path")
-        echo "$plugin_name"
+        local disabled
+        if is_plugin_disabled "$plugin_name"; then
+          disabled=" **disabled**"
+        fi
+        echo "$plugin_name$disabled"
         display_installed_versions "$plugin_name"
       done
     else

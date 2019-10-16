@@ -11,12 +11,16 @@ plugin_list_command() {
     if ls "$plugins_path" &> /dev/null; then
       for plugin_path in "$plugins_path"/* ; do
         plugin_name=$(basename "$plugin_path")
+        local disabled
+        if is_plugin_disabled "$plugin_name"; then
+          disabled=" **disabled**"
+        fi
 
         if [ $# -eq 0 ]; then
-          printf "%s\\n" "$plugin_name"
+          printf "%s%s\\n" "$plugin_name" "$disabled"
         else
           source_url=$(get_plugin_source_url "$plugin_name")
-          printf "%-15s %s\\n" "$plugin_name" "$source_url"
+          printf "%-15s %s%s\\n" "$plugin_name" "$source_url" "$disabled"
         fi
 
       done

@@ -28,7 +28,7 @@ version_command() {
       file="$(resolve_symlink "$file")"
   fi
 
-  check_if_plugin_exists "$plugin"
+  check_if_plugin_is_enabled "$plugin"
 
   local version
   for version in "${versions[@]}"; do
