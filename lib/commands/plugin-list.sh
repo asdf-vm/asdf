@@ -12,6 +12,7 @@ plugin_list_command() {
       for plugin_path in "$plugins_path"/* ; do
         plugin_name=$(basename "$plugin_path")
         local disabled
+        disabled=""
         if is_plugin_disabled "$plugin_name"; then
           disabled=" **disabled**"
         fi
