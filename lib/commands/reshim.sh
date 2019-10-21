@@ -8,11 +8,10 @@ reshim_command() {
 
     if ls "$plugins_path" &> /dev/null; then
       for plugin_path in "$plugins_path"/* ; do
-          if [ ! -f "$plugin_path/disable" ]
-          then
-              plugin_name=$(basename "$plugin_path")
-              reshim_command "$plugin_name"
-          fi
+        plugin_name=$(basename "$plugin_path")
+        if ! is_plugin_disabled "$plugin_name"; then
+          reshim_command "$plugin_name"
+        fi
       done
     fi
     return 0
