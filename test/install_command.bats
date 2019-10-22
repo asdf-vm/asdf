@@ -130,6 +130,18 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "install_command installs multiple tool versions when they are specified in a .tool-versions file" {
+  echo 'dummy 1.0 1.2' > $PROJECT_DIR/.tool-versions
+  cd $PROJECT_DIR
+
+  run asdf install
+  echo $output
+  [ "$status" -eq 0 ]
+
+  [ $(cat $ASDF_DIR/installs/dummy/1.0/version) = "1.0" ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
+}
+
 @test "install_command doesn't install system version" {
   run asdf install dummy system
   [ "$status" -eq 0 ]
