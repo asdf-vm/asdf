@@ -26,11 +26,9 @@ asdf_repository_url() {
 }
 
 asdf_data_dir(){
-  local data_dir
+  local data_dir="$(asdf_dir)"
 
-  if [ -n "${ASDF_DATA_DIR}" ]; then
-    data_dir="${ASDF_DATA_DIR}"
-  else
+  if [ -z "$data_dir" ]; then
     data_dir="$HOME/.asdf"
   fi
 
