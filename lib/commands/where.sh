@@ -7,7 +7,7 @@ where_command() {
   local install_type="version"
   if [[ -z ${full_version} ]]; then
     local version_and_path
-    version_and_path=$(find_version "$plugin_name" "$PWD")
+    version_and_path=$(find_versions "$plugin_name" "$PWD")
     version=$(cut -d '|' -f 1 <<< "$version_and_path");
   else
     local -a version_info

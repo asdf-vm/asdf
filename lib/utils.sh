@@ -133,7 +133,7 @@ get_version_in_dir() {
   done
 }
 
-find_version() {
+find_versions() {
   local plugin_name=$1
   local search_path=$2
 
@@ -172,9 +172,9 @@ find_version() {
   get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
 
   if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
-    version=$(parse_asdf_version_file "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugin_name")
-    if [ -n "$version" ]; then
-      echo "$version|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+    versions=$(parse_asdf_version_file "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugin_name")
+    if [ -n "$versions" ]; then
+      echo "$versions|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
       return 0
     fi
   fi
@@ -300,7 +300,7 @@ get_preset_version_for() {
   local search_path
   search_path=$(pwd)
   local version_and_path
-  version_and_path=$(find_version "$plugin_name" "$search_path")
+  version_and_path=$(find_versions "$plugin_name" "$search_path")
   local version
   version=$(cut -d '|' -f 1 <<< "$version_and_path");
 
@@ -635,7 +635,7 @@ with_shim_executable() {
       local version_string
       local usable_plugin_versions
       local _path
-      version_and_path=$(find_version "$plugin_name" "$search_path")
+      version_and_path=$(find_versions "$plugin_name" "$search_path")
       IFS='|' read -r version_string _path <<< "$version_and_path"
       IFS=' ' read -r -a usable_plugin_versions <<< "$version_string"
       for plugin_version in "${usable_plugin_versions[@]}"; do

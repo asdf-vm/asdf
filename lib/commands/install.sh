@@ -51,7 +51,7 @@ install_local_tool_versions() {
       plugin_name=$(basename "$plugin_path")
 
       local plugin_version_and_path
-      plugin_version_and_path="$(find_version "$plugin_name" "$search_path")"
+      plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
       if [ -n "$plugin_version_and_path" ]; then
         local plugin_version

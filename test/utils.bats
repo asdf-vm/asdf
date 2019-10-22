@@ -85,49 +85,49 @@ teardown() {
   [ "$output" == "path:/some/dummy path" ]
 }
 
-@test "find_version should return .tool-versions if legacy is disabled" {
+@test "find_versions should return .tool-versions if legacy is disabled" {
   echo "dummy 0.1.0" > $PROJECT_DIR/.tool-versions
   echo "0.2.0" > $PROJECT_DIR/.dummy-version
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$PROJECT_DIR/.tool-versions" ]
 }
 
-@test "find_version should return the legacy file if supported" {
+@test "find_versions should return the legacy file if supported" {
   echo "legacy_version_file = yes" > $HOME/.asdfrc
   echo "dummy 0.1.0" > $HOME/.tool-versions
   echo "0.2.0" > $PROJECT_DIR/.dummy-version
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [ "$output" = "0.2.0|$PROJECT_DIR/.dummy-version" ]
 }
 
-@test "find_version skips .tool-version file that don't list the plugin" {
+@test "find_versions skips .tool-version file that don't list the plugin" {
   echo "dummy 0.1.0" > $HOME/.tool-versions
   echo "another_plugin 0.3.0" > $PROJECT_DIR/.tool-versions
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
-@test "find_version should return .tool-versions if unsupported" {
+@test "find_versions should return .tool-versions if unsupported" {
   echo "dummy 0.1.0" > $HOME/.tool-versions
   echo "0.2.0" > $PROJECT_DIR/.dummy-version
   echo "legacy_version_file = yes" > $HOME/.asdfrc
   rm $ASDF_DIR/plugins/dummy/bin/list-legacy-filenames
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
-@test "find_version should return the version set by envrionment variable" {
+@test "find_versions should return the version set by envrionment variable" {
   export ASDF_DUMMY_VERSION=0.2.0
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   echo $output
   [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
@@ -155,22 +155,22 @@ teardown() {
   [ "$output" = "" ]
 }
 
-@test "find_version should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
+@test "find_versions should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
   echo "dummy 0.1.0" > $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]
 }
 
-@test "find_version should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+@test "find_versions should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
   echo "dummy 0.2.0" > $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
   echo "dummy 0.1.0" > $HOME/.dummy-version
   echo "legacy_version_file = yes" > $HOME/.asdfrc
 
-  run find_version "dummy" $PROJECT_DIR
+  run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
   [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
 }

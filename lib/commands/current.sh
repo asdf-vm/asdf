@@ -6,7 +6,7 @@ plugin_current_command() {
   local search_path
   search_path=$(pwd)
   local version_and_path
-  version_and_path=$(find_version "$plugin_name" "$search_path")
+  version_and_path=$(find_versions "$plugin_name" "$search_path")
   local full_version
   full_version=$(cut -d '|' -f 1 <<< "$version_and_path");
   local version_file_path
