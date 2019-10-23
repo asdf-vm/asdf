@@ -30,7 +30,7 @@ asdf_data_dir(){
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  elif [ asdf_run_as_root ]; then
+  elif [ "${asdf_run_as_root}" ]; then
     data_dir="$(asdf_dir)"
   else
     data_dir="$HOME/.asdf"
