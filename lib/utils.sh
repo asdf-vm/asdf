@@ -30,13 +30,17 @@ asdf_data_dir(){
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  elif [ -n "$(asdf_dir)" ]; then
+  elif [ asdf_run_as_root ]; then
     data_dir="$(asdf_dir)"
   else
     data_dir="$HOME/.asdf"
   fi
 
   echo "$data_dir"
+}
+
+asdf_run_as_root() {
+  [ $(id -u) -eq 0 ]
 }
 
 get_install_path() {
