@@ -27,20 +27,16 @@ asdf_repository_url() {
 
 asdf_data_dir(){
   local data_dir
-
+  
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  elif [ "${asdf_run_as_root}" ]; then
-    data_dir="$(asdf_dir)"
-  else
+  elif [[ $EUID -ne 0 ]]; then
     data_dir="$HOME/.asdf"
+  else
+    data_dir="$(asdf_dir)"
   fi
 
   echo "$data_dir"
-}
-
-asdf_run_as_root() {
-  [ $(id -u) -eq 0 ]
 }
 
 get_install_path() {
