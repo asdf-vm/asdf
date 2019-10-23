@@ -51,13 +51,15 @@ install_local_tool_versions() {
       plugin_name=$(basename "$plugin_path")
 
       local plugin_version_and_path
-      plugin_version_and_path="$(find_version "$plugin_name" "$search_path")"
+      plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
       if [ -n "$plugin_version_and_path" ]; then
         local plugin_version
         some_tools_installed='yes'
-        plugin_version=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
-        install_tool_version "$plugin_name" "$plugin_version"
+        plugin_versions=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
+        for plugin_version in $plugin_versions; do
+          install_tool_version "$plugin_name" "$plugin_version"
+        done
       fi
     done
   else
