@@ -362,3 +362,22 @@ EOF
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
+
+@test "with_shim_executable doesn't crash when executable names contain dashes" {
+  cd $PROJECT_DIR
+  echo "dummy 0.1.0" > $PROJECT_DIR/.tool-versions
+  mkdir -p $ASDF_DIR/installs/dummy/0.1.0/bin
+  touch $ASDF_DIR/installs/dummy/0.1.0/bin/test-dash
+  chmod +x $ASDF_DIR/installs/dummy/0.1.0/bin/test-dash
+  run asdf reshim dummy 0.1.0
+
+  message="callback invoked"
+
+  function callback() {
+    echo $message
+  }
+
+  run with_shim_executable test-dash callback
+  [ "$status" -eq 0 ]
+  [ "$output" = "$message" ]
+}

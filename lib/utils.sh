@@ -687,7 +687,7 @@ with_shim_executable() {
 
       if [ -x "${plugin_path}/bin/exec-path" ]; then
         install_path=$(find_install_path "$plugin_name" "$full_version")
-        executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:${shim_name}}")
+        executable_path=$(get_custom_executable_path "${plugin_path}" "${install_path}" "${executable_path:-${shim_name}}")
       fi
 
       "$shim_exec" "$plugin_name" "$full_version" "$executable_path"
