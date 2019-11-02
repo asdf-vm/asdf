@@ -1,4 +1,4 @@
-# asdf-vm [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)
+# asdf-vm [![Build Status](https://travis-ci.org/asdf-vm/asdf.svg?branch=master)](https://travis-ci.org/asdf-vm/asdf)[![Build status](https://ci.appveyor.com/api/projects/status/2fkj7jngt8qeu8kw?svg=true)](https://ci.appveyor.com/project/TrevorBrown/asdf)
 
 **Manage multiple runtime versions with a single CLI tool, extendable via plugins** - [docs at asdf-vm.com](https://asdf-vm.github.io/asdf/)
 
