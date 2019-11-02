@@ -1,0 +1,18 @@
+clone_depth: 50
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm cache clear --force
+  - ps: >-
+      if ($env:nodejs_version -eq "4") {
+        npm install npm@latest-5 -g
+      } else {
+        npm install npm@latest -g
+      }
+  - npm --version
+  - npm install -g bats
+
+build: false
+
+test_script:
+  - C:\cygwin\bin\bash -lc "export PATH="/usr/bin:/usr/local/bin:/cygdrive/c/Users/appveyor/AppData/Roaming/npm" && cd $APPVEYOR_BUILD_FOLDER && bats test"
