@@ -1,6 +1,19 @@
 # Changelog
 
-## 0.7.5-dev
+## 0.7.6-dev
+
+## 0.7.5
+
+Features
+
+* Add AppVeyor config for builds on Windows, for eventual Windows support (#450, #451)
+* Add `--unset` flag to shell command (#563)
+
+Fixed Bugs
+
+* Fix multiple version install (#540, #585)
+* Handle dashes in executable/shim names properly (#565, #589)
+* Fix bug in sed command so `path:...` versions are handled correctly (#559, #591)
 
 ## 0.7.4
 
