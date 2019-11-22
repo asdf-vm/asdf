@@ -188,3 +188,15 @@ EOM
   [ "$output" == "" ]
   [ -f $ASDF_DIR/installs/dummy/1.2/version ]
 }
+
+@test "install_command latest installs latest stable version" {
+  run asdf install dummy latest
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/2.0/version) = "2.0" ]
+}
+
+@test "install_command latest:version installs latest stable version that matches the given string" {
+  run asdf install dummy latest:1
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
