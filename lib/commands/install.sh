@@ -93,7 +93,15 @@ install_tool_version() {
     local version="${version_info[1]}"
   else
     local install_type="version"
-    local version="${version_info[0]}"
+
+    if [ "${version_info[0]}" = "latest" ]; then
+      load_cmd "latest"
+      local version
+      version=$(latest_command "$plugin_name" "${version_info[1]}")
+      full_version=$version
+    else
+      local version="${version_info[0]}"
+    fi
   fi
 
 

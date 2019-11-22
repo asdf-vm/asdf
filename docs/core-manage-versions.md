@@ -7,6 +7,20 @@ asdf install <name> <version>
 
 _If a plugin supports downloading & compiling from source, you can specify `ref:foo` where `foo` is a specific branch, tag, or commit. You'll need to use the same name and reference when uninstalling too._
 
+## Install Latest Stable Version
+
+```shell
+asdf install <name> latest
+# asdf install erlang latest
+```
+
+Install latest stable version that begins with a given string.
+
+```shell
+asdf install <name> latest:<version>
+# asdf install erlang latest:17
+```
+
 ## List Installed Versions
 
 ```shell
@@ -19,6 +33,27 @@ asdf list <name>
 ```shell
 asdf list-all <name>
 # asdf list-all erlang
+```
+
+Limit versions to those that begin with a given string.
+
+```shell
+asdf list-all <name> <version>
+# asdf list-all erlang 17
+```
+
+## Show Latest Stable Version
+
+```shell
+asdf latest <name>
+# asdf latest erlang
+```
+
+Show latest stable version that begins with a given string.
+
+```shell
+asdf latest <name> <version>
+# asdf latest erlang 17
 ```
 
 ## Set Current Version
