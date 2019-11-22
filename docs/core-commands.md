@@ -13,19 +13,22 @@
 
 ## Manage Packages
 
-| Command                           | Effect                                                                |
-| --------------------------------- | --------------------------------------------------------------------- |
-| `asdf install [<name> <version>]` | Install a specific version of a package, or with no arguments,        |
-|                                   | ...install all the package versions listed in the .tool-versions file |
-| `asdf uninstall <name> <version>` | Remove a specific version of a package                                |
-| `asdf current`                    | Display current version set or being used for all packages            |
-| `asdf current <name>`             | Display current version set or being used for package                 |
-| `asdf where <name> [<version>]`   | Display install path for an installed or current version              |
-| `asdf which <name>`               | Display install path for current version                              |
-| `asdf local <name> <version>`     | Set the package local version                                         |
-| `asdf global <name> <version>`    | Set the package global version                                        |
-| `asdf list <name>`                | List installed versions of a package                                  |
-| `asdf list-all <name>`            | List all versions of a package                                        |
+| Command                                  | Effect                                                                     |
+| ---------------------------------------- | -------------------------------------------------------------------------- |
+| `asdf install [<name> <version>]`        | Install a specific version of a package, or with no arguments,             |
+|                                          | ...install all the package versions listed in the .tool-versions file      |
+| `asdf install <name> latest[:<version>]` | Install the latest stable version of a package, or with optional version,  |
+|                                          | ...install the latest stable version that begins with the given string     |
+| `asdf uninstall <name> <version>`        | Remove a specific version of a package                                     |
+| `asdf current`                           | Display current version set or being used for all packages                 |
+| `asdf current <name>`                    | Display current version set or being used for package                      |
+| `asdf where <name> [<version>]`          | Display install path for an installed or current version                   |
+| `asdf which <name>`                      | Display install path for current version                                   |
+| `asdf local <name> <version>`            | Set the package local version                                              |
+| `asdf global <name> <version>`           | Set the package global version                                             |
+| `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
+| `asdf list <name>`                       | List installed versions of a package                                       |
+| `asdf list-all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
 
 ## Utils
 
