@@ -6,6 +6,7 @@ latest_command() {
 
   [[ -z $query ]] && query="$DEFAULT_QUERY"
 
+  # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
   load_cmd "list-all"
   list_all_command "$plugin_name" "$query" \
     | grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\.]rc|-alpha|-beta|[-\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" \
