@@ -2,6 +2,28 @@
 
 ## 0.7.6-dev
 
+Features
+
+* Add support for installing the latest stable version of a tool (#216, #575)
+
+    ```shell
+    asdf install python latest
+    asdf install python latest:3.7 # installs latest Python 3.7 version
+    ```
+
+* Add `asdf latest` command to display the latest stable version of a tool (#575)
+
+    ```shell
+    asdf latest python
+    asdf latest python 3.7 # displays latest Python 3.7 version
+    ```
+
+* Add support for filtering versions returned by `asdf list-all` (#575)
+
+    ```shell
+    asdf list-all python 3.7 # lists available Python 3.7 versions
+    ````
+
 ## 0.7.5
 
 Features
