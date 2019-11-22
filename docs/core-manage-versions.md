@@ -21,6 +21,13 @@ asdf list-all <name>
 # asdf list-all erlang
 ```
 
+Limit versions to those that begin with a given string.
+
+```shell
+asdf list-all <name> <version>
+# asdf list-all erlang 17
+```
+
 ## Set Current Version
 
 ```shell
