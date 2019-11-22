@@ -28,6 +28,20 @@ asdf list-all <name> <version>
 # asdf list-all erlang 17
 ```
 
+## Show Latest Stable Version
+
+```shell
+asdf latest <name>
+# asdf latest erlang
+```
+
+Show latest stable version that begins with a given string.
+
+```shell
+asdf latest <name> <version>
+# asdf latest erlang 17
+```
+
 ## Set Current Version
 
 ```shell

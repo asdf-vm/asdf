@@ -62,6 +62,10 @@ case "$1" in
     load_cmd "version_commands"
     global_command "${cmd_args[@]}";;
 
+  "latest")
+    load_cmd "latest"
+    latest_command "${cmd_args[@]}";;
+
   "list")
     load_cmd "list"
     list_command "${cmd_args[@]}";;
