@@ -10,6 +10,11 @@ load_cmd() {
   done
 }
 
+show_help() {
+  load_cmd "help"
+  help_command
+}
+
 cmd_args=("${@:2}")
 
 case "$1" in
@@ -115,15 +120,19 @@ case "$1" in
     asdf_version "${cmd_args[@]}";;
 
   "--help")
-    load_cmd "help"
-    help_command;;
+    show_help;;
+
+  "help")
+    show_help;;
+
+  "")
+    show_help;;
 
   *)
     load_cmd "plugin-extension-command"
     plugin_extension_command "$@" # returns only on command not found
 
     echo "Unknown asdf command: \`${*}\`" >&2
-    load_cmd "help"
-    help_command >&2
+    show_help >&2
     exit 1;;
 esac
