@@ -27,11 +27,13 @@ asdf_repository_url() {
 
 asdf_data_dir(){
   local data_dir
-
+  
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  else
+  elif [[ $EUID -ne 0 ]]; then
     data_dir="$HOME/.asdf"
+  else
+    data_dir="$(asdf_dir)"
   fi
 
   echo "$data_dir"
