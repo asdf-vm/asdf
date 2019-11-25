@@ -4,6 +4,23 @@
 
 Features
 
+* Add support for asdf extension commands.
+
+   When a plugin provides custom executables or bash-scripts under its `bin/` directory,
+   it's now possible to invoke them with:
+   
+   ```shell
+   asdf nodejs import-release-team-keyring
+
+   # instead of people having to know where the executable is installed:
+   ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+   ```
+   
+   As in nodejs case, plugin authors can use this feature to provide utilities,
+   or people can create plugins that are just extensions to asdf itself.
+
+   See `docs/plugins-create.md` for more info.
+
 * Add support for installing the latest stable version of a tool (#216, #575)
 
     ```shell

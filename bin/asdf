@@ -114,8 +114,23 @@ case "$1" in
   "--version")
     asdf_version "${cmd_args[@]}";;
 
-  *)
+  "--help")
     load_cmd "help"
-    help_command
+    help_command;;
+
+  *)
+    plugin_cmd="$(get_plugin_path "$1")/bin/${cmd_args[0]}"
+
+    if [ -x "$plugin_cmd" ]; then
+       exec "$plugin_cmd" "${cmd_args[@]:1}"
+    elif [ -f "$plugin_cmd" ]; then
+       set -- "${cmd_args[@]:1}"
+       source "$plugin_cmd"
+       exit $?
+    fi
+
+    echo "Unknown asdf command: \`${*}\`" >&2
+    load_cmd "help"
+    help_command >&2
     exit 1;;
 esac
