@@ -119,7 +119,7 @@ case "$1" in
     help_command;;
 
   *)
-    plugin_cmd="$(get_plugin_path "$1")/bin/${cmd_args[0]}"
+    plugin_cmd="$(get_plugin_path "$1")/bin/${cmd_args[0]:-default-command}"
 
     if [ -x "$plugin_cmd" ]; then
        exec "$plugin_cmd" "${cmd_args[@]:1}"

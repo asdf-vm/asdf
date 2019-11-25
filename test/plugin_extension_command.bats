@@ -11,6 +11,23 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "asdf can execute plugin default command" {
+  plugin_path="$(get_plugin_path dummy)"
+
+  # this plugin defines a new `asdf dummy` command
+  cat <<'EOF' > "$plugin_path/bin/default-command"
+#!/usr/bin/env bash
+echo hello
+EOF
+  chmod +x "$plugin_path/bin/default-command"
+
+  expected="hello"
+
+  run asdf dummy
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}
+
 @test "asdf can execute plugin bin commands" {
   plugin_path="$(get_plugin_path dummy)"
 

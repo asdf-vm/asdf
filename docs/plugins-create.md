@@ -95,6 +95,7 @@ It's possible for plugins to define new asdf commands. This way plugins can exte
 For example, a `foo` plugin might expose the command `asdf foo bar` by providing an executable file at `bin/bar`.
 If `bin/bar` is a file but has no executable bit set, then its considered a source-able bash script, and will be sourced 
 with all the functions in `$ASDF_DIR/lib/utils.sh` already loaded.
+The executable for `asdf foo` itself should be placed in `bin/default-command`
 
 A good example of this feature is the `nodejs` plugin, where people must import the release team keyring before
 installing a nodejs version. People can execute the following command without having to know where exactly is the plugin located.
