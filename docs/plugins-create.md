@@ -88,6 +88,23 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
+## asdf extension commands
+
+It's possible for plugins to define new asdf commands. This way plugins can extend asdf capabilities or expose utilities related to their managed tool. 
+
+For example, a `foo` plugin might expose the command `asdf foo bar` by providing an executable file at `bin/bar`.
+If `bin/bar` is a file but has no executable bit set, then its considered a source-able bash script, and will be sourced 
+with all the functions in `$ASDF_DIR/lib/utils.sh` already loaded.
+
+A good example of this feature is the `nodejs` plugin, where people must import the release team keyring before
+installing a nodejs version. People can execute the following command without having to know where exactly is the plugin located.
+
+```bash
+asdf nodejs import-release-team-keyring
+```
+
+If your plugin provides an asdf extension command, be sure to mention about it on your plugin's README.
+
 ## Custom shim templates
 
 **PLEASE use this feature only if absolutely required**
