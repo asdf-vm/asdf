@@ -90,10 +90,10 @@ This can be used to further parse the legacy file found by asdf. If `parse-legac
 
 ## asdf extension commands
 
-It's possible for plugins to define new asdf commands. This way plugins can extend asdf capabilities or expose utilities related to their managed tool. 
+It's possible for plugins to define new asdf commands. This way plugins can extend asdf capabilities or expose utilities related to their managed tool.
 
 For example, a `foo` plugin might expose the command `asdf foo bar` by providing an executable file at `bin/bar`.
-If `bin/bar` is a file but has no executable bit set, then its considered a source-able bash script, and will be sourced 
+If `bin/bar` is a file but has no executable bit set, then its considered a source-able bash script, and will be sourced
 with all the functions in `$ASDF_DIR/lib/utils.sh` already loaded.
 The executable for `asdf foo` itself should be placed in `bin/default-command`
 
@@ -113,16 +113,6 @@ If your plugin provides an asdf extension command, be sure to mention about it o
 asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
-
-**Important: Shim metadata**
-
-If you create a custom shim, be sure to include a comment like the following (replacing your plugin name and version) in it:
-
-```
-# asdf-plugin: plugin_name plugin_version
-```
-
-asdf uses this `asdf-plugin` metadata to remove unused shims when uninstalling.
 
 ## Testing plugins
 
