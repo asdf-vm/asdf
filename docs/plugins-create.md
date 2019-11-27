@@ -88,21 +88,43 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
-## asdf extension commands
+## Extension commands for asdf CLI.
 
-It's possible for plugins to define new asdf commands. This way plugins can extend asdf capabilities or expose utilities related to their managed tool.
+It's possible for plugins to define new asdf commands by providing `bin/command*` scripts or executables that will
+be callable using the asdf command line interface by using the plugin name as a subcommand.
 
-For example, a `foo` plugin might expose the command `asdf foo bar` by providing an executable file at `bin/bar`.
-If `bin/bar` is a file but has no executable bit set, then its considered a source-able bash script, and will be sourced
-with all the functions in `$ASDF_DIR/lib/utils.sh` already loaded.
-The executable for `asdf foo` itself should be placed in `bin/default-command`
+For example, suppose a `foo` plugin has:
 
-A good example of this feature is the `nodejs` plugin, where people must import the release team keyring before
-installing a nodejs version. People can execute the following command without having to know where exactly is the plugin located.
-
-```bash
-asdf nodejs import-release-team-keyring
+```shell
+foo/
+  bin/
+    command
+    command-bat
+    command-bat-man
+    command-help
 ```
+
+Users can now execute
+
+```shell
+$ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command`
+$ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command bar`
+$ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-help`
+$ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-bat-man`
+$ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-bat baz`
+```
+
+Plugin authors can use this feature to provide utilities related to their tools,
+or even create plugins that are just new command extensions for asdf itself.
+
+When `command*` files exists but have no executable bit set, they are considered to be
+bash scripts and will be sourced having all the functions from `$ASDF_DIR/lib/utils.sh`
+available. Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
+If the executable bit is set, they are just executed and replace the asdf execution.
+
+A good example of this feature is for plugins like `nodejs`, where people must import the release team keyring before
+installing a nodejs version. Authors can provide a handy extension command for this without users
+having to know where exactly is the plugin was installed.
 
 If your plugin provides an asdf extension command, be sure to mention about it on your plugin's README.
 

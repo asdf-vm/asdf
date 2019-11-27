@@ -4,6 +4,17 @@
 
 Features
 
+* Subcommand CLI support.
+
+   Users familiar with sub-command aware tools like `git` can now
+   use `asdf` commands in the same way. For example:
+
+   `asdf plugin list all` is equivalent to `asdf plugin-list-all`
+
+   This is also the case for plugin extension commands, where the
+   plugin name is an asdf main subcommand. ie. Having a `foo` plugin
+   you can invoke: `asdf foo bar`
+
 * Make `asdf plugin test` use the new `asdf latest` command. (#541)
 
    If a plugin version is not given explicitly, we use `asdf latest` to
@@ -16,18 +27,8 @@ Features
 
 * Add support for asdf extension commands.
 
-   When a plugin provides custom executables or bash-scripts under its `bin/` directory,
-   it's now possible to invoke them with:
-   
-   ```shell
-   asdf nodejs import-release-team-keyring
-
-   # instead of people having to know where the executable is installed:
-   ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
-   ```
-   
-   As in nodejs case, plugin authors can use this feature to provide utilities,
-   or people can create plugins that are just extensions to asdf itself.
+   Plugins can provide `bin/command*` scripts or executables that will
+   be callable using the asdf command line interface.
 
    See `docs/plugins-create.md` for more info.
 
