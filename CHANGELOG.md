@@ -4,6 +4,11 @@
 
 Features
 
+* Make `asdf plugin test` use the new `asdf latest` command. (#541)
+
+   If a plugin version is not given explicitly, we use `asdf latest` to
+   obtain the version of plugin to install for testing.
+
 * `asdf --version` displays git revision when asdf_dir is a git clone.
 
    This will allow better bug reports since people can now include the

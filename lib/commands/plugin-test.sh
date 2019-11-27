@@ -101,7 +101,7 @@ plugin_test_command() {
         if [ -n "$tool_version" ]; then
           version="$tool_version"
         else
-          version=${versions[${#versions[@]} - 1]}
+          version="$(asdf latest "$plugin_name")"
         fi
 
         if ! (asdf install "$plugin_name" "$version"); then
