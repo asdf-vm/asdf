@@ -1,5 +1,6 @@
 # -*- sh -*-
 
+# shellcheck source=lib/commands/reshim.sh
 source "$(dirname "$ASDF_CMD_FILE")/reshim.sh"
 
 reshim_command() {

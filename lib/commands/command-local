@@ -1,6 +1,6 @@
 # -*- sh -*-
 
-# shellcheck source=version_commands.sh
+# shellcheck source=lib/commands/version_commands.sh
 source "$(dirname "$ASDF_CMD_FILE")/version_commands.sh"
 
 local_command() {
