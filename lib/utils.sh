@@ -8,7 +8,14 @@ GREP_COLORS=
 ASDF_DIR=${ASDF_DIR:-''}
 
 asdf_version() {
-  cat "$(asdf_dir)/VERSION"
+  local version git_rev
+  version="$(cat "$(asdf_dir)/VERSION")"
+  if [ -d "$(asdf_dir)/.git" ]; then
+    git_rev="$(git --git-dir "$(asdf_dir)/.git" rev-parse --short HEAD)"
+    echo "${version}-${git_rev}"
+  else
+    echo "${version}"
+  fi
 }
 
 asdf_dir() {

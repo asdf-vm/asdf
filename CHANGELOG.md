@@ -4,6 +4,11 @@
 
 Features
 
+* `asdf --version` displays git revision when asdf_dir is a git clone.
+
+   This will allow better bug reports since people can now include the
+   git commit they are using.
+
 * Add support for asdf extension commands.
 
    When a plugin provides custom executables or bash-scripts under its `bin/` directory,
