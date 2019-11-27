@@ -6,7 +6,7 @@
 |                                      | ...as a plugin by specifying the name and repo url           |
 | `asdf plugin list`                   | List installed plugins                                       |
 | `asdf plugin list --urls`            | List installed plugins with repository URLs                  |
-| `asdf plugin list-all`               | List plugins registered on asdf-plugins repository with URLs |
+| `asdf plugin list all`               | List plugins registered on asdf-plugins repository with URLs |
 | `asdf plugin remove <name>`          | Remove plugin and package versions                           |
 | `asdf plugin update <name>`          | Update plugin                                                |
 | `asdf plugin update --all`           | Update all plugins                                           |
