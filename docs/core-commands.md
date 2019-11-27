@@ -28,12 +28,15 @@
 | `asdf global <name> <version>`           | Set the package global version                                             |
 | `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
 | `asdf list <name>`                       | List installed versions of a package                                       |
-| `asdf list all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
+| `asdf list-all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
 
 ## Utils
 
-| Command                        | Effect                                         |
-| ------------------------------ | ---------------------------------------------- |
-| `asdf reshim <name> <version>` | Recreate shims for version of a package        |
-| `asdf update`                  | Update asdf to the latest stable release       |
-| `asdf update --head`           | Update asdf to the latest on the master branch |
+| Command                        | Effect                                                |
+| ------------------------------ | ----------------------------------------------------- |
+| `asdf exec <command> [args]`   | Runs the currently selected version of command        |
+| `asdf env <command> [util]`    | Executes util inside the environemnt used for command |
+| `asdf reshim <name> <version>` | Recreate shims for version of a package               |
+| `asdf shim-versions <command>` | List the plugins and versions that provide a command  |
+| `asdf update`                  | Update asdf to the latest stable release              |
+| `asdf update --head`           | Update asdf to the latest on the master branch        |
