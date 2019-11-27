@@ -15,11 +15,11 @@ teardown() {
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy foo` command
-  cat <<'EOF' > "$plugin_path/bin/foo"
+  cat <<'EOF' > "$plugin_path/bin/command-foo"
 #!/usr/bin/env bash
 echo this is an executable $*
 EOF
-  chmod +x "$plugin_path/bin/foo"
+  chmod +x "$plugin_path/bin/command-foo"
 
   expected="this is an executable bar"
 
@@ -32,7 +32,7 @@ EOF
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy foo` command
-  echo 'echo sourced script has asdf utils $(get_plugin_path dummy) $*' > "$plugin_path/bin/foo"
+  echo 'echo sourced script has asdf utils $(get_plugin_path dummy) $*' > "$plugin_path/bin/command-foo"
 
   expected="sourced script has asdf utils $plugin_path bar"
 
@@ -45,11 +45,11 @@ EOF
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy` command
-  cat <<'EOF' > "$plugin_path/bin/default-command"
+  cat <<'EOF' > "$plugin_path/bin/command"
 #!/usr/bin/env bash
 echo hello
 EOF
-  chmod +x "$plugin_path/bin/default-command"
+  chmod +x "$plugin_path/bin/command"
 
   expected="hello"
 
@@ -62,11 +62,11 @@ EOF
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy` command
-  cat <<'EOF' > "$plugin_path/bin/default-command"
+  cat <<'EOF' > "$plugin_path/bin/command"
 #!/usr/bin/env bash
 echo hello $*
 EOF
-  chmod +x "$plugin_path/bin/default-command"
+  chmod +x "$plugin_path/bin/command"
 
   expected="hello world"
 

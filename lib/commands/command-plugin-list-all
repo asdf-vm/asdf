@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 plugin_list_all_command() {
   initialize_or_update_repository
 
@@ -21,3 +23,5 @@ plugin_list_all_command() {
     printf "%s%s\\n" "error: index of plugins not found at " "$plugins_index_path"
   fi
 }
+
+plugin_list_all_command "$@"

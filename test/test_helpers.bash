@@ -59,4 +59,3 @@ setup_repo() {
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/repository"
   touch "$(asdf_dir)/tmp/repo-updated"
 }
-

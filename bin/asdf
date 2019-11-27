@@ -3,136 +3,85 @@
 # shellcheck source=lib/utils.sh
 source "$(dirname "$(dirname "$0")")/lib/utils.sh"
 
-load_cmd() {
-  for cmd in "$@"; do
-    # shellcheck disable=SC1091
-    source "$(dirname "$(dirname "$0")")/lib/commands/$cmd.sh"
+find_cmd() {
+  local cmd_dir="$1"
+  shift
+
+  local cmd_name
+  local args_offset="$#"
+  cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
+  while [ ! -f "$cmd_dir/$cmd_name" ] && [ "$args_offset" -gt 0 ]; do
+    args_offset=$((args_offset-1))
+    cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
   done
+
+  if [ -f "$cmd_dir/$cmd_name" ]; then
+    echo "$cmd_dir/$cmd_name" "$((args_offset+1))"
+  elif [ -f "$cmd_dir/command" ]; then
+    echo "$cmd_dir/command" 1
+  fi
 }
 
-show_help() {
-  load_cmd "help"
-  help_command
+find_asdf_cmd() {
+  local asdf_cmd_dir
+  asdf_cmd_dir="$(asdf_dir)/lib/commands"
+  case "$1" in
+    ('exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'list' | 'local' |\
+        'reshim' | 'uninstall' | 'update' | 'where' | 'which' |\
+        'export-shell-version')
+      echo "$asdf_cmd_dir/command-$1" 2
+      ;;
+
+    ('' | '--help' | '-h' | 'help')
+      echo "$asdf_cmd_dir/command-help" 2
+      ;;
+
+    ('--version' | 'version')
+      echo "$asdf_cmd_dir/command-version" 2
+      ;;
+
+    (*)
+      find_cmd "$asdf_cmd_dir" "$@"
+      ;;
+  esac
 }
 
-cmd_args=("${@:2}")
+find_plugin_cmd() {
+  local ASDF_CMD_FILE args_offset
+  if [ -d "$(get_plugin_path "$1")/bin" ]; then
+    IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_cmd "$(get_plugin_path "$1")/bin" "${@:2}")"
+    if [ -n "$ASDF_CMD_FILE" ]; then
+      args_offset=$((args_offset+1)) # since the first argument is the plugin name
+      echo "$ASDF_CMD_FILE" "$args_offset"
+    fi
+  fi
+}
 
-case "$1" in
+asdf_cmd() {
+  local ASDF_CMD_FILE args_offset
 
-  "exec")
-    load_cmd "shim-exec"
-    shim_exec_command "${cmd_args[@]}";;
+  if [ "shell" == "$1" ]; then
+    echo "Shell integration is not enabled. Please ensure you source asdf in your shell setup." >&2
+    exit 1;
+  fi
 
-  "env")
-    load_cmd "shim-env"
-    shim_env_command "${cmd_args[@]}";;
+  IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_asdf_cmd "$@")"
+  if [ -z "$ASDF_CMD_FILE" ]; then
+    IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_plugin_cmd "$@")"
+  fi
 
-  "where")
-    load_cmd "where"
-    where_command "${cmd_args[@]}";;
+  if [ -x "$ASDF_CMD_FILE" ]; then
+    exec "$ASDF_CMD_FILE" "${@:${args_offset}}"
+  elif [ -f "$ASDF_CMD_FILE" ]; then
+    set -- "${@:${args_offset}}"
+    source "$ASDF_CMD_FILE"
+  else
+    local asdf_cmd_dir
+    asdf_cmd_dir="$(asdf_dir)/lib/commands"
+    echo "Unknown command: \`asdf ${*}\`" >&2
+    source "$asdf_cmd_dir/command-help" >&2
+    return 127
+  fi
+}
 
-  "which")
-    load_cmd "which"
-    which_command "${cmd_args[@]}";;
-
-  "update")
-    load_cmd "update"
-    update_command "${cmd_args[@]}";;
-
-  "install")
-    load_cmd "install" "reshim"
-    install_command "${cmd_args[@]}";;
-
-  "uninstall")
-    load_cmd "uninstall" "reshim"
-    uninstall_command "${cmd_args[@]}";;
-
-  "current")
-    load_cmd "current" "plugin-list"
-    current_command "${cmd_args[@]}";;
-
-  "sh-shell")
-    load_cmd "version_commands"
-    shell_command "${cmd_args[@]}";;
-
-  "shell")
-    echo "Shell integration is not enabled. Please ensure you source asdf in your shell setup."
-    exit 1;;
-
-  "local")
-    load_cmd "version_commands"
-    local_command "${cmd_args[@]}";;
-
-  "global")
-    load_cmd "version_commands"
-    global_command "${cmd_args[@]}";;
-
-  "latest")
-    load_cmd "latest"
-    latest_command "${cmd_args[@]}";;
-
-  "list")
-    load_cmd "list"
-    list_command "${cmd_args[@]}";;
-
-  "list-all")
-    load_cmd "list-all"
-    list_all_command "${cmd_args[@]}";;
-
-  "reshim")
-    load_cmd "reshim"
-    reshim_command "${cmd_args[@]}";;
-
-  "plugin-add")
-    load_cmd "plugin-add"
-    plugin_add_command "${cmd_args[@]}";;
-
-  "plugin-list")
-    load_cmd "plugin-list"
-    plugin_list_command "${cmd_args[@]}";;
-
-  "plugin-list-all")
-    load_cmd "plugin-list-all"
-    plugin_list_all_command "${cmd_args[@]}";;
-
-  "plugin-update")
-    load_cmd "plugin-update"
-    plugin_update_command "${cmd_args[@]}";;
-
-  "plugin-remove")
-    load_cmd "plugin-remove"
-    plugin_remove_command "${cmd_args[@]}";;
-
-  # Undocumented commands for development
-  "plugin-push")
-    load_cmd "plugin-push"
-    plugin_push_command "${cmd_args[@]}";;
-
-  "plugin-test")
-    load_cmd "plugin-test"
-    plugin_test_command "${cmd_args[@]}";;
-
-  "shim-versions")
-    load_cmd "shim_versions"
-    shim_versions_command "${cmd_args[@]}";;
-
-  "--version")
-    asdf_version "${cmd_args[@]}";;
-
-  "--help")
-    show_help;;
-
-  "help")
-    show_help;;
-
-  "")
-    show_help;;
-
-  *)
-    load_cmd "plugin-extension-command"
-    plugin_extension_command "$@" # returns only on command not found
-
-    echo "Unknown asdf command: \`${*}\`" >&2
-    show_help >&2
-    exit 1;;
-esac
+asdf_cmd "$@"

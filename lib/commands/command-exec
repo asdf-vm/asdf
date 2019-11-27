@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 shim_exec_command() {
   local shim_name
   shim_name=$(basename "$1")
@@ -28,3 +30,5 @@ shim_exec_command() {
 
   with_shim_executable "$shim_name" exec_shim || exit $?
 }
+
+shim_exec_command "$@"

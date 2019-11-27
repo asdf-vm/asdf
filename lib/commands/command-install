@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 handle_failure() {
   local install_path="$1"
   rm -rf "$install_path"
@@ -95,9 +97,8 @@ install_tool_version() {
     local install_type="version"
 
     if [ "${version_info[0]}" = "latest" ]; then
-      load_cmd "latest"
       local version
-      version=$(latest_command "$plugin_name" "${version_info[1]}")
+      version=$(asdf latest "$plugin_name" "${version_info[1]}")
       full_version=$version
     else
       local version="${version_info[0]}"
@@ -126,10 +127,12 @@ install_tool_version() {
 
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
-      reshim_command "$plugin_name" "$full_version"
+      asdf reshim "$plugin_name" "$full_version"
       asdf_run_hook "post_asdf_install_${plugin_name}" "$full_version"
     else
       handle_failure "$install_path"
     fi
   fi
 }
+
+install_command "$@"

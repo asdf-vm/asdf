@@ -30,24 +30,9 @@ ASDF_USER_SHIMS="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
 PATH="${ASDF_BIN}:$PATH"
 PATH="${ASDF_USER_SHIMS}:$PATH"
 
-# Add function wrapper so we can export variables
-asdf() {
-  local command
-  command="$1"
-  if [ "$#" -gt 0 ]; then
-    shift
-  fi
-
-  case "$command" in
-    "shell")
-      # eval commands that need to export variables
-      eval "$(asdf "sh-$command" "$@")";;
-    *)
-      # forward other commands to asdf script
-      command asdf "$command" "$@";;
-
-  esac
-}
+# shellcheck source=lib/asdf.sh
+# Load the asdf wrapper function
+. "${ASDF_DIR}/lib/asdf.sh"
 
 if [ -n "$ZSH_VERSION" ]; then
   autoload -U bashcompinit

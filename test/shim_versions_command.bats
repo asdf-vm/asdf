@@ -2,10 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/shim_versions.sh
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/reshim.sh
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/install.sh
-
 setup() {
   setup_asdf_dir
   install_dummy_plugin

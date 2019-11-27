@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 plugin_update_command() {
   if [ "$#" -ne 1 ]; then
     display_error "usage: asdf plugin-update {<name> | --all}"
@@ -18,3 +20,5 @@ plugin_update_command() {
     (cd "$plugin_path" && git pull)
   fi
 }
+
+plugin_update_command "$@"

@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 shim_env_command() {
   local shim_name="$1"
   local env_cmd="${2}"
@@ -18,3 +20,5 @@ shim_env_command() {
 
   with_shim_executable "$shim_name" shim_env || exit $?
 }
+
+shim_env_command "$@"
