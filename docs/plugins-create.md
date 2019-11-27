@@ -141,13 +141,13 @@ This must be used wisely. For now AFAIK, it's only being used in the Elixir plug
 `asdf` contains the `plugin-test` command to test your plugin. You can use it as follows
 
 ```sh
-asdf plugin-test <plugin-name> <plugin-url> [test-command] [--asdf-tool-version version]
+asdf plugin test <plugin-name> <plugin-url> [test-command] [--asdf-tool-version version]
 ```
 
 The two first arguments are required. The second two arguments are optional. The third is a command can also be passed to check it runs correctly. For example to test the NodeJS plugin, we could run
 
 ```sh
-asdf plugin-test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
+asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
 ```
 
 The fourth is a tool version that can be specified if you want the test to install a specific version of the tool. This can be useful if not all versions are compatible with all the operating systems you are testing on. If you do not specify a version the last version in the `list-all` output will be used.
@@ -158,7 +158,7 @@ Here is a sample `.travis.yml` file, customize it to your needs
 
 ```yaml
 language: c
-script: asdf plugin-test nodejs $TRAVIS_BUILD_DIR 'node --version'
+script: asdf plugin test nodejs $TRAVIS_BUILD_DIR 'node --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git asdf
   - . asdf/asdf.sh
@@ -172,7 +172,7 @@ When using another CI, you will need to check what variable maps to the repo pat
 
 You also have the option to pass a relative path to `plugin-test`.
 
-For example, if the test script is ran in the repo directory: `asdf plugin-test nodejs . 'node --version'`.
+For example, if the test script is ran in the repo directory: `asdf plugin test nodejs . 'node --version'`.
 
 ## GitHub API Rate Limiting
 
