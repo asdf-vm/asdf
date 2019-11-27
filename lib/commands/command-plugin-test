@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 plugin_test_command() {
 
     local plugin_name=$1
@@ -151,3 +153,5 @@ plugin_test_command() {
     rm -rf "$TEST_DIR"
     exit $exit_code
 }
+
+plugin_test_command "$@"

@@ -2,8 +2,6 @@
 
 load test_helpers
 
-. $(dirname $BATS_TEST_DIRNAME)/lib/commands/version_commands.sh
-
 setup() {
   setup_asdf_dir
   install_dummy_plugin
@@ -261,26 +259,26 @@ teardown() {
   [ "$output" = "Shell integration is not enabled. Please ensure you source asdf in your shell setup." ]
 }
 
-@test "sh-shell should emit an error when plugin does not exist" {
-  run asdf sh-shell "nonexistent" "1.0.0"
+@test "export-shell-version should emit an error when plugin does not exist" {
+  run asdf export-shell-version sh "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
   [ "$output" = $'No such plugin: nonexistent\nfalse' ]
 }
 
-@test "sh-shell should emit an error when version does not exist" {
-  run asdf sh-shell "dummy" "nonexistent"
+@test "export-shell-version should emit an error when version does not exist" {
+  run asdf export-shell-version sh "dummy" "nonexistent"
   [ "$status" -eq 1 ]
   [ "$output" = $'version nonexistent is not installed for dummy\nfalse' ]
 }
 
-@test "sh-shell should export version if it exists" {
-  run asdf sh-shell "dummy" "1.1.0"
+@test "export-shell-version should export version if it exists" {
+  run asdf export-shell-version sh "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$output" = "export ASDF_DUMMY_VERSION=\"1.1.0\"" ]
 }
 
-@test "sh-shell should use set when shell is fish" {
-  ASDF_SHELL=fish run asdf sh-shell "dummy" "1.1.0"
+@test "export-shell-version should use set when shell is fish" {
+  run asdf export-shell-version fish "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$output" = "set -gx ASDF_DUMMY_VERSION \"1.1.0\"" ]
 }

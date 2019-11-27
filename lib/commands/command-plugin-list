@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 plugin_list_command() {
   local flag=$1
 
@@ -31,3 +33,5 @@ plugin_list_command() {
   fi
 
 }
+
+plugin_list_command "$@"

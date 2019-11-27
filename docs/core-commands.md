@@ -2,14 +2,14 @@
 
 | Command                              | Effect                                                       |
 | ------------------------------------ | ------------------------------------------------------------ |
-| `asdf plugin-add <name> [<git-url>]` | Add a plugin from the plugin repo OR, add a Git repo         |
+| `asdf plugin add <name> [<git-url>]` | Add a plugin from the plugin repo OR, add a Git repo         |
 |                                      | ...as a plugin by specifying the name and repo url           |
-| `asdf plugin-list`                   | List installed plugins                                       |
-| `asdf plugin-list --urls`            | List installed plugins with repository URLs                  |
-| `asdf plugin-list-all`               | List plugins registered on asdf-plugins repository with URLs |
-| `asdf plugin-remove <name>`          | Remove plugin and package versions                           |
-| `asdf plugin-update <name>`          | Update plugin                                                |
-| `asdf plugin-update --all`           | Update all plugins                                           |
+| `asdf plugin list`                   | List installed plugins                                       |
+| `asdf plugin list --urls`            | List installed plugins with repository URLs                  |
+| `asdf plugin list-all`               | List plugins registered on asdf-plugins repository with URLs |
+| `asdf plugin remove <name>`          | Remove plugin and package versions                           |
+| `asdf plugin update <name>`          | Update plugin                                                |
+| `asdf plugin update --all`           | Update all plugins                                           |
 
 ## Manage Packages
 
@@ -28,7 +28,7 @@
 | `asdf global <name> <version>`           | Set the package global version                                             |
 | `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
 | `asdf list <name>`                       | List installed versions of a package                                       |
-| `asdf list-all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
+| `asdf list all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
 
 ## Utils
 

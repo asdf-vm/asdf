@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 plugin_push_command() {
   local plugin_name=$1
   if [ "$plugin_name" = "--all" ]; then
@@ -13,3 +15,5 @@ plugin_push_command() {
     (cd "$plugin_path" && git push)
   fi
 }
+
+plugin_push_command "$@"

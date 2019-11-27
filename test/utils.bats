@@ -10,6 +10,8 @@ setup() {
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
+
+  cd $HOME
 }
 
 teardown() {

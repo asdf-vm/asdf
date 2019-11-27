@@ -1,0 +1,5 @@
+# -*- sh -*-
+
+# shellcheck source=lib/commands/version_commands.sh
+source "$(dirname "$ASDF_CMD_FILE")/version_commands.sh"
+version_command global "$@"

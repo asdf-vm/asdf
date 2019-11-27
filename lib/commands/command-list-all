@@ -1,3 +1,5 @@
+# -*- sh -*-
+
 list_all_command() {
   local plugin_name=$1
   local query=$2
@@ -22,3 +24,5 @@ list_all_command() {
     echo "${version}"
   done
 }
+
+list_all_command "$@"
