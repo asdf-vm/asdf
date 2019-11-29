@@ -20,10 +20,9 @@ do_update() {
 
   if [ "$update_to_head" = "--head" ]; then
     # Update to latest on the master branch
+    git fetch origin master
     git checkout master
-
-    # Pull down the latest changes on master
-    git pull origin master
+    git reset --hard origin/master
     echo "Updated asdf to latest on the master branch"
   else
     # Update to latest release
