@@ -11,8 +11,8 @@ reshim_command() {
     local plugins_path
     plugins_path=$(get_plugin_path)
 
-    if ls "$plugins_path" &> /dev/null; then
-      for plugin_path in "$plugins_path"/* ; do
+    if ls "$plugins_path" &>/dev/null; then
+      for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
         reshim_command "$plugin_name"
       done
@@ -45,14 +45,12 @@ reshim_command() {
 
 }
 
-
 ensure_shims_dir() {
   # Create shims dir if doesn't exist
   if [ ! -d "$(asdf_data_dir)/shims" ]; then
     mkdir "$(asdf_data_dir)/shims"
   fi
 }
-
 
 write_shim_script() {
   local plugin_name=$1
@@ -71,11 +69,11 @@ write_shim_script() {
 
   if [ -f "$shim_path" ]; then
     if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
-     sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
-     rm "$shim_path".bak
+      sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
+      rm "$shim_path".bak
     fi
   else
-    cat <<EOF > "$shim_path"
+    cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
 # asdf-plugin: ${plugin_name} ${version}
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@"
@@ -85,7 +83,6 @@ EOF
   chmod +x "$shim_path"
 }
 
-
 generate_shim_for_executable() {
   local plugin_name=$1
   local executable=$2
@@ -93,7 +90,7 @@ generate_shim_for_executable() {
   check_if_plugin_exists "$plugin_name"
 
   local version
-  IFS=':' read -r -a version_info <<< "$full_version"
+  IFS=':' read -r -a version_info <<<"$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
     version="${version_info[1]}"
   else

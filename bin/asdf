@@ -11,12 +11,12 @@ find_cmd() {
   local args_offset="$#"
   cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
   while [ ! -f "$cmd_dir/$cmd_name" ] && [ "$args_offset" -gt 0 ]; do
-    args_offset=$((args_offset-1))
+    args_offset=$((args_offset - 1))
     cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
   done
 
   if [ -f "$cmd_dir/$cmd_name" ]; then
-    echo "$cmd_dir/$cmd_name" "$((args_offset+1))"
+    echo "$cmd_dir/$cmd_name" "$((args_offset + 1))"
   elif [ -f "$cmd_dir/command" ]; then
     echo "$cmd_dir/command" 1
   fi
@@ -26,21 +26,21 @@ find_asdf_cmd() {
   local asdf_cmd_dir
   asdf_cmd_dir="$(asdf_dir)/lib/commands"
   case "$1" in
-    ('exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' |\
-        'reshim' | 'uninstall' | 'update' | 'where' | 'which' |\
-        'export-shell-version')
+    'exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' | \
+      'reshim' | 'uninstall' | 'update' | 'where' | 'which' | \
+      'export-shell-version')
       echo "$asdf_cmd_dir/command-$1" 2
       ;;
 
-    ('' | '--help' | '-h' | 'help')
+    '' | '--help' | '-h' | 'help')
       echo "$asdf_cmd_dir/command-help" 2
       ;;
 
-    ('--version' | 'version')
+    '--version' | 'version')
       echo "$asdf_cmd_dir/command-version" 2
       ;;
 
-    (*)
+    *)
       find_cmd "$asdf_cmd_dir" "$@"
       ;;
   esac
@@ -51,7 +51,7 @@ find_plugin_cmd() {
   if [ -d "$(get_plugin_path "$1")/bin" ]; then
     IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_cmd "$(get_plugin_path "$1")/bin" "${@:2}")"
     if [ -n "$ASDF_CMD_FILE" ]; then
-      args_offset=$((args_offset+1)) # since the first argument is the plugin name
+      args_offset=$((args_offset + 1)) # since the first argument is the plugin name
       echo "$ASDF_CMD_FILE" "$args_offset"
     fi
   fi
@@ -62,7 +62,7 @@ asdf_cmd() {
 
   if [ "shell" == "$1" ]; then
     echo "Shell integration is not enabled. Please ensure you source asdf in your shell setup." >&2
-    exit 1;
+    exit 1
   fi
 
   IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_asdf_cmd "$@")"

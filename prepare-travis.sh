@@ -6,12 +6,12 @@
 # Fish is needed for the tests for asdf.fish
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-  brew update;
-  brew install shellcheck;
+  brew update
+  brew install shellcheck
 
   brew update
   brew instal fish
-elif [[ "$TRAVIS_OS_NAME" = "linux" ]]; then
+elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   ${FISH_PPA:="nightly-master"}
   PPA="ppa:fish-shell/$FISH_PPA"
 

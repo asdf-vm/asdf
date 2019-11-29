@@ -26,8 +26,8 @@ version_command() {
   fi
 
   if [ -L "$file" ]; then
-      # Resolve file path if symlink
-      file="$(resolve_symlink "$file")"
+    # Resolve file path if symlink
+    file="$(resolve_symlink "$file")"
   fi
 
   check_if_plugin_exists "$plugin"
@@ -37,11 +37,10 @@ version_command() {
     check_if_version_exists "$plugin" "$version"
   done
 
-
-  if [ -f "$file" ] && grep "^$plugin " "$file" > /dev/null; then
+  if [ -f "$file" ] && grep "^$plugin " "$file" >/dev/null; then
     sed -i.bak -e "s|^$plugin .*$|$plugin ${versions[*]}|" "$file"
     rm "$file".bak
   else
-    echo "$plugin ${versions[*]}" >> "$file"
+    echo "$plugin ${versions[*]}" >>"$file"
   fi
 }

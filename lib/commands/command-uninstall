@@ -11,7 +11,7 @@ uninstall_command() {
 
   check_if_plugin_exists "$plugin_name"
 
-  IFS=':' read -r -a version_info <<< "$full_version"
+  IFS=':' read -r -a version_info <<<"$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
@@ -52,6 +52,5 @@ remove_shims_for_version() {
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_path"
   done
 }
-
 
 uninstall_command "$@"

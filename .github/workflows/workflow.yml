@@ -73,4 +73,4 @@ jobs:
         run: brew install shfmt
 
       - name: Run shfmt
-        run: shfmt -d -i 2 -ci .
+        run: shfmt -d -i 2 -ci . lib/commands/*

@@ -13,4 +13,3 @@ shim_name=$(basename "$2")
 echo "asdf: now running $shim_name"
 
 exec "$shim_name" "${@:3}"
-

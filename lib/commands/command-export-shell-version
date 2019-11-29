@@ -28,10 +28,12 @@ shell_command() {
   fi
 
   case "$asdf_shell" in
-    fish )
-      echo "set -gx $version_env_var \"$version\"";;
-    * )
-      echo "export $version_env_var=\"$version\"";;
+    fish)
+      echo "set -gx $version_env_var \"$version\""
+      ;;
+    *)
+      echo "export $version_env_var=\"$version\""
+      ;;
   esac
 }
 
