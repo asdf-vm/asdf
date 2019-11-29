@@ -26,7 +26,7 @@ find_asdf_cmd() {
   local asdf_cmd_dir
   asdf_cmd_dir="$(asdf_dir)/lib/commands"
   case "$1" in
-    ('exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'list' | 'local' |\
+    ('exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' |\
         'reshim' | 'uninstall' | 'update' | 'where' | 'which' |\
         'export-shell-version')
       echo "$asdf_cmd_dir/command-$1" 2

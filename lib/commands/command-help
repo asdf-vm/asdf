@@ -1,9 +1,36 @@
 # -*- sh -*-
 
-help_command () {
+asdf_help() {
   echo "version: $(asdf_version)"
   echo ""
   cat "$(asdf_dir)/help.txt"
+}
+
+asdf_moto() {
+  cat <<EOF
+
+"Late but latest"
+-- Rajinikanth
+EOF
+}
+
+asdf_extension_cmds() {
+  local plugins_path ext_cmds
+  plugins_path="$(get_plugin_path)"
+  ext_cmds="$(ls -1 "$plugins_path"/*/bin/command* 2>/dev/null | sed "s#$plugins_path/#  asdf #;"'s#/bin/command##g;s#-# #g')"
+  if test -n "$ext_cmds"; then
+    echo "$ext_cmds" | cut -d' ' -f 4 | uniq | while read -r plugin; do
+      echo
+      echo "PLUGIN $plugin"
+      echo "$ext_cmds" | grep "  asdf $plugin"
+    done
+  fi
+}
+
+help_command() {
+  asdf_help
+  asdf_extension_cmds
+  asdf_moto
 }
 
 help_command "$@"
