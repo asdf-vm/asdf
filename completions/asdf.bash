@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-_asdf () {
+_asdf() {
   local cur
   cur=${COMP_WORDS[COMP_CWORD]}
   local cmd
   cmd=${COMP_WORDS[1]}
   local prev
-  prev=${COMP_WORDS[COMP_CWORD-1]}
+  prev=${COMP_WORDS[COMP_CWORD - 1]}
   local plugins
-  plugins=$(asdf plugin-list 2> /dev/null | tr '\n' ' ')
+  plugins=$(asdf plugin-list 2>/dev/null | tr '\n' ' ')
 
   # We can safely ignore warning SC2207 since it warns that it will uses the
   # shell's sloppy word splitting and globbing. The possible commands here are
@@ -21,20 +21,20 @@ _asdf () {
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$plugins --all" -- "$cur"))
       ;;
-    plugin-remove|current|list|list-all)
+    plugin-remove | current | list | list-all)
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
       ;;
     plugin-add)
       local available_plugins
-      available_plugins=$( (asdf plugin-list 2> /dev/null && asdf plugin-list-all 2> /dev/null) | sort | uniq -u)
+      available_plugins=$( (asdf plugin-list 2>/dev/null && asdf plugin-list-all 2>/dev/null) | sort | uniq -u)
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
       ;;
     install)
-      if [[ "$plugins" == *"$prev"* ]] ; then
+      if [[ "$plugins" == *"$prev"* ]]; then
         local versions
-        versions=$(asdf list-all "$prev" 2> /dev/null)
+        versions=$(asdf list-all "$prev" 2>/dev/null)
         # shellcheck disable=SC2207
         COMPREPLY=($(compgen -W "$versions" -- "$cur"))
       else
@@ -46,10 +46,10 @@ _asdf () {
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "--head" -- "$cur"))
       ;;
-    uninstall|where|reshim|local|global|shell)
-      if [[ "$plugins" == *"$prev"* ]] ; then
+    uninstall | where | reshim | local | global | shell)
+      if [[ "$plugins" == *"$prev"* ]]; then
         local versions
-        versions=$(asdf list "$prev" 2> /dev/null)
+        versions=$(asdf list "$prev" 2>/dev/null)
         # shellcheck disable=SC2207
         COMPREPLY=($(compgen -W "$versions" -- "$cur"))
       else

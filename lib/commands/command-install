@@ -27,9 +27,9 @@ install_command() {
 }
 
 get_concurrency() {
-  if command -v nproc > /dev/null 2>&1; then
+  if command -v nproc >/dev/null 2>&1; then
     nproc
-  elif command -v sysctl > /dev/null 2>&1 && sysctl hw.ncpu > /dev/null 2>&1; then
+  elif command -v sysctl >/dev/null 2>&1 && sysctl hw.ncpu >/dev/null 2>&1; then
     sysctl -n hw.ncpu
   elif [ -f /proc/cpuinfo ]; then
     grep -c processor /proc/cpuinfo
@@ -47,8 +47,8 @@ install_local_tool_versions() {
 
   local some_tools_installed
 
-  if ls "$plugins_path" &> /dev/null; then
-    for plugin_path in "$plugins_path"/* ; do
+  if ls "$plugins_path" &>/dev/null; then
+    for plugin_path in "$plugins_path"/*; do
       local plugin_name
       plugin_name=$(basename "$plugin_path")
 
@@ -58,7 +58,7 @@ install_local_tool_versions() {
       if [ -n "$plugin_version_and_path" ]; then
         local plugin_version
         some_tools_installed='yes'
-        plugin_versions=$(cut -d '|' -f 1 <<< "$plugin_version_and_path")
+        plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
         for plugin_version in $plugin_versions; do
           install_tool_version "$plugin_name" "$plugin_version"
         done
@@ -77,7 +77,6 @@ install_local_tool_versions() {
   fi
 }
 
-
 install_tool_version() {
   local plugin_name=$1
   local full_version=$2
@@ -89,7 +88,7 @@ install_tool_version() {
     return
   fi
 
-  IFS=':' read -r -a version_info <<< "$full_version"
+  IFS=':' read -r -a version_info <<<"$full_version"
   if [ "${version_info[0]}" = "ref" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
@@ -104,7 +103,6 @@ install_tool_version() {
       local version="${version_info[0]}"
     fi
   fi
-
 
   local install_path
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")

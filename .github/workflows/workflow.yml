@@ -1,0 +1,74 @@
+name: Main workflow
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  schedule:
+    - cron: "0 0 * * 5"
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Install macOS deps
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew install coreutils # needed by bats-core
+          brew install fish # for testing asdf.fish
+
+      - name: Install ubuntu deps
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          PPA="ppa:fish-shell/nightly-master"
+          sudo add-apt-repository -y "$PPA"
+          sudo apt-get update
+          sudo apt-get -y install fish
+
+      - name: Install bats
+        run: |
+          git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
+
+      - name: Run tests
+        run: |
+          export PATH=$HOME/bats-core/bin:$PATH
+          bats test
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  lint:
+    runs-on: macOS-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Install shellcheck
+        run: brew install shellcheck
+
+      - name: Run ShellCheck
+        run: bash lint.sh
+
+  format:
+    runs-on: macOS-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Install shfmt
+        run: brew install shfmt
+
+      - name: Run shfmt
+        run: shfmt -d -i 2 -ci . lib/commands/*

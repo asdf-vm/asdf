@@ -9,10 +9,12 @@ asdf() {
   case "$command" in
     "shell")
       # commands that need to export variables
-      command e"val" "$(asdf export-shell-version sh "$@")";;
+      command e"val" "$(asdf export-shell-version sh "$@")"
+      ;;
     *)
       # forward other commands to asdf script
-      command asdf "$command" "$@";;
+      command asdf "$command" "$@"
+      ;;
 
   esac
 }

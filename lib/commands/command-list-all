@@ -11,16 +11,15 @@ list_all_command() {
   versions=$(bash "${plugin_path}/bin/list-all")
 
   if [[ $query ]]; then
-    versions=$(echo "$versions" \
-      | tr ' ' '\n' \
-      | grep -E "^\s*$query" \
-      | tr '\n' ' ')
+    versions=$(echo "$versions" |
+      tr ' ' '\n' |
+      grep -E "^\s*$query" |
+      tr '\n' ' ')
   fi
 
-  IFS=' ' read -r -a versions_list <<< "$versions"
+  IFS=' ' read -r -a versions_list <<<"$versions"
 
-  for version in "${versions_list[@]}"
-  do
+  for version in "${versions_list[@]}"; do
     echo "${version}"
   done
 }

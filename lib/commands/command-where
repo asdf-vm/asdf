@@ -10,10 +10,10 @@ where_command() {
   if [[ -z ${full_version} ]]; then
     local version_and_path
     version_and_path=$(find_versions "$plugin_name" "$PWD")
-    version=$(cut -d '|' -f 1 <<< "$version_and_path");
+    version=$(cut -d '|' -f 1 <<<"$version_and_path")
   else
     local -a version_info
-    IFS=':' read -r -a version_info <<< "$full_version"
+    IFS=':' read -r -a version_info <<<"$full_version"
     if [ "${version_info[0]}" = "ref" ]; then
       install_type="${version_info[0]}"
       version="${version_info[1]}"
