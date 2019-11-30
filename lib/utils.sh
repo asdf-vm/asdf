@@ -113,7 +113,11 @@ check_if_version_exists() {
 }
 
 get_plugin_path() {
-  echo "$(asdf_data_dir)/plugins/$1"
+  if test -n "$1"; then
+    echo "$(asdf_data_dir)/plugins/$1"
+  else
+    echo "$(asdf_data_dir)/plugins"
+  fi
 }
 
 display_error() {

@@ -1,37 +1,53 @@
 # -*- sh -*-
 
 plugin_list_command() {
-  local flag=$1
+  local plugins_path
+  plugins_path=$(get_plugin_path)
 
-  # 0 || 1 with flag
-  if [ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$flag" = "--urls" ]; }; then
-    # valid command
+  local show_repo
+  local show_ref
 
-    local plugins_path
-    plugins_path=$(get_plugin_path)
+  while [ -n "$*" ]; do
+    case "$1" in
+      "--urls")
+        show_repo=true
+        shift
+        ;;
+      "--refs")
+        show_ref=true
+        shift
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
 
-    if ls "$plugins_path" &>/dev/null; then
+  if ls "$plugins_path" &>/dev/null; then
+    (
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
+        printf "%s" "$plugin_name"
 
-        if [ $# -eq 0 ]; then
-          printf "%s\\n" "$plugin_name"
-        else
-          source_url=$(get_plugin_source_url "$plugin_name")
-          printf "%-15s %s\\n" "$plugin_name" "$source_url"
+        if [ -n "$show_repo" ]; then
+          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
         fi
 
-      done
-    else
-      display_error 'Oohes nooes ~! No plugins installed'
-      exit 1
-    fi
+        if [ -n "$show_ref" ]; then
+          local branch
+          local gitref
+          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
+          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
+          printf "\\t%s\\t%s" "$branch" "$gitref"
+        fi
 
+        printf "\\n"
+      done
+    ) | column -t -s $'\t'
   else
-    display_error "usage: asdf plugin-list [--urls]"
+    display_error 'Oohes nooes ~! No plugins installed'
     exit 1
   fi
-
 }
 
 plugin_list_command "$@"

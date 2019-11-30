@@ -4,6 +4,27 @@
 
 Features
 
+* Improve output format of `asdf plugin list all`
+
+  Long plugin names were causing problems with how we used printf.
+  Now we use the `column` command to properly render output.
+
+* Now `asdf plugin list` can take both `--urls` and `--refs` options.
+
+  When `--url` is used, we print the plugin's remote origin URL.
+  While `--refs` prints the git branch/commit the plugin is at.
+
+* It's now possible to update a plugin to an specific branch/commit.
+
+  `git plugin update <name> [git-ref]`
+
+  Checkouts a plugin to the specified `git-ref`. Defaults to `master`
+
+* Now the `asdf plugin test` command can be specified with a plugin commit/branch to test.
+
+  This will help CI checks to actually test the commit they are running for.
+  Previously we always used the plugin's `master` branch.
+
 * Subcommand CLI support.
 
    Users familiar with sub-command aware tools like `git` can now

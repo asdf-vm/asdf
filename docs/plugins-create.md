@@ -141,16 +141,20 @@ This must be used wisely. For now AFAIK, it's only being used in the Elixir plug
 `asdf` contains the `plugin-test` command to test your plugin. You can use it as follows
 
 ```sh
-asdf plugin test <plugin-name> <plugin-url> [test-command] [--asdf-tool-version version]
+asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
 ```
 
-The two first arguments are required. The second two arguments are optional. The third is a command can also be passed to check it runs correctly. For example to test the NodeJS plugin, we could run
+Only the two first arguments are required.
+If __version_ is specified, the tool will be installed with that specific version. Defaults to whatever returns `asdf latest <plugin-name>`.
+If _git-ref_ is specified, the plugin itself is checked out at that commit/branch/tag, useful for testing a pull-request on your plugin's CI.
+
+Rest arguments are considered the command to execute to ensure the installed tool works correctly.
+Normally it would be something that takes `--version` or `--help`.
+For example, to test the NodeJS plugin, we could run
 
 ```sh
-asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git 'node --version'
+asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git node --version
 ```
-
-The fourth is a tool version that can be specified if you want the test to install a specific version of the tool. This can be useful if not all versions are compatible with all the operating systems you are testing on. If you do not specify a version the last version in the `list-all` output will be used.
 
 We strongly recommend you test your plugin on TravisCI, to make sure it works on both Linux and OSX.
 
