@@ -6,14 +6,20 @@ plugin_test_command() {
   local plugin_url=$2
   local plugin_command_array=()
   local plugin_command
+  local plugin_gitref="origin/master"
   local tool_version
   # shellcheck disable=SC2086
   set -- ${*:3}
 
   while [[ $# -gt 0 ]]; do
     case $1 in
+      --asdf-plugin-gitref)
+        plugin_gitref="$2"
+        shift # past flag
+        shift # past value
+        ;;
       --asdf-tool-version)
-        tool_version=$2
+        tool_version="$2"
         shift # past flag
         shift # past value
         ;;
@@ -59,6 +65,10 @@ plugin_test_command() {
       fail_test "$plugin_name was not properly installed"
     fi
 
+    if ! (asdf plugin-update "$plugin_name" "$plugin_gitref" >/dev/null); then
+      fail_test "failed to checkout $plugin_name gitref: $plugin_gitref"
+    fi
+
     local plugin_path
     plugin_path=$(get_plugin_path "$plugin_name")
     local list_all="$plugin_path/bin/list-all"
@@ -77,7 +87,7 @@ plugin_test_command() {
       # test for most common token names we have on plugins. If both are empty show this warning
       if [ -z "$OAUTH_TOKEN" ] && [ -z "$GITHUB_API_TOKEN" ]; then
         echo "$plugin_name/bin/list-all is using GitHub API, just be sure you provide an API Authorization token"
-        echo "via your travis settings. This is the current rate_limit:"
+        echo "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:"
         echo
         curl -s https://api.github.com/rate_limit
         echo
