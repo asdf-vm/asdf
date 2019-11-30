@@ -1,7 +1,7 @@
 # -*- sh -*-
 
 plugin_update_command() {
-  if [ "$#" -ne 1 ]; then
+  if [ "$#" -lt 1 ]; then
     display_error "usage: asdf plugin-update {<name> | --all} [git-ref]"
     exit 1
   fi
