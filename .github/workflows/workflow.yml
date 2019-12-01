@@ -36,9 +36,15 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install fish
 
-      - name: Install bats
+      - name: Install bats (UNIX)
+        if: matrix.os != 'windows-latest'
         run: |
           git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
+
+      - name: Install bats (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          npm install -g bats
 
       - name: Run tests (UNIX)
         if: matrix.os != 'windows-latest'
@@ -51,9 +57,6 @@ jobs:
       - name: Run tests (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          cd $HOME/bats-core
-          ./install.sh $HOME
-          cd -
           bats test
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
