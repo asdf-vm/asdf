@@ -156,7 +156,23 @@ For example, to test the NodeJS plugin, we could run
 asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git node --version
 ```
 
-We strongly recommend you test your plugin on TravisCI, to make sure it works on both Linux and OSX.
+We strongly recommend you test your plugin on a CI environment and make sure it works on both Linux and OSX.
+
+#### Example Github Action
+
+The [asdf-vm/actions](https://github.com/asdf-vm/actions) repo provides a GitHub Action for testing your plugins hosted on github.
+
+```yaml
+steps:
+  - name: asdf_plugin_test
+    uses: asdf-vm/actions/plugin-test@v1.0.0
+    with:
+      command: "my_tool --version"
+    env:
+      GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
+```
+
+#### Example TravisCI config
 
 Here is a sample `.travis.yml` file, customize it to your needs
 
