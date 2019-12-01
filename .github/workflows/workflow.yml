@@ -3,10 +3,10 @@ name: Main workflow
 on:
   push:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   schedule:
     - cron: "0 0 * * 5"
 
@@ -40,9 +40,20 @@ jobs:
         run: |
           git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
 
-      - name: Run tests
+      - name: Run tests (UNIX)
+        if: matrix.os != 'windows-latest'
         run: |
           export PATH=$HOME/bats-core/bin:$PATH
+          bats test
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd $HOME/bats-core
+          ./install.sh $HOME
+          cd -
           bats test
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
