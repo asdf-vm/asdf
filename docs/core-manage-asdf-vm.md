@@ -26,6 +26,12 @@ Install using the Homebrew package manager on macOS:
 brew install asdf
 ```
 
+To use the latest changes, you can point Homebrew to the master branch of the repo:
+
+```shell
+brew install asdf --HEAD
+```
+
 <!-- tabs:end -->
 
 ### Add to your Shell
