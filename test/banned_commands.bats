@@ -12,7 +12,7 @@ banned_commands=(
 
     # does not work on alpine and should be grep -i either way
     "grep -y"
-    )
+)
 
 setup() {
   setup_asdf_dir
@@ -25,8 +25,10 @@ teardown() {
 @test "banned commands are not found in source code" {
   for cmd in "${banned_commands[@]}"; do
       # Assert command is not used in the lib and bin dirs
-      run grep -nHR "$cmd" lib bin
-      [ "$status" -eq 1 ]
-      [ "$output" = "" ]
+      # or expect an explicit comment at end of line, allowing it.
+      run bash -c "grep -nHR '$cmd' lib bin | grep -v '# asdf_allow: $cmd'"
+      echo "banned command $cmd: $output"
+      [ "$status" -eq 1 ] 
+      [ "" == "$output" ]
   done
 }
