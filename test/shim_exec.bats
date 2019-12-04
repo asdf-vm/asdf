@@ -113,6 +113,20 @@ teardown() {
   echo "$output" | grep -q "mummy 3.0" 2>/dev/null
 }
 
+@test "shim exec should suggest to install missing version" {
+  run asdf install dummy 1.0
+
+  echo "dummy 2.0" > $PROJECT_DIR/.tool-versions
+
+  run $ASDF_DIR/shims/dummy world hello
+  [ "$status" -eq 126 ]
+  echo "$output" | grep -q "No version 2.0 installed for command dummy"  2>/dev/null
+  echo "$output" | grep -q "Please install the missing version by running"  2>/dev/null
+  echo "$output" | grep -q "asdf install dummy 2.0"  2>/dev/null
+  echo "$output" | grep -q "or add one of the following in your .tool-versions file:"  2>/dev/null
+  echo "$output" | grep -q "dummy 1.0"  2>/dev/null
+}
+
 @test "shim exec should execute first plugin that is installed and set" {
   run asdf install dummy 2.0
   run asdf install dummy 3.0
