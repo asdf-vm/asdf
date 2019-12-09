@@ -7,30 +7,30 @@ See [Creating Plugins](plugins-create) for the super-simple API for supporting m
 ## Add
 
 ```shell
-asdf plugin add <name>
-# asdf plugin add erlang
+asdf plugin-add <name>
+# asdf plugin-add erlang
 ```
 
 If the plugin you want to install is not part of the plugins repository, you
 can add it using its repository URL:
 
 ```shell
-asdf plugin add <name> <git-url>
-# asdf plugin add elm https://github.com/vic/asdf-elm
+asdf plugin-add <name> <git-url>
+# asdf plugin-add elm https://github.com/vic/asdf-elm
 ```
 
 ## List Installed
 
 ```shell
-asdf plugin list
-# asdf plugin list
+asdf plugin-list
+# asdf plugin-list
 # java
 # nodejs
 ```
 
 ```shell
-asdf plugin list --urls
-# asdf plugin list
+asdf plugin-list --urls
+# asdf plugin-list
 # java            https://github.com/skotchpine/asdf-java.git
 # nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 ```
@@ -38,19 +38,19 @@ asdf plugin list --urls
 ## Update
 
 ```shell
-asdf plugin update --all
+asdf plugin-update --all
 ```
 
 If you want to update a specific package, just say so.
 
 ```shell
-asdf plugin update <name>
-# asdf plugin update erlang
+asdf plugin-update <name>
+# asdf plugin-update erlang
 ```
 
 ## Remove
 
 ```bash
-asdf plugin remove <name>
-# asdf plugin remove erlang
+asdf plugin-remove <name>
+# asdf plugin-remove erlang
 ```
