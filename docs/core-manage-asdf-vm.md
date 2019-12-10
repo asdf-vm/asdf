@@ -54,6 +54,12 @@ echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
 echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 ```
 
+Note if you are using Catalina or newer, the default shell has changed to Zsh:
+
+```bash
+echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zprofile
+```
+
 Installation via **Homebrew**:
 
 ?> If you have Homebrew's Bash completions configured, the second line below is
