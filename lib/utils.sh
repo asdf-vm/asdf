@@ -711,10 +711,23 @@ with_shim_executable() {
   fi
 
   (
-    echo "asdf: No version set for command ${shim_name}"
-    echo "you might want to add one of the following in your .tool-versions file:"
+    local preset_version
+    preset_version=$(get_preset_version_for "$shim_name")
+
+    if [ -n "$preset_version" ]; then
+      echo "asdf: No version ${preset_version} installed for command ${shim_name}"
+      echo "Please install the missing version by running"
+      echo ""
+      echo "asdf install ${shim_name} ${preset_version}"
+      echo ""
+      echo "or add one of the following in your .tool-versions file:"
+    else
+      echo "asdf: No version set for command ${shim_name}"
+      echo "you might want to add one of the following in your .tool-versions file:"
+    fi
     echo ""
     shim_plugin_versions "${shim_name}"
   ) >&2
+
   return 126
 }
