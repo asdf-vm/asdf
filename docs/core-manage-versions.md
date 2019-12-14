@@ -31,15 +31,15 @@ asdf list <name>
 ## List All Available Versions
 
 ```shell
-asdf list all <name>
-# asdf list all erlang
+asdf list-all <name>
+# asdf list-all erlang
 ```
 
 Limit versions to those that begin with a given string.
 
 ```shell
-asdf list all <name> <version>
-# asdf list all erlang 17
+asdf list-all <name> <version>
+# asdf list-all erlang 17
 ```
 
 ## Show Latest Stable Version
