@@ -28,7 +28,7 @@
 | `asdf global <name> <version>`           | Set the package global version                                             |
 | `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
 | `asdf list <name>`                       | List installed versions of a package                                       |
-| `asdf list all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
+| `asdf list-all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
 
 ## Utils
 
