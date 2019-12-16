@@ -1,6 +1,8 @@
 # Changelog
 
-## 0.7.6-dev
+## 0.7.7-dev
+
+## 0.7.6
 
 Features
 
@@ -53,7 +55,7 @@ Features
 
    See `docs/plugins-create.md` for more info.
 
-* Add support for installing the latest stable version of a tool (#216, #575)
+* Add support for installing the latest stable version of a tool (#216)
 
     ```shell
     asdf install python latest
@@ -67,7 +69,7 @@ Features
     asdf latest python 3.7 # displays latest Python 3.7 version
     ```
 
-* Add support for filtering versions returned by `asdf list-all` (#575)
+* Add support for filtering versions returned by `asdf list-all`
 
     ```shell
     asdf list-all python 3.7 # lists available Python 3.7 versions
