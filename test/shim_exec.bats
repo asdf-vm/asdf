@@ -116,13 +116,14 @@ teardown() {
 @test "shim exec should suggest to install missing version" {
   run asdf install dummy 1.0
 
-  echo "dummy 2.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 2.0 1.3" > $PROJECT_DIR/.tool-versions
 
   run $ASDF_DIR/shims/dummy world hello
   [ "$status" -eq 126 ]
-  echo "$output" | grep -q "No version 2.0 installed for command dummy"  2>/dev/null
-  echo "$output" | grep -q "Please install the missing version by running"  2>/dev/null
+  echo "$output" | grep -q "No preset version installed for command dummy"  2>/dev/null
+  echo "$output" | grep -q "Please install the missing version by running one of the following:"  2>/dev/null
   echo "$output" | grep -q "asdf install dummy 2.0"  2>/dev/null
+  echo "$output" | grep -q "asdf install dummy 1.3"  2>/dev/null
   echo "$output" | grep -q "or add one of the following in your .tool-versions file:"  2>/dev/null
   echo "$output" | grep -q "dummy 1.0"  2>/dev/null
 }

@@ -578,6 +578,19 @@ shim_plugin_versions() {
   fi
 }
 
+shim_plugins() {
+  local executable_name
+  executable_name=$(basename "$1")
+  local shim_path
+  shim_path="$(asdf_data_dir)/shims/${executable_name}"
+  if [ -x "$shim_path" ]; then
+    grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | cut -d' ' -f 1 | uniq
+  else
+    echo "asdf: unknown shim $executable_name"
+    return 1
+  fi
+}
+
 strip_tool_version_comments() {
   local tool_version_path="$1"
 
@@ -632,16 +645,7 @@ with_shim_executable() {
     IFS=$'\n' read -rd '' -a shim_versions <<<"$(get_shim_versions)"
 
     local plugins
-    plugins=()
-
-    for plugin_and_version in "${shim_versions[@]}"; do
-      local plugin_name
-      local plugin_shim_version
-      IFS=' ' read -r plugin_name _plugin_shim_version <<<"$plugin_and_version"
-      if ! [[ " ${plugins[*]} " == *" $plugin_name "* ]]; then
-        plugins+=("$plugin_name")
-      fi
-    done
+    IFS=$'\n' read -rd '' -a plugins <<<"$(shim_plugins "$shim_name")"
 
     for plugin_name in "${plugins[@]}"; do
       local version_and_path
@@ -711,14 +715,29 @@ with_shim_executable() {
   fi
 
   (
-    local preset_version
-    preset_version=$(get_preset_version_for "$shim_name")
+    local preset_plugin_versions
+    preset_plugin_versions=()
 
-    if [ -n "$preset_version" ]; then
-      echo "asdf: No version ${preset_version} installed for command ${shim_name}"
-      echo "Please install the missing version by running"
+    local shim_plugins
+    IFS=$'\n' read -rd '' -a shim_plugins <<<"$(shim_plugins "$shim_name")"
+    for shim_plugin in "${shim_plugins[@]}"; do
+      local shim_versions
+      local version_string
+      version_string=$(get_preset_version_for "$shim_plugin")
+      IFS=' ' read -r -a shim_versions <<<"$version_string"
+      local usable_plugin_versions
+      for shim_version in "${shim_versions[@]}"; do
+        preset_plugin_versions+=("$shim_plugin $shim_version")
+      done
+    done
+
+    if [ -n "${preset_plugin_versions[*]}" ]; then
+      echo "asdf: No preset version installed for command ${shim_name}"
+      echo "Please install the missing version by running one of the following:"
       echo ""
-      echo "asdf install ${shim_name} ${preset_version}"
+      for preset_plugin_version in "${preset_plugin_versions[@]}"; do
+        echo "asdf install ${preset_plugin_version}"
+      done
       echo ""
       echo "or add one of the following in your .tool-versions file:"
     else
