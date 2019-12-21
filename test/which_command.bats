@@ -99,3 +99,13 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/1.1/bin/dummy" ]
 }
+
+@test "which should not return shim path" {
+  cd $PROJECT_DIR
+  echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
+  rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
+
+  run env PATH=$PATH:$ASDF_DIR/shims asdf which dummy
+  [ "$status" -eq 1 ]
+  [ "$output" == "No dummy executable found for dummy 1.0" ]
+}
