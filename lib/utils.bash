@@ -450,12 +450,16 @@ resolve_symlink() {
   # If it is a slash we can assume it's root and absolute. Otherwise we treat it
   # as relative
   case $resolved_path in
-  /*)
-    echo "$resolved_path"
-    ;;
-  *)
-    echo "$PWD/$resolved_path"
-    ;;
+    /*)
+      echo "$resolved_path"
+      ;;
+    *)
+      (
+        # shellcheck disable=SC2164
+        cd "$(dirname "$symlink")"
+        echo "$PWD/$resolved_path"
+      )
+      ;;
   esac
 }
 

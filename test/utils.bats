@@ -361,14 +361,15 @@ teardown() {
 }
 
 @test "resolve_symlink converts relative symlink path to the real file path" {
+  mkdir dir
   touch foo
-  ln -s foo bar
+  ln -s ../foo dir/bar
 
-  run resolve_symlink bar
+  run resolve_symlink dir/bar
   [ "$status" -eq 0 ]
   echo $status
-  [ "$output" = $(pwd)/foo ]
-  rm -f foo bar
+  [ "$output" = $(pwd)/dir/../foo ]
+  rm -rf dir foo
 }
 
 @test "strip_tool_version_comments removes lines that only contain comments" {
