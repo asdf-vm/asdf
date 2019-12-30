@@ -38,8 +38,8 @@ teardown() {
   run asdf update
   [ "$status" -eq 0 ]
   cd $ASDF_DIR
-  echo $(git tag) | grep $tag
-  [ "$status" -eq 0 ]
+  git tag | grep $tag
+  [ "$?" -eq 0 ]
 }
 
 @test "asdf update should checkout the latest tag when configured with use_release_candidates = yes" {
@@ -49,8 +49,8 @@ teardown() {
   run asdf update
   [ "$status" -eq 0 ]
   cd $ASDF_DIR
-  echo $(git tag) | grep $tag
-  [ "$status" -eq 0 ]
+  git tag | grep $tag
+  [ "$?" -eq 0 ]
 }
 
 @test "asdf update is a noop for non-git repos" {
