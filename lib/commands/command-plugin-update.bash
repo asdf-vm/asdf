@@ -11,15 +11,15 @@ plugin_update_command() {
   if [ "$plugin_name" = "--all" ]; then
     for dir in "$(asdf_data_dir)"/plugins/*; do
       local plugin_name
-      plugin_name=$(basename $dir)
-      update_plugin $plugin_name $dir $gitref &
+      plugin_name=$(basename "$dir")
+      update_plugin "$plugin_name" "$dir" "$gitref" &
     done
     wait
   else
     local plugin_path
     plugin_path="$(get_plugin_path "$plugin_name")"
     check_if_plugin_exists "$plugin_name"
-    update_plugin $plugin_name $plugin_path $gitref
+    update_plugin "$plugin_name" "$plugin_path" "$gitref"
   fi
 }
 
