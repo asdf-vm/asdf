@@ -34,7 +34,7 @@ teardown() {
 }
 
 @test "asdf update should checkout the latest non-RC tag" {
-  local tag=$(git tag | grep -vi "rc" | head -1)
+  local tag=$(git tag | grep -vi "rc" | tail -1)
   run asdf update
   [ "$status" -eq 0 ]
   cd $ASDF_DIR
@@ -43,7 +43,7 @@ teardown() {
 }
 
 @test "asdf update should checkout the latest tag when configured with use_release_candidates = yes" {
-  local tag=$(git tag | head -1)
+  local tag=$(git tag | tail -1)
   export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
   echo "use_release_candidates = yes" > $ASDF_CONFIG_DEFAULT_FILE
   run asdf update
