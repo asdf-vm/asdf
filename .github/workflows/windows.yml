@@ -22,11 +22,13 @@ jobs:
         run: |
           git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
 
+      - run: where bash
+      - run: bash --version
+      - env:
+          PATH: $HOME/bats-core/bin:$PATH
+        run: bash -c 'echo $PATH'
+
       - name: Run tests
-        run: |
-          where bash
-          bash --version
-          bash -c 'export'
-          bash -c 'PATH=$HOME/bats-core/bin:$PATH bats test'
+        run: bash -c 'PATH=$HOME/bats-core/bin:$PATH bats test'
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
