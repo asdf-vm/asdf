@@ -6,6 +6,7 @@ GREP_OPTIONS="--color=never"
 GREP_COLORS=
 
 ASDF_DIR=${ASDF_DIR:-''}
+ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
 
 asdf_version() {
   local version git_rev
