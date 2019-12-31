@@ -24,9 +24,7 @@ jobs:
 
       - run: where bash
       - run: bash --version
-      - env:
-          PATH: $HOME/bats-core/bin:$PATH
-        run: bash -c 'echo $PATH'
+      - run: bash -c 'which apt-get'
 
       - name: Run tests
         run: bash -c 'PATH=$HOME/bats-core/bin:$PATH bats test'
