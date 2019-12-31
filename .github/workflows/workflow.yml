@@ -42,8 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          export PATH=$HOME/bats-core/bin:$PATH
-          bats test
+          bash -c 'PATH=$HOME/bats-core/bin:$PATH bats test'
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
