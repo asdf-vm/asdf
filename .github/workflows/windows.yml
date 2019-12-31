@@ -1,0 +1,32 @@
+name: Windows test workflow
+
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: "0 0 * * 5"
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install bats
+        run: |
+          git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
+
+      - name: Run tests
+        run: |
+          where bash
+          bash --version
+          bash -c 'export'
+          bash -c 'PATH=$HOME/bats-core/bin:$PATH bats test'
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
