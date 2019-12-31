@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # For Korn shells (ksh, mksh, etc.), capture $_ (the final parameter passed to
 # the last command) straightaway, as it will contain the path to this script.
 # For Bash, ${BASH_SOURCE[0]} will be used to obtain this script's path.

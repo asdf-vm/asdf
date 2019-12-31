@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 _asdf() {
   local cur
   cur=${COMP_WORDS[COMP_CWORD]}

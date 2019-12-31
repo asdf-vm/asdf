@@ -1,5 +1,3 @@
-#!/usr/bin/env fish
-
 set -x ASDF_DIR (dirname (status -f))
 set -l asdf_data_dir (
   if test -n "$ASDF_DATA_DIR"; echo $ASDF_DATA_DIR;
