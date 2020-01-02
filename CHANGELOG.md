@@ -18,7 +18,7 @@ Features
 
 * It's now possible to update a plugin to an specific branch/commit.
 
-  `git plugin update <name> [git-ref]`
+  `asdf plugin update <name> [git-ref]`
 
   Checkouts a plugin to the specified `git-ref`. Defaults to `master`
 
