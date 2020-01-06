@@ -22,6 +22,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Fetch tags
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
       - name: Install macOS deps
         if: matrix.os == 'macOS-latest'
         run: |
