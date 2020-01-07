@@ -168,7 +168,15 @@ sudo apt install \
   libxslt-dev libffi-dev libtool unixodbc-dev \
   unzip curl
 ```
+#### ** Debian **
 
+```shell
+sudo apt install \
+  automake autoconf libreadline-dev \
+  libncurses-dev libssl-dev libyaml-dev \
+  libxslt-dev libffi-dev libtool unixodbc-dev \
+  unzip curl zlib1g-dev
+```
 #### **Fedora**
 
 ```shell
