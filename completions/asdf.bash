@@ -25,7 +25,7 @@ _asdf() {
       ;;
     plugin-add)
       local available_plugins
-      available_plugins=$( (asdf plugin-list 2>/dev/null && asdf plugin-list-all 2>/dev/null) | sort | uniq -u)
+      available_plugins=$(asdf plugin-list-all 2>/dev/null | awk '{ if ($2 !~ /^\*/) print $1}')
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
       ;;
