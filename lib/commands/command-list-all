@@ -13,7 +13,7 @@ list_all_command() {
   if [[ $query ]]; then
     versions=$(echo "$versions" |
       tr ' ' '\n' |
-      grep -E "^\s*$query" |
+      grep -E "^\\s*$query" |
       tr '\n' ' ')
   fi
 

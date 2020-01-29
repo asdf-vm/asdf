@@ -41,7 +41,7 @@ jobs:
 
       - name: Install bats
         run: |
-          git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
+          git clone --branch v1.1.0 https://github.com/bats-core/bats-core.git $HOME/bats-core
 
       - name: Run tests
         run: |
@@ -51,14 +51,14 @@ jobs:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   lint:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install shellcheck
-        run: brew install shellcheck
+        run: sudo apt-get install shellcheck
 
       - name: Run ShellCheck
         run: bash lint.sh
