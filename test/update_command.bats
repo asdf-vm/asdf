@@ -54,7 +54,7 @@ teardown() {
 }
 
 @test "asdf update is a noop for non-git repos" {
-  (cd $ASDF_DIR && rm -r .git/)
+  rm -rf $ASDF_DIR/.git/
   run asdf update
   [ "$status" -eq 1 ]
   [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" == "$output" ]
