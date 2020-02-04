@@ -19,7 +19,14 @@ shell_command() {
   local version_env_var="ASDF_${upcase_name}_VERSION"
 
   if [ "$version" = "--unset" ]; then
-    echo "unset $version_env_var"
+    case "$asdf_shell" in
+      fish)
+        echo "set -e $version_env_var"
+        ;;
+      *)
+        echo "unset $version_env_var"
+        ;;
+    esac
     exit 0
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
