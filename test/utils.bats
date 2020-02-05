@@ -143,6 +143,14 @@ teardown() {
   [ "$output" = "$ASDF_DATA_DIR" ]
 }
 
+@test "asdf_data_dir should return ~/.asdf when ASDF_DATA_DIR is not set" {
+  unset ASDF_DATA_DIR
+
+  run asdf_data_dir
+  [ "$status" -eq 0 ]
+  [ "$output" = "$HOME/.asdf" ]
+}
+
 @test "check_if_plugin_exists should work with a custom data directory" {
   ASDF_DATA_DIR=$HOME/asdf-data
 
