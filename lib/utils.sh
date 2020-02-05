@@ -40,10 +40,8 @@ asdf_data_dir() {
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  elif [[ $EUID -ne 0 ]]; then
-    data_dir="$HOME/.asdf"
   else
-    data_dir="$(asdf_dir)"
+    data_dir="$HOME/.asdf"
   fi
 
   echo "$data_dir"
