@@ -109,12 +109,14 @@ case "$subcmd" in
       compadd -- $(asdf list-all "${words[3]}")
   fi
   ;;
-(uninstall|where|shell|local|global)
-  if (( CURRENT == 3 )); then
-    _asdf__installed_plugins
-  elif (( CURRENT == 4 )); then
-    _asdf__installed_versions_of "${words[3]}"
-  fi
+(uninstall|shell|local|global|reshim)
+  compset -n 2
+  _arguments '1:plugin-name: _asdf__installed_plugins' '2:package-version:{_asdf__installed_versions_of ${words[2]}}'
+  ;;
+(where)
+  # version is optional
+  compset -n 2
+  _arguments '1:plugin-name: _asdf__installed_plugins' '2::package-version:{_asdf__installed_versions_of ${words[2]}}'
   ;;
 (which|shim-versions)
   _wanted asdf-shims expl "ASDF Shims" compadd -- "${asdf_dir:?}/shims"/*(:t)
