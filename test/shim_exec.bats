@@ -205,6 +205,21 @@ teardown() {
   [ "$output" == "System" ]
 }
 
+@test "shim exec should use path executable when specified version path:<path>" {
+  run asdf install dummy 1.0
+
+  CUSTOM_DUMMY_PATH=$PROJECT_DIR/foo
+  CUSTOM_DUMMY_BIN_PATH=$CUSTOM_DUMMY_PATH/bin
+  mkdir -p $CUSTOM_DUMMY_BIN_PATH
+  echo "echo System" > $CUSTOM_DUMMY_BIN_PATH/dummy
+  chmod +x $CUSTOM_DUMMY_BIN_PATH/dummy
+
+  echo "dummy path:$CUSTOM_DUMMY_PATH" > $PROJECT_DIR/.tool-versions
+
+  run $ASDF_DIR/shims/dummy hello
+  [ "$output" == "System" ]
+}
+
 @test "shim exec should execute system if set first" {
   run asdf install dummy 2.0
 
