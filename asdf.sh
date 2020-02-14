@@ -33,6 +33,7 @@ PATH="${ASDF_USER_SHIMS}:$PATH"
 . "${ASDF_DIR}/lib/asdf.sh"
 
 if [ -n "${ZSH_VERSION:-}" ]; then
-  autoload -U bashcompinit
-  bashcompinit
+  fpath=(${ASDF_DIR}/completions $fpath)
+  autoload -Uz compinit
+  compinit
 fi
