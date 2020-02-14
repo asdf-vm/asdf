@@ -3,6 +3,7 @@
 load test_helpers
 
 setup() {
+    cd $BATS_TMPDIR
     ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
     cat > $ASDF_CONFIG_FILE <<-EOM
 key1 = value1

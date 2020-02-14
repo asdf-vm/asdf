@@ -707,10 +707,8 @@ with_shim_executable() {
     plugin_path=$(get_plugin_path "$plugin_name")
 
     run_within_env() {
-      local path=$PATH
-      if [ "system" == "$full_version" ]; then
-        path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-      fi
+      local path
+      path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
 
       executable_path=$(PATH=$path command -v "$shim_name")
 
