@@ -2,7 +2,7 @@
 
 version_command() {
   local cmd=$1
-  local plugin=$2
+  local plugin_name=$2
 
   if [ "$#" -lt "3" ]; then
     if [ "$cmd" = "global" ]; then
@@ -30,17 +30,17 @@ version_command() {
     file="$(resolve_symlink "$file")"
   fi
 
-  check_if_plugin_exists "$plugin"
+  check_if_plugin_exists "$plugin_name"
 
   local version
   for version in "${versions[@]}"; do
-    check_if_version_exists "$plugin" "$version"
+    check_if_version_exists "$plugin_name" "$version"
   done
 
-  if [ -f "$file" ] && grep "^$plugin " "$file" >/dev/null; then
-    sed -i.bak -e "s|^$plugin .*$|$plugin ${versions[*]}|" "$file"
+  if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then
+    sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${versions[*]}|" "$file"
     rm "$file".bak
   else
-    echo "$plugin ${versions[*]}" >>"$file"
+    echo "$plugin_name ${versions[*]}" >>"$file"
   fi
 }
