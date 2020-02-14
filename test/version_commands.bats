@@ -282,3 +282,15 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$output" = "set -gx ASDF_DUMMY_VERSION \"1.1.0\"" ]
 }
+
+@test "export-shell-version should unset when --unset flag is passed" {
+  run asdf export-shell-version sh "dummy" "--unset"
+  [ "$status" -eq 0 ]
+  [ "$output" = "unset ASDF_DUMMY_VERSION" ]
+}
+
+@test "export-shell-version should use set -e when --unset flag is passed and shell is fish" {
+  run asdf export-shell-version fish "dummy" "--unset"
+  [ "$status" -eq 0 ]
+  [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}

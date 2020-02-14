@@ -31,7 +31,7 @@ asdf plugin list
 ```shell
 asdf plugin list --urls
 # asdf plugin list
-# java            https://github.com/skotchpine/asdf-java.git
+# java            https://github.com/halcyon/asdf-java.git
 # nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 ```
 

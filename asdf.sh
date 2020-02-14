@@ -32,7 +32,7 @@ PATH="${ASDF_USER_SHIMS}:$PATH"
 # Load the asdf wrapper function
 . "${ASDF_DIR}/lib/asdf.sh"
 
-if [ -n "$ZSH_VERSION" ]; then
+if [ -n "${ZSH_VERSION:-}" ]; then
   autoload -U bashcompinit
   bashcompinit
 fi
