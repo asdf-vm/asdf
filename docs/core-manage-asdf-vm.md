@@ -74,36 +74,28 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 #### ** ZSH **
 
-If you are using a framework, such as oh-my-zsh, use these lines. (Be sure
-that if you make future changes to .zshrc these lines remain _below_ the line
-where you source your framework.)
-
 Installation via **Git**:
 
 ```shell
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 ```
 
-Installation via **Homebrew**:
+?>If you are using a framework, such as [oh-my-zsh](https://ohmyz.sh/), these lines remain _below_ the line
+where you source your framework.)
 
-?> If you have Homebrew's ZSH completions configured, the second line below is
-unnecessary. See [Configuring Completions in
-ZSH](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) in
-the Homebrew docs.
-
-```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.zshrc
-```
-
-If you are not using a framework, or if on starting your shell you get an
-error message like 'command not found: compinit', then add this line before
-the ones above.
+!>If you are not using a framework, or if on starting your shell you get an error message like `command not found: compinit`, then add the below line before the ones above.
 
 ```shell
 autoload -Uz compinit && compinit
 ```
+
+Installation via **Homebrew**:
+
+```shell
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
+```
+
+?> ASDF automatically adds it's completions to the function path (`$fpath`). This may clash with Homebrew's ZSH completions. See [Configuring Completions in ZSH](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) in the Homebrew docs.
 
 #### ** Fish **
 
@@ -131,7 +123,7 @@ tab will usually do it.)
 
 ### Having Issues?
 
-!> If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.`
+!> If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.` and **AFTER** you have sourced your framework (oh-my-zsh etc).
 
 ### Plugin Dependencies
 
