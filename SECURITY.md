@@ -2,11 +2,10 @@
 
 ## Supported Versions
 
-Typically only the latest version is maintained. Versions are typically
-released sequecially, with major, minor, and patch versions incremented
+Typically only the latest version is maintained. Versions are
+released sequencially, with major, minor, and patch versions incremented
 as necessary. If a vulnerability is found in an old version of asdf,
-updating to the latest version of asdf will typically be required in
-order to 
+updating to the latest version of asdf will be required.
 
 
 | Version | Supported          |
@@ -24,4 +23,5 @@ order to
 To report a vulnerability please contact one of:
 
 * @Stratus3D via email: admin [at] stratus3d.com - PGP is not setup for this email address.
+* @danhper via email: see https://daniel.perez.sh/ for email and PGP key
 * TODO: Add secure contact methods of others on the core team.
