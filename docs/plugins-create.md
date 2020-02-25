@@ -5,7 +5,7 @@ A plugin is a git repo, with a couple executable scripts, to support versioning 
 ## Required Scripts
 
 - `bin/list-all` - lists all installable versions
-- `bin/download` - download source code for the specified version
+- `bin/download` - download source code or binary for the specified version
 - `bin/install` - installs the specified version
 
 ## Environment Variables
@@ -19,11 +19,11 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 These additional environment variables will be available to the `bin/install` script:
 
 - `ASDF_CONCURRENCY` - the number of cores to use when compiling the source code. Useful for setting `make -j`.
-- `ASDF_DOWNLOAD_PATH` - the path to where the source code was downloaded by the `bin/download` script.
+- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary was downloaded by the `bin/download` script.
 
 These additional environment variables will be available to the `bin/download` script:
 
-- `ASDF_DOWNLOAD_PATH` - the path to where the source code should be downloaded.
+- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary should be downloaded.
 
 #### bin/list-all
 
