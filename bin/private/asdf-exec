@@ -4,8 +4,8 @@
 echo "asdf is self upgrading shims to new asdf exec ..."
 
 asdf_dir="$(dirname "$(dirname "$(dirname "$0")")")"
-# shellcheck source=lib/utils.sh
-source "$asdf_dir/lib/utils.sh"
+# shellcheck source=lib/utils.bash
+source "$asdf_dir/lib/utils.bash"
 rm "$(asdf_data_dir)"/shims/*
 "$asdf_dir"/bin/asdf reshim
 shim_name=$(basename "$2")

@@ -1,7 +1,7 @@
 # -*- sh -*-
 
-# shellcheck source=lib/commands/reshim.sh
-source "$(dirname "$ASDF_CMD_FILE")/reshim.sh"
+# shellcheck source=lib/commands/reshim.bash
+source "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
 
 reshim_command() {
   local plugin_name=$1
