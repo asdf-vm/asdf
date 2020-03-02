@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# shellcheck source=lib/utils.sh
-source "$(dirname "$(dirname "$0")")/lib/utils.sh"
+# shellcheck source=lib/utils.bash
+source "$(dirname "$(dirname "$0")")/lib/utils.bash"
 
 find_cmd() {
   local cmd_dir="$1"
@@ -9,10 +9,10 @@ find_cmd() {
 
   local cmd_name
   local args_offset="$#"
-  cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
+  cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-').bash"
   while [ ! -f "$cmd_dir/$cmd_name" ] && [ "$args_offset" -gt 0 ]; do
     args_offset=$((args_offset - 1))
-    cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-')"
+    cmd_name="command-$(echo "${@:1:${args_offset}}" | tr ' ' '-').bash"
   done
 
   if [ -f "$cmd_dir/$cmd_name" ]; then
@@ -29,15 +29,15 @@ find_asdf_cmd() {
     'exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' | \
       'reshim' | 'uninstall' | 'update' | 'where' | 'which' | \
       'export-shell-version')
-      echo "$asdf_cmd_dir/command-$1" 2
+      echo "$asdf_cmd_dir/command-$1.bash" 2
       ;;
 
     '' | '--help' | '-h' | 'help')
-      echo "$asdf_cmd_dir/command-help" 2
+      echo "$asdf_cmd_dir/command-help.bash" 2
       ;;
 
     '--version' | 'version')
-      echo "$asdf_cmd_dir/command-version" 2
+      echo "$asdf_cmd_dir/command-version.bash" 2
       ;;
 
     *)
@@ -79,7 +79,7 @@ asdf_cmd() {
     local asdf_cmd_dir
     asdf_cmd_dir="$(asdf_dir)/lib/commands"
     echo "Unknown command: \`asdf ${*}\`" >&2
-    source "$asdf_cmd_dir/command-help" >&2
+    source "$asdf_cmd_dir/command-help.bash" >&2
     return 127
   fi
 }

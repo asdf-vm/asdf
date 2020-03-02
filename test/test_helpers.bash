@@ -4,8 +4,8 @@
 # tests fail when it is set to something other than the temp dir.
 unset ASDF_DIR
 
-# shellcheck source=lib/utils.sh
-. "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.sh
+# shellcheck source=lib/utils.bash
+. "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
 
 setup_asdf_dir() {
   BASE_DIR=$(mktemp -dt asdf.XXXX)
