@@ -17,8 +17,8 @@ find_cmd() {
 
   if [ -f "$cmd_dir/$cmd_name" ]; then
     echo "$cmd_dir/$cmd_name" "$((args_offset + 1))"
-  elif [ -f "$cmd_dir/command" ]; then
-    echo "$cmd_dir/command" 1
+  elif [ -f "$cmd_dir/command.bash" ]; then
+    echo "$cmd_dir/command.bash" 1
   fi
 }
 

@@ -90,18 +90,18 @@ This can be used to further parse the legacy file found by asdf. If `parse-legac
 
 ## Extension commands for asdf CLI.
 
-It's possible for plugins to define new asdf commands by providing `bin/command*` scripts or executables that will
-be callable using the asdf command line interface by using the plugin name as a subcommand.
+It's possible for plugins to define new asdf commands by providing `bin/command*.bash` scripts or executables that
+will be callable using the asdf command line interface by using the plugin name as a subcommand.
 
 For example, suppose a `foo` plugin has:
 
 ```shell
 foo/
   bin/
-    command
-    command-bat
-    command-bat-man
-    command-help
+    command.bash
+    command-bat.bash
+    command-bat-man.bash
+    command-help.bash
 ```
 
 Users can now execute
