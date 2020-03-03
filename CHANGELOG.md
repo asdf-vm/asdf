@@ -1,6 +1,27 @@
 # Changelog
 
-## 0.7.7-dev
+## 0.7.8-dev
+
+## 0.7.7
+
+Features
+
+* Add .bash file extension to files executed by Bash (#664)
+* Add security policy (#660)
+
+Fixed Bugs
+
+* consistent use of plugin_name (#657)
+* Default ZSH_VERSION to empty string (#656)
+* Fix support for path version (#654)
+* Fix hanging 'asdf update is a noop for non-git repos' test (#644)
+* Fix Bash completions for `plugin-add` (#643)
+* Fix `--unset` for Fish shell (#640)
+* Misc. documentation fixes (#631, #652)
+* Defaults to empty ASDF_DATA_DIR (#630)
+* Remove shebang lines of sourced scripts (#629)
+* Ignore shim directory for executable lookups (#623)
+* Fix issue with preset version warning assuming that the shim name and plugin name are the same (#622)
 
 ## 0.7.6
 
