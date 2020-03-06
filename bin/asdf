@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+# Get files actual location
+SCRIPT=$(readlink -f "$0")
+
 # shellcheck source=lib/utils.bash
-source "$(dirname "$(dirname "$0")")/lib/utils.bash"
+source "$(dirname "$(dirname "$SCRIPT")")/lib/utils.bash"
 
 find_cmd() {
   local cmd_dir="$1"
