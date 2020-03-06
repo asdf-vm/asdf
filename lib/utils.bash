@@ -67,6 +67,25 @@ get_install_path() {
   fi
 }
 
+get_download_path() {
+  local plugin=$1
+  local install_type=$2
+  local version=$3
+
+  local download_dir
+  download_dir="$(asdf_data_dir)/downloads"
+
+  mkdir -p "${download_dir}/${plugin}"
+
+  if [ "$install_type" = "version" ]; then
+    echo "${download_dir}/${plugin}/${version}"
+  elif [ "$install_type" = "path" ]; then
+    return
+  else
+    echo "${download_dir}/${plugin}/${install_type}-${version}"
+  fi
+}
+
 list_installed_versions() {
   local plugin_name=$1
   local plugin_path
