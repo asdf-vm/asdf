@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
-# Get files actual location
-SCRIPT=$(readlink -f "$0")
+normalized_readlink() {
+  TARGET_FILE=$1
 
+  cd "$(dirname "$TARGET_FILE")" || exit
+  TARGET_FILE=$(basename "$TARGET_FILE")
+
+  # Iterate down a (possible) chain of symlinks
+  while [ -L "$TARGET_FILE" ]; do
+    TARGET_FILE=$(readlink "$TARGET_FILE")
+    cd "$(dirname "$TARGET_FILE")" || exit
+    TARGET_FILE=$(basename "$TARGET_FILE")
+  done
+
+  # Compute the canonicalized name by finding the physical path
+  # for the directory we're in and appending the target file.
+  PHYS_DIR=$(pwd -P)
+  RESULT=$PHYS_DIR/$TARGET_FILE
+  echo "$RESULT"
+}
+
+SCRIPT=$(normalized_readlink "$0")
 # shellcheck source=lib/utils.bash
 source "$(dirname "$(dirname "$SCRIPT")")/lib/utils.bash"
 
