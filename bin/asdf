@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+## Courtesy of https://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
 normalized_readlink() {
   TARGET_FILE=$1
 
