@@ -27,6 +27,12 @@ install_mock_plugin() {
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$location/plugins/$plugin_name"
 }
 
+install_mock_legacy_plugin() {
+  local plugin_name=$1
+  local location="${2:-$ASDF_DIR}"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_legacy_plugin" "$location/plugins/$plugin_name"
+}
+
 install_mock_plugin_version() {
   local plugin_name=$1
   local plugin_version=$2
@@ -36,6 +42,10 @@ install_mock_plugin_version() {
 
 install_dummy_plugin() {
   install_mock_plugin "dummy"
+}
+
+install_dummy_legacy_plugin() {
+  install_mock_legacy_plugin "legacy-dummy"
 }
 
 install_dummy_version() {
