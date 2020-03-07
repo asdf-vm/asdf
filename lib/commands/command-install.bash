@@ -106,6 +106,8 @@ install_tool_version() {
 
   local install_path
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+  local download_path
+  download_path=$(get_download_path "$plugin_name" "$install_type" "$version")
   local concurrency
   concurrency=$(get_concurrency)
   trap 'handle_cancel $install_path' INT
@@ -113,10 +115,26 @@ install_tool_version() {
   if [ -d "$install_path" ]; then
     echo "$plugin_name $full_version is already installed"
   else
+
+    if [ -f "${plugin_path}/bin/download" ]; then
+      # Not a legacy plugin
+      # Run the download script
+      (
+        export ASDF_INSTALL_TYPE=$install_type
+        export ASDF_INSTALL_VERSION=$version
+        export ASDF_INSTALL_PATH=$install_path
+        export ASDF_DOWNLOAD_PATH=$download_path
+        mkdir "$install_path"
+        asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
+        bash "${plugin_path}"/bin/download
+      )
+    fi
+
     (
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
+      export ASDF_DOWNLOAD_PATH=$download_path
       export ASDF_CONCURRENCY=$concurrency
       mkdir "$install_path"
       asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
@@ -126,6 +144,8 @@ install_tool_version() {
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
       asdf reshim "$plugin_name" "$full_version"
+
+      # TODO: Remove download directory if --keep-download flag or always_keep_download config setting are set
       asdf_run_hook "post_asdf_install_${plugin_name}" "$full_version"
     else
       handle_failure "$install_path"
