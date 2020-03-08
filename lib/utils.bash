@@ -21,7 +21,8 @@ asdf_version() {
 
 asdf_dir() {
   if [ -z "$ASDF_DIR" ]; then
-    local current_script_path=${BASH_SOURCE[0]}
+    local current_script_path
+    current_script_path=$(resolve_symlink "${BASH_SOURCE[0]}")
     export ASDF_DIR
     ASDF_DIR=$(
       cd "$(dirname "$(dirname "$current_script_path")")" || exit
@@ -412,26 +413,28 @@ find_file_upwards() {
   done
 }
 
+## Courtesy of https://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
 resolve_symlink() {
-  local symlink
-  symlink="$1"
+  local target_file
+  target_file="$1"
 
-  # This seems to be the only cross-platform way to resolve symlink paths to
-  # the real file path.
-  # shellcheck disable=SC2012
-  resolved_path=$(ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|')
+  cd "$(dirname "$target_file")" || exit
+  target_file=$(basename "$target_file")
 
-  # Check if resolved path is relative or not by looking at the first character.
-  # If it is a slash we can assume it's root and absolute. Otherwise we treat it
-  # as relative
-  case $resolved_path in
-    /*)
-      echo "$resolved_path"
-      ;;
-    *)
-      echo "$PWD/$resolved_path"
-      ;;
-  esac
+  # Iterate down a (possible) chain of symlinks
+  while [ -L "$target_file" ]; do
+    target_file=$(readlink "$target_file")
+    cd "$(dirname "$target_file")" || exit
+    target_file=$(basename "$target_file")
+  done
+
+  # Compute the canonicalized name by finding the physical path
+  # for the directory we're in and appending the target file.
+  local actual_directory
+  actual_directory=$(pwd -P)
+  local resolved_path
+  resolved_path=$actual_directory/$target_file
+  echo "$resolved_path"
 }
 
 list_plugin_bin_paths() {
