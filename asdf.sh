@@ -34,6 +34,4 @@ PATH="${ASDF_USER_SHIMS}:$PATH"
 
 if [ -n "${ZSH_VERSION:-}" ]; then
   fpath=(${ASDF_DIR}/completions $fpath)
-  autoload -Uz compinit
-  compinit
 fi
