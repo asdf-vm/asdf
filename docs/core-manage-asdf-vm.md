@@ -83,7 +83,7 @@ echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 ?>If you are using a framework, such as [oh-my-zsh](https://ohmyz.sh/), these lines remain _below_ the line
 where you source your framework.)
 
-!>If you are not using a framework, or if on starting your shell you get an error message like `command not found: compinit`, then add the below line before the ones above.
+!>If you are not using a framework or are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh` as it adds completions to the `fpath`.
 
 ```shell
 autoload -Uz compinit && compinit
