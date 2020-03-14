@@ -80,14 +80,13 @@ Installation via **Git**:
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
 ```
 
-?>If you are using a framework, such as [oh-my-zsh](https://ohmyz.sh/), these lines remain _below_ the line
-where you source your framework.)
+?>Sourcing `asdf.sh` should occur after you source any ZSH framework such as [oh-my-zsh](https://ohmyz.sh/).
 
-!>If you are not using a framework or are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh` as it adds completions to the `fpath`.
+Completions are automatically added to your `fpath` by `asdf.sh`, though `compinit` needs to be run.
 
-```shell
-autoload -Uz compinit && compinit
-```
+- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
+- if you are using a ZSH framework (which usually call `compinit` themselves) then the `asdf` plugin may require updating to support the new native ZSH completions
+- if you are not seeing completions, you can always add `autoload -Uz compinit && compinit` after your sourcing of `asdf.sh` to see if that solves your problem
 
 Installation via **Homebrew**:
 
