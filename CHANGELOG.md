@@ -2,6 +2,17 @@
 
 ## 0.7.8-dev
 
+Fixed Bugs
+
+* Make sure extension commands are properly displayed by `asdf help`
+
+  Extension commands are now expected to be inside plugins's `lib/commands/command-*.bash` instead of `bin/command*`.
+
+  This change was made for two reasons: Keep the convention that all files to be sourced by bash should end with
+  the `.bash` extension. And the `lib/commands/` directoy mirrors the location of asdf own core commands.
+
+  Added tests to make sure `asdf help` properly displays available extension commands.
+
 ## 0.7.7
 
 Features

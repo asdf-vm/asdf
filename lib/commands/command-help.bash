@@ -15,16 +15,17 @@ EOF
 }
 
 asdf_extension_cmds() {
-  local plugins_path ext_cmds
+  local plugins_path ext_cmds plugin
   plugins_path="$(get_plugin_path)"
   # use find instead of ls -1
   # shellcheck disable=SC2012
-  ext_cmds="$(ls -1 "$plugins_path"/*/bin/command* 2>/dev/null | sed "s#$plugins_path/#  asdf #;"'s#/bin/command##g;s#-# #g')"
+  ext_cmds="$(ls -1 "$plugins_path"/*/lib/commands/command*.bash 2>/dev/null |
+    sed "s#^$plugins_path/##;s#lib/commands/command##;s/.bash//;s/^-//;s/-/ /g")"
   if test -n "$ext_cmds"; then
-    echo "$ext_cmds" | cut -d' ' -f 4 | uniq | while read -r plugin; do
+    echo "$ext_cmds" | cut -d'/' -f 1 | uniq | while read -r plugin; do
       echo
       echo "PLUGIN $plugin"
-      echo "$ext_cmds" | grep "  asdf $plugin"
+      echo "$ext_cmds" | grep "$plugin/" | sed "s#^$plugin/#  asdf $plugin#" | sort
     done
   fi
 }
