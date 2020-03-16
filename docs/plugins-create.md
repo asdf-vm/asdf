@@ -107,17 +107,17 @@ foo/
 Users can now execute
 
 ```shell
-$ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command`
-$ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command bar`
-$ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-help`
-$ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat-man`
-$ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat baz`
+$ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash`
+$ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash bar`
+$ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-help.bash`
+$ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat-man.bash`
+$ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat.bash baz`
 ```
 
 Plugin authors can use this feature to provide utilities related to their tools,
 or even create plugins that are just new command extensions for asdf itself.
 
-When invoked, if extension commands are have not executable-bit set, they will be
+When invoked, if extension commands do not have their executable-bit set, they will be
 sourced as bash scripts, having all of the functions from `$ASDF_DIR/lib/utils.bash` available.
 Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
 If the executable bit is set, they are just executed and replace the asdf execution.
