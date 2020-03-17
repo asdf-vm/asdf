@@ -1,4 +1,4 @@
-# asdf-vm [![Main workflow](https://github.com/asdf-vm/asdf/workflows/Main%20workflow/badge.svg)](https://github.com/asdf-vm/asdf/actions) [![Build status](https://ci.appveyor.com/api/projects/status/2fkj7jngt8qeu8kw?svg=true)](https://ci.appveyor.com/project/TrevorBrown/asdf)
+# asdf-vm [![Main workflow](https://github.com/asdf-vm/asdf/workflows/Main%20workflow/badge.svg)](https://github.com/asdf-vm/asdf/actions)
 
 **Manage multiple runtime versions with a single CLI tool, extendable via plugins** - [docs at asdf-vm.com](https://asdf-vm.github.io/asdf/)
 
