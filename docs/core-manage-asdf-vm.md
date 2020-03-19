@@ -76,18 +76,28 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 Installation via **Git**:
 
-```shell
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-```
-
-?>If you are using a framework, such as [oh-my-zsh](https://ohmyz.sh/), these lines remain _below_ the line
-where you source your framework.)
-
-!>If you are not using a framework, or if on starting your shell you get an error message like `command not found: compinit`, then add the below line before the ones above.
+Source the `asdf.sh` script in your shell config:
 
 ```shell
-autoload -Uz compinit && compinit
+echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.zshrc
 ```
+
+or use a framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this init script and setup completions.
+
+ZSH Completions:
+
+asdf ships with ZSH completions which will need to be setup if you're not using a ZSH framework plugin that does this for you. Add the following to your `.zshrc`:
+
+```shell
+# append completions to fpath
+echo -e "\nfpath=(${ASDF_DIR}/completions $fpath)" >> ~/.zshrc
+# initialise completions with ZSH's compinit
+echo -e "\nautoload -Uz compinit && compinit" >> ~/.zshrc
+```
+
+- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
+- if you are using a custom `compinit` setup with a ZSH framework, ensure `compinit` is below your sourcing of the framework
+- if you are using a ZSH framework with an asdf plugin, then you shouldn't need to manually add `fpath`, the plugin may need to be updated to use the new ZSH completions properly
 
 Installation via **Homebrew**:
 
@@ -95,7 +105,7 @@ Installation via **Homebrew**:
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
 
-?> ASDF automatically adds it's completions to the function path (`$fpath`). This may clash with Homebrew's ZSH completions. See [Configuring Completions in ZSH](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) in the Homebrew docs.
+Shell completions should automatically be installed and available.
 
 #### ** Fish **
 
