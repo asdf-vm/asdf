@@ -31,7 +31,3 @@ PATH="${ASDF_USER_SHIMS}:$PATH"
 # shellcheck source=lib/asdf.sh
 # Load the asdf wrapper function
 . "${ASDF_DIR}/lib/asdf.sh"
-
-if [ -n "${ZSH_VERSION:-}" ]; then
-  fpath=(${ASDF_DIR}/completions $fpath)
-fi
