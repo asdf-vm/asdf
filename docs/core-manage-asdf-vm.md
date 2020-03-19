@@ -76,17 +76,28 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 Installation via **Git**:
 
+Source the `asdf.sh` script in your shell config:
+
 ```shell
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.zshrc
 ```
 
-?>Sourcing `asdf.sh` should occur after you source any ZSH framework such as [oh-my-zsh](https://ohmyz.sh/).
+or use a framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this init script and setup completions.
 
-Completions are automatically added to your `fpath` by `asdf.sh`, though `compinit` needs to be run.
+ZSH Completions:
+
+asdf ships with ZSH completions, however they need to be setup. Add the following to your `.zshrc`:
+
+```shell
+# append completions to fpath
+echo -e "\nfpath=(${ASDF_DIR}/completions $fpath)" >> ~/.zshrc
+# initialise completions with ZSH's compinit
+echo -e "\nautoload -Uz compinit && compinit" >> ~/.zshrc
+```
 
 - if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
-- if you are using a ZSH framework (which usually call `compinit` themselves) then the `asdf` plugin may require updating to support the new native ZSH completions
-- if you are not seeing completions, you can always add `autoload -Uz compinit && compinit` after your sourcing of `asdf.sh` to see if that solves your problem
+- if you are using a custom `compinit` setup with a ZSH framework, ensure `compinit` is below your sourcing of the framework
+- if you are using a ZSH framework with an asdf plugin, then you shouldn't need to manually add `fpath`, the plugin may need to be updated to use the new ZSH completions properly
 
 Installation via **Homebrew**:
 
@@ -94,7 +105,7 @@ Installation via **Homebrew**:
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
 
-?> ASDF automatically adds it's completions to the function path (`$fpath`). This may clash with Homebrew's ZSH completions. See [Configuring Completions in ZSH](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) in the Homebrew docs.
+Shell completions should automatically be installed and available.
 
 #### ** Fish **
 
