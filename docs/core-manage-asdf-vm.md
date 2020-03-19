@@ -86,7 +86,7 @@ or use a framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/o
 
 ZSH Completions:
 
-asdf ships with ZSH completions, however they need to be setup. Add the following to your `.zshrc`:
+asdf ships with ZSH completions which will need to be setup if you're not using a ZSH framework plugin that does this for you. Add the following to your `.zshrc`:
 
 ```shell
 # append completions to fpath
