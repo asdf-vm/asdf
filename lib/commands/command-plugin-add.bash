@@ -30,9 +30,23 @@ plugin_add_command() {
     display_error "Plugin named $plugin_name already added"
     exit 2
   else
+    asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
+    asdf_run_hook "pre_asdf_plugin_add_${plugin_name}"
+
     if ! git clone -q "$source_url" "$plugin_path"; then
       exit 1
     fi
+
+    if [ -f "${plugin_path}/bin/plugin-add" ]; then
+      (
+        export ASDF_PLUGIN_SOURCE_URL=$source_url
+        export ASDF_PLUGIN_PATH=$plugin_path
+        bash "${plugin_path}/bin/plugin-add"
+      )
+    fi
+
+    asdf_run_hook "post_asdf_plugin_add" "$plugin_name"
+    asdf_run_hook "post_asdf_plugin_add_${plugin_name}"
   fi
 }
 
