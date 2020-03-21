@@ -88,6 +88,32 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
+#### bin/plugin-add
+
+This can be used to run any post-installation actions after the plugin has been added to asdf.
+
+The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`) and the source URL (`${ASDF_PLUGIN_SOURCE_URL}`), if any was used.
+
+See also the related hooks:
+
+* `pre_asdf_plugin_add`
+* `pre_asdf_plugin_add_${plugin_name}`
+* `post_asdf_plugin_add`
+* `post_asdf_plugin_add_${plugin_name}`
+
+#### bin/plugin-remove
+
+This can be used to run any pre-removal actions before the plugin will be removed from asdf.
+
+The script has access to the path the plugin was installed in (`${ASDF_PLUGIN_PATH}`).
+
+See also the related hooks:
+
+* `pre_asdf_plugin_remove`
+* `pre_asdf_plugin_remove_${plugin_name}`
+* `post_asdf_plugin_remove`
+* `post_asdf_plugin_remove_${plugin_name}`
+
 ## Extension commands for asdf CLI.
 
 It's possible for plugins to define new asdf commands by providing `lib/commands/command*.bash` scripts or executables that

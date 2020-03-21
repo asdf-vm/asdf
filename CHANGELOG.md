@@ -2,6 +2,18 @@
 
 ## 0.7.8-dev
 
+Features
+
+* Add support for custom `plugin-add` and `plugin-remove` in plugins (#670)
+* Add configurable command hooks for plugin installation and removal (#670)
+
+    ```shell
+    pre_asdf_plugin_remove = echo will remove plugin ${1}
+    pre_asdf_plugin_remove_foo = echo will remove plugin foo
+    post_asdf_plugin_remove = echo removed plugin ${1}
+    post_asdf_plugin_remove_foo = echo removed plugin foo
+    ```
+
 Fixed Bugs
 
 * Make sure extension commands are properly displayed by `asdf help`

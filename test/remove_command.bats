@@ -15,7 +15,7 @@ teardown() {
 
   run asdf plugin-remove "dummy"
   [ "$status" -eq 0 ]
-  [ "$output" = "" ]
+  [ "$output" = "plugin-remove ${ASDF_DIR}/plugins/dummy" ]
 }
 
 @test "plugin_remove_command should exit with 1 when not passed any arguments" {
@@ -65,4 +65,60 @@ teardown() {
 
   # unrelated shim should exist
   [ -f $ASDF_DIR/shims/gummy ]
+}
+
+@test "plugin_remove_command executes configured pre hook (generic)" {
+  install_dummy_plugin
+
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_plugin_remove = echo REMOVE ${@}
+EOM
+
+  run asdf plugin-remove dummy
+
+  local expected_output="REMOVE dummy
+plugin-remove ${ASDF_DIR}/plugins/dummy"
+  [ "$output" = "${expected_output}" ]
+}
+
+@test "plugin_remove_command executes configured pre hook (specific)" {
+  install_dummy_plugin
+
+  cat > $HOME/.asdfrc <<-'EOM'
+pre_asdf_plugin_remove_dummy = echo REMOVE
+EOM
+
+  run asdf plugin-remove dummy
+
+  local expected_output="REMOVE
+plugin-remove ${ASDF_DIR}/plugins/dummy"
+  [ "$output" = "${expected_output}" ]
+}
+
+@test "plugin_remove_command executes configured post hook (generic)" {
+  install_dummy_plugin
+
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_plugin_remove = echo REMOVE ${@}
+EOM
+
+  run asdf plugin-remove dummy
+
+  local expected_output="plugin-remove ${ASDF_DIR}/plugins/dummy
+REMOVE dummy"
+  [ "$output" = "${expected_output}" ]
+}
+
+@test "plugin_remove_command executes configured post hook (specific)" {
+  install_dummy_plugin
+
+  cat > $HOME/.asdfrc <<-'EOM'
+post_asdf_plugin_remove_dummy = echo REMOVE
+EOM
+
+  run asdf plugin-remove dummy
+
+  local expected_output="plugin-remove ${ASDF_DIR}/plugins/dummy
+REMOVE"
+  [ "$output" = "${expected_output}" ]
 }

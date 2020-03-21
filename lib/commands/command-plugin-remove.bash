@@ -7,10 +7,23 @@ plugin_remove_command() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
 
+  asdf_run_hook "pre_asdf_plugin_remove" "$plugin_name"
+  asdf_run_hook "pre_asdf_plugin_remove_${plugin_name}"
+
+  if [ -f "${plugin_path}/bin/plugin-remove" ]; then
+    (
+      export ASDF_PLUGIN_PATH=$plugin_path
+      bash "${plugin_path}/bin/plugin-remove"
+    )
+  fi
+
   rm -rf "$plugin_path"
   rm -rf "$(asdf_data_dir)/installs/${plugin_name}"
 
   grep -l "asdf-plugin: ${plugin_name}" "$(asdf_data_dir)"/shims/* 2>/dev/null | xargs rm -f
+
+  asdf_run_hook "post_asdf_plugin_remove" "$plugin_name"
+  asdf_run_hook "post_asdf_plugin_remove_${plugin_name}"
 }
 
 plugin_remove_command "$@"
