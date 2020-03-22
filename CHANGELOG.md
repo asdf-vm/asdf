@@ -4,7 +4,7 @@
 
 Features
 
-* Add support for custom `plugin-add` and `plugin-remove` in plugins (#670)
+* Add support for `post-plugin-add` and `pre-plugin-remove` in plugins (#670)
 * Add configurable command hooks for plugin installation and removal (#670)
 
     ```shell

@@ -10,10 +10,10 @@ plugin_remove_command() {
   asdf_run_hook "pre_asdf_plugin_remove" "$plugin_name"
   asdf_run_hook "pre_asdf_plugin_remove_${plugin_name}"
 
-  if [ -f "${plugin_path}/bin/plugin-remove" ]; then
+  if [ -f "${plugin_path}/bin/pre-plugin-remove" ]; then
     (
       export ASDF_PLUGIN_PATH=$plugin_path
-      bash "${plugin_path}/bin/plugin-remove"
+      bash "${plugin_path}/bin/pre-plugin-remove"
     )
   fi
 

@@ -52,7 +52,6 @@ teardown() {
   [ ! -f $ASDF_DIR/shims/dummy ]
 }
 
-
 @test "plugin_remove_command should not remove unrelated shims" {
   install_dummy_plugin
   run asdf install dummy 1.0
@@ -65,6 +64,14 @@ teardown() {
 
   # unrelated shim should exist
   [ -f $ASDF_DIR/shims/gummy ]
+}
+
+@test "plugin_remove_command executes pre-plugin-remove script" {
+  install_dummy_plugin
+
+  run asdf plugin-remove dummy
+
+  [ "$output" = "plugin-remove ${ASDF_DIR}/plugins/dummy" ]
 }
 
 @test "plugin_remove_command executes configured pre hook (generic)" {

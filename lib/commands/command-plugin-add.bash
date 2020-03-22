@@ -37,11 +37,11 @@ plugin_add_command() {
       exit 1
     fi
 
-    if [ -f "${plugin_path}/bin/plugin-add" ]; then
+    if [ -f "${plugin_path}/bin/post-plugin-add" ]; then
       (
         export ASDF_PLUGIN_SOURCE_URL=$source_url
         export ASDF_PLUGIN_PATH=$plugin_path
-        bash "${plugin_path}/bin/plugin-add"
+        bash "${plugin_path}/bin/post-plugin-add"
       )
     fi
 
