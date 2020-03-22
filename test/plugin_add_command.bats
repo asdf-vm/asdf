@@ -36,6 +36,14 @@ teardown() {
   echo "$output" | grep "plugin does-not-exist not found in repository"
 }
 
+@test "plugin_add command executes post-plugin-add script" {
+  install_mock_plugin_repo "dummy"
+
+  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy"
+
+  [ "$output" = "plugin-add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy" ]
+}
+
 @test "plugin_add command executes configured pre hook (generic)" {
   install_mock_plugin_repo "dummy"
 

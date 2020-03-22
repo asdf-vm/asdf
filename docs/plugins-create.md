@@ -88,7 +88,7 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
-#### bin/plugin-add
+#### bin/post-plugin-add
 
 This can be used to run any post-installation actions after the plugin has been added to asdf.
 
@@ -101,7 +101,7 @@ See also the related hooks:
 * `post_asdf_plugin_add`
 * `post_asdf_plugin_add_${plugin_name}`
 
-#### bin/plugin-remove
+#### bin/pre-plugin-remove
 
 This can be used to run any pre-removal actions before the plugin will be removed from asdf.
 
