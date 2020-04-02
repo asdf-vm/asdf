@@ -30,6 +30,15 @@ teardown() {
   [ "$output" = "dummy" ]
 }
 
+@test "plugin_add command with URL specified run twice returns error second time" {
+  install_mock_plugin_repo "dummy"
+
+  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy"
+  [ "$status" -eq 2 ]
+  [ "$output" = "Plugin named dummy already added" ]
+}
+
 @test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
   run asdf plugin-add "does-not-exist"
   [ "$status" -eq 1 ]
