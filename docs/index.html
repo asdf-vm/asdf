@@ -61,12 +61,16 @@
         },
         plugins: [
           EditOnGithubPlugin.create(
-            "https://github.com/asdf-vm/asdf/blob/master/docs/", {
-            customURLs: {
-              "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md": "https://github.com/asdf-vm/asdf-plugins/edit/master/README.md",
-              "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md": "https://github.com/asdf-vm/asdf/edit/master/CHANGELOG.md"
+            "https://github.com/asdf-vm/asdf/blob/master/docs/",
+            {
+              customURLs: {
+                "https://raw.githubusercontent.com/asdf-vm/asdf-plugins/master/README.md":
+                  "https://github.com/asdf-vm/asdf-plugins/edit/master/README.md",
+                "https://raw.githubusercontent.com/asdf-vm/asdf/master/CHANGELOG.md":
+                  "https://github.com/asdf-vm/asdf/edit/master/CHANGELOG.md",
+              },
             }
-          })
+          ),
         ],
       };
     </script>
@@ -77,6 +81,7 @@
     <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
     <script src="//unpkg.com/docsify/lib/plugins/zoom-image.min.js"></script>
     <!-- 3rd party plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/docsify-select@1"></script>
     <script src="//unpkg.com/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
     <script src="//unpkg.com/docsify-tabs@1"></script>
