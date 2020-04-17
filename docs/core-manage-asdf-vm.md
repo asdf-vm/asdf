@@ -1,8 +1,9 @@
 ## Install asdf-vm
 
-<!-- tabs:start -->
+<!-- select:start -->
+<!-- select-menu-labels: Installation Method -->
 
-#### ** Git **
+### --Git--
 
 Clone only the latest branch:
 
@@ -18,9 +19,9 @@ cd ~/.asdf
 git checkout "$(git describe --abbrev=0 --tags)"
 ```
 
-#### ** Homebrew **
+### --Homebrew--
 
-Install using the Homebrew package manager on macOS:
+Install using the Homebrew package manager:
 
 ```shell
 brew install asdf
@@ -32,22 +33,29 @@ To use the latest changes, you can point Homebrew to the master branch of the re
 brew install asdf --HEAD
 ```
 
-<!-- tabs:end -->
+<!-- select:end -->
 
 ### Add to your Shell
 
-<!-- tabs:start -->
+<!-- select:start -->
+<!-- select-menu-labels: Operating System,Shell,Installation Method -->
 
-#### ** Bash on Linux **
+#### --Linux,Bash,Git--
 
 ```bash
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
 echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 ```
 
-#### ** Bash on macOS **
+#### --Linux,Fish,Git--
 
-Installation via **Git**:
+[Linux + Fish + Git](_sections/add-to-shell/fish-git.md ':include')
+
+#### --Linux,ZSH,Git--
+
+[Linux + ZSH + Git](_sections/add-to-shell/zsh-git.md ':include')
+
+#### --macOS,Bash,Git--
 
 ```bash
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
@@ -60,7 +68,15 @@ Note if you are using Catalina or newer, the default shell has changed to Zsh:
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zprofile
 ```
 
-Installation via **Homebrew**:
+#### --macOS,Fish,Git--
+
+[macOS + Fish + Git](_sections/add-to-shell/fish-git.md ':include')
+
+#### --macOS,ZSH,Git--
+
+[macOS + ZSH + Git](_sections/add-to-shell/zsh-git.md ':include')
+
+#### --macOS,Bash,Homebrew--
 
 ?> If you have Homebrew's Bash completions configured, the second line below is
 unnecessary. See [Configuring Completions
@@ -72,51 +88,7 @@ echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
 ```
 
-#### ** ZSH **
-
-Installation via **Git**:
-
-Source the `asdf.sh` script in your shell config:
-
-```shell
-echo -e "\n. $HOME/.asdf/asdf.sh" >> ~/.zshrc
-```
-
-or use a framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this init script and setup completions.
-
-ZSH Completions:
-
-asdf ships with ZSH completions which will need to be setup if you're not using a ZSH framework plugin that does this for you. Add the following to your `.zshrc`:
-
-```shell
-# append completions to fpath
-echo -e "\nfpath=(${ASDF_DIR}/completions $fpath)" >> ~/.zshrc
-# initialise completions with ZSH's compinit
-echo -e "\nautoload -Uz compinit && compinit" >> ~/.zshrc
-```
-
-- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
-- if you are using a custom `compinit` setup with a ZSH framework, ensure `compinit` is below your sourcing of the framework
-- if you are using a ZSH framework with an asdf plugin, then you shouldn't need to manually add `fpath`, the plugin may need to be updated to use the new ZSH completions properly
-
-Installation via **Homebrew**:
-
-```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
-```
-
-Shell completions should automatically be installed and available.
-
-#### ** Fish **
-
-Installation via **Git**:
-
-```shell
-echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
-mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
-```
-
-Installation via **Homebrew**:
+#### --macOS,Fish,Homebrew--
 
 ?> Homebrew takes care of [installing the completions for fish
 shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
@@ -126,42 +98,39 @@ Friendly!
 echo "source "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
-<!-- tabs:end -->
+#### --macOS,ZSH,Homebrew--
+
+```shell
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
+```
+
+Shell completions should automatically be installed and available.
+
+### --Docsify Select Default--
+
+!> `asdf` cannot be installed via Homebrew on Linux.
+
+<!-- select:end -->
 
 Restart your shell so that PATH changes take effect. (Opening a new terminal
 tab will usually do it.)
 
+You are ready to use asdf 🎉
+
 ### Having Issues?
 
-!> If you're having issues with it not detecting the shims you've installed it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.` and **AFTER** you have sourced your framework (oh-my-zsh etc).
+TODO: REWORD BELOW. REMOVE !> as the page is too loud!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!> If you're having issues with it your shell not detecting newly installed shims, it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.` and **AFTER** you have sourced your framework (oh-my-zsh etc).
 
 ### Plugin Dependencies
 
-?> For most plugins, it is good if you have installed the following packages OR their equivalent on your OS
+For most plugins, it is good if you have installed the following packages:
 
-<!-- tabs:start -->
+<!-- select:start -->
+<!-- select-menu-labels: Operating System,Installation Method -->
 
-#### ** macOS **
-
-Installation via Homebrew:
-
-```shell
-brew install \
-  coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc \
-  unzip curl
-```
-
-Installation via Spack:
-
-```shell
-spack install \
-  coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc \
-  unzip curl
-```
-
-#### ** Ubuntu **
+#### -- Linux,Aptitude --
 
 ```shell
 sudo apt install \
@@ -171,7 +140,7 @@ sudo apt install \
   unzip curl
 ```
 
-#### **Fedora**
+#### -- Linux,DNF --
 
 ```shell
 sudo dnf install \
@@ -181,17 +150,40 @@ sudo dnf install \
   unzip curl
 ```
 
-<!-- tabs:end -->
+#### -- macOS,Homebrew --
 
-That's all! You are ready to use asdf 🎉
+```shell
+brew install \
+  coreutils automake autoconf openssl \
+  libyaml readline libxslt libtool unixodbc \
+  unzip curl
+```
 
-?> If you're migrating from other tools and want to use your existing `.node-version` or `.ruby-version` version files, look at the [`legacy_version_file` flag in the configuration section](core-configuration?id=homeasdfrc).
+#### -- macOS,Spack --
+
+```shell
+spack install \
+  coreutils automake autoconf openssl \
+  libyaml readline libxslt libtool unixodbc \
+  unzip curl
+```
+
+### -- Docsify Select Default --
+
+No match for _Operating System_ and _Installation Method_ selections.
+
+<!-- select:end -->
+
+### Migrating Tools
+
+If you're migrating from other tools and want to use your existing version files (eg: `.node-version` or `.ruby-version`), look at the [`legacy_version_file` flag in the configuration section](core-configuration?id=homeasdfrc).
 
 ## Update
 
-<!-- tabs:start -->
+<!-- select:start -->
+<!-- select-menu-labels: Installation Method -->
 
-### ** Git **
+### -- Git --
 
 ```shell
 asdf update
@@ -203,19 +195,19 @@ If you want the latest changes that aren't yet included in a stable release:
 asdf update --head
 ```
 
-### ** Homebrew **
+### -- Homebrew --
 
 ```shell
 brew upgrade asdf
 ```
 
-<!-- tabs:end -->
+<!-- select:end -->
 
 ## Remove
 
 Uninstalling `asdf` is as simple as:
 
-1.  In your `.bashrc` (or `.bash_profile` if you are on OSX) or `.zshrc` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
+1.  In your `.bashrc`/`.bash_profile`/`.zshrc`/`config.fish` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
 
     ```shell
     . $HOME/.asdf/asdf.sh
@@ -224,10 +216,14 @@ Uninstalling `asdf` is as simple as:
 
     Remove these lines and save the file.
 
-2.  Run `rm -rf ~/.asdf/ ~/.tool-versions` to completely remove all the asdf
-    files from your system.
+2.  Run
 
-3.  _(Optional)_ If you installed asdf using a package manager, you may want to use
-    that package manager to uninstall the core asdf files.
+    ```shell
+    rm -rf ~/.asdf/ ~/.tool-versions
+    ```
+
+    to completely remove all the asdf files from your system.
+
+3.  _(Optional)_ If you installed asdf using a package manager, you may want to use that package manager to uninstall the core asdf files.
 
 That's it! 🎉
