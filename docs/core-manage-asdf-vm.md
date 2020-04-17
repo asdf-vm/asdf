@@ -42,63 +42,117 @@ brew install asdf --HEAD
 
 #### --Linux,Bash,Git--
 
-```bash
+```shell
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+```
+
+?> Completions must be configured by adding the following to your `.bashrc`:
+
+```shell
 echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc
 ```
 
 #### --Linux,Fish,Git--
 
-[Linux + Fish + Git](_sections/add-to-shell/fish-git.md ':include')
+```shell
+echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+```
+
+?> Completions must be configured manually with the following command:
+
+```shell
+mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+```
 
 #### --Linux,ZSH,Git--
 
-[Linux + ZSH + Git](_sections/add-to-shell/zsh-git.md ':include')
+```shell
+echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+```
+
+**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+
+?> Completions are configured by either a ZSH Framework `asdf` plugin or by adding the following to your `.zshrc`:
+
+```shell
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+# initialise completions with ZSH's compinit
+autoload -Uz compinit
+compinit
+```
+
+- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
+- if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
+- if you are using a ZSH Framework the associated `asdf` plugin may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see https://github.com/ohmyzsh/ohmyzsh/pull/8837.
 
 #### --macOS,Bash,Git--
 
-```bash
+If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
+
+```shell
 echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bash_profile
-echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 ```
 
-Note if you are using Catalina or newer, the default shell has changed to Zsh:
+?> Completions must be configured manually with the following entry in your `.bash_profile`:
 
-```bash
-echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zprofile
+```shell
+echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bash_profile
 ```
 
 #### --macOS,Fish,Git--
 
-[macOS + Fish + Git](_sections/add-to-shell/fish-git.md ':include')
+```shell
+echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+```
+
+?> Completions must be configured manually with the following command:
+
+```shell
+mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+```
 
 #### --macOS,ZSH,Git--
 
-[macOS + ZSH + Git](_sections/add-to-shell/zsh-git.md ':include')
+```shell
+echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+```
+
+**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+
+?> Completions are configured by either a ZSH Framework `asdf` plugin or by adding the following to your `.zshrc`:
+
+```shell
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions $fpath)
+# initialise completions with ZSH's compinit
+autoload -Uz compinit
+compinit
+```
+
+- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
+- if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
+- if you are using a ZSH Framework the associated `asdf` plugin may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see https://github.com/ohmyzsh/ohmyzsh/pull/8837.
 
 #### --macOS,Bash,Homebrew--
 
-?> If you have Homebrew's Bash completions configured, the second line below is
-unnecessary. See [Configuring Completions
-in Bash](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash)
-in the Homebrew docs.
-
-```bash
+```shell
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
+```
+
+?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
+
+```shell
 echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
 ```
 
 #### --macOS,Fish,Homebrew--
 
-TODO: Move completions to below the installation of the regular config. Have separate code blocks so copying is optional and easier to describe as opposed to saying things like "the second line in the codeblock" etc!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-?> Homebrew takes care of [installing the completions for fish
-shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
-Friendly!
-
 ```shell
 echo "source "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 ```
+
+?> Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
 
 #### --macOS,ZSH,Homebrew--
 
@@ -106,11 +160,11 @@ echo "source "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
 
-Shell completions should automatically be installed and available.
+?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh).
 
 ### --Docsify Select Default--
 
-!> `asdf` cannot be installed via Homebrew on Linux.
+!> The `Homebrew` `asdf` Formulae has not been tested on `Linux` by the core asdf team. Please raise an issue if this has changed and we will update the docs.
 
 <!-- select:end -->
 
@@ -121,9 +175,7 @@ You are ready to use asdf 🎉
 
 ### Having Issues?
 
-TODO: REWORD BELOW. REMOVE !> as the page is too loud!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-!> If you're having issues with it your shell not detecting newly installed shims, it's most-likely due to the sourcing of above `asdf.bash` or `asdf.fish` not being at the **BOTTOM** of your `~/.bash_profile`, `~/.zshrc`, or `~/.config/fish/config.fish`. It needs to be sourced **AFTER** you have set your `$PATH.` and **AFTER** you have sourced your framework (oh-my-zsh etc).
+If you're having issues with your shell not detecting newly installed shims, it's most-likely due to the sourcing of `asdf.sh` or `asdf.fish` not being at the **BOTTOM** of your `.bash_profile`, `.zshrc`, `config.fish` config file. It needs to be sourced **AFTER** you have set your `$PATH` and **AFTER** you have sourced your framework (oh-my-zsh etc).
 
 ### Plugin Dependencies
 
@@ -172,7 +224,7 @@ spack install \
 
 ### -- Docsify Select Default --
 
-No match for _Operating System_ and _Installation Method_ selections.
+No match for _Operating System_ and _Installation Method_ selections. Please try another combination.
 
 <!-- select:end -->
 
