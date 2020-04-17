@@ -90,6 +90,8 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 #### --macOS,Fish,Homebrew--
 
+TODO: Move completions to below the installation of the regular config. Have separate code blocks so copying is optional and easier to describe as opposed to saying things like "the second line in the codeblock" etc!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ?> Homebrew takes care of [installing the completions for fish
 shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
 Friendly!
