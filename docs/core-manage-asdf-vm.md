@@ -230,7 +230,7 @@ No match for _Operating System_ and _Installation Method_ selections. Please try
 
 ### Migrating Tools
 
-If you're migrating from other tools and want to use your existing version files (eg: `.node-version` or `.ruby-version`), look at the [`legacy_version_file` flag in the configuration section](core-configuration?id=homeasdfrc).
+If you're migrating from other tools and want to use your existing version files (eg: `.node-version` or `.ruby-version`), look at the `legacy_version_file` [flag in the configuration section](core-configuration?id=homeasdfrc).
 
 ## Update
 
@@ -261,7 +261,7 @@ brew upgrade asdf
 
 Uninstalling `asdf` is as simple as:
 
-1.  In your `.bashrc`/`.bash_profile`/`.zshrc`/`config.fish` find the lines that source `asdf.sh` and the autocompletions. The lines should look something like this:
+1.  In your `.bashrc`/`.bash_profile`/`.zshrc`/`config.fish` find the lines that source `asdf.sh` and the completions (this may be a ZSH Framework plugin). In Bash, the lines look something like this:
 
     ```shell
     . $HOME/.asdf/asdf.sh
@@ -273,7 +273,7 @@ Uninstalling `asdf` is as simple as:
 2.  Run
 
     ```shell
-    rm -rf ~/.asdf/ ~/.tool-versions
+    rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf} ~/.tool-versions
     ```
 
     to completely remove all the asdf files from your system.
