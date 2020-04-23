@@ -33,6 +33,14 @@ To use the latest changes, you can point Homebrew to the master branch of the re
 brew install asdf --HEAD
 ```
 
+### --Pacman--
+
+Install using `pacman`:
+
+```shell
+pacman -S asdf-vm
+```
+
 <!-- select:end -->
 
 ### Add to your Shell
@@ -184,6 +192,36 @@ Add the following to `~/.zshrc`:
 
 ?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh).
 
+### --Linux,Bash,Pacman--
+
+Add the following to `~/.bashrc`:
+
+```shell
+. /opt/asdf-vm/asdf.sh
+```
+
+?> Completions are automatically configured on installation by the aur package.
+
+### --Linux,Fish,Pacman--
+
+Add the following to `~/.config/fish/config.fish`:
+
+```shell
+source /opt/asdf-vm/asdf.sh
+```
+
+!> Completions may not be automatically configured for Fish, please check the [aur package comments](https://aur.archlinux.org/packages/asdf-vm/) before adding completions manually.
+
+### --Linux,ZSH,Pacman--
+
+Add the following to `~/.zshrc`:
+
+```shell
+. /opt/asdf-vm/asdf.sh
+```
+
+?> Completions are automatically configured on installation by the aur package.
+
 ### --Docsify Select Default--
 
 !> The `Homebrew` `asdf` Formulae has not been tested on `Linux` by the core asdf team. Please raise an issue if this has changed and we will update the docs.
@@ -277,29 +315,226 @@ asdf update --head
 brew upgrade asdf
 ```
 
+### -- Pacman --
+
+Refer to the [Arch Pacman upgrade documentation](https://wiki.archlinux.org/index.php/pacman#Upgrading_packages).
+
 <!-- select:end -->
 
 ## Remove
 
-Uninstalling `asdf` is as simple as:
+To unistall `asdf` follow these steps:
 
-1.  In your `.bashrc`/`.bash_profile`/`.zshrc`/`config.fish` find the lines that source `asdf.sh` and the completions (this may be a ZSH Framework plugin). In Bash, the lines look something like this:
+<!-- select:start -->
+<!-- select-menu-labels: Operating System,Shell,Installation Method -->
 
-    ```shell
-    . $HOME/.asdf/asdf.sh
-    . $HOME/.asdf/completions/asdf.bash
-    ```
+### --Linux,Bash,Git--
 
-    Remove these lines and save the file.
+1. In your `~/.bashrc` remove the lines that source `asdf.sh` and the completions:
 
-2.  Run
+```shell
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+```
 
-    ```shell
-    rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf} ~/.tool-versions
-    ```
+2. Remove the `$HOME/.asdf` dir:
 
-    to completely remove all the asdf files from your system.
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
 
-3.  _(Optional)_ If you installed asdf using a package manager, you may want to use that package manager to uninstall the core asdf files.
+### --Linux,Fish,Git--
+
+1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.sh`:
+
+```shell
+source ~/.asdf/asdf.fish
+```
+
+and remove completions with this command:
+
+```shell
+rm -rf ~/.config/fish/completions/asdf.fish
+```
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+### --Linux,ZSH,Git--
+
+1. In your `~/.zshrc` remove the lines that source `asdf.sh` and completions:
+
+```shell
+. $HOME/.asdf/asdf.sh
+
+# ...
+fpath=(${ASDF_DIR}/completions $fpath)
+autoload -Uz compinit
+compinit
+```
+
+**OR** the ZSH Framework plugin if used.
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+### --Linux,Bash,Pacman--
+
+1. In your `~/.bashrc` remove the lines that source `asdf.sh` and the completions:
+
+```shell
+. /opt/asdf-vm/asdf.sh
+```
+
+2. Uninstall with your package manager:
+
+```shell
+pacman -Rs asdf-vm
+```
+
+### --Linux,Fish,Pacman--
+
+1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.fish`:
+
+```shell
+source /opt/asdf-vm/asdf.fish
+```
+
+2. Uninstall with your package manager:
+
+```shell
+pacman -Rs asdf-vm
+```
+
+### --Linux,ZSH,Pacman--
+
+1. In your `~/.zshrc` remove the lines that source `asdf.sh`:
+
+```shell
+. /opt/asdf-vm/asdf.sh
+```
+
+2. Uninstall with your package manager:
+
+```shell
+pacman -Rs asdf-vm
+```
+
+### --macOS,Bash,Git--
+
+1. In your `~/.bash_profile` remove the lines that source `asdf.sh` and the completions:
+
+```shell
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+```
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+### --macOS,Fish,Git--
+
+1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.fish`:
+
+```shell
+source ~/.asdf/asdf.fish
+```
+
+and remove completions with this command:
+
+```shell
+rm -rf ~/.config/fish/completions/asdf.fish
+```
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+### --macOS,ZSH,Git--
+
+1. In your `~/.zshrc` remove the lines that source `asdf.sh` and completions:
+
+```shell
+. $HOME/.asdf/asdf.sh
+
+# ...
+fpath=(${ASDF_DIR}/completions $fpath)
+autoload -Uz compinit
+compinit
+```
+
+**OR** the ZSH Framework plugin if used.
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell
+rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+### --macOS,Bash,Homebrew--
+
+If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. If you can't find any config in your `~/.bash_profile` it may be in a `~/.zshrc` in which case please follow the ZSH instructions.
+
+1. In your `~/.bash_profile` remove the lines that source `asdf.sh` and the completions:
+
+```shell
+. $(brew --prefix asdf)/asdf.sh
+. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
+```
+
+?> Completions may have been [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) so follow their guide to find out what to remove.
+
+2. Uninstall with your package manager:
+
+```shell
+brew uninstall asdf --force
+```
+
+### --macOS,Fish,Homebrew--
+
+1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.fish`:
+
+```shell
+source "(brew --prefix asdf)"/asdf.fish
+```
+
+2. Uninstall with your package manager:
+
+```shell
+brew uninstall asdf --force
+```
+
+### --macOS,ZSH,Homebrew--
+
+1. In your `~/.zshrc` remove the lines that source `asdf.sh`:
+
+```shell
+. $(brew --prefix asdf)/asdf.sh
+```
+
+2. Uninstall with your package manager:
+
+```shell
+brew uninstall asdf --force
+```
+
+<!-- select:end -->
+
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
 
 That's it! 🎉
