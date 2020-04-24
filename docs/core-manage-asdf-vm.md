@@ -199,9 +199,7 @@ You are ready to use asdf 🎉
 
 If you're having issues with your shell not detecting newly installed shims, it's most-likely due to the sourcing of `asdf.sh` or `asdf.fish` not being at the **BOTTOM** of your `.bash_profile`, `.zshrc`, `config.fish` config file. It needs to be sourced **AFTER** you have set your `$PATH` and **AFTER** you have sourced your framework (oh-my-zsh etc).
 
-### Plugin Dependencies
-
-For most plugins, it is good if you have installed the following packages:
+### Dependencies
 
 <!-- select:start -->
 <!-- select-menu-labels: Operating System,Installation Method -->
@@ -209,39 +207,25 @@ For most plugins, it is good if you have installed the following packages:
 #### -- Linux,Aptitude --
 
 ```shell
-sudo apt install \
-  automake autoconf libreadline-dev \
-  libncurses-dev libssl-dev libyaml-dev \
-  libxslt-dev libffi-dev libtool unixodbc-dev \
-  unzip curl
+sudo apt install curl git
 ```
 
 #### -- Linux,DNF --
 
 ```shell
-sudo dnf install \
-  automake autoconf readline-devel \
-  ncurses-devel openssl-devel libyaml-devel \
-  libxslt-devel libffi-devel libtool unixODBC-devel \
-  unzip curl
+sudo dnf install curl git
 ```
 
 #### -- macOS,Homebrew --
 
 ```shell
-brew install \
-  coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc \
-  unzip curl
+brew install coreutils curl git
 ```
 
 #### -- macOS,Spack --
 
 ```shell
-spack install \
-  coreutils automake autoconf openssl \
-  libyaml readline libxslt libtool unixodbc \
-  unzip curl
+spack install coreutils curl git
 ```
 
 ### -- Docsify Select Default --
