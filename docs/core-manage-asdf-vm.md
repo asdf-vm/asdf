@@ -169,7 +169,7 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 Add the following to `~/.config/fish/config.fish`:
 
 ```shell
-source "(brew --prefix asdf)"/asdf.fish
+source (brew --prefix asdf)/asdf.fish
 ```
 
 ?> Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
