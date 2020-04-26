@@ -216,6 +216,18 @@ sudo apt install curl git
 sudo dnf install curl git
 ```
 
+#### -- Linux,Pacman --
+
+```shell
+sudo pacman -S curl git
+```
+
+#### -- Linux,Zypper --
+
+```shell
+sudo zypper install curl git
+```
+
 #### -- macOS,Homebrew --
 
 ```shell
