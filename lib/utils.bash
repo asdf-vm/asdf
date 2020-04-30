@@ -623,23 +623,23 @@ asdf_run_hook() {
 }
 
 get_shim_versions() {
-  shim_name=$1
+  local shim_name=$1
   shim_plugin_versions "${shim_name}"
   shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
 }
 
 preset_versions() {
-  shim_name=$1
+  local shim_name=$1
   shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c "source $(asdf_dir)/lib/utils.bash; echo PLUGIN \$(get_preset_version_for PLUGIN)"
 }
 
 select_from_preset_version() {
-  shim_name=$1
+  local shim_name=$1
   grep -f <(get_shim_versions "$shim_name") <(preset_versions "$shim_name") | head -n 1 | xargs echo
 }
 
 select_version() {
-  shim_name=$1
+  local shim_name=$1
   # First, we get the all the plugins where the
   # current shim is available.
   # Then, we iterate on all versions set for each plugin
