@@ -635,7 +635,7 @@ preset_versions() {
 
 select_from_preset_version() {
   local shim_name=$1
-  grep -f <(get_shim_versions "$shim_name") <(preset_versions "$shim_name") | head -n 1 | xargs echo
+  grep -f <$(get_shim_versions "$shim_name") <$(preset_versions "$shim_name") | head -n 1 | xargs echo
 }
 
 select_version() {
