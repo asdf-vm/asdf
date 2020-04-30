@@ -35,7 +35,7 @@
 | Command                        | Effect                                                |
 | ------------------------------ | ----------------------------------------------------- |
 | `asdf exec <command> [args]`   | Runs the currently selected version of command        |
-| `asdf env <command> [util]`    | Executes util inside the environemnt used for command |
+| `asdf env <command> [util]`    | Executes util inside the environment used for command |
 | `asdf reshim <name> <version>` | Recreate shims for version of a package               |
 | `asdf shim-versions <command>` | List the plugins and versions that provide a command  |
 | `asdf update`                  | Update asdf to the latest stable release              |
