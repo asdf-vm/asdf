@@ -624,7 +624,6 @@ asdf_run_hook() {
 
 get_shim_versions() {
   local shim_name=$1
-  shim_plugin_versions "${shim_name}"
   shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
 }
 
