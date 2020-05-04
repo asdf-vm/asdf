@@ -215,3 +215,26 @@ EOM
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
 }
+
+@test "install_command deletes the download directory" {
+  run asdf install dummy 1.1
+  [ "$status" -eq 0 ]
+  [ ! -d $ASDF_DIR/downloads/dummy/1.1 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command keeps the download directory when --keep-download flag is provided" {
+  run asdf install dummy 1.1 --keep-download
+  [ "$status" -eq 0 ]
+  [ -d $ASDF_DIR/downloads/dummy/1.1 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command keeps the download directory when always_keep_download setting is true" {
+  echo 'always_keep_download = yes' > $HOME/.asdfrc
+  run asdf install dummy 1.1
+  echo $output
+  [ "$status" -eq 0 ]
+  [ -d $ASDF_DIR/downloads/dummy/1.1 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
