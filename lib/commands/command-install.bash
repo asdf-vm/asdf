@@ -15,7 +15,7 @@ handle_cancel() {
 install_command() {
   local plugin_name=$1
   local full_version=$2
-  local extra_args="${@:3}"
+  local extra_args="${*:3}"
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions "$extra_args"
@@ -88,7 +88,7 @@ install_tool_version() {
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
 
-  for flag in "$flags"; do
+  for flag in $flags; do
     case "$flag" in
       "--keep-download")
         keep_download=true
@@ -136,9 +136,13 @@ install_tool_version() {
       # Not a legacy plugin
       # Run the download script
       (
+        # shellcheck disable=SC2030
         export ASDF_INSTALL_TYPE=$install_type
+        # shellcheck disable=SC2030
         export ASDF_INSTALL_VERSION=$version
+        # shellcheck disable=SC2030
         export ASDF_INSTALL_PATH=$install_path
+        # shellcheck disable=SC2030
         export ASDF_DOWNLOAD_PATH=$download_path
         mkdir "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
@@ -147,10 +151,15 @@ install_tool_version() {
     fi
 
     (
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_TYPE=$install_type
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_VERSION=$version
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_PATH=$install_path
+      # shellcheck disable=SC2031
       export ASDF_DOWNLOAD_PATH=$download_path
+      # shellcheck disable=SC2031
       export ASDF_CONCURRENCY=$concurrency
       mkdir "$install_path"
       asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
