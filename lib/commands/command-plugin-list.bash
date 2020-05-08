@@ -43,7 +43,7 @@ plugin_list_command() {
 
         printf "\\n"
       done
-    ) | column -t -s $'\t'
+    ) | (column -t -s $'\t' 2>/dev/null || tee)
   else
     display_error 'Oohes nooes ~! No plugins installed'
     exit 1
