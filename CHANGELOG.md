@@ -1,6 +1,34 @@
 # Changelog
 
-## 0.7.8-dev
+## 0.7.9-dev
+
+## 0.7.8
+
+Features
+
+* Add support for `post-plugin-add` and `pre-plugin-remove` in plugins. Add configurable command hooks for plugin installation and removal (#670, #683)
+
+    ```shell
+    pre_asdf_plugin_remove = echo will remove plugin ${1}
+    pre_asdf_plugin_remove_foo = echo will remove plugin foo
+    post_asdf_plugin_remove = echo removed plugin ${1}
+    post_asdf_plugin_remove_foo = echo removed plugin foo
+    ```
+
+* Use different exit code if updates are disabled (#676)
+
+Fixed Bugs
+
+* Make sure extension commands are properly displayed by `asdf help`
+
+  Extension commands are now expected to be inside plugins's `lib/commands/command-*.bash` instead of `bin/command*`.
+
+  This change was made for two reasons: Keep the convention that all files to be sourced by bash should end with
+  the `.bash` extension. And the `lib/commands/` directoy mirrors the location of asdf own core commands.
+
+  Added tests to make sure `asdf help` properly displays available extension commands.
+
+* Remove automatic `compinit` from asdf.sh (#674, #678)
 
 ## 0.7.7
 

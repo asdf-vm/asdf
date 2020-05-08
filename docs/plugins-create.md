@@ -106,16 +106,42 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
 
+#### bin/post-plugin-add
+
+This can be used to run any post-installation actions after the plugin has been added to asdf.
+
+The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`) and the source URL (`${ASDF_PLUGIN_SOURCE_URL}`), if any was used.
+
+See also the related hooks:
+
+* `pre_asdf_plugin_add`
+* `pre_asdf_plugin_add_${plugin_name}`
+* `post_asdf_plugin_add`
+* `post_asdf_plugin_add_${plugin_name}`
+
+#### bin/pre-plugin-remove
+
+This can be used to run any pre-removal actions before the plugin will be removed from asdf.
+
+The script has access to the path the plugin was installed in (`${ASDF_PLUGIN_PATH}`).
+
+See also the related hooks:
+
+* `pre_asdf_plugin_remove`
+* `pre_asdf_plugin_remove_${plugin_name}`
+* `post_asdf_plugin_remove`
+* `post_asdf_plugin_remove_${plugin_name}`
+
 ## Extension commands for asdf CLI.
 
-It's possible for plugins to define new asdf commands by providing `bin/command*.bash` scripts or executables that
+It's possible for plugins to define new asdf commands by providing `lib/commands/command*.bash` scripts or executables that
 will be callable using the asdf command line interface by using the plugin name as a subcommand.
 
 For example, suppose a `foo` plugin has:
 
 ```shell
 foo/
-  bin/
+  lib/commands/
     command.bash
     command-bat.bash
     command-bat-man.bash
@@ -125,24 +151,24 @@ foo/
 Users can now execute
 
 ```shell
-$ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command`
-$ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command bar`
-$ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-help`
-$ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-bat-man`
-$ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/bin/command-bat baz`
+$ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash`
+$ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash bar`
+$ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-help.bash`
+$ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat-man.bash`
+$ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat.bash baz`
 ```
 
 Plugin authors can use this feature to provide utilities related to their tools,
 or even create plugins that are just new command extensions for asdf itself.
 
-When `command*` files exists but have no executable bit set, they are considered to be
-bash scripts and will be sourced having all the functions from `$ASDF_DIR/lib/utils.bash`
-available. Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
+When invoked, if extension commands do not have their executable-bit set, they will be
+sourced as bash scripts, having all of the functions from `$ASDF_DIR/lib/utils.bash` available.
+Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
 If the executable bit is set, they are just executed and replace the asdf execution.
 
-A good example of this feature is for plugins like `nodejs`, where people must import the release team keyring before
-installing a nodejs version. Authors can provide a handy extension command for this without users
-having to know where exactly is the plugin was installed.
+A good example of this feature is for plugins like [`haxe`](https://github.com/asdf-community/asdf-haxe)
+which provides the `asdf haxe neko-dylibs-link` to fix an issue where haxe executables expect to find
+dynamic libraries relative to the executable directory.
 
 If your plugin provides an asdf extension command, be sure to mention about it on your plugin's README.
 

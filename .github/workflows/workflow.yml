@@ -3,10 +3,10 @@ name: Main workflow
 on:
   push:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   schedule:
     - cron: "0 0 * * 5"
 
@@ -14,7 +14,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [macOS-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -22,16 +22,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Fetch tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Fetch all tags
+        run: git fetch --depth 1 origin +refs/tags/*:refs/tags/*
 
-      - name: Install macOS deps
-        if: matrix.os == 'macOS-latest'
+      - name: Install dependencies on macOS
+        if: matrix.os == 'macos-latest'
         run: |
           brew install coreutils # needed by bats-core
           brew install fish # for testing asdf.fish
 
-      - name: Install ubuntu deps
+      - name: Install dependencies on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           PPA="ppa:fish-shell/nightly-master"
@@ -39,14 +39,26 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install fish
 
-      - name: Install bats
-        run: |
-          git clone --branch v1.1.0 https://github.com/bats-core/bats-core.git $HOME/bats-core
+      - name: Install bats-core on Windows
+        if: matrix.os == 'windows-latest'
+        run: npm install -g bats@1.1.0
 
-      - name: Run tests
+      - name: Install bats-core on Unix systems
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
         run: |
-          export PATH=$HOME/bats-core/bin:$PATH
-          bats test
+          git clone --depth 1 --branch v1.1.0 https://github.com/bats-core/bats-core.git $HOME/bats-core
+          echo "::add-path::$HOME/bats-core/bin"
+
+      - name: Run tests on Windows
+        if: matrix.os == 'windows-latest'
+        run: bats test
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Run tests on Unix systems
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        run: bats test
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -64,7 +76,7 @@ jobs:
         run: bash lint.sh
 
   format:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code

@@ -27,10 +27,22 @@ install_mock_plugin() {
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$location/plugins/$plugin_name"
 }
 
+
 install_mock_legacy_plugin() {
   local plugin_name=$1
   local location="${2:-$ASDF_DIR}"
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_legacy_plugin" "$location/plugins/$plugin_name"
+}
+
+install_mock_plugin_repo() {
+  local plugin_name=$1
+  local location="${BASE_DIR}/repo-${plugin_name}"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "${location}"
+  git -C "${location}" init -q
+  git -C "${location}" config user.name "Test"
+  git -C "${location}" config user.email "test@example.com"
+  git -C "${location}" add -A
+  git -C "${location}" commit -q -m 'asdf dummy plugin'
 }
 
 install_mock_plugin_version() {
