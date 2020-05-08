@@ -23,27 +23,27 @@ plugin_list_command() {
     esac
   done
 
-  if ls "$plugins_path" &> /dev/null; then
+  if ls "$plugins_path" &>/dev/null; then
     (
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
         printf "%s" "$plugin_name"
 
         if [ -n "$show_repo" ]; then
-          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2> /dev/null)"
+          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
         fi
 
         if [ -n "$show_ref" ]; then
           local branch
           local gitref
-          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2> /dev/null)
-          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2> /dev/null)
+          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
+          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
           printf "\\t%s\\t%s" "$branch" "$gitref"
         fi
 
         printf "\\n"
       done
-    ) | (column -t -s $'\t' 2> /dev/null || awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}')
+    ) | (column -t -s $'\t' 2>/dev/null || awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}')
   else
     display_error 'Oohes nooes ~! No plugins installed'
     exit 1
