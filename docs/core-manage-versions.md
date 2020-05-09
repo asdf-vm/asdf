@@ -107,7 +107,7 @@ When asdf-vm installs a package it creates shims for every executable program in
 
 The shims themselves are really simple wrappers that `exec` a helper program `asdf exec` passing it the name of the plugin and path to the executable in the installed package that the shim is wrapping.
 
-The `asdf exec` helper determines the version of tha package to use (as specified in `.tool-versions` file, selected by `asdf local ...` or `asdf global ...`), the final path to the executable in the package installation directory (this can be manipulated by the `exec-path` callback in the plugin) and the environment to execute in (also provided by the plugin - `exec-env` script), and finally it executes it.
+The `asdf exec` helper determines the version of the package to use (as specified in `.tool-versions` file, selected by `asdf local ...` or `asdf global ...`), the final path to the executable in the package installation directory (this can be manipulated by the `exec-path` callback in the plugin) and the environment to execute in (also provided by the plugin - `exec-env` script), and finally it executes it.
 
 !> Note that because this system uses `exec` calls, any scripts in the package that are meant to be sourced by the shell instead of executed need to be accessed directly instead of via the shim wrapper. The two asdf-vm commands: `which` and `where` can help with this by returning the path to the installed package:
 
