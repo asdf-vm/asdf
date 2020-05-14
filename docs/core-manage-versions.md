@@ -28,6 +28,13 @@ asdf list <name>
 # asdf list erlang
 ```
 
+Limit versions to those that begin with a given string.
+
+```shell
+asdf list <name> <version>
+# asdf list erlang 17
+```
+
 ## List All Available Versions
 
 ```shell
@@ -62,6 +69,10 @@ asdf latest <name> <version>
 asdf global <name> <version> [<version>...]
 asdf local <name> <version> [<version>...]
 # asdf global elixir 1.2.4
+
+asdf global <name> latest[:<version>]
+asdf local <name> latest[:<version>]
+# asdf global elixir latest
 ```
 
 `global` writes the version to `$HOME/.tool-versions`.

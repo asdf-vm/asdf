@@ -25,9 +25,11 @@
 | `asdf where <name> [<version>]`          | Display install path for an installed or current version                   |
 | `asdf which <name>`                      | Display install path for current version                                   |
 | `asdf local <name> <version>`            | Set the package local version                                              |
+| `asdf local <name> latest[:<version>]`   | Set the package local version to the latest installed version              |
 | `asdf global <name> <version>`           | Set the package global version                                             |
+| `asdf global <name> latest[:<version>]`  | Set the package global version to the latest installed version             |
 | `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
-| `asdf list <name>`                       | List installed versions of a package                                       |
+| `asdf list <name> [<version>]`           | List installed versions of a package and optionally filter the versions    |
 | `asdf list all <name> [<version>]`       | List all versions of a package and optionally filter the returned versions |
 
 ## Utils
