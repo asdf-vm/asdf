@@ -38,6 +38,15 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "list_command with version filters installed versions" {
+  run asdf install dummy 1.0
+  run asdf install dummy 1.1
+  run asdf install dummy 2.0
+  run asdf list dummy 1
+  [ "$(echo -e "  1.0\n  1.1")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "list_all_command lists available versions" {
   run asdf list-all dummy
   [ "$(echo -e "1.0\n1.1\n2.0")" == "$output" ]
