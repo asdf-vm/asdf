@@ -2,6 +2,22 @@
 
 ## 0.7.9-dev
 
+Features
+
+* Add support for using the latest installed version with `asdf global` and `asdf local`
+
+    ```shell
+    asdf global python latest
+    asdf local python latest
+    asdf local python latest:3.7 # sets local Python version to latest installed version of Python 3.7
+    ```
+
+* Add support for filtering installed versions with `asdf list`
+
+    ```shell
+    asdf list python 3.7 # lists installed versions of Python 3.7
+    ```
+
 ## 0.7.8
 
 Features
@@ -50,22 +66,6 @@ Fixed Bugs
 * Remove shebang lines of sourced scripts (#629)
 * Ignore shim directory for executable lookups (#623)
 * Fix issue with preset version warning assuming that the shim name and plugin name are the same (#622)
-
-Features
-
-* Add support for using the latest installed version with `asdf global` and `asdf local`
-
-    ```shell
-    asdf global python latest
-    asdf local python latest
-    asdf local python latest:3.7 # sets local Python version to latest installed version of Python 3.7
-    ```
-
-* Add support for filtering installed versions with `asdf list`
-
-    ```shell
-    asdf list python 3.7 # lists installed versions of Python 3.7
-    ```
 
 ## 0.7.6
 
