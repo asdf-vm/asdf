@@ -24,17 +24,18 @@ list_command() {
 }
 
 display_installed_versions() {
-  local versions
+  local plugin_name=$1
   local query=$2
-  versions=$(list_installed_versions "$1")
-
-  if [ -z "${versions}" ]; then
-    display_error 'No versions installed'
-    exit 1
-  fi
+  local versions
+  versions=$(list_installed_versions "$plugin_name")
 
   if [[ $query ]]; then
     versions=$(echo "$versions" | grep -E "^\s*$query")
+
+    if [ -z "${versions}" ]; then
+      display_error "No compatible versions installed ($plugin_name $query)"
+      exit 1
+    fi
   fi
 
   if [ -n "${versions}" ]; then
@@ -42,8 +43,7 @@ display_installed_versions() {
       echo "  $version"
     done
   else
-    display_error 'No compatible versions installed'
-    exit 1
+    display_error 'No versions installed'
   fi
 }
 
