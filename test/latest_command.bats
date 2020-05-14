@@ -22,3 +22,9 @@ teardown() {
   [ "$(echo "1.1")" == "$output" ]
   [ "$status" -eq 0 ]
 }
+
+@test "latest_command with an invalid version should return an error" {
+  run asdf latest dummy 3
+  [ "$(echo "No compatible versions available (dummy 3)")" == "$output" ]
+  [ "$status" -eq 1 ]
+}
