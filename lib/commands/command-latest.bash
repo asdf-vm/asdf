@@ -13,6 +13,8 @@ latest_command() {
 
   if [ -n "${versions}" ]; then
     get_latest_version "$versions"
+  else
+    exit 1
   fi
 }
 

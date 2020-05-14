@@ -18,7 +18,7 @@ list_all_command() {
   fi
 
   if [ -z "$versions" ]; then
-    display_error "No compatible versions available"
+    display_error "No compatible versions available ($plugin_name $query)"
     exit 1
   fi
 

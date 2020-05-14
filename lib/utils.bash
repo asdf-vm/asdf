@@ -96,7 +96,7 @@ get_latest_version() {
     tail -1)
 
   if [ -z "$versions" ]; then
-    display_error "No compatible versions available"
+    display_error "No compatible stable versions available"
     exit 1
   fi
 
