@@ -86,6 +86,16 @@ get_download_path() {
   fi
 }
 
+get_latest_version() {
+  # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
+  local versions=$1
+  echo "$versions" |
+    grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\.]rc|-alpha|-beta|[-\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+    sed "s/^\s\+//" |
+    sort --version-sort |
+    tail -1
+}
+
 list_installed_versions() {
   local plugin_name=$1
   local plugin_path
