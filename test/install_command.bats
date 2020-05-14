@@ -4,6 +4,7 @@ load test_helpers
 
 setup() {
   setup_asdf_dir
+  install_dummy_legacy_plugin
   install_dummy_plugin
 
   PROJECT_DIR=$HOME/project
@@ -18,6 +19,12 @@ teardown() {
   run asdf install dummy 1.1
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command installs the correct version for plugins without download script" {
+  run asdf install legacy-dummy 1.1
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/legacy-dummy/1.1/version) = "1.1" ]
 }
 
 @test "install_command without arguments installs even if the user is terrible and does not use newlines" {
@@ -53,6 +60,14 @@ teardown() {
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.0/env ]
   run grep "asdf-plugin: dummy 1.0" $ASDF_DIR/shims/dummy
+  [ "$status" -eq 0 ]
+}
+
+@test "install_command should create a shim with asdf-plugin metadata for plugins without download script" {
+  run asdf install legacy-dummy 1.0
+  [ "$status" -eq 0 ]
+  [ -f $ASDF_DIR/installs/legacy-dummy/1.0/env ]
+  run grep "asdf-plugin: legacy-dummy 1.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 }
 
@@ -198,5 +213,28 @@ EOM
 @test "install_command latest:version installs latest stable version that matches the given string" {
   run asdf install dummy latest:1
   [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command deletes the download directory" {
+  run asdf install dummy 1.1
+  [ "$status" -eq 0 ]
+  [ ! -d $ASDF_DIR/downloads/dummy/1.1 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command keeps the download directory when --keep-download flag is provided" {
+  run asdf install dummy 1.1 --keep-download
+  [ "$status" -eq 0 ]
+  [ -d $ASDF_DIR/downloads/dummy/1.1 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+}
+
+@test "install_command keeps the download directory when always_keep_download setting is true" {
+  echo 'always_keep_download = yes' > $HOME/.asdfrc
+  run asdf install dummy 1.1
+  echo $output
+  [ "$status" -eq 0 ]
+  [ -d $ASDF_DIR/downloads/dummy/1.1 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
 }

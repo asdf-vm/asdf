@@ -15,14 +15,15 @@ handle_cancel() {
 install_command() {
   local plugin_name=$1
   local full_version=$2
+  local extra_args="${*:3}"
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
-    install_local_tool_versions
+    install_local_tool_versions "$extra_args"
   elif [[ $# -eq 1 ]]; then
     display_error "You must specify a name and a version to install"
     exit 1
   else
-    install_tool_version "$plugin_name" "$full_version"
+    install_tool_version "$plugin_name" "$full_version" "$extra_args"
   fi
 }
 
@@ -80,9 +81,24 @@ install_local_tool_versions() {
 install_tool_version() {
   local plugin_name=$1
   local full_version=$2
+  local flags=$3
+  local keep_download
   local plugin_path
+
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
+
+  for flag in $flags; do
+    case "$flag" in
+      "--keep-download")
+        keep_download=true
+        shift
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
 
   if [ "$full_version" = "system" ]; then
     return
@@ -106,6 +122,8 @@ install_tool_version() {
 
   local install_path
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+  local download_path
+  download_path=$(get_download_path "$plugin_name" "$install_type" "$version")
   local concurrency
   concurrency=$(get_concurrency)
   trap 'handle_cancel $install_path' INT
@@ -113,10 +131,35 @@ install_tool_version() {
   if [ -d "$install_path" ]; then
     echo "$plugin_name $full_version is already installed"
   else
+
+    if [ -f "${plugin_path}/bin/download" ]; then
+      # Not a legacy plugin
+      # Run the download script
+      (
+        # shellcheck disable=SC2030
+        export ASDF_INSTALL_TYPE=$install_type
+        # shellcheck disable=SC2030
+        export ASDF_INSTALL_VERSION=$version
+        # shellcheck disable=SC2030
+        export ASDF_INSTALL_PATH=$install_path
+        # shellcheck disable=SC2030
+        export ASDF_DOWNLOAD_PATH=$download_path
+        mkdir "$download_path"
+        asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
+        bash "${plugin_path}"/bin/download
+      )
+    fi
+
     (
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_TYPE=$install_type
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_VERSION=$version
+      # shellcheck disable=SC2031
       export ASDF_INSTALL_PATH=$install_path
+      # shellcheck disable=SC2031
+      export ASDF_DOWNLOAD_PATH=$download_path
+      # shellcheck disable=SC2031
       export ASDF_CONCURRENCY=$concurrency
       mkdir "$install_path"
       asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
@@ -125,7 +168,14 @@ install_tool_version() {
 
     local exit_code=$?
     if [ $exit_code -eq 0 ]; then
+      # Remove download directory if --keep-download flag or always_keep_download config setting are not set
+      always_keep_download=$(get_asdf_config_value "always_keep_download")
+      if [ ! "$keep_download" = "true" ] && [ ! "$always_keep_download" = "yes" ] && [ -d "$download_path" ]; then
+        rm -r "$download_path"
+      fi
+
       asdf reshim "$plugin_name" "$full_version"
+
       asdf_run_hook "post_asdf_install_${plugin_name}" "$full_version"
     else
       handle_failure "$install_path"

@@ -18,6 +18,47 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "get_install_path should output version path when version is provided" {
+  run get_install_path foo version "1.0.0"
+  [ "$status" -eq 0 ]
+  install_path=${output#$HOME/}
+  [ "$install_path" = ".asdf/installs/foo/1.0.0" ]
+}
+
+@test "get_install_path should output custom path when custom install type is provided" {
+  run get_install_path foo custom "1.0.0"
+  [ "$status" -eq 0 ]
+  install_path=${output#$HOME/}
+  [ "$install_path" = ".asdf/installs/foo/custom-1.0.0" ]
+}
+
+@test "get_install_path should output path when path version is provided" {
+  run get_install_path foo path "/some/path"
+  [ "$status" -eq 0 ]
+  [ "$output" = "/some/path" ]
+}
+
+@test "get_download_path should output version path when version is provided" {
+  run get_download_path foo version "1.0.0"
+  [ "$status" -eq 0 ]
+  download_path=${output#$HOME/}
+  echo $download_path
+  [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
+}
+
+@test "get_download_path should output custom path when custom download type is provided" {
+  run get_download_path foo custom "1.0.0"
+  [ "$status" -eq 0 ]
+  download_path=${output#$HOME/}
+  [ "$download_path" = ".asdf/downloads/foo/custom-1.0.0" ]
+}
+
+@test "get_download_path should output nothing when path version is provided" {
+  run get_download_path foo path "/some/path"
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
+
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
   run check_if_version_exists "inexistent" "1.0.0"
   [ "$status" -eq 1 ]

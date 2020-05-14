@@ -5,7 +5,10 @@ A plugin is a git repo, with a couple executable scripts, to support versioning 
 ## Required Scripts
 
 - `bin/list-all` - lists all installable versions
+- `bin/download` - download source code or binary for the specified version
 - `bin/install` - installs the specified version
+
+## Environment Variables
 
 All scripts except `bin/list-all` will have access to the following env vars to act upon:
 
@@ -13,9 +16,14 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 - `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
 - `ASDF_INSTALL_PATH` - the dir where the it _has been_ installed (or _should_ be installed in case of the `bin/install` script)
 
-These additional environment variables the `bin/install` script will also have accesss to:
+These additional environment variables will be available to the `bin/install` script:
 
 - `ASDF_CONCURRENCY` - the number of cores to use when compiling the source code. Useful for setting `make -j`.
+- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary was downloaded by the `bin/download` script.
+
+These additional environment variables will be available to the `bin/download` script:
+
+- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary should be downloaded.
 
 #### bin/list-all
 
@@ -28,6 +36,16 @@ Must print a string with a space-separated list of versions. Example output woul
 Note that the newest version should be listed last so it appears closer to the user's prompt. This is helpful since the `list-all` command prints each version on it's own line. If there are many versions it's possible the early versions will be off screen.
 
 If versions are being pulled from releases page on a website it's recommended to not sort the versions if at all possible. Often the versions are already in the correct order or, in reverse order, in which case something like `tac` should suffice. If you must sort versions manually you cannot rely on `sort -V` since it is not supported on OSX. An alternate sort function [like this is a better choice](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6).
+
+#### bin/download
+
+This script must download the source or binary, in the path contained in the `ASDF_DOWNLOAD_PATH` environment variable. If the downloaded source or binary is compressed, only the uncompressed source code or binary may be placed in the `ASDF_DOWNLOAD_PATH` directory.
+
+The script must exit with a status of `0` when the download is successful. If the download fails the script must exit with any non-zero exit status.
+
+If possible the script should only place files in the `ASDF_DOWNLOAD_PATH`. If the download fails no files should be placed in the directory.
+
+If this script is not present asdf will assume that the `bin/install` script is present and will download and install the version. asdf only works without this script to support legacy plugins. All plugins must include this script, and eventually support for legacy plugins will be removed.
 
 #### bin/install
 
