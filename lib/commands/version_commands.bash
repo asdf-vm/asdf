@@ -32,6 +32,14 @@ version_command() {
 
   check_if_plugin_exists "$plugin_name"
 
+  for i in "${!versions[@]}"; do
+    IFS=':' read -r -a version_info <<<"${versions[$i]}"
+    if [ "${version_info[0]}" = "latest" ]; then
+      local installed_versions=$(asdf list "$plugin" "${version_info[1]}")
+      versions[$i]=$(get_latest_version "$installed_versions")
+    fi
+  done
+
   local version
   for version in "${versions[@]}"; do
     check_if_version_exists "$plugin_name" "$version"
