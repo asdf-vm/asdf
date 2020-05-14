@@ -37,6 +37,11 @@ version_command() {
     if [ "${version_info[0]}" = "latest" ]; then
       local installed_versions
       installed_versions=$(asdf list "$plugin" "${version_info[1]}")
+
+      if [ -z "$installed_versions" ]; then
+        exit 1
+      fi
+
       versions[$i]=$(get_latest_version "$installed_versions")
     fi
   done

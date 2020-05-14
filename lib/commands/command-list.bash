@@ -28,6 +28,11 @@ display_installed_versions() {
   local query=$2
   versions=$(list_installed_versions "$1")
 
+  if [ -z "${versions}" ]; then
+    display_error 'No versions installed'
+    exit 1
+  fi
+
   if [[ $query ]]; then
     versions=$(echo "$versions" | grep -E "^\s*$query")
   fi
@@ -37,7 +42,8 @@ display_installed_versions() {
       echo "  $version"
     done
   else
-    display_error 'No versions installed'
+    display_error 'No compatible versions installed'
+    exit 1
   fi
 }
 

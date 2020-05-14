@@ -17,6 +17,11 @@ list_all_command() {
       tr '\n' ' ')
   fi
 
+  if [ -z "$versions" ]; then
+    display_error "No compatible versions available"
+    exit 1
+  fi
+
   IFS=' ' read -r -a versions_list <<<"$versions"
 
   for version in "${versions_list[@]}"; do
