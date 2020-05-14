@@ -91,7 +91,7 @@ get_latest_version() {
   local versions=$1
   versions=$(echo "$versions" |
     grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\.]rc|-alpha|-beta|[-\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-    sed "s/^\s\+//" |
+    awk '{ print $1 }' |
     sort --version-sort |
     tail -1)
 
