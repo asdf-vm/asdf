@@ -8,7 +8,7 @@ latest_command() {
 
   [[ -z $query ]] && query="$DEFAULT_QUERY"
 
-  get_latest_version "$(asdf list-all $plugin_name $query)"
+  get_latest_version "$(asdf list-all "$plugin_name" "$query")"
 }
 
 latest_command "$@"
