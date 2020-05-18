@@ -31,7 +31,7 @@ display_installed_versions() {
       echo "  $version"
     done
   else
-    display_error 'No versions installed'
+    display_error '  No versions installed'
   fi
 }
 

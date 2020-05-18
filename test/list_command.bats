@@ -26,7 +26,7 @@ teardown() {
   run asdf install dummy 1.0
   run asdf install tummy 2.0
   run asdf list
-  [ "$(echo -e "dummy\n  1.0\nmummy\nNo versions installed\ntummy\n  2.0")" == "$output" ]
+  [ "$(echo -e "dummy\n  1.0\nmummy\n  No versions installed\ntummy\n  2.0")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 
