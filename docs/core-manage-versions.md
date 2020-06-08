@@ -60,11 +60,14 @@ asdf latest <name> <version>
 
 ```shell
 asdf global <name> <version> [<version>...]
+asdf shell <name> <version> [<version>...]
 asdf local <name> <version> [<version>...]
 # asdf global elixir 1.2.4
 ```
 
 `global` writes the version to `$HOME/.tool-versions`.
+
+`shell` set the version to an environment variable `ASDF_$LANG_VERSION`, for the current shell session only.
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
