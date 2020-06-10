@@ -12,4 +12,8 @@ git clone https://github.com/asdf-vm/asdf.git "${asdf_install_dir}"
 # checkout latest tag
 git --git-dir "${asdf_install_dir}" checkout "$(git --git-dir "${asdf_install_dir}" describe --abbrev=0 --tags)"
 
-printf "[WARNING] asdf requires further configuration. See the documentation at https://asdf-vm.com/#/core-manage-asdf-vm"
+printf "asdf setup"
+printf "1: install asdf - completed!"
+printf "2: add asdf to your shell - https://asdf-vm.com/#/core-manage-asdf-vm"
+printf "3: add a plugin - https://asdf-vm.com/#/core-manage-plugins"
+printf "4: install a tool version - https://asdf-vm.com/#/core-manage-versions"
