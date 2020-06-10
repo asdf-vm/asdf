@@ -5,18 +5,12 @@
 
 ### --Git--
 
-Clone only the latest branch:
+Run the install script to `git clone` the latest branch:
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.7.8
-```
-
-Alternately, you can clone the whole repo and checkout the latest branch:
-
-```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-cd ~/.asdf
-git checkout "$(git describe --abbrev=0 --tags)"
+curl -o- https://raw.githubusercontent.com/asdf-vm/asdf/v0.7.8/install.bash | bash
+# or
+wget -qO- https://raw.githubusercontent.com/asdf-vm/asdf/v0.7.8/install.bash | bash
 ```
 
 ### --Homebrew--

@@ -109,12 +109,12 @@ if ! git diff-index --cached --exit-code -r --ignore-submodules HEAD -- >&2; the
   exit 1
 fi
 
-# Update version in README
-sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" README.md
-rm README.md.bak
+# Update version in install.bash
+sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" install.bash
+rm install.bash.bak
 
 # Update version in docs/core-manage-asdf-vm.md
-sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" docs/core-manage-asdf-vm.md
+sed -i.bak "s~\\(https://raw.githubusercontent.com/asdf-vm/asdf/\\).*/install.bash | bash~\\1${VERSION}/install.bash | bash~" docs/core-manage-asdf-vm.md
 rm docs/core-manage-asdf-vm.md.bak
 
 # Update version in the VERSION file
