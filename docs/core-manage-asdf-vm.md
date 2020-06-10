@@ -1,4 +1,62 @@
-## Install asdf-vm
+## Introduction
+
+asdf supports multiple managers via plugins where each plugin manages the versions. The sidebar menu items correspond to each step of the setup:
+
+1. **Manage asdf-vm**: install `asdf` and add `asdf` to your shell
+2. **Manage Plugins**: add a plugin for your tool `asdf plugin add nodejs`
+3. **Manage Versions**: install a version of that tool `asdf install nodejs 13.14.0`
+4. **Configuration**: set global and project tool versions via `.tool-versions` config
+
+## Install
+
+### Dependencies
+
+<!-- select:start -->
+<!-- select-menu-labels: Operating System,Installation Method -->
+
+#### -- Linux,Aptitude --
+
+```shell
+sudo apt install curl git
+```
+
+#### -- Linux,DNF --
+
+```shell
+sudo dnf install curl git
+```
+
+#### -- Linux,Pacman --
+
+```shell
+sudo pacman -S curl git
+```
+
+#### -- Linux,Zypper --
+
+```shell
+sudo zypper install curl git
+```
+
+#### -- macOS,Homebrew --
+
+```shell
+brew install coreutils curl git
+```
+
+#### -- macOS,Spack --
+
+```shell
+spack install coreutils curl git
+```
+
+### -- Docsify Select Default --
+
+No match for _Operating System_ and _Installation Method_ selections. Please try another combination.
+
+<!-- select:end -->
+
+### asdf
 
 <!-- select:start -->
 <!-- select-menu-labels: Installation Method -->
@@ -199,52 +257,6 @@ You are ready to use asdf 🎉
 
 If you're having issues with your shell not detecting newly installed shims, it's most-likely due to the sourcing of `asdf.sh` or `asdf.fish` not being at the **BOTTOM** of your `.bash_profile`, `.zshrc`, `config.fish` config file. It needs to be sourced **AFTER** you have set your `$PATH` and **AFTER** you have sourced your framework (oh-my-zsh etc).
 
-### Dependencies
-
-<!-- select:start -->
-<!-- select-menu-labels: Operating System,Installation Method -->
-
-#### -- Linux,Aptitude --
-
-```shell
-sudo apt install curl git
-```
-
-#### -- Linux,DNF --
-
-```shell
-sudo dnf install curl git
-```
-
-#### -- Linux,Pacman --
-
-```shell
-sudo pacman -S curl git
-```
-
-#### -- Linux,Zypper --
-
-```shell
-sudo zypper install curl git
-```
-
-#### -- macOS,Homebrew --
-
-```shell
-brew install coreutils curl git
-```
-
-#### -- macOS,Spack --
-
-```shell
-spack install coreutils curl git
-```
-
-### -- Docsify Select Default --
-
-No match for _Operating System_ and _Installation Method_ selections. Please try another combination.
-
-<!-- select:end -->
 
 ### Migrating Tools
 
