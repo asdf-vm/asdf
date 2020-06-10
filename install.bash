@@ -8,7 +8,6 @@ IFS=$'\t\n' # Stricter IFS settings
 
 asdf_install_dir=${ASDF_INSTALL_DIR:-"~/.asdf"}
 
-mkdir -p "${asdf_install_dir}"
 git clone https://github.com/asdf-vm/asdf.git "${asdf_install_dir}"
 # checkout latest tag
 git --git-dir "${asdf_install_dir}" checkout "$(git --git-dir "${asdf_install_dir}" describe --abbrev=0 --tags)"
