@@ -5,7 +5,7 @@
 
 ### --Git--
 
-Run the install script to `git clone` the latest branch:
+Run the install script to `git clone` the latest release:
 
 ```shell
 curl -o- https://raw.githubusercontent.com/asdf-vm/asdf/v0.7.8/install.bash | bash
