@@ -67,7 +67,7 @@ asdf local <name> <version> [<version>...]
 
 `global` writes the version to `$HOME/.tool-versions`.
 
-`shell` set the version to an environment variable `ASDF_$LANG_VERSION`, for the current shell session only.
+`shell` set the version to an environment variable named `ASDF_${LANG}_VERSION`, for the current shell session only.
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
