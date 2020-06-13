@@ -24,6 +24,7 @@
 | `asdf current <name>`                    | Display current version set or being used for package                      |
 | `asdf where <name> [<version>]`          | Display install path for an installed or current version                   |
 | `asdf which <name>`                      | Display install path for current version                                   |
+| `asdf shell <name> <version>`            | Set the package version to `ASDF_${LANG}_VERSION` in the current shell     |
 | `asdf local <name> <version>`            | Set the package local version                                              |
 | `asdf global <name> <version>`           | Set the package global version                                             |
 | `asdf latest <name> [<version>]`         | Show latest stable version of a package                                    |
