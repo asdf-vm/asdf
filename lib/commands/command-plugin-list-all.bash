@@ -20,7 +20,7 @@ plugin_list_all_command() {
 
         printf "%s\\t%s\\n" "$index_plugin_name" "$installed_flag$source_url"
       done
-    ) | (column -t -s $'\t' 2>/dev/null || awk '{ printf("%-28s", $1); sub(/^[^*]/, " &", $2); $1=""; print $0 }')
+    ) | awk '{ printf("%-28s", $1); sub(/^[^*]/, " &", $2); $1=""; print $0 }'
   else
     printf "%s%s\\n" "error: index of plugins not found at " "$plugins_index_path"
   fi
