@@ -17,7 +17,7 @@ asdf where <name> [<version>]           Display install path for an installed or
 asdf which <command>                    Display the path to an executable
 asdf local <name> <version>             Set the package local version
 asdf global <name> <version>            Set the package global version
-asdf shell <name> <version>             Set the package version in the current shell
+asdf shell <name> <version>             Set the package version to `ASDF_${LANG}_VERSION` in the current shell
 asdf latest <name> [<version>]          Show latest stable version of a package
 asdf list <name>                        List installed versions of a package
 asdf list all <name> [<version>]        List all versions of a package and optionally filter the returned versions
