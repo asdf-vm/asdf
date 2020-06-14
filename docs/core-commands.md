@@ -1,6 +1,8 @@
 <!-- 
     single source of truth.
-    import commands list from master branch or repo.
+    import commands list from master branch of repo.
     not amenable to docs for git ref. Solution to be determined.
  -->
+`asdf` or `asdf help` will list all available commands for your current asdf version.
+
 [](https://raw.githubusercontent.com/asdf-vm/asdf/master/help.txt ':include')
