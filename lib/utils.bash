@@ -217,7 +217,7 @@ find_versions() {
 
 display_no_version_set() {
   local plugin_name=$1
-  echo "No version set for ${plugin_name}; please run \`asdf <global | local> ${plugin_name} <version>\`"
+  echo "No version set for ${plugin_name}; please run \`asdf <global | shell | local> ${plugin_name} <version>\`"
 }
 
 get_version_from_env() {
