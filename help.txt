@@ -32,8 +32,7 @@ asdf which <command>                    Display the path to an executable
 asdf local <name> <version>             Set the package local version
 asdf global <name> <version>            Set the package global version
 asdf shell <name> <version>             Set the package version to
-                                        `ASDF_${LANG}_VERSION` in the current
-                                        shell
+                                        `ASDF_${LANG}_VERSION` in the current shell
 asdf latest <name> [<version>]          Show latest stable version of a package
 asdf list <name>                        List installed versions of a package
 asdf list all <name> [<version>]        List all versions of a package and
@@ -41,15 +40,11 @@ asdf list all <name> [<version>]        List all versions of a package and
 
 
 UTILS
-asdf exec <command> [args...]           Executes the command shim for current
-                                        version
+asdf exec <command> [args...]           Executes the command shim for current version
 asdf env <command> [util]               Runs util (default: `env`) inside the
-                                        environment used for command shim
-                                        execution.
+                                        environment used for command shim execution.
 asdf reshim <name> <version>            Recreate shims for version of a package
 asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
-asdf update                             Update asdf to the latest stable
-                                        release
-asdf update --head                      Update asdf to the latest on the master
-                                        branch
+asdf update                             Update asdf to the latest stable release
+asdf update --head                      Update asdf to the latest on the master branch
