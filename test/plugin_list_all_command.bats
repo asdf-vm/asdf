@@ -15,9 +15,9 @@ teardown() {
 @test "plugin_list_all list all plugins in the repository" {
   run asdf plugin-list-all
   local expected="\
-bar     http://example.com/bar
-dummy  *http://example.com/dummy
-foo     http://example.com/foo"
+bar                           http://example.com/bar
+dummy                        *http://example.com/dummy
+foo                           http://example.com/foo"
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }

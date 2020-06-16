@@ -43,7 +43,7 @@ plugin_list_command() {
 
         printf "\\n"
       done
-    ) | column -t -s $'\t'
+    ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
     display_error 'Oohes nooes ~! No plugins installed'
     exit 1
