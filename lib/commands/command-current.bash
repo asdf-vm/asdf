@@ -13,16 +13,22 @@ plugin_current_command() {
   full_version=$(cut -d '|' -f 1 <<<"$version_and_path")
   local version_file_path
   version_file_path=$(cut -d '|' -f 2 <<<"$version_and_path")
+  local version_installed="true"
 
   IFS=' ' read -r -a versions <<<"$full_version"
   for version in "${versions[@]}"; do
-    check_if_version_exists "$plugin_name" "$version"
+    if ! (check_if_version_exists "$plugin_name" "$version" 2>/dev/null); then
+      version_installed="false"
+    fi
   done
   check_for_deprecated_plugin "$plugin_name"
 
   if [ -z "$full_version" ]; then
     printf "%s\\n" "$(display_no_version_set "$plugin_name")"
     exit 126
+  elif [ "$version_installed" == "false" ]; then
+    printf "version %s is not installed for %s\\n" "$version" "$plugin_name"
+    exit 1
   else
     printf "%-8s (set by %s)\\n" "$full_version" "$version_file_path"
   fi
