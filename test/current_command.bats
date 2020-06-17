@@ -87,14 +87,19 @@ teardown() {
 
   install_mock_plugin "baz"
 
+  install_mock_plugin "qux"
+  install_mock_plugin_version "qux" "0.0.1"
+
   cd $PROJECT_DIR
   echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
   echo 'foobar 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'qux 1.0.0' >> $PROJECT_DIR/.tool-versions
 
   run asdf current
   expected="baz            No version set for baz; please run \`asdf <global | shell | local> baz <version>\`
 dummy          1.1.0    (set by $PROJECT_DIR/.tool-versions)
-foobar         1.0.0    (set by $PROJECT_DIR/.tool-versions)"
+foobar         1.0.0    (set by $PROJECT_DIR/.tool-versions)
+qux            version 1.0.0 is not installed for qux"
 
   [ "$expected" = "$output" ]
 }
