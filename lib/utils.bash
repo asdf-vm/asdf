@@ -444,12 +444,12 @@ resolve_symlink() {
   # If it is a slash we can assume it's root and absolute. Otherwise we treat it
   # as relative
   case $resolved_path in
-    /*)
-      echo "$resolved_path"
-      ;;
-    *)
-      echo "$PWD/$resolved_path"
-      ;;
+  /*)
+    echo "$resolved_path"
+    ;;
+  *)
+    echo "$PWD/$resolved_path"
+    ;;
   esac
 }
 
@@ -706,7 +706,7 @@ with_shim_executable() {
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
-    printf "%s %s %s\\n" "unknown command:" "$shim_name" ". Perhaps you have to reshim?" >&2
+    printf "%s %s %s\\n" "unknown command:" "${shim_name}." "Perhaps you have to reshim?" >&2
     return 1
   fi
 
