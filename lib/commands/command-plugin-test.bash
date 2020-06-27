@@ -13,20 +13,20 @@ plugin_test_command() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --asdf-plugin-gitref)
-        plugin_gitref="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      --asdf-tool-version)
-        tool_version="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      *)
-        plugin_command_array+=("$1") # save it in an array for later
-        shift                        # past argument
-        ;;
+    --asdf-plugin-gitref)
+      plugin_gitref="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    --asdf-tool-version)
+      tool_version="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    *)
+      plugin_command_array+=("$1") # save it in an array for later
+      shift                        # past argument
+      ;;
     esac
   done
 

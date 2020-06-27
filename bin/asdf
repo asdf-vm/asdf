@@ -26,23 +26,23 @@ find_asdf_cmd() {
   local asdf_cmd_dir
   asdf_cmd_dir="$(asdf_dir)/lib/commands"
   case "$1" in
-    'exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' | \
-      'reshim' | 'uninstall' | 'update' | 'where' | 'which' | \
-      'export-shell-version')
-      echo "$asdf_cmd_dir/command-$1.bash" 2
-      ;;
+  'exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' | \
+    'reshim' | 'uninstall' | 'update' | 'where' | 'which' | \
+    'export-shell-version')
+    echo "$asdf_cmd_dir/command-$1.bash" 2
+    ;;
 
-    '' | '--help' | '-h' | 'help')
-      echo "$asdf_cmd_dir/command-help.bash" 2
-      ;;
+  '' | '--help' | '-h' | 'help')
+    echo "$asdf_cmd_dir/command-help.bash" 2
+    ;;
 
-    '--version' | 'version')
-      echo "$asdf_cmd_dir/command-version.bash" 2
-      ;;
+  '--version' | 'version')
+    echo "$asdf_cmd_dir/command-version.bash" 2
+    ;;
 
-    *)
-      find_cmd "$asdf_cmd_dir" "$@"
-      ;;
+  *)
+    find_cmd "$asdf_cmd_dir" "$@"
+    ;;
   esac
 }
 
