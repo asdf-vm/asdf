@@ -89,4 +89,4 @@ jobs:
         run: shfmt -f .
 
       - name: Run shfmt
-        run: shfmt -d -i 2 .
+        run: shfmt -d .
