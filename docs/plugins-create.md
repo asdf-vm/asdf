@@ -209,7 +209,7 @@ The [asdf-vm/actions](https://github.com/asdf-vm/actions) repo provides a GitHub
 ```yaml
 steps:
   - name: asdf_plugin_test
-    uses: asdf-vm/actions/plugin-test@v1.0.0
+    uses: asdf-vm/actions/plugin-test@v1
     with:
       command: "my_tool --version"
     env:
