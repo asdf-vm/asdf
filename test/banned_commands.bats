@@ -9,7 +9,9 @@ banned_commands=(
     # It's best to avoid eval as it makes it easier to accidentally execute
     # arbitrary strings
     eval
-
+    # Command isn't included in the Ubuntu packages asdf depends on. Also not
+    # defined in POSIX
+    column
     # does not work on alpine and should be grep -i either way
     "grep -y"
 )
