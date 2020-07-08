@@ -57,6 +57,19 @@ If possible the script should only place files in the `ASDF_INSTALL_PATH` direct
 
 ## Optional Scripts
 
+#### bin/documentation
+
+The `documentation` callback script should print basic documentation about the plugin and the tool being managed to STDOUT. The script should tailor its output to the current operating system. For example, when on Ubuntu the script could output the dependencies as apt-get packages that must be installed. The documentation callback script output MAY contain the following:
+
+* Short description of the tool and plugin
+* List of dependencies tailored to the operating system
+* Any environment variables or other flags needed to install or compile the tool (for the users operating system when possible)
+* Any relevant links (again, tailored to the current operating system when possible)
+
+If any of these things are present in the output they must be printed in the order listed above.
+
+The documentation callback script MUST NOT output any information that is already covered in the core asdf-vm documentation. General asdf usage information must not be present.
+
 #### bin/list-bin-paths
 
 List executables for the specified version of the tool. Must print a string with a space-separated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
