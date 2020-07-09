@@ -49,7 +49,7 @@ If this script is not present asdf will assume that the `bin/install` script is 
 
 #### bin/install
 
-This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`.
+This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`. By default, asdf will create shims for any files in `$ASDF_INSTALL_PATH/bin` (this can be customized with the optional [bin/list-bin-paths](#binlist-bin-paths) script).
 
 The install script should exit with a status of `0` when the installation is successful. If the installation fails the script should exit with any non-zero exit status.
 
