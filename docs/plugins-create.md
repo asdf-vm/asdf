@@ -59,7 +59,7 @@ If possible the script should only place files in the `ASDF_INSTALL_PATH` direct
 
 #### bin/documentation
 
-The `documentation` callback script should print basic documentation about the plugin and the tool being managed to STDOUT. The script should tailor its output to the current operating system. For example, when on Ubuntu the script could output the dependencies as apt-get packages that must be installed. The documentation callback script output MAY contain the following:
+The `documentation` callback script should print basic documentation about the plugin and the tool being managed to STDOUT. The script should tailor its output to the current operating system. For example, when on Ubuntu the script could output the dependencies as apt-get packages that must be installed. The script should also tailor its output to the value of `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE` when the variables are set. They are optional and will not always be set. The documentation callback script output MAY contain the following:
 
 * Short description of the tool and plugin
 * List of dependencies tailored to the operating system
