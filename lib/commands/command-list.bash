@@ -22,16 +22,23 @@ list_command() {
   fi
 }
 
+
 display_installed_versions() {
   local versions
-  versions=$(list_installed_versions "$1")
-
+  local plugin=$1
+  versions=$(list_installed_versions "$plugin")
   if [ -n "${versions}" ]; then
+    local cver=$(eval asdf current "$plugin" | cut -f 1 -d " " )
     for version in $versions; do
-      echo "  $version"
+      local flag="  "
+      if [[ "$version" == "$cver" ]]
+        then
+        flag=" *"
+      fi
+      echo "${flag}$version"
     done
   else
-    display_error '  No versions installed'
+    display_error 'No versions installed'
   fi
 }
 
