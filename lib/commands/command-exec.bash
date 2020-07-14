@@ -20,6 +20,8 @@ shim_exec_command() {
       exit 2
     fi
 
+    eval "$(asdf vars)"
+
     asdf_run_hook "pre_${plugin_name}_${shim_name}" "${shim_args[@]}"
     pre_status=$?
     if [ "$pre_status" -ne 0 ]; then
