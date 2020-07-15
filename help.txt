@@ -13,10 +13,11 @@ asdf plugin update --all                Update all plugins
 
 
 MANAGE PACKAGES
-asdf install [<name> <version>]         Install a specific version of a package
-                                        or, with no arguments, install all the
-                                        package versions listed in the
-                                        .tool-versions file
+asdf install                            Install all the package versions listed
+                                        in the .tool-versions file 
+asdf install <name>                     Install one tool at the version
+                                        specified in the .tool-versions file
+asdf install <name> <version>           Install a specific version of a package
 asdf install <name> latest[:<version>]  Install the latest stable version of a
                                         package, or with optional version,
                                         install the latest stable version that

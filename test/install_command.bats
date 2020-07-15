@@ -35,6 +35,14 @@ teardown() {
   [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
 }
 
+@test "install_command with only name installs the version in .tool-versions" {
+  cd $PROJECT_DIR
+  echo -n 'dummy 1.2' > ".tool-versions"
+  run asdf install dummy
+  [ "$status" -eq 0 ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.2/version) = "1.2" ]
+}
+
 @test "install_command set ASDF_CONCURRENCY" {
   run asdf install dummy 1.0
   [ "$status" -eq 0 ]
@@ -117,16 +125,28 @@ teardown() {
   [ "$output" == "This is Dummy 1.0! hello world" ]
 }
 
-@test "install_command fails when the name or version are not specified" {
+@test "install_command fails when tool is specified but no version of the tool is configured" {
   run asdf install dummy
   [ "$status" -eq 1 ]
-  [ "$output" = "You must specify a name and a version to install" ]
+  [ "$output" = "No versions specified for dummy in config files or environment" ]
   [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
+}
 
-  run asdf install 1.1
+@test "install_command fails when tool is specified but no version of the tool is configured in config file" {
+  echo 'dummy 1.0' > $PROJECT_DIR/.tool-versions
+  run asdf install other-dummy
   [ "$status" -eq 1 ]
-  [ "$output" = "You must specify a name and a version to install" ]
-  [ ! -f $ASDF_DIR/installs/dummy/1.1/version ]
+  [ "$output" = "No versions specified for other-dummy in config files or environment" ]
+  [ ! -f $ASDF_DIR/installs/dummy/1.0/version ]
+}
+
+@test "install_command fails when two tools are specified with no versions" {
+  printf 'dummy 1.0\nother-dummy 2.0' > $PROJECT_DIR/.tool-versions
+  run asdf install dummy other-dummy
+  [ "$status" -eq 1 ]
+  [ "$output" = "Dummy couldn't install version: other-dummy (on purpose)" ]
+  [ ! -f $ASDF_DIR/installs/dummy/1.0/version ]
+  [ ! -f $ASDF_DIR/installs/other-dummy/2.0/version ]
 }
 
 @test "install_command without arguments uses a parent directory .tool-versions file if present" {

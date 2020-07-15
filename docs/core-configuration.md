@@ -28,6 +28,8 @@ python 3.7.2 2.7.15 system
 
 To install all the tools defined in a `.tool-versions` file run `asdf install` with no other arguments in the directory containing the `.tool-versions` file.
 
+To install a single tool defined in a `.tool-versions` file run `asdf install <name>` in the directory containing the `.tool-versions` file.  The tool will be installed at the version specified in the `.tool-versions` file.
+
 Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 ## \$HOME/.asdfrc

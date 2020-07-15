@@ -20,8 +20,7 @@ install_command() {
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions "$extra_args"
   elif [[ $# -eq 1 ]]; then
-    display_error "You must specify a name and a version to install"
-    exit 1
+    install_one_local_tool "$plugin_name"
   else
     install_tool_version "$plugin_name" "$full_version" "$extra_args"
   fi
@@ -39,6 +38,30 @@ get_concurrency() {
   fi
 }
 
+install_one_local_tool() {
+  local plugin_name=$1
+  local search_path
+  search_path=$(pwd)
+
+  local plugin_versions
+
+  local plugin_version
+
+  local plugin_version_and_path
+  plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
+
+  if [ -n "$plugin_version_and_path" ]; then
+    local plugin_version
+    some_tools_installed='yes'
+    plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
+    for plugin_version in $plugin_versions; do
+      install_tool_version "$plugin_name" "$plugin_version"
+    done
+  else
+    echo "No versions specified for $plugin_name in config files or environment"
+    exit 1
+  fi
+}
 install_local_tool_versions() {
   local plugins_path
   plugins_path=$(get_plugin_path)
