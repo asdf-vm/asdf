@@ -40,7 +40,7 @@ help_command() {
     plugin_path=$(get_plugin_path "$plugin_name")
 
     if [ -d "$plugin_path" ]; then
-      if [ -f "${plugin_path}/bin/download" ]; then
+      if [ -f "${plugin_path}/bin/help.overview" ]; then
         if [ -n "$tool_version" ]; then
 
           # TODO: Refactor this code out into helper functions in utils.bash
@@ -69,10 +69,11 @@ help_command() {
             export ASDF_INSTALL_VERSION=$version
             # shellcheck disable=SC2031
             export ASDF_INSTALL_PATH=$install_path
-            bash "${plugin_path}"/bin/documentation
+
+            print_plugin_help "$plugin_path"
           )
         else
-          (bash "${plugin_path}"/bin/documentation)
+          (print_plugin_help "$plugin_path")
         fi
       else
         echo "No documentation for plugin $plugin_name" >&2
@@ -87,6 +88,26 @@ help_command() {
     asdf_help
     asdf_extension_cmds
     asdf_moto
+  fi
+}
+
+print_plugin_help() {
+  local plugin_path=$1
+
+  # Eventually @jthegedus or someone else will format the output from these
+  # scripts in a certain way.
+  bash "${plugin_path}"/bin/help.overview
+
+  if [ -f "${plugin_path}"/bin/help.deps ]; then
+    bash "${plugin_path}"/bin/help.deps
+  fi
+
+  if [ -f "${plugin_path}"/bin/help.config ]; then
+    bash "${plugin_path}"/bin/help.config
+  fi
+
+  if [ -f "${plugin_path}"/bin/help.links ]; then
+    bash "${plugin_path}"/bin/help.links
   fi
 }
 
