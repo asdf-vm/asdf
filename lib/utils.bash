@@ -444,12 +444,12 @@ resolve_symlink() {
   # If it is a slash we can assume it's root and absolute. Otherwise we treat it
   # as relative
   case $resolved_path in
-    /*)
-      echo "$resolved_path"
-      ;;
-    *)
-      echo "$PWD/$resolved_path"
-      ;;
+  /*)
+    echo "$resolved_path"
+    ;;
+  *)
+    echo "$PWD/$resolved_path"
+    ;;
   esac
 }
 
@@ -771,7 +771,7 @@ with_shim_executable() {
       printf "\\n%s %s\\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
       printf "%s %s\\n" "No version set for command" "$shim_name"
-      printf "%s %s\\n" "Please add one of the following versions in your config file at" "$closest_tool_version"
+      printf "%s %s\\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
     shim_plugin_versions "${shim_name}"
   ) >&2

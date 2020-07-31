@@ -90,7 +90,7 @@ teardown() {
   [ "$status" -eq 126 ]
 
   echo "$output" | grep -q "No version set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Please add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
   echo "$output" | grep -q "dummy 1.0" 2>/dev/null
   echo "$output" | grep -q "dummy 2.0" 2>/dev/null
 }
@@ -108,7 +108,7 @@ teardown() {
   [ "$status" -eq 126 ]
 
   echo "$output" | grep -q "No version set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Please add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
   echo "$output" | grep -q "dummy 1.0" 2>/dev/null
   echo "$output" | grep -q "mummy 3.0" 2>/dev/null
 }
