@@ -706,7 +706,7 @@ with_shim_executable() {
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
-    echo "unknown command: ${shim_name}. Perhaps you have to reshim?" >&2
+    printf "%s %s %s\\n" "unknown command:" "${shim_name}." "Perhaps you have to reshim?" >&2
     return 1
   fi
 
@@ -746,6 +746,8 @@ with_shim_executable() {
   (
     local preset_plugin_versions
     preset_plugin_versions=()
+    local closest_tool_version
+    closest_tool_version=$(find_tool_versions)
 
     local shim_plugins
     IFS=$'\n' read -rd '' -a shim_plugins <<<"$(shim_plugins "$shim_name")"
@@ -761,19 +763,16 @@ with_shim_executable() {
     done
 
     if [ -n "${preset_plugin_versions[*]}" ]; then
-      echo "asdf: No preset version installed for command ${shim_name}"
-      echo "Please install the missing version by running one of the following:"
-      echo ""
+      printf "%s %s\\n" "No preset version installed for command" "$shim_name"
+      printf "%s\\n\\n" "Please install a version by running one of the following:"
       for preset_plugin_version in "${preset_plugin_versions[@]}"; do
-        echo "asdf install ${preset_plugin_version}"
+        printf "%s %s\\n" "asdf install" "$preset_plugin_version"
       done
-      echo ""
-      echo "or add one of the following in your .tool-versions file:"
+      printf "\\n%s %s\\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
-      echo "asdf: No version set for command ${shim_name}"
-      echo "you might want to add one of the following in your .tool-versions file:"
+      printf "%s %s\\n" "No version set for command" "$shim_name"
+      printf "%s %s\\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
-    echo ""
     shim_plugin_versions "${shim_name}"
   ) >&2
 
