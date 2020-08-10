@@ -206,10 +206,10 @@ compinit
 
 If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
 
-Add the following to `~/.bash_profile`:
+Add `asdf.sh` to your `~/.bash_profile` with:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 ```
 
 ?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
@@ -220,20 +220,20 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 #### --macOS,Fish,Homebrew--
 
-Add the following to `~/.config/fish/config.fish`:
+Add `asdf.fish` to your `~/.config/fish/config.fish` with:
 
 ```shell
-source (brew --prefix asdf)/asdf.fish
+echo -e "\nsource $(brew --prefix asdf)/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
 ?> Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
 
 #### --macOS,ZSH,Homebrew--
 
-Add the following to `~/.zshrc`:
+Add `asdf.sh` to your `~/.zshrc` with:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
 
 ?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh).
