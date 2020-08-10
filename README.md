@@ -31,6 +31,6 @@ See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CO
 
 ## Community & Questions
 
-- ![GitHub Discussions](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github Discussions **TBA**: our preferred method for community Q&A and interaction
+- [![GitHub Discussions](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github Discussions TBA](https://github.com/asdf-vm/asdf/discussions): our preferred method for community Q&A and interaction
 - [![Github Issues](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github Issues](https://github.com/asdf-vm/asdf/issues): report a bug or raise a feature request to the `asdf` core team
 - [![StackOverflow Tag](https://icongr.am/fontawesome/stack-overflow.svg?size=16&color=808080)StackOverflow Tag](https://stackoverflow.com/questions/tagged/asdf-vm): see existing Q&A for `asdf`. Some of the core team watch this tag in addition to our helpful community
