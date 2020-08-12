@@ -1,10 +1,12 @@
 set -x ASDF_DIR (dirname (status -f))
 
-if test -n $ASDF_DATA_DIR
-  set -l asdf_user_shims $ASDF_DATA_DIR/shims
-else
-  set -l asdf_user_shims $HOME/.asdf
-end
+set -l asdf_user_shims (
+  if test -n "$ASDF_DATA_DIR"
+    echo $ASDF_DATA_DIR/shims
+  else
+    echo $HOME/.asdf/shims
+  end
+)
 
 # Add asdf to PATH
 set -l asdf_bin_dirs $ASDF_DIR/bin $asdf_user_shims 
