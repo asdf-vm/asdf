@@ -14,14 +14,14 @@
 * text=auto
 
 ## SOURCE CODE
-*.bats     text eol=crlf
+*.bats     text
 *.css      text
 *.htm      text
 *.html     text
 *.js       text
-*.sh       text eol=lf
-*.bash     text eol=lf
-*.fish     text eol=lf
+*.sh       text
+*.bash     text
+*.fish     text
 
 ## DOCKER
 *.dockerignore    text
