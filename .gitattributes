@@ -22,6 +22,11 @@
 *.sh       text
 *.bash     text
 *.fish     text
+#### asdf/bin/* explicitly define as text
+*asdf      text
+*asdf-exec text
+*_asdf     text
+#### asdf/test/fixtures/* should be covered by * text=auto on L14
 
 ## DOCKER
 *.dockerignore    text
