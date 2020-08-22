@@ -85,5 +85,8 @@ jobs:
       - name: Install shfmt
         run: brew install shfmt
 
+      - name: List file to shfmt
+        run: shfmt -f .
+
       - name: Run shfmt
-        run: shfmt -d -i 2 -ci . lib/commands/*
+        run: shfmt -d .

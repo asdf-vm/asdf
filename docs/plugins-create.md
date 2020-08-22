@@ -49,13 +49,26 @@ If this script is not present asdf will assume that the `bin/install` script is 
 
 #### bin/install
 
-This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`.
+This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`. By default, asdf will create shims for any files in `$ASDF_INSTALL_PATH/bin` (this can be customized with the optional [bin/list-bin-paths](#binlist-bin-paths) script).
 
 The install script should exit with a status of `0` when the installation is successful. If the installation fails the script should exit with any non-zero exit status.
 
 If possible the script should only place files in the `ASDF_INSTALL_PATH` directory once the build and installation of the tool is deemed successful by the install script. asdf [checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) of the `ASDF_INSTALL_PATH` directory in order to determine if that version of the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the beginning of the installation process other asdf commands run in other terminals during the installation may consider that version of the tool installed, even when it is not fully installed.
 
 ## Optional Scripts
+
+#### bin/help scripts
+
+This is not one callback script but rather a set of callback scripts that each print different documentation to STDOUT. The possible callback scripts are listed below. Note that `bin/help.overview` is a special case as it must be present for any help output to be displayed for the script.
+
+* `bin/help.overview` - This script should output a general description about the plugin and the tool being managed. No heading should be printed as asdf will print headings. Output may be free-form text but ideally only one short paragraph. This script must be present if you want asdf to provide help information for your plugin. All other help callback scripts are optional.
+* `bin/help.deps` - This script should output the list of dependencies tailored to the operating system. One dependency per line.
+* `bin/help.config` - This script should print any required or optional configuration that may be available for the plugin and tool. Any environment variables or other flags needed to install or compile the tool (for the users operating system when possible). Output can be free-form text.
+* `bin/help.links` - This should be a list of links relevant to the plugin and tool (again, tailored to the current operating system when possible). One link per line. Lines may be in the format `<title>: <link>` or just `<link>`.
+
+Each of these scripts should tailor their output to the current operating system. For example, when on Ubuntu the deps script could output the dependencies as apt-get packages that must be installed. The script should also tailor its output to the value of `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE` when the variables are set. They are optional and will not always be set.
+
+The help callback script MUST NOT output any information that is already covered in the core asdf-vm documentation. General asdf usage information must not be present.
 
 #### bin/list-bin-paths
 
@@ -209,7 +222,7 @@ The [asdf-vm/actions](https://github.com/asdf-vm/actions) repo provides a GitHub
 ```yaml
 steps:
   - name: asdf_plugin_test
-    uses: asdf-vm/actions/plugin-test@v1.0.0
+    uses: asdf-vm/actions/plugin-test@v1
     with:
       command: "my_tool --version"
     env:

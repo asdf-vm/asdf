@@ -9,17 +9,17 @@ plugin_list_command() {
 
   while [ -n "$*" ]; do
     case "$1" in
-      "--urls")
-        show_repo=true
-        shift
-        ;;
-      "--refs")
-        show_ref=true
-        shift
-        ;;
-      *)
-        shift
-        ;;
+    "--urls")
+      show_repo=true
+      shift
+      ;;
+    "--refs")
+      show_ref=true
+      shift
+      ;;
+    *)
+      shift
+      ;;
     esac
   done
 

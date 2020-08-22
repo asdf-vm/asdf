@@ -90,7 +90,7 @@ teardown() {
   [ "$status" -eq 126 ]
 
   echo "$output" | grep -q "No version set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "you might want to add one of the following in your .tool-versions file" 2>/dev/null
+  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
   echo "$output" | grep -q "dummy 1.0" 2>/dev/null
   echo "$output" | grep -q "dummy 2.0" 2>/dev/null
 }
@@ -108,7 +108,7 @@ teardown() {
   [ "$status" -eq 126 ]
 
   echo "$output" | grep -q "No version set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "you might want to add one of the following in your .tool-versions file" 2>/dev/null
+  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
   echo "$output" | grep -q "dummy 1.0" 2>/dev/null
   echo "$output" | grep -q "mummy 3.0" 2>/dev/null
 }
@@ -120,12 +120,12 @@ teardown() {
 
   run $ASDF_DIR/shims/dummy world hello
   [ "$status" -eq 126 ]
-  echo "$output" | grep -q "No preset version installed for command dummy"  2>/dev/null
-  echo "$output" | grep -q "Please install the missing version by running one of the following:"  2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 2.0"  2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 1.3"  2>/dev/null
-  echo "$output" | grep -q "or add one of the following in your .tool-versions file:"  2>/dev/null
-  echo "$output" | grep -q "dummy 1.0"  2>/dev/null
+  echo "$output" | grep -q "No preset version installed for command dummy" 2>/dev/null
+  echo "$output" | grep -q "Please install a version by running one of the following:" 2>/dev/null
+  echo "$output" | grep -q "asdf install dummy 2.0" 2>/dev/null
+  echo "$output" | grep -q "asdf install dummy 1.3" 2>/dev/null
+  echo "$output" | grep -q "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
 }
 
 @test "shim exec should execute first plugin that is installed and set" {

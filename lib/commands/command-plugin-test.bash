@@ -13,20 +13,20 @@ plugin_test_command() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --asdf-plugin-gitref)
-        plugin_gitref="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      --asdf-tool-version)
-        tool_version="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      *)
-        plugin_command_array+=("$1") # save it in an array for later
-        shift                        # past argument
-        ;;
+    --asdf-plugin-gitref)
+      plugin_gitref="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    --asdf-tool-version)
+      tool_version="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    *)
+      plugin_command_array+=("$1") # save it in an array for later
+      shift                        # past argument
+      ;;
     esac
   done
 
@@ -110,6 +110,9 @@ plugin_test_command() {
     # version from the versions list
     if [ -z "$tool_version" ] || [[ "$tool_version" == *"latest"* ]]; then
       version="$(asdf latest "$plugin_name" "$(echo "$tool_version" | sed -e 's#latest##;s#^:##')")"
+      if [ -z "$version" ]; then
+        fail_test "could not get latest version"
+      fi
     else
       version="$tool_version"
     fi
