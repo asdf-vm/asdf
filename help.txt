@@ -14,7 +14,7 @@ asdf plugin update --all                Update all plugins
 
 MANAGE PACKAGES
 asdf install                            Install all the package versions listed
-                                        in the .tool-versions file 
+                                        in the .tool-versions file
 asdf install <name>                     Install one tool at the version
                                         specified in the .tool-versions file
 asdf install <name> <version>           Install a specific version of a package
@@ -45,6 +45,7 @@ UTILS
 asdf exec <command> [args...]           Executes the command shim for current version
 asdf env <command> [util]               Runs util (default: `env`) inside the
                                         environment used for command shim execution.
+asdf info                               Print OS, Shell and ASDF debug information.
 asdf reshim <name> <version>            Recreate shims for version of a package
 asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
