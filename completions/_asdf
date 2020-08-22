@@ -30,6 +30,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   # utils
   'exec:executes the command shim for the current version'
   'env:prints or runs an executable under a command environment'
+  'info:print os, shell and asdf debug information'
   'reshim:recreate shims for version of a package'
   'shim:shim management sub-commands'
   'shim-versions:list for given command which plugins and versions provide it'
