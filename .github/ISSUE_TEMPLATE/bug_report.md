@@ -32,13 +32,12 @@ Tell us what happened instead
 
 ### Environment
 
-**OS**:
+<!-- Copy the output of `asdf info` here -->
+```shell
 
-**asdf version**:
+```
 
 **asdf plugins affected (if relevant)**:
-
-**asdf plugins installed**:
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
