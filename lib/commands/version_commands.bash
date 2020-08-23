@@ -35,7 +35,7 @@ version_command() {
   local version
   for version in "${versions[@]}"; do
     if ! (check_if_version_exists "$plugin_name" "$version"); then
-      version_not_installed_text "$plugin_name" "$version"
+      version_not_installed_text "$plugin_name" "$version" 1>&2
       exit 1
     fi
   done
