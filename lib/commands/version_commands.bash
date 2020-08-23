@@ -34,7 +34,10 @@ version_command() {
 
   local version
   for version in "${versions[@]}"; do
-    check_if_version_exists "$plugin_name" "$version"
+    if ! (check_if_version_exists "$plugin" "$version"); then
+      version_not_installed_text "$plugin_name" "$version"
+      exit 1
+    fi
   done
 
   if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then

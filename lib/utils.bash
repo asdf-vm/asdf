@@ -127,9 +127,15 @@ check_if_version_exists() {
   install_path=$(find_install_path "$plugin_name" "$version")
 
   if [ "$version" != "system" ] && [ ! -d "$install_path" ]; then
-    display_error "version $version is not installed for $plugin_name"
     exit 1
   fi
+}
+
+version_not_installed_text() {
+  local plugin_name=$1
+  local version=$2
+
+  printf "version %s is not installed for %s" "$version" "$plugin_name"
 }
 
 get_plugin_path() {
