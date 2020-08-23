@@ -30,7 +30,6 @@ shell_command() {
     exit 0
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
-    version_not_installed_text "$plugin" "$version" 1>&2
     echo 'false'
     exit 1
   fi
