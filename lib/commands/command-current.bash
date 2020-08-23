@@ -35,7 +35,7 @@ plugin_current_command() {
     printf "$terminal_format" "$plugin" "______" "$description"
     return 126
   else
-    description=("$version_file_path")
+    description="$version_file_path"
     printf "$terminal_format" "$plugin" "$full_version" "$description"
   fi
 }
