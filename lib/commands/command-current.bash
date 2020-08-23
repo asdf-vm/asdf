@@ -27,14 +27,17 @@ plugin_current_command() {
 
   if [ -n "$version_not_installed" ]; then
     description="Not installed. Run \"asdf install $plugin $version\""
+    # shellcheck disable=SC2059 # intentional to reuse formatting
     printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
     return 1
   elif [ -z "$full_version" ]; then
     description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
+    # shellcheck disable=SC2059 # intentional to reuse formatting
     printf "$terminal_format" "$plugin" "______" "$description"
     return 126
   else
     description=("$version_file_path")
+    # shellcheck disable=SC2059 # intentional to reuse formatting
     printf "$terminal_format" "$plugin" "$full_version" "$description"
   fi
 }
@@ -43,6 +46,7 @@ current_command() {
   local terminal_format="%-15s %-15s %-10s\\n"
   local exit_status=0
 
+  # shellcheck disable=SC2059 # intentional to reuse formatting
   printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
   if [ $# -eq 0 ]; then
     for plugin in $(asdf plugin list); do
