@@ -262,18 +262,22 @@ version 1.0.0 is not installed for nonexistent"
 }
 
 @test "export-shell-version should emit an error when plugin does not exist" {
-  expected="nonexistent
+  expected="No such plugin: nonexistent
 version 1.0.0 is not installed for nonexistent
 false"
+
   run asdf export-shell-version sh "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
   [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should emit an error when version does not exist" {
+  expected="version nonexistent is not installed for dummy
+false"
+
   run asdf export-shell-version sh "dummy" "nonexistent"
   [ "$status" -eq 1 ]
-  [ "$output" = 'version nonexistent is not installed for dummy\nfalse' ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should export version if it exists" {
