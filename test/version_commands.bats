@@ -248,21 +248,18 @@ teardown() {
 @test "shell wrapper function should return an error for missing plugins" {
   source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   run asdf shell "nonexistent" "1.0.0"
-  echo "actual output: $output"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: nonexistent" ]
 }
 
 @test "shell should emit an error when wrapper function is not loaded" {
   run asdf shell "dummy" "1.1.0"
-  echo $output
   [ "$status" -eq 1 ]
   [ "$output" = "Shell integration is not enabled. Please ensure you source asdf in your shell setup." ]
 }
 
 @test "export-shell-version should emit an error when plugin does not exist" {
   run asdf export-shell-version sh "nonexistent" "1.0.0"
-  echo "actual output: $output"
   [ "$status" -eq 1 ]
   [ "$output" = $'No such plugin: nonexistent\nfalse' ]
 }
