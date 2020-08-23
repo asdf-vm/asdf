@@ -248,6 +248,7 @@ teardown() {
 @test "shell wrapper function should return an error for missing plugins" {
   source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   run asdf shell "nonexistent" "1.0.0"
+  echo "actual output: $output"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: nonexistent" ]
 }
@@ -261,12 +262,14 @@ teardown() {
 
 @test "export-shell-version should emit an error when plugin does not exist" {
   run asdf export-shell-version sh "nonexistent" "1.0.0"
+  echo "actual output: $output"
   [ "$status" -eq 1 ]
   [ "$output" = $'No such plugin: nonexistent\nfalse' ]
 }
 
 @test "export-shell-version should emit an error when version does not exist" {
   run asdf export-shell-version sh "dummy" "nonexistent"
+  echo "actual output: $output"
   [ "$status" -eq 1 ]
   [ "$output" = $'version nonexistent is not installed for dummy\nfalse' ]
 }
