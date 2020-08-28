@@ -35,6 +35,13 @@ function teardown() {
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
 }
 
+@test "where shows install location of first current version if not version specified and multiple current versions" {
+  echo 'dummy 2.1 1.0' >> $HOME/.tool-versions
+  run asdf where 'dummy'
+  [ "$status" -eq 0 ]
+  [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
+}
+
 @test "where should error when the plugin doesn't exist" {
   run asdf where "foobar"
   [ "$status" -eq 1 ]
