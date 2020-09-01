@@ -20,8 +20,7 @@ teardown() {
 @test "current should derive from the current .tool-versions" {
   cd $PROJECT_DIR
   echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           1.1.0           $PROJECT_DIR/.tool-versions"
+  expected="dummy           1.1.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
   [ "$status" -eq 0 ]
@@ -31,8 +30,7 @@ dummy           1.1.0           $PROJECT_DIR/.tool-versions"
 @test "current should handle long version name" {
   cd $PROJECT_DIR
   echo "dummy nightly-2000-01-01" >> $PROJECT_DIR/.tool-versions
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           nightly-2000-01-01 $PROJECT_DIR/.tool-versions"
+  expected="dummy           nightly-2000-01-01 $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
   [ "$status" -eq 0 ]
@@ -42,8 +40,7 @@ dummy           nightly-2000-01-01 $PROJECT_DIR/.tool-versions"
 @test "current should handle multiple versions" {
   cd $PROJECT_DIR
   echo "dummy 1.2.0 1.1.0" >> $PROJECT_DIR/.tool-versions
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           1.2.0 1.1.0     $PROJECT_DIR/.tool-versions"
+  expected="dummy           1.2.0 1.1.0     $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
   [ "$status" -eq 0 ]
@@ -55,8 +52,7 @@ dummy           1.2.0 1.1.0     $PROJECT_DIR/.tool-versions"
   cd $PROJECT_DIR
   echo 'legacy_version_file = yes' > $HOME/.asdfrc
   echo '1.2.0' >> $PROJECT_DIR/.dummy-version
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           1.2.0           $PROJECT_DIR/.dummy-version"
+  expected="dummy           1.2.0           $PROJECT_DIR/.dummy-version"
 
   run asdf current "dummy"
   [ "$status" -eq 0 ]
@@ -65,8 +61,7 @@ dummy           1.2.0           $PROJECT_DIR/.dummy-version"
 
 # TODO: Need to fix plugin error as well
 @test "current should error when the plugin doesn't exist" {
-  expected="PLUGIN          VERSION         SET BY CONFIG
-No such plugin: foobar"
+  expected="No such plugin: foobar"
 
   run asdf current "foobar"
   [ "$status" -eq 1 ]
@@ -75,8 +70,7 @@ No such plugin: foobar"
 
 @test "current should error when no version is set" {
   cd $PROJECT_DIR
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           ______          No version set. Run \"asdf <global|shell|local> dummy <version>\""
+  expected="dummy           ______          No version set. Run \"asdf <global|shell|local> dummy <version>\""
 
   run asdf current "dummy"
   [ "$status" -eq 126 ]
@@ -86,8 +80,7 @@ dummy           ______          No version set. Run \"asdf <global|shell|local> 
 @test "current should error when a version is set that isn't installed" {
   cd $PROJECT_DIR
   echo 'dummy 9.9.9' >> $PROJECT_DIR/.tool-versions
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           9.9.9           Not installed. Run \"asdf install dummy 9.9.9\""
+  expected="dummy           9.9.9           Not installed. Run \"asdf install dummy 9.9.9\""
 
   run asdf current "dummy"
   [ "$status" -eq 1 ]
@@ -109,8 +102,7 @@ dummy           9.9.9           Not installed. Run \"asdf install dummy 9.9.9\""
   echo 'foobar 1.0.0' >> $PROJECT_DIR/.tool-versions
 
   run asdf current
-  expected="PLUGIN          VERSION         SET BY CONFIG
-baz             ______          No version set. Run \"asdf <global|shell|local> baz <version>\"
+  expected="baz             ______          No version set. Run \"asdf <global|shell|local> baz <version>\"
 dummy           1.1.0           $PROJECT_DIR/.tool-versions
 foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
@@ -135,8 +127,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
 @test "with no plugins prints an error" {
   clean_asdf_dir
-  expected="PLUGIN          VERSION         SET BY CONFIG
-Oohes nooes ~! No plugins installed"
+  expected="Oohes nooes ~! No plugins installed"
 
   run asdf current
   [ "$status" -eq 0 ]
@@ -146,8 +137,7 @@ Oohes nooes ~! No plugins installed"
 @test "current should handle comments" {
   cd $PROJECT_DIR
   echo "dummy 1.2.0  # this is a comment" >> $PROJECT_DIR/.tool-versions
-  expected="PLUGIN          VERSION         SET BY CONFIG
-dummy           1.2.0           $PROJECT_DIR/.tool-versions"
+  expected="dummy           1.2.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
   [ "$status" -eq 0 ]
