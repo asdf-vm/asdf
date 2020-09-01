@@ -45,7 +45,7 @@ current_command() {
   local terminal_format="%-15s %-15s %-10s\\n"
   local exit_status=0
 
-  printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
+  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
   if [ $# -eq 0 ]; then
     for plugin in $(asdf plugin list); do
       plugin_current_command "$plugin" "$terminal_format"
