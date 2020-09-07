@@ -75,6 +75,8 @@ git checkout "$(git describe --abbrev=0 --tags)"
 
 ### --Homebrew--
 
+!> See `asdf` and Homebrew compatibility [issues in #785](https://github.com/asdf-vm/asdf/issues/785) before continuing.
+
 Install using the Homebrew package manager:
 
 ```shell
