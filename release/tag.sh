@@ -61,7 +61,7 @@ if ! [[ "${new_version:0:1}" =~ ^[0-9]+$ ]]; then
 fi
 
 # Make sure the version the user provided hasn't already been tagged
-if git tag | grep "$new_tag_name" >/dev/null; then
+if git tag | grep "^$new_tag_name$" >/dev/null; then
   echo >&2 "ERROR: git tag with that version already exists"
   exit 1
 fi
