@@ -17,9 +17,8 @@ plugin_update_command() {
 
       printf "%s %s%s\\n" "Updating" "$(basename "$dir")" "..."
       gitref="${branch_of_head}"
-      git --git-dir "$dir/.git" fetch -p -u origin "$gitref:$gitref"
-      git --git-dir "$dir/.git" checkout -f "$gitref"
-      # (cd "$dir" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
+      git --git-dir "$dir/.git" --work-tree "$dir" fetch -p -u origin "$gitref:$gitref"
+      git --git-dir "$dir/.git" --work-tree "$dir" checkout -f "$gitref"
     done
   else
     check_if_plugin_exists "$plugin_name"
@@ -28,9 +27,8 @@ plugin_update_command() {
 
     printf "%s %s%s\\n" "Updating" "$plugin_name" "..."
     gitref="${2:-${branch_of_head}}"
-    git --git-dir "$plugin_path/.git" fetch -p -u origin "$gitref:$gitref"
-    git --git-dir "$plugin_path/.git" checkout -f "$gitref"
-    # (cd "$plugin_path" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
+    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch -p -u origin "$gitref:$gitref"
+    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" checkout -f "$gitref"
   fi
 }
 
