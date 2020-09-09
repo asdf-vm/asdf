@@ -7,18 +7,30 @@ plugin_update_command() {
   fi
 
   local plugin_name="$1"
-  local gitref="${2:-master}"
+  local plugin_path
+  local branch_of_head
+  local gitref
+
   if [ "$plugin_name" = "--all" ]; then
     for dir in "$(asdf_data_dir)"/plugins/*; do
-      echo "Updating $(basename "$dir")..."
-      (cd "$dir" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
+      branch_of_head=$(git --git-dir "$dir/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+      printf "%s %s%s\\n" "Updating" "$(basename "$dir")" "..."
+      gitref="${branch_of_head}"
+      git --git-dir "$dir/.git" fetch -p -u origin "$gitref:$gitref"
+      git --git-dir "$dir/.git" checkout -f "$gitref"
+      # (cd "$dir" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
     done
   else
-    local plugin_path
-    plugin_path="$(get_plugin_path "$plugin_name")"
     check_if_plugin_exists "$plugin_name"
-    echo "Updating $plugin_name..."
-    (cd "$plugin_path" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
+    plugin_path="$(get_plugin_path "$plugin_name")"
+    branch_of_head=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    printf "%s %s%s\\n" "Updating" "$plugin_name" "..."
+    gitref="${2:-${branch_of_head}}"
+    git --git-dir "$plugin_path/.git" fetch -p -u origin "$gitref:$gitref"
+    git --git-dir "$plugin_path/.git" checkout -f "$gitref"
+    # (cd "$plugin_path" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
   fi
 }
 
