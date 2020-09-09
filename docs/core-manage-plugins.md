@@ -1,6 +1,6 @@
-Plugins are how asdf-vm understands handling different packages.
+Plugins are how asdf understands handling different packages.
 
-See [All plugins](plugins-all) for the plugins repository which lists all asdf-vm plugins we know.
+See [All plugins](plugins-all) for the plugins repository which lists all asdf plugins we know.
 
 See [Creating Plugins](plugins-create) for the super-simple API for supporting more languages.
 
