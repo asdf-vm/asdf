@@ -2,7 +2,7 @@
 
 plugin_update_command() {
   if [ "$#" -lt 1 ]; then
-    display_error "usage: asdf plugin-update {<name> | --all} [git-ref]"
+    display_error "usage: asdf plugin-update {<name> [git-ref] | --all}"
     exit 1
   fi
 
