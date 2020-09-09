@@ -19,7 +19,7 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 
 [Please head over the documentation site for more information](https://asdf-vm.github.io/asdf/)!
 
-- [Getting Started](https://asdf-vm.github.io/asdf/#/core-manage-asdf-vm)
+- [Getting Started](https://asdf-vm.github.io/asdf/#/core-manage-asdf)
 - [All Commands](https://asdf-vm.github.io/asdf/#/core-commands)
 - [All Plugins](https://asdf-vm.github.io/asdf/#/plugins-all)
 - [Create a Plugin](https://asdf-vm.github.io/asdf/#/plugins-create) with our [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template)
