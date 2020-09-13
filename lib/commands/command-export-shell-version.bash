@@ -29,6 +29,9 @@ shell_command() {
     esac
     exit 0
   fi
+  if [ "$version" = "latest" ]; then
+    version=$(asdf latest "$plugin")
+  fi
   if ! (check_if_version_exists "$plugin" "$version"); then
     version_not_installed_text "$plugin" "$version" 1>&2
     echo 'false'

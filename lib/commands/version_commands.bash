@@ -32,18 +32,23 @@ version_command() {
 
   check_if_plugin_exists "$plugin_name"
 
+  declare -a resolved_versions
   local version
   for version in "${versions[@]}"; do
+    if [ "$version" = "latest" ]; then
+      version=$(asdf latest "$plugin_name")
+    fi
     if ! (check_if_version_exists "$plugin_name" "$version"); then
       version_not_installed_text "$plugin_name" "$version" 1>&2
       exit 1
     fi
+    resolved_versions+=("$version")
   done
 
   if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then
-    sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${versions[*]}|" "$file"
+    sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
     rm "$file".bak
   else
-    echo "$plugin_name ${versions[*]}" >>"$file"
+    echo "$plugin_name ${resolved_versions[*]}" >>"$file"
   fi
 }
