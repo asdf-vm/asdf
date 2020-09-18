@@ -10,10 +10,10 @@ plugin_update_command() {
   local gitref="${2:-master}"
   if [ "$plugin_name" = "--all" ]; then
     if [ -d "$(asdf_data_dir)"/plugins ]; then
-      for dir in $(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1);
+      while IFS= read -r -d '' dir; do
         echo "Updating $(basename "$dir")..."
         (cd "$dir" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
-      done
+      done < <(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1)
     fi
   else
     local plugin_path
