@@ -74,15 +74,15 @@ teardown() {
 }
 
 @test "asdf update should not remove plugin versions" {
-  run asdf install dummy 1.1
+  run asdf install dummy 1.1.0
   [ "$status" -eq 0 ]
-  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+  [ $(cat $ASDF_DIR/installs/dummy/1.1.0/version) = "1.1.0" ]
   run asdf update
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/installs/dummy/1.1/version ]
+  [ -f $ASDF_DIR/installs/dummy/1.1.0/version ]
   run asdf update --head
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/installs/dummy/1.1/version ]
+  [ -f $ASDF_DIR/installs/dummy/1.1.0/version ]
 }
 
 @test "asdf update should not remove plugins" {
@@ -96,7 +96,7 @@ teardown() {
 }
 
 @test "asdf update should not remove shims" {
-  run asdf install dummy 1.1
+  run asdf install dummy 1.1.0
   [ -f $ASDF_DIR/shims/dummy ]
   run asdf update
   [ "$status" -eq 0 ]

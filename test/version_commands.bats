@@ -7,6 +7,7 @@ setup() {
   install_dummy_plugin
   install_dummy_version "1.0.0"
   install_dummy_version "1.1.0"
+  install_dummy_version "2.0.0"
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
@@ -302,4 +303,25 @@ false"
   run asdf export-shell-version fish "dummy" "--unset"
   [ "$status" -eq 0 ]
   [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}
+
+@test "shell wrapper function should support latest" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "latest"
+  [ $(echo $ASDF_DUMMY_VERSION) = "2.0.0" ]
+  unset ASDF_DUMMY_VERSION
+}
+
+@test "global should support latest" {
+  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  run asdf global "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
+}
+
+@test "local should support latest" {
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run asdf local "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }
