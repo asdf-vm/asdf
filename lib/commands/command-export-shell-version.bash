@@ -15,7 +15,7 @@ shell_command() {
   local version=$2
 
   local upcase_name
-  upcase_name=$(tr '[:lower:]-' '[:upper:]_' <<< "$plugin")
+  upcase_name=$(tr '[:lower:]-' '[:upper:]_' <<<"$plugin")
   local version_env_var="ASDF_${upcase_name}_VERSION"
 
   if [ "$version" = "--unset" ]; then

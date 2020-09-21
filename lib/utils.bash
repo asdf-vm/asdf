@@ -289,7 +289,7 @@ get_executable_path() {
   check_if_version_exists "$plugin_name" "$version"
 
   if [ "$version" = "system" ]; then
-    path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<< "$PATH")
+    path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
@@ -547,7 +547,7 @@ with_plugin_env() {
 
   # exec_paths contains a trailing newline which is converted to a colon, so no
   # colon is needed between the subshell and the PATH variable in this string
-  path="$(tr '\n' ':' <<< "$exec_paths")$PATH"
+  path="$(tr '\n' ':' <<<"$exec_paths")$PATH"
 
   # If no custom exec-env transform, just execute callback
   if [ ! -f "${plugin_path}/bin/exec-env" ]; then
@@ -625,7 +625,7 @@ strip_tool_version_comments() {
 
   while IFS= read -r tool_line || [ -n "$tool_line" ]; do
     # Remove whitespace before pound sign, the pound sign, and everything after it
-    new_line="$(cut -f1 -d"#" <<< "$tool_line" | sed -e 's/[[:space:]]*$//')"
+    new_line="$(cut -f1 -d"#" <<<"$tool_line" | sed -e 's/[[:space:]]*$//')"
 
     # Only print the line if it is not empty
     if [[ -n "$new_line" ]]; then
@@ -733,7 +733,7 @@ with_shim_executable() {
 
     run_within_env() {
       local path
-      path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<< "$PATH")
+      path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
 
       executable_path=$(PATH=$path command -v "$shim_name")
 

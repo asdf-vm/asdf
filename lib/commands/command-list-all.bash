@@ -11,7 +11,7 @@ list_all_command() {
   versions=$(bash "${plugin_path}/bin/list-all")
 
   if [[ $query ]]; then
-    versions=$(tr ' ' '\n' <<< "$versions" |
+    versions=$(tr ' ' '\n' <<<"$versions" |
       grep -E "^\\s*$query" |
       tr '\n' ' ')
   fi

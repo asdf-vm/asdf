@@ -9,10 +9,10 @@ find_cmd() {
 
   local cmd_name
   local args_offset="$#"
-  cmd_name="command-$(tr ' ' '-' <<< "${@:1:${args_offset}}").bash"
+  cmd_name="command-$(tr ' ' '-' <<<"${@:1:${args_offset}}").bash"
   while [ ! -f "$cmd_dir/$cmd_name" ] && [ "$args_offset" -gt 0 ]; do
     args_offset=$((args_offset - 1))
-    cmd_name="command-$(tr ' ' '-' <<< "${@:1:${args_offset}}").bash"
+    cmd_name="command-$(tr ' ' '-' <<<"${@:1:${args_offset}}").bash"
   done
 
   if [ -f "$cmd_dir/$cmd_name" ]; then

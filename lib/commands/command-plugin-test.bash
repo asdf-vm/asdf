@@ -106,7 +106,7 @@ plugin_test_command() {
     # Use the version passed in if it was set. Otherwise grab the latest
     # version from the versions list
     if [ -z "$tool_version" ] || [[ "$tool_version" == *"latest"* ]]; then
-      version="$(asdf latest "$plugin_name" "$(sed -e 's#latest##;s#^:##' <<< "$tool_version")")"
+      version="$(asdf latest "$plugin_name" "$(sed -e 's#latest##;s#^:##' <<<"$tool_version")")"
       if [ -z "$version" ]; then
         fail_test "could not get latest version"
       fi
