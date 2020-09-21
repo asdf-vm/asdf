@@ -6,7 +6,7 @@ shim_env_command() {
   local env_args=("${@:3}")
 
   if [ -z "$shim_name" ]; then
-    echo "usage: asdf env <command>"
+    printf "usage: asdf env <command>\\n"
     exit 1
   fi
 

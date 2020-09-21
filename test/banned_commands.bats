@@ -16,6 +16,9 @@ banned_commands=(
     "grep.* -y"
     # sort -V isn't supported everywhere
     "sort.*-V"
+    # echo isn't consistent across operating systems, and sometimes output can
+    # be confused with echo flags. printf does everything echo does and more.
+    echo
 )
 
 setup() {

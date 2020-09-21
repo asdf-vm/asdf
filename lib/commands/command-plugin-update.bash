@@ -11,7 +11,7 @@ plugin_update_command() {
   if [ "$plugin_name" = "--all" ]; then
     if [ -d "$(asdf_data_dir)"/plugins ]; then
       while IFS= read -r -d '' dir; do
-        echo "Updating $(basename "$dir")..."
+        printf "Updating %s...\\n" "$(basename "$dir")"
         (cd "$dir" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
       done < <(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1)
     fi
@@ -19,7 +19,7 @@ plugin_update_command() {
     local plugin_path
     plugin_path="$(get_plugin_path "$plugin_name")"
     check_if_plugin_exists "$plugin_name"
-    echo "Updating $plugin_name..."
+    printf "Updating %s...\\n" "$plugin_name"
     (cd "$plugin_path" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
   fi
 }
