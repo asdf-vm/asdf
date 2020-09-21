@@ -6,9 +6,9 @@ version_command() {
 
   if [ "$#" -lt "3" ]; then
     if [ "$cmd" = "global" ]; then
-      echo "Usage: asdf global <name> <version>"
+      printf "Usage: asdf global <name> <version>\\n"
     else
-      echo "Usage: asdf local <name> <version>"
+      printf "Usage: asdf local <name> <version>\\n"
     fi
     exit 1
   fi
@@ -49,6 +49,6 @@ version_command() {
     sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
     rm "$file".bak
   else
-    echo "$plugin_name ${resolved_versions[*]}" >>"$file"
+    printf "%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
   fi
 }

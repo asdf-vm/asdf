@@ -34,14 +34,14 @@ where_command() {
   install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
 
   if [ -d "$install_path" ]; then
-    echo "$install_path"
+    printf "%s\\n" "$install_path"
     exit 0
   else
     if [ "$version" = "system" ]; then
-      echo "System version is selected"
+      printf "System version is selected\\n"
       exit 1
     else
-      echo "Version not installed"
+      printf "Version not installed\\n"
       exit 1
     fi
   fi

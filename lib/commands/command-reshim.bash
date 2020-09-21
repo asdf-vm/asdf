@@ -119,7 +119,7 @@ remove_obsolete_shims() {
   exec_names=$(plugin_executables "$plugin_name" "$full_version" | xargs -IX basename X | sort)
 
   local obsolete_shims
-  obsolete_shims=$(comm -23 <(echo "$shims") <(echo "$exec_names"))
+  obsolete_shims=$(comm -23 <(printf "%s\\n" "$shims") <(printf "%s\\n" "$exec_names"))
 
   for shim_name in $obsolete_shims; do
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"
