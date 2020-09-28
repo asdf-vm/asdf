@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # remove this asdf-exec file when releasing >=0.6.5
-echo "asdf is self upgrading shims to new asdf exec ..."
+printf "asdf is self upgrading shims to new asdf exec ...\\n"
 
 asdf_dir="$(dirname "$(dirname "$(dirname "$0")")")"
 # shellcheck source=lib/utils.bash
@@ -10,6 +10,6 @@ rm "$(asdf_data_dir)"/shims/*
 "$asdf_dir"/bin/asdf reshim
 shim_name=$(basename "$2")
 
-echo "asdf: now running $shim_name"
+printf "asdf: now running %s\\n" "$shim_name"
 
 exec "$shim_name" "${@:3}"

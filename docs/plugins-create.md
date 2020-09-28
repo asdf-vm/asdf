@@ -55,6 +55,8 @@ The install script should exit with a status of `0` when the installation is suc
 
 If possible the script should only place files in the `ASDF_INSTALL_PATH` directory once the build and installation of the tool is deemed successful by the install script. asdf [checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) of the `ASDF_INSTALL_PATH` directory in order to determine if that version of the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the beginning of the installation process other asdf commands run in other terminals during the installation may consider that version of the tool installed, even when it is not fully installed.
 
+If you want your plugin to work with asdf version 0.7.* and earlier and version 0.8.* and newer check for the presence of the `ASDF_DOWNLOAD_PATH` environment variable. If it is not set download the source code in the bin/install callback. If it is set assume the `bin/download` script already downloaded it.
+
 ## Optional Scripts
 
 #### bin/help scripts

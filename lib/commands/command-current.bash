@@ -45,7 +45,7 @@ current_command() {
   local terminal_format="%-15s %-15s %-10s\\n"
   local exit_status=0
 
-  printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
+  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
   if [ $# -eq 0 ]; then
     for plugin in $(asdf plugin list); do
       plugin_current_command "$plugin" "$terminal_format"
@@ -71,10 +71,8 @@ check_for_deprecated_plugin() {
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
   if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    echo "Heads up! It looks like your $plugin_name plugin is out of date. You can update it with:"
-    echo ""
-    echo "  asdf plugin-update $plugin_name"
-    echo ""
+    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\\n\\n" "$plugin_name"
+    printf "  asdf plugin-update %s\\n\\n" "$plugin_name"
   fi
 }
 

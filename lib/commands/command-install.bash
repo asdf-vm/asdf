@@ -8,7 +8,7 @@ handle_failure() {
 
 handle_cancel() {
   local install_path="$1"
-  echo -e "\\nreceived sigint, cleaning up"
+  printf "\\nreceived sigint, cleaning up"
   handle_failure "$install_path"
 }
 
@@ -34,7 +34,7 @@ get_concurrency() {
   elif [ -f /proc/cpuinfo ]; then
     grep -c processor /proc/cpuinfo
   else
-    echo "1"
+    printf "1\\n"
   fi
 }
 
@@ -58,7 +58,7 @@ install_one_local_tool() {
       install_tool_version "$plugin_name" "$plugin_version"
     done
   else
-    echo "No versions specified for $plugin_name in config files or environment"
+    printf "No versions specified for %s in config files or environment\\n" "$plugin_name"
     exit 1
   fi
 }
@@ -89,14 +89,14 @@ install_local_tool_versions() {
       fi
     done
   else
-    echo "Install plugins first to be able to install tools"
+    printf "Install plugins first to be able to install tools\\n"
     exit 1
   fi
 
   if [ -z "$some_tools_installed" ]; then
-    echo "Either specify a tool & version in the command"
-    echo "OR add .tool-versions file in this directory"
-    echo "or in a parent directory"
+    printf "Either specify a tool & version in the command\\n"
+    printf "OR add .tool-versions file in this directory\\n"
+    printf "or in a parent directory\\n"
     exit 1
   fi
 }
@@ -152,7 +152,7 @@ install_tool_version() {
   trap 'handle_cancel $install_path' INT
 
   if [ -d "$install_path" ]; then
-    echo "$plugin_name $full_version is already installed"
+    printf "%s %s is already installed\\n" "$plugin_name" "$full_version"
   else
 
     if [ -f "${plugin_path}/bin/download" ]; then

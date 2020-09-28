@@ -1,4 +1,4 @@
-1. [Manage asdf-vm](/core-manage-asdf-vm): install `asdf` **and** add `asdf` to your shell
+1. [Manage asdf](/core-manage-asdf): install `asdf` **and** add `asdf` to your shell
 2. [Manage Plugins](/core-manage-plugins): add a plugin for your tool `asdf plugin add nodejs`
 3. [Manage Versions](/core-manage-versions): install a version of that tool `asdf install nodejs 13.14.0`
 4. [Configuration](/core-configuration): set global and project tool versions via `.tool-versions` config
@@ -62,7 +62,7 @@ No match for _Operating System_ and _Installation Method_ selections. Please try
 Clone only the latest branch:
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0-rc1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.0
 ```
 
 Alternately, you can clone the whole repo and checkout the latest branch:
@@ -74,6 +74,8 @@ git checkout "$(git describe --abbrev=0 --tags)"
 ```
 
 ### --Homebrew--
+
+!> See `asdf` and Homebrew compatibility [issues in #785](https://github.com/asdf-vm/asdf/issues/785) before continuing.
 
 Install using the Homebrew package manager:
 
