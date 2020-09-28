@@ -9,9 +9,6 @@ setup() {
   git clone -o local "$(dirname "$BATS_TEST_DIRNAME")" "$ASDF_DIR"
   git --git-dir "$ASDF_DIR/.git" remote add origin https://github.com/asdf-vm/asdf.git
   mkdir -p "$ASDF_DIR/plugins"
-  mkdir -p "$ASDF_DIR/installs"
-  mkdir -p "$ASDF_DIR/shims"
-  mkdir -p "$ASDF_DIR/tmp"
   ASDF_BIN="$ASDF_DIR/bin"
 
   # shellcheck disable=SC2031
