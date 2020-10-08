@@ -208,26 +208,26 @@ teardown() {
 }
 
 @test "global should preserve symlinks when setting versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should preserve symlinks when updating versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "shell wrapper function should export ENV var" {

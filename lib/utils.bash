@@ -454,7 +454,10 @@ resolve_symlink() {
     printf "%s\\n" "$resolved_path"
     ;;
   *)
-    printf "%s\\n" "$PWD/$resolved_path"
+    (
+      cd "$(dirname "$symlink")" || exit 1
+      printf "%s\\n" "$PWD/$resolved_path"
+    )
     ;;
   esac
 }
