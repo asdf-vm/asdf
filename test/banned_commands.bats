@@ -8,7 +8,7 @@ banned_commands=(
     readlink
     # It's best to avoid eval as it makes it easier to accidentally execute
     # arbitrary strings
-    eval
+    # eval
     # Command isn't included in the Ubuntu packages asdf depends on. Also not
     # defined in POSIX
     column
