@@ -9,7 +9,7 @@ Here is a list of improvements we are looking at making to the documentation. If
 - change the typography
 - get a logo?
 - improve "edit on GitHub" button/link
-- add asdf-vm to awesome-docsify showcase
+- add asdf to awesome-docsify showcase
 
 ## Setup Your Environment
 

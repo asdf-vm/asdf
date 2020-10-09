@@ -1,6 +1,35 @@
 # Changelog
 
-## 0.7.9-dev
+## 0.8.1-dev
+
+## 0.8.0
+
+Features
+
+* Add support for plugin documentation callback scripts (#512, #757)
+* Add support for installing one tool specified in `.tool-versions` (#759, #760)
+* Improve introduction and install sections of documentation (#699, #740)
+* Add dependencies for openSUSE and ArchLinux to documentation (#714)
+* Add support for keeping downloaded tool source code (#74, #669)
+* Add `asdf info` command to print debug information (#786, #787)
+
+Fixed Bugs
+
+* Fix typo that caused plugin-test to erroneously fail (#780)
+* Make sure shims are only appended to `PATH` once in Fish shell (#767, #777, #778)
+* Print `.tool-versions` file path on shim error (#749, #750)
+* Add `column` and `sort -V` to list of banned commands for the asdf codebase (#661, #754, #755)
+* Use editorconfig for shell formatting (#751)
+* Remove use of `column` command in favor of awk (#721)
+* Add `asdf shell` command to help output (#715, #737)
+* Ensure consistency in indentation for message shown when no versions installed (#728)
+* Fix dead link in documentation (#733)
+* Fix typo in docs/core-manage-versions.md (#722)
+* Fix a typo in the `asdf env` command documentation (#717)
+* Fix Fish shell documentation (#709)
+* Only list asdf dependencies on asdf website (#511, #710)
+* Add CODEOWNERS file for GitHub reviews (#705)
+* Add unit test for `asdf plugin-add` exit code (#689)
 
 ## 0.7.8
 

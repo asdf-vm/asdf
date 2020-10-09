@@ -7,6 +7,7 @@ setup() {
   install_dummy_plugin
   install_dummy_version "1.0.0"
   install_dummy_version "1.1.0"
+  install_dummy_version "2.0.0"
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
@@ -207,26 +208,26 @@ teardown() {
 }
 
 @test "global should preserve symlinks when setting versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should preserve symlinks when updating versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "shell wrapper function should export ENV var" {
@@ -247,28 +248,37 @@ teardown() {
 
 @test "shell wrapper function should return an error for missing plugins" {
   source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  expected="No such plugin: nonexistent
+version 1.0.0 is not installed for nonexistent"
+
   run asdf shell "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: nonexistent" ]
+  [ "$output" = "$expected" ]
 }
 
 @test "shell should emit an error when wrapper function is not loaded" {
   run asdf shell "dummy" "1.1.0"
-  echo $output
   [ "$status" -eq 1 ]
   [ "$output" = "Shell integration is not enabled. Please ensure you source asdf in your shell setup." ]
 }
 
 @test "export-shell-version should emit an error when plugin does not exist" {
+  expected="No such plugin: nonexistent
+version 1.0.0 is not installed for nonexistent
+false"
+
   run asdf export-shell-version sh "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = $'No such plugin: nonexistent\nfalse' ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should emit an error when version does not exist" {
+  expected="version nonexistent is not installed for dummy
+false"
+
   run asdf export-shell-version sh "dummy" "nonexistent"
   [ "$status" -eq 1 ]
-  [ "$output" = $'version nonexistent is not installed for dummy\nfalse' ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should export version if it exists" {
@@ -293,4 +303,25 @@ teardown() {
   run asdf export-shell-version fish "dummy" "--unset"
   [ "$status" -eq 0 ]
   [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}
+
+@test "shell wrapper function should support latest" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "latest"
+  [ $(echo $ASDF_DUMMY_VERSION) = "2.0.0" ]
+  unset ASDF_DUMMY_VERSION
+}
+
+@test "global should support latest" {
+  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  run asdf global "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
+}
+
+@test "local should support latest" {
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run asdf local "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }

@@ -61,7 +61,7 @@ if ! [[ "${new_version:0:1}" =~ ^[0-9]+$ ]]; then
 fi
 
 # Make sure the version the user provided hasn't already been tagged
-if git tag | grep "$new_tag_name" >/dev/null; then
+if git tag | grep "^$new_tag_name$" >/dev/null; then
   echo >&2 "ERROR: git tag with that version already exists"
   exit 1
 fi
@@ -113,9 +113,9 @@ fi
 sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" README.md
 rm README.md.bak
 
-# Update version in docs/core-manage-asdf-vm.md
-sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" docs/core-manage-asdf-vm.md
-rm docs/core-manage-asdf-vm.md.bak
+# Update version in docs/core-manage-asdf.md
+sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" docs/core-manage-asdf.md
+rm docs/core-manage-asdf.md.bak
 
 # Update version in the VERSION file
 echo "$new_tag_name" >VERSION
@@ -124,7 +124,7 @@ echo "INFO: Committing and tagging new version"
 
 # Commit the changed files before tagging the new release
 git add README.md
-git add docs/core-manage-asdf-vm.md
+git add docs/core-manage-asdf.md
 git add VERSION
 git commit -m "Update version to $new_version"
 

@@ -68,6 +68,11 @@ teardown() {
 @test "check_if_version_exists should exit with 1 if version does not exist" {
   run check_if_version_exists "dummy" "1.0.0"
   [ "$status" -eq 1 ]
+}
+
+@test "version_not_installed_text is correct" {
+  run version_not_installed_text "dummy" "1.0.0"
+  [ "$status" -eq 0 ]
   [ "$output" = "version 1.0.0 is not installed for dummy" ]
 }
 
@@ -350,8 +355,17 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  echo $status
   [ "$output" = $(pwd)/foo ]
+  rm -f foo bar
+}
+
+@test "resolve_symlink converts relative symlink directory path to the real file path" {
+  mkdir baz
+  ln -s ../foo baz/bar
+
+  run resolve_symlink baz/bar
+  [ "$status" -eq 0 ]
+  [ "$output" = $(pwd)/baz/../foo ]
   rm -f foo bar
 }
 
@@ -361,7 +375,6 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  echo $status
   [ "$output" = $(pwd)/foo ]
   rm -f foo bar
 }
