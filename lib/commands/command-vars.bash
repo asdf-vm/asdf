@@ -30,7 +30,7 @@ traverse-vars-files() {
 
 find-vars-files() {
   if [ -e "${ASDF_DIR}/vars" ]; then
-    printf '%s' "${ASDF_DIR}/vars\n"
+    printf '%s/vars\n' "${ASDF_DIR}"
   fi
 
   traverse-vars-files "$PWD"
@@ -49,7 +49,7 @@ sanitize-vars() {
 }
 
 while read -r file; do
-  printf '%s' "# $file\n"
+  printf '# %s\n' "$file"
   {
     cat "$file"
     printf "\n"
