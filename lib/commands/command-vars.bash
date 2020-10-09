@@ -55,8 +55,11 @@ sanitize-vars() {
     -e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g"
 }
 
-while read file; do
+while read -r file; do
   echo "# $file"
-  { cat "$file"; echo; } | sanitize-vars
+  {
+    cat "$file"
+    echo
+  } | sanitize-vars
   echo
-done < <( find-vars-files )
+done < <(find-vars-files)
