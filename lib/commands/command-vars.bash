@@ -4,18 +4,11 @@
 #
 # Prints all asdf-vars environment variables applicable to the
 # current working directory in the order they will be set. The output
-# format is a script that may be passed to `eval` in a Bourne-
+# format is a script that may be passed to `ev'al'` in a Bourne-
 # compatible shell.
 #
 # For more information on asdf-vars, see:
 # https://github.com/excid3/asdf-vars#readme
-
-set -e
-
-if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
-  echo "asdf-vars 1.0.0"
-  exit
-fi
 
 traverse-vars-files() {
   local root="$1"
@@ -29,7 +22,7 @@ traverse-vars-files() {
   done
 
   if [ -n "$results" ]; then
-    echo -n "$results"
+    printf '%s' "$results"
   else
     return 1
   fi
@@ -37,7 +30,7 @@ traverse-vars-files() {
 
 find-vars-files() {
   if [ -e "${ASDF_DIR}/vars" ]; then
-    echo "${ASDF_DIR}/vars"
+    printf '%s' "${ASDF_DIR}/vars\n"
   fi
 
   traverse-vars-files "$PWD"
@@ -56,10 +49,10 @@ sanitize-vars() {
 }
 
 while read -r file; do
-  echo "# $file"
+  printf '%s' "# $file\n"
   {
     cat "$file"
-    echo
+    printf "\n"
   } | sanitize-vars
-  echo
+  printf "\n"
 done < <(find-vars-files)
