@@ -139,7 +139,7 @@ version_not_installed_text() {
 }
 
 get_plugin_path() {
-  if test -n "$1"; then
+  if test -n "${1:-}"; then
     printf "%s\\n" "$(asdf_data_dir)/plugins/$1"
   else
     printf "%s\\n" "$(asdf_data_dir)/plugins"
@@ -212,7 +212,7 @@ find_versions() {
 
   get_version_in_dir "$plugin_name" "$HOME" "$legacy_filenames"
 
-  if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
+  if [ -f "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-}" ]; then
     versions=$(parse_asdf_version_file "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugin_name")
     if [ -n "$versions" ]; then
       printf "%s\\n" "$versions|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
@@ -244,21 +244,21 @@ find_install_path() {
 
   if [ "$version" = "system" ]; then
     printf "\\n"
-  elif [ "${version_info[0]}" = "ref" ]; then
+  elif [ "${version_info[0]:-}" = "ref" ]; then
     local install_type="${version_info[0]}"
     local version="${version_info[1]}"
     get_install_path "$plugin_name" "$install_type" "$version"
-  elif [ "${version_info[0]}" = "path" ]; then
+  elif [ "${version_info[0]:-}" = "path" ]; then
     # This is for people who have the local source already compiled
     # Like those who work on the language, etc
     # We'll allow specifying path:/foo/bar/project in .tool-versions
     # And then use the binaries there
     local install_type="path"
     local version="path"
-    printf "%s\\n" "${version_info[1]}"
+    printf "%s\\n" "${version_info[1]:-}"
   else
     local install_type="version"
-    local version="${version_info[0]}"
+    local version="${version_info[0]:-}"
     get_install_path "$plugin_name" "$install_type" "$version"
   fi
 }

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o nounset
 
 # shellcheck source=lib/utils.bash
 . "$(dirname "$(dirname "$0")")/lib/utils.bash"
