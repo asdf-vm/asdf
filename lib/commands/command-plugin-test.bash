@@ -1,4 +1,7 @@
 # -*- sh -*-
+
+set -o nounset
+
 # shellcheck source=lib/functions/versions.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 # shellcheck source=lib/functions/plugins.bash
@@ -10,8 +13,8 @@
 
 plugin_test_command() {
 
-  local plugin_name="$1"
-  local plugin_url="$2"
+  local plugin_name="${1:-}"
+  local plugin_url="${2:-}"
   shift 2
 
   local plugin_gitref="master"
@@ -28,11 +31,11 @@ plugin_test_command() {
     else
       case "${arg}" in
       --asdf-plugin-gitref)
-        plugin_gitref="$1"
+        plugin_gitref="${1:-}"
         skip_next_arg=true
         ;;
       --asdf-tool-version)
-        tool_version="$1"
+        tool_version="${1:-}"
         skip_next_arg=true
         ;;
       --)
@@ -46,14 +49,14 @@ plugin_test_command() {
   done
 
   if [ "$#" -eq 1 ]; then
-    set -- "${SHELL:-sh}" -c "$1"
+    set -- "${SHELL:-sh}" -c "${1:-}"
   fi
 
   local exit_code
   local TEST_DIR
 
   fail_test() {
-    printf "FAILED: %s\\n" "$1"
+    printf "FAILED: %s\\n" "${1:-}"
     rm -rf "$TEST_DIR"
     exit 1
   }

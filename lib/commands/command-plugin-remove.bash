@@ -1,7 +1,8 @@
 # -*- sh -*-
+set -o nounset
 
 plugin_remove_command() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
   check_if_plugin_exists "$plugin_name"
 
   local plugin_path
