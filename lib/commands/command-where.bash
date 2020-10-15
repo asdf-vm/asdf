@@ -1,8 +1,9 @@
 # -*- sh -*-
+set -o nounset
 
 where_command() {
-  local plugin_name=$1
-  local full_version=$2
+  local plugin_name=${1:-}
+  local full_version=${2:-}
   check_if_plugin_exists "$plugin_name"
 
   local version
@@ -13,7 +14,7 @@ where_command() {
     version_and_path=$(find_versions "$plugin_name" "$PWD")
     versions=$(cut -d '|' -f 1 <<<"$version_and_path")
     IFS=' ' read -r -a plugin_versions <<<"$versions"
-    version="${plugin_versions[0]}"
+    version="${plugin_versions[0]:-}"
   else
     local -a version_info
     IFS=':' read -r -a version_info <<<"$full_version"
