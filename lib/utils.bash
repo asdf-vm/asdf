@@ -701,7 +701,7 @@ select_version() {
   local plugins
   IFS=$'\n' read -rd '' -a plugins <<<"$(shim_plugins "$shim_name")"
 
-  for plugin_name in "${plugins[@]}"; do
+  for plugin_name in "${plugins[@]:-}"; do
     local version_and_path
     local version_string
     local usable_plugin_versions
@@ -709,8 +709,8 @@ select_version() {
     version_and_path=$(find_versions "$plugin_name" "$search_path")
     IFS='|' read -r version_string _path <<<"$version_and_path"
     IFS=' ' read -r -a usable_plugin_versions <<<"$version_string"
-    for plugin_version in "${usable_plugin_versions[@]}"; do
-      for plugin_and_version in "${shim_versions[@]}"; do
+    for plugin_version in "${usable_plugin_versions[@]:-}"; do
+      for plugin_and_version in "${shim_versions[@]:-}"; do
         local plugin_shim_name
         local plugin_shim_version
         IFS=' ' read -r plugin_shim_name plugin_shim_version <<<"$plugin_and_version"
@@ -779,13 +779,13 @@ with_shim_executable() {
 
     local shim_plugins
     IFS=$'\n' read -rd '' -a shim_plugins <<<"$(shim_plugins "$shim_name")"
-    for shim_plugin in "${shim_plugins[@]}"; do
+    for shim_plugin in "${shim_plugins[@]:-}"; do
       local shim_versions
       local version_string
       version_string=$(get_preset_version_for "$shim_plugin")
       IFS=' ' read -r -a shim_versions <<<"$version_string"
       local usable_plugin_versions
-      for shim_version in "${shim_versions[@]}"; do
+      for shim_version in "${shim_versions[@]:-}"; do
         preset_plugin_versions+=("$shim_plugin $shim_version")
       done
     done
