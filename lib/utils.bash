@@ -1,3 +1,5 @@
+set -o nounset
+
 # We shouldn't rely on the user's grep settings to be correct. If we set these
 # here anytime asdf invokes grep it will be invoked with these options
 # shellcheck disable=SC2034
@@ -39,7 +41,7 @@ asdf_repository_url() {
 asdf_data_dir() {
   local data_dir
 
-  if [ -n "${ASDF_DATA_DIR}" ]; then
+  if [ -n "${ASDF_DATA_DIR:-}" ]; then
     data_dir="${ASDF_DATA_DIR}"
   else
     data_dir="$HOME/.asdf"
@@ -103,10 +105,10 @@ list_installed_versions() {
 }
 
 check_if_plugin_exists() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
   # Check if we have a non-empty argument
-  if [ -z "${1}" ]; then
+  if [ -z "${1:-}" ]; then
     display_error "No plugin given"
     exit 1
   fi

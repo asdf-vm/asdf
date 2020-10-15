@@ -119,7 +119,7 @@ teardown() {
 @test "parse_asdf_version_file should output path on project with spaces" {
   PROJECT_DIR="$PROJECT_DIR/outer space"
   mkdir -p "$PROJECT_DIR"
-  cd $outer
+  cd "$PROJECT_DIR"
   echo "dummy 0.1.0" > "$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
