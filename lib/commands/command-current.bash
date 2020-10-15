@@ -57,7 +57,7 @@ current_command() {
       plugin_current_command "$plugin" "$terminal_format"
     done
   else
-    plugin=$1
+    plugin=${1:-}
     plugin_current_command "$plugin" "$terminal_format"
     exit_status="$?"
   fi
@@ -67,7 +67,7 @@ current_command() {
 
 # Warn if the plugin isn't using the updated legacy file api.
 check_for_deprecated_plugin() {
-  local plugin_name=$1
+  local plugin_name=${1:-}
 
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")

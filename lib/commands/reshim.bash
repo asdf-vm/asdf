@@ -1,9 +1,11 @@
+set -o nounset
+
 remove_shim_for_version() {
-  local plugin_name=$1
-  local version=$2
+  local plugin_name=${1:-}
+  local version=${2:-}
   local shim_name
 
-  shim_name=$(basename "$3")
+  shim_name=$(basename "${3:-}")
 
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$shim_name"

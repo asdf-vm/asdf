@@ -1,8 +1,9 @@
 # -*- sh -*-
+set -o nounset
 
 which_command() {
   local shim_name
-  shim_name=$(basename "$1")
+  shim_name=$(basename "${1:-}")
 
   if [ -z "$shim_name" ]; then
     printf "usage: asdf which <command>\\n"
@@ -10,7 +11,7 @@ which_command() {
   fi
 
   print_exec() {
-    local plugin_name="$1"
+    local plugin_name="${1:-}"
     local version="$2"
     local executable_path="$3"
 
