@@ -80,5 +80,5 @@ teardown() {
 
   # Should not contain duplicate colon
   run grep '::' <(echo "$path_line")
-  [ "$duplicate_colon" == "" ]
+  [ "$output" == "" ]
 }
