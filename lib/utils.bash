@@ -785,15 +785,19 @@ with_shim_executable() {
       version_string=$(get_preset_version_for "$shim_plugin")
       IFS=' ' read -r -a shim_versions <<<"$version_string"
       local usable_plugin_versions
-      for shim_version in "${shim_versions[@]:-}"; do
+
+      # Yes, the syntax for the expansion is ugly and confusing, but it is what we
+      # need to do to make it work with the nounset option. See
+      # https://stackoverflow.com/q/7577052/ for the details
+      for shim_version in ${shim_versions[@]+"${shim_versions[@]}"}; do
         preset_plugin_versions+=("$shim_plugin $shim_version")
       done
     done
 
-    if [ -n "${preset_plugin_versions[*]}" ]; then
+    if [ -n "${preset_plugin_versions[*]:-}" ]; then
       printf "%s %s\\n" "No preset version installed for command" "$shim_name"
       printf "%s\\n\\n" "Please install a version by running one of the following:"
-      for preset_plugin_version in "${preset_plugin_versions[@]}"; do
+      for preset_plugin_version in "${preset_plugin_versions[@]:-}"; do
         printf "%s %s\\n" "asdf install" "$preset_plugin_version"
       done
       printf "\\n%s %s\\n" "or add one of the following versions in your config file at" "$closest_tool_version"
