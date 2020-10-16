@@ -16,7 +16,7 @@ shim_env_command() {
   fi
 
   shim_env() {
-    "$env_cmd" "${env_args[@]:-}"
+    "$env_cmd" ${env_args[@]:-}
   }
 
   with_shim_executable "$shim_name" shim_env || exit $?
