@@ -52,3 +52,7 @@ asdf shim-versions <command>            List the plugins and versions that
 asdf update                             Update asdf to the latest stable release
 asdf update --head                      Update asdf to the latest on the master branch
 asdf vars                                Print global and project-specific environment variables for the current directory
+
+RESOURCES
+GitHub: https://github.com/asdf-vm/asdf
+Docs:   https://asdf-vm.com
