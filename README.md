@@ -27,7 +27,9 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 
 ## Contributing
 
-See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](http://asdf-vm.github.io/asdf/#/contributing-core-asdf-vm).
+See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](http://asdf-vm.github.io/asdf/#/contributing-core-asdf).
+
+
 
 ## Community & Questions
 
