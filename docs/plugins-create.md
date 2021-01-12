@@ -217,7 +217,7 @@ asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git node --versio
 
 We strongly recommend you test your plugin on a CI environment and make sure it works on both Linux and OSX.
 
-#### Example Github Action
+#### Example GitHub Action
 
 The [asdf-vm/actions](https://github.com/asdf-vm/actions) repo provides a GitHub Action for testing your plugins hosted on github.
 
