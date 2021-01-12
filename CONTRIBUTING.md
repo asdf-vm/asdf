@@ -24,6 +24,10 @@ section of the README](http://asdf-vm.github.io/asdf/#/contributing-core-asdf) f
 details on how to run the unit tests. Please make sure that unit tests pass on
 Travis CI.
 
+Pull request must contain changes that add new features, fix bugs, or fix
+incorrect documentation. Unsolicited pull requests that only contain formatting 
+changes like indentation, or line length, or letter case will be rejected. 
+
 ## Did you create a plugin for asdf?
 
 Please read the [creating plugins](docs/creating-plugins.md) guide.
