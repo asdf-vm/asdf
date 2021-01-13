@@ -107,7 +107,7 @@ Add the following to `~/.bashrc`:
 ?> Completions must be configured by adding the following to your `.bashrc`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. $HOME/.asdf/completions/asdf.sh
 ```
 
 #### --Linux,Fish,Git--
