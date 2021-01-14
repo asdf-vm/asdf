@@ -436,3 +436,15 @@ EOM
   [ "$status" -eq 1 ]
 }
 
+# From @tejanium in https://github.com/asdf-vm/asdf/issues/581#issuecomment-635337727
+@test "asdf exec should not crash when POSIXLY_CORRECT=1" {
+  export POSIXLY_CORRECT=1
+
+  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  run asdf install
+
+  run asdf exec dummy world hello
+  echo $output
+  [ "$output" == "This is Dummy 1.0! hello world" ]
+  [ "$status" -eq 0 ]
+}
