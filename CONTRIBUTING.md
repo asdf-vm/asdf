@@ -30,7 +30,7 @@ changes like indentation, or line length, or letter case will be rejected.
 
 ## Did you create a plugin for asdf?
 
-Please read the [creating plugins](docs/creating-plugins.md) guide.
+Please read the [creating plugins](docs/plugins-create.md) guide.
 
 ## Do you want to contribute the asdf documentation?
 
