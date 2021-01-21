@@ -14,7 +14,7 @@ plugin_update_command() {
         local plugin_name
         plugin_name=$(basename "$dir")
         update_plugin "$plugin_name" "$dir" "$gitref" &
-      done < <(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1)
+      done < <(find "$(asdf_data_dir)"/plugins -mindepth 1 -maxdepth 1 -type d)
       wait
     fi
   else
