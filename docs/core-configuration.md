@@ -50,4 +50,5 @@ legacy_version_file = yes
 
 - `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
 - `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The name of the file storing the tool names and versions. Defaults to `.tool-versions`. Can be any valid file name.
+- `ASDF_DIR` - Defaults to `~/.asdf` - Location of the `asdf` scripts. If you install `asdf` to some other directory, set this to that directory. For example, if you are installing via the AUR, you should set this to `/opt/asdf-vm`. 
 - `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install plugins, shims and installs. Can be set to any location before sourcing `asdf.sh` or `asdf.fish` mentioned in the section above.
