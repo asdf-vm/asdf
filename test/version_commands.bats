@@ -7,6 +7,7 @@ setup() {
   install_dummy_plugin
   install_dummy_version "1.0.0"
   install_dummy_version "1.1.0"
+  install_dummy_version "2.0.0"
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
@@ -207,26 +208,26 @@ teardown() {
 }
 
 @test "global should preserve symlinks when setting versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should preserve symlinks when updating versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "shell wrapper function should export ENV var" {
@@ -302,4 +303,25 @@ false"
   run asdf export-shell-version fish "dummy" "--unset"
   [ "$status" -eq 0 ]
   [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}
+
+@test "shell wrapper function should support latest" {
+  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "latest"
+  [ $(echo $ASDF_DUMMY_VERSION) = "2.0.0" ]
+  unset ASDF_DUMMY_VERSION
+}
+
+@test "global should support latest" {
+  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  run asdf global "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
+}
+
+@test "local should support latest" {
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run asdf local "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }

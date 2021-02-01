@@ -1,4 +1,4 @@
-1. [Manage asdf-vm](/core-manage-asdf-vm): install `asdf` **and** add `asdf` to your shell
+1. [Manage asdf](/core-manage-asdf): install `asdf` **and** add `asdf` to your shell
 2. [Manage Plugins](/core-manage-plugins): add a plugin for your tool `asdf plugin add nodejs`
 3. [Manage Versions](/core-manage-versions): install a version of that tool `asdf install nodejs 13.14.0`
 4. [Configuration](/core-configuration): set global and project tool versions via `.tool-versions` config
@@ -237,8 +237,10 @@ Add `asdf.sh` to your `~/.zshrc` with:
 ```shell
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
+**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
-?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh).
+?> Completions are configured by either a ZSH Framework `asdf` or  will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated asdf plugin may need to be updated to use the new ZSH completions properly via fpath. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+
 
 ### --Docsify Select Default--
 

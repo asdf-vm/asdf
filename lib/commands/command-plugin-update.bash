@@ -32,4 +32,17 @@ plugin_update_command() {
   fi
 }
 
+update_plugin() {
+  local plugin_name=$1
+  local plugin_path=$2
+  local gitref=$3
+  logfile=$(mktemp)
+  {
+    printf "Updating %s...\\n" "$plugin_name"
+    (cd "$plugin_path" && git fetch -p -u origin "$gitref:$gitref" && git checkout -f "$gitref")
+  } >"$logfile" 2>&1
+  cat "$logfile"
+  rm "$logfile"
+}
+
 plugin_update_command "$@"

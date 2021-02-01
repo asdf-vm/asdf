@@ -51,3 +51,7 @@ asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
 asdf update                             Update asdf to the latest stable release
 asdf update --head                      Update asdf to the latest on the master branch
+
+RESOURCES
+GitHub: https://github.com/asdf-vm/asdf
+Docs:   https://asdf-vm.com
