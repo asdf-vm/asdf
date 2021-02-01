@@ -10,11 +10,11 @@ list_command() {
     if ls "$plugins_path" &>/dev/null; then
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
-        echo "$plugin_name"
+        printf "%s\\n" "$plugin_name"
         display_installed_versions "$plugin_name"
       done
     else
-      printf "%s\\n" 'Oohes nooes ~! No plugins installed'
+      printf "%s\\n" 'No plugins installed'
     fi
   else
     check_if_plugin_exists "$plugin_name"
@@ -28,7 +28,7 @@ display_installed_versions() {
 
   if [ -n "${versions}" ]; then
     for version in $versions; do
-      echo "  $version"
+      printf "  %s\\n" "$version"
     done
   else
     display_error '  No versions installed'

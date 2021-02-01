@@ -45,7 +45,7 @@ plugin_list_command() {
       done
     ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
-    display_error 'Oohes nooes ~! No plugins installed'
+    display_error 'No plugins installed'
     exit 1
   fi
 }
