@@ -3,31 +3,39 @@
 load test_helpers
 
 setup() {
-  BASE_DIR=$(mktemp -dt asdf.XXXX)
-  HOME=$BASE_DIR/home
-  ASDF_DIR=$HOME/.asdf
-  git clone -o local "$(dirname "$BATS_TEST_DIRNAME")" "$ASDF_DIR"
-  git --git-dir "$ASDF_DIR/.git" remote add origin https://github.com/asdf-vm/asdf.git
-  mkdir -p "$ASDF_DIR/plugins"
-  ASDF_BIN="$ASDF_DIR/bin"
-
-  # shellcheck disable=SC2031
-  PATH=$ASDF_BIN:$ASDF_DIR/shims:$PATH
-  install_dummy_plugin
-
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  setup_asdf_dir
+  install_mock_plugin_repo "dummy"
+  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy"
 }
 
 teardown() {
   clean_asdf_dir
 }
 
-@test "asdf plugin-update should pull latest master branch for plugin" {
+@test "asdf plugin-update should pull latest default branch (refs/remotes/origin/HEAD) for plugin" {
   run asdf plugin-update dummy
+  repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "Updating dummy..."* ]]
-  [ $(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD) = "master" ]
+  [[ "$output" =~ "Updating dummy to master"* ]]
+  [ "$repo_head" = "master" ]
+}
+
+@test "asdf plugin-update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if default branch changes" {
+  install_mock_plugin_repo "dummy-remote"
+  remote_dir="$BASE_DIR/repo-dummy-remote"
+  # set HEAD to refs/head/main in dummy-remote
+  git -C "${remote_dir}" checkout -b main
+  # track & fetch remote repo (dummy-remote) in plugin (dummy)
+  git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" remote remove origin
+  git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" remote add origin "$remote_dir"
+  git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" fetch origin
+
+  run asdf plugin-update dummy
+  repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Updating dummy to main"* ]]
+  [ "$repo_head" = "main" ]
 }
 
 @test "asdf plugin-update should not remove plugin versions" {
