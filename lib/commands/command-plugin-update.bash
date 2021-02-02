@@ -27,11 +27,11 @@ plugin_update_command() {
 update_plugin() {
   local plugin_name=$1
   local plugin_path=$2
-  repo_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+  repo_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk -F'[/\t]' 'NR == 1 {print $3}')
   local gitref=${3:-${repo_default_branch}}
   logfile=$(mktemp)
   {
-    printf "Updating %s...\\n" "$plugin_name"
+    printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
     git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch --prune --update-head-ok origin "$gitref:$gitref"
     git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" -c advice.detachedHead=false checkout --force "$gitref"
   } >"$logfile" 2>&1
