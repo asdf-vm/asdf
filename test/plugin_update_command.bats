@@ -27,8 +27,7 @@ teardown() {
   run asdf plugin-update dummy
   [ "$status" -eq 0 ]
   [[ "$output" =~ "Updating dummy..."* ]]
-  cd $ASDF_DIR/plugins/dummy
-  [ $(git rev-parse --abbrev-ref HEAD) = "master" ]
+  [ $(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD) = "master" ]
 }
 
 @test "asdf plugin-update should not remove plugin versions" {
