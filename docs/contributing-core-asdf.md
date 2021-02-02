@@ -6,7 +6,7 @@ If you want to try out your changes without making change to your installed `asd
 
 Tools we use:
 
-- [bats](https://github.com/sstephenson/bats) for testing. Make sure
+- [bats](https://github.com/bats-core/bats-core) for testing. Make sure
   `bats test/` passes after you made your changes.
 - [Shellcheck](https://github.com/koalaman/shellcheck) for static analysis of our shell scripts.
 
