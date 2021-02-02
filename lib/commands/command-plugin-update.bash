@@ -27,8 +27,8 @@ plugin_update_command() {
 update_plugin() {
   local plugin_name=$1
   local plugin_path=$2
-  repo_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk -F'[/\t]' 'NR == 1 {print $3}')
-  local gitref=${3:-${repo_default_branch}}
+  plugin_remote_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk -F'[/\t]' 'NR == 1 {print $3}')
+  local gitref=${3:-${plugin_remote_default_branch}}
   logfile=$(mktemp)
   {
     printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
