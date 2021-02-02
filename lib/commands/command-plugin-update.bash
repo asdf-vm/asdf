@@ -32,8 +32,8 @@ update_plugin() {
   logfile=$(mktemp)
   {
     printf "Updating %s...\\n" "$plugin_name"
-    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch --prune --update-head-ok origin "$gitref:$gitref"
-    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" checkout --force "$gitref"
+    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch --quiet --prune --update-head-ok origin "$gitref:$gitref"
+    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" -c advice.detachedHead=false checkout -f "$gitref"
   } >"$logfile" 2>&1
   cat "$logfile"
   rm "$logfile"
