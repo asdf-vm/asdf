@@ -10,11 +10,12 @@ plugin_update_command() {
   local gitref="${2:-master}"
   if [ "$plugin_name" = "--all" ]; then
     if [ -d "$(asdf_data_dir)"/plugins ]; then
+      plugins=(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1)
       while IFS= read -r -d '' dir; do
         local plugin_name
         plugin_name=$(basename "$dir")
         update_plugin "$plugin_name" "$dir" "$gitref" &
-      done < <(find "$(asdf_data_dir)"/plugins -type d -mindepth 1 -maxdepth 1)
+      done <<< "$plugins"
       wait
     fi
   else
