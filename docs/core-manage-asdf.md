@@ -121,7 +121,7 @@ source ~/.asdf/asdf.fish
 ?> Completions must be configured manually with the following command:
 
 ```shell
-mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
 #### --Linux,ZSH,Git--
