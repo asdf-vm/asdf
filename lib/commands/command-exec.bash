@@ -20,7 +20,7 @@ shim_exec_command() {
       exit 2
     fi
 
-    ev'al' "$(asdf vars)" # ignore banned command just here
+    eval "$(asdf vars)" # asdf_allow: eval
 
     asdf_run_hook "pre_${plugin_name}_${shim_name}" "${shim_args[@]}"
     pre_status=$?
