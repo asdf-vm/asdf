@@ -121,7 +121,7 @@ source ~/.asdf/asdf.fish
 ?> Completions must be configured manually with the following command:
 
 ```shell
-mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
 #### --Linux,ZSH,Git--
@@ -237,8 +237,10 @@ Add `asdf.sh` to your `~/.zshrc` with:
 ```shell
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
 ```
+**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
-?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh).
+?> Completions are configured by either a ZSH Framework `asdf` or  will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated asdf plugin may need to be updated to use the new ZSH completions properly via fpath. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+
 
 ### --Docsify Select Default--
 

@@ -127,7 +127,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
 @test "with no plugins prints an error" {
   clean_asdf_dir
-  expected="Oohes nooes ~! No plugins installed"
+  expected="No plugins installed"
 
   run asdf current
   [ "$status" -eq 0 ]
