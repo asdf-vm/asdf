@@ -49,7 +49,7 @@ sanitize-vars() {
 }
 
 while read -r file; do
-  printf '# %s\n' "$file"
+  #printf '# %s\n' "$file"
   {
     cat "$file"
     printf "\n"
