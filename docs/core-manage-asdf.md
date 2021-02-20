@@ -235,7 +235,7 @@ echo -e "\nsource "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fis
 Add `asdf.sh` to your `~/.zshrc` with:
 
 ```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
