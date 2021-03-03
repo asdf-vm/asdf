@@ -8,7 +8,14 @@ list_all_command() {
   check_if_plugin_exists "$plugin_name"
 
   local versions
-  versions=$(bash "${plugin_path}/bin/list-all")
+  # Capture return code to allow error handling
+  return_code=0 && versions=$(bash "${plugin_path}/bin/list-all" 2>&1) || return_code=$?
+
+  if [[ $return_code -ne 0 ]]; then
+    # Printing all output to allow plugin to handle error formatting
+    echo "$versions"
+    exit 1
+  fi
 
   if [[ $query ]]; then
     versions=$(tr ' ' '\n' <<<"$versions" |
