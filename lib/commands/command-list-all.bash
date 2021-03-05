@@ -13,7 +13,7 @@ list_all_command() {
 
   if [[ $return_code -ne 0 ]]; then
     # Printing all output to allow plugin to handle error formatting
-    echo "$versions"
+    printf "%s\\n" "${version}"
     exit 1
   fi
 
