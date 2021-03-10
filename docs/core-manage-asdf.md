@@ -101,13 +101,13 @@ brew install asdf --HEAD
 Add the following to `~/.bashrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+source $HOME/.asdf/asdf.sh
 ```
 
 ?> Completions must be configured by adding the following to your `.bashrc`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+source $HOME/.asdf/completions/asdf.bash
 ```
 
 #### --Linux,Fish,Git--
@@ -129,7 +129,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 Add the following to `~/.zshrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+source $HOME/.asdf/asdf.sh
 ```
 
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
@@ -156,13 +156,13 @@ If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. 
 Add the following to `~/.bash_profile`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+source $HOME/.asdf/asdf.sh
 ```
 
 ?> Completions must be configured manually with the following entry in your `.bash_profile`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+source $HOME/.asdf/completions/asdf.bash
 ```
 
 #### --macOS,Fish,Git--
@@ -184,7 +184,7 @@ mkdir -p ~/.config/fish/completions; and cp ~/.asdf/completions/asdf.fish ~/.con
 Add the following to `~/.zshrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+source $HOME/.asdf/asdf.sh
 ```
 
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
@@ -294,8 +294,8 @@ Uninstalling `asdf` is as simple as:
 1.  In your `.bashrc`/`.bash_profile`/`.zshrc`/`config.fish` find the lines that source `asdf.sh` and the completions (this may be a ZSH Framework plugin). In Bash, the lines look something like this:
 
     ```shell
-    . $HOME/.asdf/asdf.sh
-    . $HOME/.asdf/completions/asdf.bash
+    source $HOME/.asdf/asdf.sh
+    source $HOME/.asdf/completions/asdf.bash
     ```
 
     Remove these lines and save the file.
