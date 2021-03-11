@@ -22,6 +22,8 @@ banned_commands=(
     echo
     # Process substitution isn't POSIX compliant and cause trouble
     "<("
+    # source isn't POSIX compliant. . behaves the same and is POSIX compliant
+    source
 )
 
 setup() {
