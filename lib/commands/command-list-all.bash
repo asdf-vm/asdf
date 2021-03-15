@@ -13,7 +13,8 @@ list_all_command() {
 
   if [[ $return_code -ne 0 ]]; then
     # Printing all output to allow plugin to handle error formatting
-    printf "%s\\n" "${version}"
+    printf "Plugin %s's list-all callback script failed with output:\\n" "${plugin_name}"
+    printf "%s\\n" "${versions}"
     exit 1
   fi
 

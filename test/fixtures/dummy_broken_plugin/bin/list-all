@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "List-all failed!"
+exit 1
