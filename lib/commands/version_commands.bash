@@ -40,15 +40,20 @@ version_command() {
     fi
     if ! (check_if_version_exists "$plugin_name" "$version"); then
       version_not_installed_text "$plugin_name" "$version" 1>&2
-      exit 1
     fi
     resolved_versions+=("$version")
   done
+  
+  if [ -z "$resolved_versions" ] || [ "$cmd" = "local-tree" ]; then
+    exit 1
+  fi
 
   if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then
     sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
     rm "$file".bak
+    printf "Replacing %s %s with version %s in %s\\n" "$cmd" "$plugin_name" "${resolved_versions[*]}" "$file"
   else
-    printf "%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
+    printf "\\n%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
+    printf "Adding %s %s version %s to %s\\n" "$cmd" "$plugin_name" "${resolved_versions[*]}" "$file"
   fi
 }
