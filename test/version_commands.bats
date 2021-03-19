@@ -257,9 +257,10 @@ version 1.0.0 is not installed for nonexistent"
 }
 
 @test "shell should emit an error when wrapper function is not loaded" {
+  expected="Shell integration is not enabled. Please ensure you source $(dirname "$BATS_TEST_DIRNAME")/lib/asdf.{sh|fish} in your shell setup."
   run asdf shell "dummy" "1.1.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "Shell integration is not enabled. Please ensure you source $ASDF_DIR/lib/asdf.sh/fish in your shell setup." ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should emit an error when plugin does not exist" {
