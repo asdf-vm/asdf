@@ -44,7 +44,7 @@ version_command() {
     resolved_versions+=("$version")
   done
   
-  if [ -z "$resolved_versions" ] || [ "$cmd" = "local-tree" ]; then
+  if [ "${#resolved_versions[@]}" -eq 0 ] || [ "$cmd" = "local-tree" ]; then
     exit 1
   fi
 
