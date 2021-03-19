@@ -73,7 +73,7 @@ teardown() {
 @test "version_not_installed_text is correct" {
   run version_not_installed_text "dummy" "1.0.0"
   [ "$status" -eq 0 ]
-  [ "$output" = "version 1.0.0 is not installed for dummy" ]
+  [ "$output" = "Version 1.0.0 is not installed for dummy" ]
 }
 
 @test "check_if_version_exists should be noop if version exists" {
