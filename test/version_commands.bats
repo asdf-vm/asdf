@@ -38,7 +38,7 @@ teardown() {
 @test "local should emit an error when plugin version does not exist" {
   run asdf local "dummy" "0.0.1"
   [ "$status" -eq 1 ]
-  [ "$output" = "version 0.0.1 is not installed for dummy" ]
+  [ "$output" = "Version 0.0.1 is not installed for dummy" ]
 }
 
 @test "local should create a local .tool-versions file if it doesn't exist" {
@@ -82,7 +82,7 @@ teardown() {
 
 @test "local should fail to set a path:dir if dir does not exists " {
   run asdf local "dummy" "path:$PROJECT_DIR/local"
-  [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+  [ "$output" = "Version path:$PROJECT_DIR/local is not installed for dummy" ]
   [ "$status" -eq 1 ]
 }
 
@@ -108,7 +108,7 @@ teardown() {
 @test "local -p/--parent should emit an error when plugin version does not exist" {
   run asdf local -p "dummy" "0.0.1"
   [ "$status" -eq 1 ]
-  [ "$output" = "version 0.0.1 is not installed for dummy" ]
+  [ "$output" = "Version 0.0.1 is not installed for dummy" ]
 }
 
 @test "local -p/--parent should allow multiple versions" {
@@ -156,7 +156,7 @@ teardown() {
 
 @test "global should fail to set a path:dir if dir does not exists " {
   run asdf global "dummy" "path:$PROJECT_DIR/local"
-  [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
+  [ "$output" = "Version path:$PROJECT_DIR/local is not installed for dummy" ]
   [ "$status" -eq 1 ]
 }
 
@@ -264,7 +264,7 @@ version 1.0.0 is not installed for nonexistent"
 
 @test "export-shell-version should emit an error when plugin does not exist" {
   expected="No such plugin: nonexistent
-version 1.0.0 is not installed for nonexistent
+Version 1.0.0 is not installed for nonexistent
 false"
 
   run asdf export-shell-version sh "nonexistent" "1.0.0"
@@ -273,7 +273,7 @@ false"
 }
 
 @test "export-shell-version should emit an error when version does not exist" {
-  expected="version nonexistent is not installed for dummy
+  expected="Version nonexistent is not installed for dummy
 false"
 
   run asdf export-shell-version sh "dummy" "nonexistent"
