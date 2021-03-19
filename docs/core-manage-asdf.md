@@ -208,10 +208,17 @@ compinit
 
 If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
 
-Add `asdf.sh` to your `~/.bash_profile` with:
+To add shims to your `$PATH` insert this line in your `~/.bash_profile`: 
+```shell
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+```
+
+_(Optional)_ If you want `$ asdf shell <name> <version>` command you need to source `asdf.sh`
+
+Source `asdf.sh` in your `~/.bash_profile` by running:
 
 ```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
+echo -e "\n. $(brew --prefix asdf)/libexec/lib/asdf.sh" >> ~/.bash_profile
 ```
 
 ?> Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
@@ -222,21 +229,42 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 #### --macOS,Fish,Homebrew--
 
-Add `asdf.fish` to your `~/.config/fish/config.fish` with:
+To add shims to your `$PATH` insert this line in your `~/.config/fish/config.fish`: 
+```shell
+set PATH (
+  if test -n "$ASDF_DATA_DIR"
+    echo $ASDF_DATA_DIR/shims
+  else
+    echo $HOME/.asdf/shims
+  end
+) $PATH
+```
+
+_(Optional)_ If you want `$ asdf shell <name> <version>` command you need to source `asdf.fish`
+
+Source `asdf.fish` in your `~/.config/fish/config.fish` by running:
 
 ```shell
-echo -e "\nsource "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
+echo -e "\nsource "(brew --prefix asdf)"/libexec/lib/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
 ?> Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
 
 #### --macOS,ZSH,Homebrew--
 
-Add `asdf.sh` to your `~/.zshrc` with:
+To add shims to your `$PATH` insert this line in your `~/.zshenv`: 
+```shell
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+```
+
+_(Optional)_ If you want `$ asdf shell <name> <version>` command you need to source `asdf.sh`
+
+Source `asdf.sh` in your `~/.zshrc` by running:
 
 ```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+echo -e "\n. $(brew --prefix asdf)/libexec/lib/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
+
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
 ?> Completions are configured by either a ZSH Framework `asdf` or  will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated asdf plugin may need to be updated to use the new ZSH completions properly via fpath. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
