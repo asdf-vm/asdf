@@ -61,7 +61,7 @@ asdf_cmd() {
   local ASDF_CMD_FILE args_offset
 
   if [ "shell" == "$1" ]; then
-    printf "Shell integration is not enabled. Please ensure you source asdf in your shell setup." >&2
+    echo "Shell integration is not enabled. Please ensure you source $(asdf_dir)/lib/asdf.sh/fish in your shell setup." >&2
     exit 1
   fi
 
