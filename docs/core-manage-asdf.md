@@ -252,7 +252,7 @@ echo -e "\nsource "(brew --prefix asdf)"/libexec/lib/asdf.fish" >> ~/.config/fis
 
 #### --macOS,ZSH,Homebrew--
 
-To add shims to your `$PATH` insert this line in your `~/.zshenv`: 
+To add shims to your `$PATH` insert this line in your `~/.zshrc`: 
 ```shell
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
