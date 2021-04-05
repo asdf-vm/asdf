@@ -122,6 +122,6 @@ source $(asdf which ${PLUGIN})/../script.sh
 source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
 ```
 
-###### By-passing asdf shims.
+### By-passing asdf shims
 
 If for some reason you want to by-pass asdf shims or want your environment variables automatically set upon entering your project's directory, the [asdf-direnv](https://github.com/asdf-community/asdf-direnv) plugin can be helpful. Be sure to check its README for more details.
