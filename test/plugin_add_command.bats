@@ -52,6 +52,20 @@ teardown() {
   [ "$output" = "dummy" ]
 }
 
+@test "plugin_add command with URL and git-ref specified adds a plugin using repo" {
+  install_mock_plugin_repo_with_ref "dummy"
+
+  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy" "tagname"
+  [ "$status" -eq 0 ]
+
+  repo_head="$(git --git-dir "${BASE_DIR}/repo-dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" describe --tags)"
+  [ "$status" -eq 0 ]
+  [ "$repo_head" = "tagname" ]
+
+  run asdf plugin-list
+  [ "$output" = "dummy-tagname" ]
+}
+
 @test "plugin_add command with URL specified run twice returns error second time" {
   install_mock_plugin_repo "dummy"
 

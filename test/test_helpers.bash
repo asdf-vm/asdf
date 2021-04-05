@@ -54,6 +54,13 @@ install_mock_plugin_repo() {
   git -C "${location}" commit -q -m "asdf ${plugin_name} plugin"
 }
 
+install_mock_plugin_repo_with_ref() {
+  install_mock_plugin_repo "$1"
+  local plugin_name=$1
+  local location="${BASE_DIR}/repo-${plugin_name}"
+  git -C "${location}" tag "tagname"
+}
+
 install_mock_plugin_version() {
   local plugin_name=$1
   local plugin_version=$2

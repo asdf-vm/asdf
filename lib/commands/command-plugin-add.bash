@@ -1,12 +1,13 @@
 # -*- sh -*-
 
 plugin_add_command() {
-  if [[ $# -lt 1 || $# -gt 2 ]]; then
-    display_error "usage: asdf plugin add <name> [<git-url>]"
+  if [[ $# -lt 1 || $# -gt 3 ]]; then
+    display_error "usage: asdf plugin add <name> [<git-url>] [<git-ref>]"
     exit 1
   fi
 
   local plugin_name=$1
+  local plugin_ref=""
 
   if ! printf "%s" "$plugin_name" | grep --quiet --extended-regexp "^[a-zA-Z0-9_-]+$"; then
     display_error "$plugin_name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$"
@@ -19,6 +20,11 @@ plugin_add_command() {
     initialize_or_update_repository
     local source_url
     source_url=$(get_plugin_source_url "$plugin_name")
+  fi
+
+  if [ -n "$3" ]; then
+    plugin_ref="$3"
+    plugin_name=$plugin_name-$3
   fi
 
   if [ -z "$source_url" ]; then
@@ -38,8 +44,14 @@ plugin_add_command() {
     asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_add_${plugin_name}"
 
-    if ! git clone -q "$source_url" "$plugin_path"; then
-      exit 1
+    if [ -z "$plugin_ref" ]; then
+      if ! git clone -q "$source_url" "$plugin_path"; then
+        exit 1
+      fi
+    else
+      if ! git clone -q -b "$plugin_ref" "$source_url" "$plugin_path"; then
+        exit 1
+      fi
     fi
 
     if [ -f "${plugin_path}/bin/post-plugin-add" ]; then
