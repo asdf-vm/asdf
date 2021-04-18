@@ -44,10 +44,22 @@ _asdf() {
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "--head" -- "$cur"))
     ;;
-  uninstall | where | reshim | local | global | shell)
+  uninstall | where | reshim)
     if [[ "$plugins" == *"$prev"* ]]; then
       local versions
       versions=$(asdf list "$prev" 2>/dev/null)
+      # shellcheck disable=SC2207
+      COMPREPLY=($(compgen -W "$versions" -- "$cur"))
+    else
+      # shellcheck disable=SC2207
+      COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
+    fi
+    ;;
+  local | global | shell)
+    if [[ "$plugins" == *"$prev"* ]]; then
+      local versions
+      versions=$(asdf list "$prev" 2>/dev/null)
+      versions+=" system"
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
