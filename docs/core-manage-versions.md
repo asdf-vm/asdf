@@ -84,6 +84,17 @@ The version format is the same supported by the `.tool-versions` file.
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
+## Fallback to system Version
+
+To use the system version of tool <name> instead of an asdf managed version you can set the version for the tool to `system`.
+
+Set system with either `global`, `local` or `shell` as outlined in [Set Current Version](#set-current-version) section above.
+
+```shell
+asdf local <name> system
+# asdf local python system
+```
+
 ## View Current Version
 
 ```shell
