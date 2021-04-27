@@ -14,8 +14,9 @@ banned_commands=(
     column
     # does not work on alpine and should be grep -i either way
     "grep.* -y"
-    # sort -V isn't supported everywhere
+    # sort --sort-version isn't supported everywhere
     "sort.*-V"
+    "sort.*--sort-versions"
     # echo isn't consistent across operating systems, and sometimes output can
     # be confused with echo flags. printf does everything echo does and more.
     echo
