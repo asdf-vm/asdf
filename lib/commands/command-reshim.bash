@@ -125,10 +125,10 @@ remove_obsolete_shims() {
   # comm only takes to files, so we write this data to temp files so we can
   # pass it to comm.
   formatted_shims=$(mktemp /tmp/asdf-command-reshim-formatted-shims.XXXXXX)
-  printf "%s\\n" "$shims" > "$formatted_shims"
+  printf "%s\\n" "$shims" >"$formatted_shims"
 
   formatted_exec_names=$(mktemp /tmp/asdf-command-reshim-formatted-exec-names.XXXXXX)
-  printf "%s\\n" "$exec_names" > "$formatted_exec_names"
+  printf "%s\\n" "$exec_names" >"$formatted_exec_names"
 
   obsolete_shims=$(comm -23 "$formatted_shims" "$formatted_exec_names")
   rm -f "$formatted_exec_names" "$formatted_shims"
