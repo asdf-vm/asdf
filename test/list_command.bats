@@ -60,5 +60,17 @@ teardown() {
   echo $output
   [ "$status" -eq 1 ]
   [[ "$output" == "Plugin dummy-broken's list-all callback script failed with output:"* ]]
-  [[ "$output" == *"List-all failed!" ]]
+}
+
+@test "list_all_command displays stderr then stdout when failing" {
+  run asdf list-all dummy-broken
+  echo $output
+  [[ "$output" == *"List-all failed!"* ]]
+  [[ "$output" == *"Attempting to list versions" ]]
+}
+
+
+@test "list_all_command ignores stderr when completing successfully" {
+  run asdf list-all dummy
+  [[ "$output" != *"ignore this error"* ]]
 }
