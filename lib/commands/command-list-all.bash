@@ -42,7 +42,7 @@ function split_outputs() {
       IFS=$'\n' read -r -d '' _ERRNO_
       return "${_ERRNO_}"
     )
-  } < <((printf '\0%s\0%d\0' "$( ( ( ({ 
+  } < <((printf '\0%s\0%d\0' "$( ( ( ({
     ${3}
     printf "%s\n" ${?} 1>&3-
   } | tr -d '\0' 1>&4-) 4>&2- 2>&1- | tr -d '\0' 1>&4-) 3>&1- | exit "$(cat)") 4>&1-)" "${?}" 1>&2) 2>&1)
