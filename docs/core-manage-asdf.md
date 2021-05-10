@@ -36,9 +36,7 @@ sudo zypper install curl git
 
 #### -- macOS,Homebrew --
 
-```shell
-brew install coreutils curl git
-```
+Dependencies will be automatically installed by Homebrew.
 
 #### -- macOS,Spack --
 
