@@ -11,7 +11,7 @@ plugin_update_command() {
 
   if [ "$plugin_name" = "--all" ]; then
     if [ -d "$(asdf_data_dir)"/plugins ]; then
-      find "$(asdf_data_dir)"/plugins -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r dir; do
+      find "$(asdf_data_dir)"/plugins -mindepth 1 -maxdepth 1 -type d | while IFS= read -r dir; do
         update_plugin "$(basename "$dir")" "$dir" "$gitref" &
       done
       wait
