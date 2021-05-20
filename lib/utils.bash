@@ -662,10 +662,14 @@ preset_versions() {
 }
 
 select_from_preset_version() {
-  shim_name=$1
+  local shim_name=$1
+  local shim_versions
+  local preset_versions
+
   shim_versions=$(get_shim_versions "$shim_name")
   if [ -n "$shim_versions" ]; then
-    preset_versions "$shim_name" | grep -F "$shim_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
+    preset_versions=$(preset_versions "$shim_name")
+    grep -f "$shim_versions" "$preset_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
   fi
 }
 

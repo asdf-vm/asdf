@@ -20,6 +20,8 @@ banned_commands=(
     # echo isn't consistent across operating systems, and sometimes output can
     # be confused with echo flags. printf does everything echo does and more.
     echo
+    # Process substitution isn't POSIX compliant and cause trouble
+    "<("
 )
 
 setup() {
