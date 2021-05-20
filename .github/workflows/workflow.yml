@@ -2,13 +2,13 @@ name: Main workflow
 
 on:
   push:
+    branches:
+      - master
     paths-ignore:
       - "**.md"
   pull_request:
     paths-ignore:
       - "**.md"
-  schedule:
-    - cron: 0 0 * * 5
 
 jobs:
   test:
