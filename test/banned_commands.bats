@@ -38,10 +38,12 @@ teardown() {
   for cmd in "${banned_commands[@]}"; do
       # Assert command is not used in the lib and bin dirs
       # or expect an explicit comment at end of line, allowing it.
-      # Also ignore matches that are contained in comments or followed by an
-      # underscore (indicating it's a variable and not a command).
+      # Also ignore matches that are contained in comments or a string or
+      # followed by an underscore (indicating it's a variable and not a
+      # command).
       run bash -c "grep -nHR '$cmd' lib bin\
         | grep -v '#.*$cmd'\
+        | grep -v '\".*$cmd.*\"' \
         | grep -v '${cmd}_'\
         | grep -v '# asdf_allow: $cmd'"
 
