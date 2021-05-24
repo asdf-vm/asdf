@@ -566,7 +566,7 @@ with_plugin_env() {
   ASDF_INSTALL_TYPE=$install_type \
     ASDF_INSTALL_VERSION=$version \
     ASDF_INSTALL_PATH=$install_path \
-    source "${plugin_path}/bin/exec-env"
+    . "${plugin_path}/bin/exec-env"
 
   PATH=$path "$callback"
 }
@@ -658,7 +658,7 @@ get_shim_versions() {
 
 preset_versions() {
   shim_name=$1
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c "source $(asdf_dir)/lib/utils.bash; printf \"%s %s\\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
+  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
 }
 
 select_from_preset_version() {

@@ -231,14 +231,14 @@ teardown() {
 }
 
 @test "shell wrapper function should export ENV var" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "1.1.0"
   [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "shell wrapper function with --unset should unset ENV var" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "1.1.0"
   [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
   asdf shell "dummy" --unset
@@ -247,7 +247,7 @@ teardown() {
 }
 
 @test "shell wrapper function should return an error for missing plugins" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   expected="No such plugin: nonexistent
 version 1.0.0 is not installed for nonexistent"
 
@@ -306,7 +306,7 @@ false"
 }
 
 @test "shell wrapper function should support latest" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "latest"
   [ $(echo $ASDF_DUMMY_VERSION) = "2.0.0" ]
   unset ASDF_DUMMY_VERSION
