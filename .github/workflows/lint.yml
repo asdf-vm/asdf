@@ -11,7 +11,7 @@ on:
       - "**.md"
 
 jobs:
-  lint:
+  shellcheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
             test/test_helpers.bash \
             test/fixtures/dummy_plugin/bin/*
 
-  format:
+  shellformat:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
