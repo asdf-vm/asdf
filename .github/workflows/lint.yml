@@ -1,0 +1,49 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck -s bash -x \
+            asdf.sh \
+            release/tag.sh \
+            bin/asdf \
+            bin/private/asdf-exec \
+            lib/utils.bash \
+            lib/commands/*.bash \
+            completions/*.bash \
+            test/test_helpers.bash \
+            test/fixtures/dummy_plugin/bin/*
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: List file to shfmt
+        run: shfmt -f .
+
+      - name: Run shfmt
+        run: shfmt -d .
