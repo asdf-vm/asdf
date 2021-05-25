@@ -44,7 +44,7 @@ jobs:
         shell: wsl-bash {0}
         run: |
           git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
-          echo "$HOME/bats-core/bin" >>"${{ env.GITHUB_PATH }}"
+          echo "$HOME/bats-core/bin" >>$GITHUB_PATH
 
       - name: Run tests
         shell: wsl-bash {0}
@@ -58,7 +58,7 @@ jobs:
       matrix:
         os:
           - macos-10.15
-          - macos-11
+          # - macos-11 - enable once out of private preview: https://github.com/actions/virtual-environments#available-environments
           - ubuntu-18.04
           - ubuntu-20.04
     runs-on: ${{ matrix.os }}
