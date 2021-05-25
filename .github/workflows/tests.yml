@@ -21,10 +21,10 @@ jobs:
         os:
           - windows-2019
         distribution:
-          - Debian
           - Ubuntu-20.04
           - Ubuntu-18.04
           # - Alpine
+          # - Debian
           # - kali-linux
           # - openSUSE-Leap-15.2
     runs-on: ${{ matrix.os }}
