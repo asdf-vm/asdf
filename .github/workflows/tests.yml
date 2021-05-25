@@ -57,7 +57,6 @@ jobs:
       - name: Run tests
         shell: wsl-bash {0}
         run: |
-          cd $HOME/asdf
           $HOME/bin/bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
