@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - windows-2016
           - windows-2019
         distribution:
           - Debian
