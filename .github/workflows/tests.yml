@@ -46,10 +46,11 @@ jobs:
           git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
           cd $HOME/bats-core
           ./install.sh $HOME
+          $HOME/bin/bats --version
 
       - name: Run tests
         shell: wsl-bash {0}
-        run: bats test
+        run: $HOME/bin/bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
