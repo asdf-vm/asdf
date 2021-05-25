@@ -44,7 +44,8 @@ jobs:
         shell: wsl-bash {0}
         run: |
           git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
-          echo "$HOME/bats-core/bin" >>$GITHUB_PATH
+          cd $HOME/bats-core
+          ./install.sh $HOME
 
       - name: Run tests
         shell: wsl-bash {0}
