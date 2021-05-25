@@ -46,9 +46,9 @@ jobs:
           additional-packages: curl git fish
 
       - name: Checkout asdf
-        shell: wsl-bash {0}
+        shell: wsl-bash
         run: |
-          git clone --branch "$GITHUB_REF" "$GITHUB_SERVER_URL "/"$GITHUB_REPOSITORY" "$GITHUB_WORKSPACE"
+          git clone --branch "$GITHUB_REF" "$GITHUB_SERVER_URL"/"$GITHUB_REPOSITORY" "$GITHUB_WORKSPACE"
 
       - name: Install bats
         shell: wsl-bash {0}
