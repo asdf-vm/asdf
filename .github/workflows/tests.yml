@@ -10,6 +10,9 @@ on:
     paths-ignore:
       - "**.md"
 
+env:
+  BATS_VERSION: v1.3.0
+
 jobs:
   test-windows-wsl:
     strategy:
@@ -37,10 +40,14 @@ jobs:
           distribution: ${{ matrix.distribution }}
           additional-packages: curl git fish
 
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+      - name: Install bats
+        shell: format('wsl-bash_{1}', ${{ matrix.distribution }}) {0}
+        run: |
+          git clone --depth 1 --branch "$BATS_VERSION" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests
+        shell: format('wsl-bash_{1}', ${{ matrix.distribution }}) {0}
         run: bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
@@ -73,8 +80,13 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install fish
 
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+      # - name: Install asdf dependencies
+      #   uses: asdf-vm/actions/install@v1
+
+      - name: Install bats
+        run: |
+          git clone --depth 1 --branch "$BATS_VERSION" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests
         run: bats test
