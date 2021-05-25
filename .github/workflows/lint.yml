@@ -33,7 +33,7 @@ jobs:
             test/test_helpers.bash \
             test/fixtures/dummy_plugin/bin/*
 
-  shellformat:
+  shellfmt:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
