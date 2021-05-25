@@ -12,6 +12,9 @@ on:
 
 env:
   BATS_VERSION: v1.3.0
+  GITHUB_REF: $GITHUB_REF
+  GITHUB_URL: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY
+  GITHUB_WORKSPACE: $GITHUB_WORKSPACE
 
 jobs:
   wsl1:
@@ -48,7 +51,7 @@ jobs:
       - name: Checkout asdf
         shell: wsl-bash {0}
         run: |
-          git clone --branch $GITHUB_REF $GITHUB_SERVER_URL/$GITHUB_REPOSITORY $GITHUB_WORKSPACE
+          git clone --branch "${{ env.GITHUB_REF }}" ${{ env.GITHUB_URL  }} ${{ env.GITHUB_WORKSPACE }}
 
       - name: Install bats
         shell: wsl-bash {0}
