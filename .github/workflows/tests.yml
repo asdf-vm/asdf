@@ -4,11 +4,7 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - "**.md"
   pull_request:
-    paths-ignore:
-      - "**.md"
 
 env:
   BATS_VERSION: v1.3.0
