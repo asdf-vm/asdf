@@ -14,7 +14,7 @@ env:
   BATS_VERSION: v1.3.0
 
 jobs:
-  test-windows-wsl:
+  windows-wsl:
     strategy:
       fail-fast: false
       matrix:
@@ -44,7 +44,7 @@ jobs:
         shell: wsl-bash {0}
         run: |
           git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
-          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
+          echo "$HOME/bats-core/bin" >>"${{ GITHUB_PATH }}"
 
       - name: Run tests
         shell: wsl-bash {0}
