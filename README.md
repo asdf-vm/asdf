@@ -1,4 +1,4 @@
-# asdf [![Main workflow](https://github.com/asdf-vm/asdf/workflows/Main%20workflow/badge.svg)](https://github.com/asdf-vm/asdf/actions)
+# asdf [![Lint](https://github.com/asdf-vm/asdf/actions/workflows/lint.yaml/badge.svg)](https://github.com/asdf-vm/asdf/actions/workflows/lint.yaml) [![Tests](https://github.com/asdf-vm/asdf/actions/workflows/tests.yaml/badge.svg)](https://github.com/asdf-vm/asdf/actions/workflows/tests.yaml)
 
 **Manage multiple runtime versions with a single CLI tool, extendable via plugins** - [docs at asdf-vm.com](https://asdf-vm.github.io/asdf/)
 

@@ -13,7 +13,7 @@ on:
 jobs:
   test-windows-wsl:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os:
           - windows-2016
@@ -46,36 +46,13 @@ jobs:
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
-  test-macos:
+  test-nix:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os:
           - macos-10.15
           - macos-11
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Install test dependencies
-        run: brew install coreutils fish
-
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
-
-      - name: Run tests
-        run: bats test
-        env:
-          GITHUB_API_TOKEN: ${{ github.token }}
-
-  test-ubuntu:
-    strategy:
-      fail-fast: true
-      matrix:
-        os:
           - ubuntu-18.04
           - ubuntu-20.04
     runs-on: ${{ matrix.os }}
@@ -86,6 +63,11 @@ jobs:
           fetch-depth: 0
 
       - name: Install test dependencies
+        if: runner.os == 'macos'
+        run: brew install coreutils fish
+
+      - name: Install test dependencies
+        if: runner.os == 'linux'
         run: |
           PPA="ppa:fish-shell/nightly-master"
           sudo add-apt-repository -y "$PPA"
