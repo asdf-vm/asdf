@@ -46,7 +46,7 @@ jobs:
           additional-packages: curl git fish
 
       - name: Checkout asdf
-        shell: wsl-bash
+        shell: wsl-bash {0}
         run: |
           git clone --branch "${{ github.ref }}" "https://github.com/${{ github.repository }}" "${{ github.workspace }}"
 
