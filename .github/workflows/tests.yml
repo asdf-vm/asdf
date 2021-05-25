@@ -48,7 +48,7 @@ jobs:
       - name: Checkout asdf
         shell: wsl-bash
         run: |
-          git clone --branch "$GITHUB_REF" "$GITHUB_SERVER_URL"/"$GITHUB_REPOSITORY" "$GITHUB_WORKSPACE"
+          git clone --branch "${{ github.ref }}" "https://github.com/${{ github.repository }}" "${{ github.workspace }}"
 
       - name: Install bats
         shell: wsl-bash {0}
