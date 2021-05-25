@@ -18,7 +18,7 @@ jobs:
         os:
           - windows-2016
           - windows-2019
-        shells:
+        distribution:
           - Debian
           - Ubuntu-20.04
           - Ubuntu-18.04
@@ -35,7 +35,7 @@ jobs:
       - name: Setup WSL & install test dependencies
         uses: Vampire/setup-wsl@v1
         with:
-          distribution: ${{ matrix.shells }}
+          distribution: ${{ matrix.distribution }}
           additional-packages: curl git fish
 
       - name: Install asdf dependencies
