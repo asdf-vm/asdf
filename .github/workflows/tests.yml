@@ -48,7 +48,7 @@ jobs:
       - name: Checkout asdf
         shell: wsl-bash {0}
         run: |
-          git clone --branch "${{ github.head_ref }}" "https://github.com/${{ github.repository }}" "$HOME"
+          git clone --branch "${{ github.head_ref }}" "https://github.com/${{ github.repository }}" "$HOME/asdf"
 
       - name: Install bats
         shell: wsl-bash {0}
@@ -60,7 +60,9 @@ jobs:
 
       - name: Run tests
         shell: wsl-bash {0}
-        run: $HOME/bin/bats test
+        run: |
+          cd $HOME/asdf
+          $HOME/bin/bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
