@@ -1,0 +1,101 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  test-windows-wsl:
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - windows-2016
+          - windows-2019
+        shells:
+          - Debian
+          - Ubuntu-20.04
+          - Ubuntu-18.04
+          # - Alpine
+          # - kali-linux
+          # - openSUSE-Leap-15.2
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup WSL & install test dependencies
+        uses: Vampire/setup-wsl@v1
+        with:
+          distribution: ${{ matrix.shells }}
+          additional-packages: curl git fish
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: Run tests
+        run: bats test
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
+
+  test-macos:
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - macos-10.15
+          - macos-11
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install test dependencies
+        run: brew install coreutils fish
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: Run tests
+        run: bats test
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
+
+  test-ubuntu:
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install test dependencies
+        run: |
+          PPA="ppa:fish-shell/nightly-master"
+          sudo add-apt-repository -y "$PPA"
+          sudo apt-get update
+          sudo apt-get -y install fish
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: Run tests
+        run: bats test
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
