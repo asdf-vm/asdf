@@ -11,6 +11,7 @@ env:
 
 jobs:
   wsl1:
+    if: github.ref != 'refs/heads/master'
     strategy:
       fail-fast: false
       matrix:
