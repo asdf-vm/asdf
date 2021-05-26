@@ -352,6 +352,12 @@ To uninstall `asdf` follow these steps:
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 ```
 
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --Linux,Fish,Git--
 
 1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.sh`:
@@ -370,6 +376,12 @@ rm -rf ~/.config/fish/completions/asdf.fish
 
 ```shell
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
 ### --Linux,ZSH,Git--
@@ -392,6 +404,12 @@ compinit
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 ```
 
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --Linux,Bash,Pacman--
 
 1. In your `~/.bashrc` remove the lines that source `asdf.sh` and the completions:
@@ -410,6 +428,12 @@ pacman -Rs asdf-vm
 
 ```shell
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+4. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
 ### --Linux,Fish,Pacman--
@@ -432,6 +456,12 @@ pacman -Rs asdf-vm
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 ```
 
+4. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --Linux,ZSH,Pacman--
 
 1. In your `~/.zshrc` remove the lines that source `asdf.sh`:
@@ -452,6 +482,12 @@ pacman -Rs asdf-vm
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 ```
 
+4. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --macOS,Bash,Git--
 
 1. In your `~/.bash_profile` remove the lines that source `asdf.sh` and the completions:
@@ -465,6 +501,12 @@ rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 
 ```shell
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
 ### --macOS,Fish,Git--
@@ -487,6 +529,12 @@ rm -rf ~/.config/fish/completions/asdf.fish
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
 ```
 
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --macOS,ZSH,Git--
 
 1. In your `~/.zshrc` remove the lines that source `asdf.sh` and completions:
@@ -505,6 +553,12 @@ compinit
 
 ```shell
 rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
 ### --macOS,Bash,Homebrew--
@@ -526,6 +580,12 @@ If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. 
 brew uninstall asdf --force
 ```
 
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
 ### --macOS,Fish,Homebrew--
 
 1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.fish`:
@@ -538,6 +598,12 @@ source "(brew --prefix asdf)"/asdf.fish
 
 ```shell
 brew uninstall asdf --force
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
 ### --macOS,ZSH,Homebrew--
@@ -554,12 +620,12 @@ brew uninstall asdf --force
 brew uninstall asdf --force
 ```
 
-<!-- select:end -->
-
 3. Run this command to remove all `asdf` config files:
 
 ```shell
 rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
+
+<!-- select:end -->
 
 That's it! 🎉
