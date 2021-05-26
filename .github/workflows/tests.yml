@@ -50,7 +50,6 @@ jobs:
           $HOME/bin/bats --version
 
       - name: Run tests
-        continue-on-error: true
         shell: wsl-bash {0}
         run: |
           $HOME/bin/bats test
