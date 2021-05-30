@@ -9,7 +9,7 @@ set -l asdf_user_shims (
 )
 
 # Add asdf to PATH
-set -l asdf_bin_dirs $ASDF_DIR/bin $asdf_user_shims 
+set -l asdf_bin_dirs $ASDF_DIR/bin $asdf_user_shims
 
 for x in $asdf_bin_dirs
   if test -d $x
@@ -24,4 +24,4 @@ for x in $asdf_bin_dirs
 end
 
 # Load the asdf wrapper function
-source $ASDF_DIR/lib/asdf.fish
+. $ASDF_DIR/lib/asdf.fish
