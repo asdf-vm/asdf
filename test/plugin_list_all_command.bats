@@ -12,6 +12,20 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "plugin_list_all should sync repo when check_duration set to 0" {
+  echo 'plugin_repository_last_check_duration = 0' > $HOME/.asdfrc
+  run asdf plugin-list-all
+  local expected_plugin_repo_sync="updating plugin repository..."
+  local expected_plugins_list="\
+bar                           http://example.com/bar
+dummy                        *http://example.com/dummy
+foo                           http://example.com/foo"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "$expected_plugin_repo_sync" ]]
+  [[ "$output" =~ "$expected_plugins_list" ]]
+}
+
 @test "plugin_list_all list all plugins in the repository" {
   run asdf plugin-list-all
   local expected="\
