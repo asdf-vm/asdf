@@ -1,24 +1,24 @@
-Plugins are how asdf knows how to handle different packages.
+Plugins are how asdf knows how to handle different tools like Node.js, Ruby, Elixir etc.
 
-See [Creating Plugins](plugins-create) for the plugin API used to support more languages.
+See [Creating Plugins](plugins-create) for the plugin API used to support more tools.
 
 ## Add
 
-Add via the short-name association in the plugins repository:
-
-```shell
-asdf plugin add <name>
-# asdf plugin add erlang
-```
-
-If not in the short-name repo, you can add it using its repository URL:
+Add plugins via their Git URL:
 
 ```shell
 asdf plugin add <name> <git-url>
 # asdf plugin add elm https://github.com/vic/asdf-elm
 ```
 
-When scripting, prefer this longer `git-url` method as it is independent of the short-name repo.
+or via the short-name association in the plugins repository:
+
+```shell
+asdf plugin add <name>
+# asdf plugin add erlang
+```
+
+When scripting, prefer the longer `git-url` method as it is independent of the short-name repo.
 
 ## List Installed
 
