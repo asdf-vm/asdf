@@ -26,6 +26,18 @@ foo                           http://example.com/foo"
   [[ "$output" =~ "$expected_plugins_list" ]]
 }
 
+@test "plugin_list_all no immediate repo sync expected because check_duration is greater than 0" {
+  echo 'plugin_repository_last_check_duration = 10' > $HOME/.asdfrc
+  run asdf plugin-list-all
+  local expected="\
+bar                           http://example.com/bar
+dummy                        *http://example.com/dummy
+foo                           http://example.com/foo"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}
+
 @test "plugin_list_all list all plugins in the repository" {
   run asdf plugin-list-all
   local expected="\
