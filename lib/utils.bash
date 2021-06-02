@@ -384,9 +384,11 @@ repository_needs_update() {
   update_file_dir="$(asdf_data_dir)/tmp"
   local update_file_name
   update_file_name="repo-updated"
-  # `find` outputs filename if it has not been modified in the last day
+  # `find` outputs filename if it has not been modified in plugin_repository_last_check_duration setting.
+  local plugin_repository_last_check_duration
+  plugin_repository_last_check_duration="$(get_asdf_config_value "plugin_repository_last_check_duration")"
   local find_result
-  find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mtime +1 -print)
+  find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mmin +"${plugin_repository_last_check_duration:-60}" -print)
   [ -n "$find_result" ]
 }
 

@@ -45,6 +45,7 @@ legacy_version_file = yes
 - `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's `rbenv`).
 - `use_release_candidates` - defaults to `no`. If set to yes it will cause the `asdf update` command to upgrade to the latest release candidate release instead of the latest semantic version.
 - `always_keep_download` - defaults to `no`. If set to `yes` it will cause `asdf install` always keep the source code or binary it downloads. If set to `no` the source code or binary downloaded by `asdf install` will be deleted after successful installation.
+- `plugin_repository_last_check_duration` - defaults to `60` mins (1 hrs). It will set asdf plugins repository last check duration. When `asdf plugin add <name>`, `asdf plugin list all` command be executed, it will check last update duration to update repository. If set to `0` it will update asdf plugins repository every time.
 
 ## Environment Variables
 
