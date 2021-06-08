@@ -174,7 +174,7 @@ Add the following to `~/.bashrc`:
 Add the following to `~/.config/fish/config.fish`:
 
 ```shell
-source /opt/asdf-vm/asdf.sh
+source /opt/asdf-vm/asdf.fish
 ```
 
 !> Completions are automatically configured on installation by the AUR package.
