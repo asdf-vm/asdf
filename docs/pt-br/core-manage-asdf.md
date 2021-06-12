@@ -301,7 +301,7 @@ you have sourced your framework (oh-my-zsh etc).
 Caso tenha migrado para outra ferramenta e precisar usar as arquivos de versão (ex: `.node-version` ou `.ruby-version`),
 olhe em seu `legacy_version_file` [marcação de seleção de configuração](core-configuration?id=homeasdfrc).
 
-## Atualização
+## Atualizar
 
 <!-- select:start -->
 <!-- select-menu-labels: Método de Instalação -->
