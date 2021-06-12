@@ -1,0 +1,4 @@
+- Tradução
+  - [:uk: English](/)
+  - [:brazil: Português](/pt-br/)
+  - [Adicionar tradução](contributing-doc-site?id=translations)
