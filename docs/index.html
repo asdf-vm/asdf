@@ -28,7 +28,10 @@
             coverpage: ['/', '/pt-br/'],
             loadNavbar: true,
             loadSidebar: true,
-            notFoundPage: true,
+            notFoundPage: {
+                '/': '_404.md',
+                '/pt-br/': '/pt-br/_404.md'
+            },
             subMaxLevel: 2,
             auto2top: true,
             alias: {
