@@ -2,7 +2,7 @@
 
 Eu ([@HashNuke](https://github.com/HashNuke)), febre alta, resfriado e tosse.
 
-Copyright 2014 até o final dos times ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
+Copyright 2014 até o final dos tempos ([MIT License](https://github.com/asdf-vm/asdf/blob/master/LICENSE))
 
 ## Mantenedores
 
