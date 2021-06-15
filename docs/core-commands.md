@@ -6,4 +6,4 @@
 
 `asdf` or `asdf help` will list all available commands for your current asdf version.
 
-[](https://raw.githubusercontent.com/asdf-vm/asdf/master/help.txt ":include")
+[](https://raw.githubusercontent.com/asdf-vm/asdf/master/help.txt ':include')
