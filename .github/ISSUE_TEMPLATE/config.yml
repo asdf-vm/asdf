@@ -1,2 +1,6 @@
 # Force users to use one of our predefined issue templates
 blank_issues_enabled: false
+contact_links:
+  - name: Question
+    url: https://github.com/asdf-vm/asdf/discussions/
+    about: Ask new or browse existing questions in GitHub Discussions.
