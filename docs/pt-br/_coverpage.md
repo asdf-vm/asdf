@@ -4,7 +4,6 @@
 
 > Gerencie múltiplas versões com um simples CLI
 
-
 <!-- insert asciinema or other gif here -->
 
 - Bash, Zsh, Fish

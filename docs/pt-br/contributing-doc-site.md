@@ -51,7 +51,6 @@ O Docsify torna a adição de novos idiomas bastante fácil. Veja em `docs/index
 
 ### Adicionar uma nova tradução
 
- 
 1. Crie uma pasta dentro do `docs/` para adicionar sua nova tradução
    ```
    docs/

@@ -55,7 +55,7 @@ The install script should exit with a status of `0` when the installation is suc
 
 If possible the script should only place files in the `ASDF_INSTALL_PATH` directory once the build and installation of the tool is deemed successful by the install script. asdf [checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) of the `ASDF_INSTALL_PATH` directory in order to determine if that version of the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the beginning of the installation process other asdf commands run in other terminals during the installation may consider that version of the tool installed, even when it is not fully installed.
 
-If you want your plugin to work with asdf version 0.7.* and earlier and version 0.8.* and newer check for the presence of the `ASDF_DOWNLOAD_PATH` environment variable. If it is not set download the source code in the bin/install callback. If it is set assume the `bin/download` script already downloaded it.
+If you want your plugin to work with asdf version 0.7._ and earlier and version 0.8._ and newer check for the presence of the `ASDF_DOWNLOAD_PATH` environment variable. If it is not set download the source code in the bin/install callback. If it is set assume the `bin/download` script already downloaded it.
 
 ## Optional Scripts
 
@@ -63,10 +63,10 @@ If you want your plugin to work with asdf version 0.7.* and earlier and version 
 
 This is not one callback script but rather a set of callback scripts that each print different documentation to STDOUT. The possible callback scripts are listed below. Note that `bin/help.overview` is a special case as it must be present for any help output to be displayed for the script.
 
-* `bin/help.overview` - This script should output a general description about the plugin and the tool being managed. No heading should be printed as asdf will print headings. Output may be free-form text but ideally only one short paragraph. This script must be present if you want asdf to provide help information for your plugin. All other help callback scripts are optional.
-* `bin/help.deps` - This script should output the list of dependencies tailored to the operating system. One dependency per line.
-* `bin/help.config` - This script should print any required or optional configuration that may be available for the plugin and tool. Any environment variables or other flags needed to install or compile the tool (for the users operating system when possible). Output can be free-form text.
-* `bin/help.links` - This should be a list of links relevant to the plugin and tool (again, tailored to the current operating system when possible). One link per line. Lines may be in the format `<title>: <link>` or just `<link>`.
+- `bin/help.overview` - This script should output a general description about the plugin and the tool being managed. No heading should be printed as asdf will print headings. Output may be free-form text but ideally only one short paragraph. This script must be present if you want asdf to provide help information for your plugin. All other help callback scripts are optional.
+- `bin/help.deps` - This script should output the list of dependencies tailored to the operating system. One dependency per line.
+- `bin/help.config` - This script should print any required or optional configuration that may be available for the plugin and tool. Any environment variables or other flags needed to install or compile the tool (for the users operating system when possible). Output can be free-form text.
+- `bin/help.links` - This should be a list of links relevant to the plugin and tool (again, tailored to the current operating system when possible). One link per line. Lines may be in the format `<title>: <link>` or just `<link>`.
 
 Each of these scripts should tailor their output to the current operating system. For example, when on Ubuntu the deps script could output the dependencies as apt-get packages that must be installed. The script should also tailor its output to the value of `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE` when the variables are set. They are optional and will not always be set.
 
@@ -129,10 +129,10 @@ The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}
 
 See also the related hooks:
 
-* `pre_asdf_plugin_add`
-* `pre_asdf_plugin_add_${plugin_name}`
-* `post_asdf_plugin_add`
-* `post_asdf_plugin_add_${plugin_name}`
+- `pre_asdf_plugin_add`
+- `pre_asdf_plugin_add_${plugin_name}`
+- `post_asdf_plugin_add`
+- `post_asdf_plugin_add_${plugin_name}`
 
 #### bin/pre-plugin-remove
 
@@ -142,10 +142,10 @@ The script has access to the path the plugin was installed in (`${ASDF_PLUGIN_PA
 
 See also the related hooks:
 
-* `pre_asdf_plugin_remove`
-* `pre_asdf_plugin_remove_${plugin_name}`
-* `post_asdf_plugin_remove`
-* `post_asdf_plugin_remove_${plugin_name}`
+- `pre_asdf_plugin_remove`
+- `pre_asdf_plugin_remove_${plugin_name}`
+- `post_asdf_plugin_remove`
+- `post_asdf_plugin_remove_${plugin_name}`
 
 ## Extension commands for asdf CLI.
 
@@ -204,7 +204,7 @@ asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--a
 ```
 
 Only the two first arguments are required.
-If __version_ is specified, the tool will be installed with that specific version. Defaults to whatever returns `asdf latest <plugin-name>`.
+If \__version_ is specified, the tool will be installed with that specific version. Defaults to whatever returns `asdf latest <plugin-name>`.
 If _git-ref_ is specified, the plugin itself is checked out at that commit/branch/tag, useful for testing a pull-request on your plugin's CI.
 
 Rest arguments are considered the command to execute to ensure the installed tool works correctly.

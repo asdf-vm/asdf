@@ -57,7 +57,7 @@ asdf plugin update <name>
 # asdf plugin update erlang
 ```
 
-This update will fetch the *latest commit* on the *default branch* of the *origin* of the plugin repository. Versioned plugins and updates are currently being developed - https://github.com/asdf-vm/asdf/pull/916
+This update will fetch the _latest commit_ on the _default branch_ of the _origin_ of the plugin repository. Versioned plugins and updates are currently being developed - https://github.com/asdf-vm/asdf/pull/916
 
 ## Remove
 

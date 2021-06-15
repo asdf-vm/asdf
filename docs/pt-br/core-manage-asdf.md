@@ -36,7 +36,7 @@ sudo zypper install curl git
 
 #### -- macOS,Homebrew --
 
-Dependências seram instaladas automaticamente pelo Homebrew. 
+Dependências seram instaladas automaticamente pelo Homebrew.
 
 #### -- macOS,Spack --
 
@@ -81,7 +81,7 @@ Instalar usando o gerenciador de pacotes Homebrew:
 brew install asdf
 ```
 
-Para pegar as mudanças mais recentes, você pode mandar o Homebrew obter a _branch_ central do repositório: 
+Para pegar as mudanças mais recentes, você pode mandar o Homebrew obter a _branch_ central do repositório:
 
 ```shell
 brew install asdf --HEAD
@@ -96,7 +96,8 @@ git clone https://aur.archlinux.org/asdf-vm.git
 cd asdf-vm
 makepkg -si
 ```
-Ou use outro de sua preferência [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) 
+
+Ou use outro de sua preferência [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers)
 
 <!-- select:end -->
 
@@ -140,6 +141,7 @@ Adicione em seu `~/.zshrc`:
 ```shell
 . $HOME/.asdf/asdf.sh
 ```
+
 **Ou** use o ZSH Framework plugin descrito em [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) para concluir sua configuração.
 
 ?> As configurações são completadas através do ZSH Framework `asdf` plugin ou pelas modificações feitas em `.zshrc`:
@@ -151,7 +153,7 @@ fpath=(${ASDF_DIR}/completions $fpath)
 autoload -Uz compinit
 compinit
 ```
- 
+
 - Caso tiver usando uma costumização de `compinit`, garanta que seu `compinit` esteja dentro do arquivo `asdf.sh`
 - Caso tiver usando uma costumização de `compinit` e ZSH Framework, garanta que `compinit` esteja dentro do framework
 
@@ -196,7 +198,7 @@ Adicione em seu `~/.bash_profile`:
 ```shell
 . $HOME/.asdf/asdf.sh
 ```
- 
+
 ?> Os complementos precisam ser configurados manualmente em seu arquivo `.bash_profile`:
 
 ```shell
@@ -225,7 +227,7 @@ Adicione em seu `~/.zshrc`:
 . $HOME/.asdf/asdf.sh
 ```
 
-**Ou** use ZSH Framework plugin descrito em [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá realizar as configurações.  
+**Ou** use ZSH Framework plugin descrito em [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá realizar as configurações.
 
 ?> Os complementos são conficurados usando ZSH Framework `asdf` plugin ou através do arquivo `.zshrc`:
 
@@ -236,6 +238,7 @@ fpath=(${ASDF_DIR}/completions $fpath)
 autoload -Uz compinit
 compinit
 ```
+
 - Caso tiver usando uma costumização de `compinit`, garanta que seu `compinit` esteja dentro do arquivo `asdf.sh`
 - Caso tiver usando uma costumização de `compinit` e ZSH Framework, garanta que `compinit` esteja dentro do framework
 
@@ -396,7 +399,7 @@ autoload -Uz compinit
 compinit
 ```
 
-**Ou** use ZSH Framework plugin. 
+**Ou** use ZSH Framework plugin.
 
 2. Remova o diretório `$HOME/.asdf`:
 
@@ -547,7 +550,7 @@ autoload -Uz compinit
 compinit
 ```
 
-**Ou** use ZSH Framework plugin. 
+**Ou** use ZSH Framework plugin.
 
 2. Remova o diretório `$HOME/.asdf`:
 

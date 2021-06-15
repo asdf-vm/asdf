@@ -13,6 +13,7 @@ _Se um plugin suporta o download e compilação do código-fonte, você pode esp
 asdf install <name> latest
 # asdf install erlang latest
 ```
+
 Instale a última versão estável que inicia com um texto.
 
 ```shell
@@ -33,6 +34,7 @@ asdf list <name>
 asdf list all <name>
 # asdf list all erlang
 ```
+
 Limite as versões que inicie com um determinado texto.
 
 ```shell
@@ -46,6 +48,7 @@ asdf list all <name> <version>
 asdf latest <name>
 # asdf latest erlang
 ```
+
 Mostrar última versão estável que inicie com um determinado texto.
 
 ```shell
@@ -72,7 +75,7 @@ Veja em `.tool-versions` [arquivo de seleção de configuração](/pt-br/core-co
 
 ?> Alternativa, se você quiser selecionar a versão atual do seu _shell_ ou para executar um comando em uma versão específica de sua ferramenta, você pode selecionar a versão na variável de ambiente `ASDF_${TOOL}_VERSION`.
 
-O seguinte exemplo executa os testes em um projeto Elixir na versão `1.4.0`. 
+O seguinte exemplo executa os testes em um projeto Elixir na versão `1.4.0`.
 O formato da versão é o mesmo suportado pelo arquivo `.tool-versions`.
 
 ```shell
@@ -115,7 +118,7 @@ asdf uninstall <name> <version>
 
 Quando asdf instala um pacote é criado _shims_ para cada programa executado no pacote do diretório `$ASDF_DATA_DIR/shims` (padrão `~/.asdf/shims`). Esse diretório começa no `$PATH` (pelos `asdf.sh` ou `asdf.fish`) é como o programa instalado é disponibilizado no ambiente do sistema.
 
-Os _shims_ em si são atalhos simples que executam um programa auxiliar `asdf exec` passando o nome do plugin e o caminho para o executável no pacote instalado que o _shim_ está contido. 
+Os _shims_ em si são atalhos simples que executam um programa auxiliar `asdf exec` passando o nome do plugin e o caminho para o executável no pacote instalado que o _shim_ está contido.
 
 O `asdf exec` ajuda a determinar a versão do pacote usado (como especificado no arquivo `.tool-versions`, pelo `asdf local ...` ou `asdf global ...`), o final do _path_ do executavél no pacote instalado no diretório (pode ser manipulado pelo `exec-path` no _callback_ do plugin) e o ambiente executado em (também fornecido pelo plugin - `exec-env`) e finalmente executado.
 
