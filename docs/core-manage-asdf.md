@@ -626,6 +626,8 @@ brew uninstall asdf --force
 rm -rf $HOME/.tool-versions $HOME/.asdfrc
 ```
 
+See [Uninstall asdf](https://mac.install.guide/faq/uninstall-asdf/index.html) for a detailed guide to uninstalling  `asdf` with Homebrew, including asdf dependencies.
+
 <!-- select:end -->
 
 That's it! 🎉
