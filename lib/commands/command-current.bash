@@ -1,7 +1,9 @@
 # -*- sh -*-
 
+# shellcheck disable=SC2059
 plugin_current_command() {
   local plugin_name=$1
+  local terminal_format=$2
 
   check_if_plugin_exists "$plugin_name"
 
@@ -13,30 +15,48 @@ plugin_current_command() {
   full_version=$(cut -d '|' -f 1 <<<"$version_and_path")
   local version_file_path
   version_file_path=$(cut -d '|' -f 2 <<<"$version_and_path")
+  local version_not_installed
+  local description=""
 
   IFS=' ' read -r -a versions <<<"$full_version"
   for version in "${versions[@]}"; do
-    check_if_version_exists "$plugin_name" "$version"
+    if ! (check_if_version_exists "$plugin_name" "$version"); then
+      version_not_installed="$version"
+    fi
   done
   check_for_deprecated_plugin "$plugin_name"
 
-  if [ -z "$full_version" ]; then
-    printf "%s\\n" "$(display_no_version_set "$plugin_name")"
-    exit 126
+  if [ -n "$version_not_installed" ]; then
+    description="Not installed. Run \"asdf install $plugin $version\""
+    printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
+    return 1
+  elif [ -z "$full_version" ]; then
+    description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
+    printf "$terminal_format" "$plugin" "______" "$description" 1>&2
+    return 126
   else
-    printf "%-8s (set by %s)\\n" "$full_version" "$version_file_path"
+    description="$version_file_path"
+    printf "$terminal_format" "$plugin" "$full_version" "$description"
   fi
 }
 
+# shellcheck disable=SC2059
 current_command() {
+  local terminal_format="%-15s %-15s %-10s\\n"
+  local exit_status=0
+
+  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
   if [ $# -eq 0 ]; then
     for plugin in $(asdf plugin list); do
-      printf "%-15s%s\\n" "$plugin" "$(plugin_current_command "$plugin")" >&2
+      plugin_current_command "$plugin" "$terminal_format"
     done
   else
     local plugin=$1
-    plugin_current_command "$plugin"
+    plugin_current_command "$plugin" "$terminal_format"
+    exit_status="$?"
   fi
+
+  exit "$exit_status"
 }
 
 # Warn if the plugin isn't using the updated legacy file api.
@@ -51,10 +71,8 @@ check_for_deprecated_plugin() {
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
   if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    echo "Heads up! It looks like your $plugin_name plugin is out of date. You can update it with:"
-    echo ""
-    echo "  asdf plugin-update $plugin_name"
-    echo ""
+    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\\n\\n" "$plugin_name"
+    printf "  asdf plugin-update %s\\n\\n" "$plugin_name"
   fi
 }
 

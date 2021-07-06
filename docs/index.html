@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>asdf vm - An extendable version manager</title>
+    <title>asdf - An extendable version manager</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="description" content="An extendable version manager" />
     <meta
@@ -27,13 +27,16 @@
     <script src="scripts/docsify-edit-on-github.js"></script>
     <script>
       window.$docsify = {
-        name: "asdf-vm",
+        name: "asdf",
         repo: "https://github.com/asdf-vm/asdf",
         el: "#app",
-        coverpage: true,
+        coverpage: ['/', '/pt-br/'],
         loadNavbar: true,
         loadSidebar: true,
-        notFoundPage: true,
+        notFoundPage: {
+          '/': '_404.md',
+          '/pt-br/': '/pt-br/_404.md'
+        },
         subMaxLevel: 2,
         auto2top: true,
         alias: {

@@ -13,20 +13,20 @@ plugin_test_command() {
 
   while [[ $# -gt 0 ]]; do
     case $1 in
-      --asdf-plugin-gitref)
-        plugin_gitref="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      --asdf-tool-version)
-        tool_version="$2"
-        shift # past flag
-        shift # past value
-        ;;
-      *)
-        plugin_command_array+=("$1") # save it in an array for later
-        shift                        # past argument
-        ;;
+    --asdf-plugin-gitref)
+      plugin_gitref="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    --asdf-tool-version)
+      tool_version="$2"
+      shift # past flag
+      shift # past value
+      ;;
+    *)
+      plugin_command_array+=("$1") # save it in an array for later
+      shift                        # past argument
+      ;;
     esac
   done
 
@@ -36,7 +36,7 @@ plugin_test_command() {
   local TEST_DIR
 
   fail_test() {
-    echo "FAILED: $1"
+    printf "FAILED: %s\\n" "$1"
     rm -rf "$TEST_DIR"
     exit 1
   }
@@ -55,7 +55,7 @@ plugin_test_command() {
     export ASDF_DATA_DIR=$TEST_DIR
 
     # shellcheck disable=SC1090
-    source "$ASDF_DIR/asdf.sh"
+    . "$ASDF_DIR/asdf.sh"
 
     if ! (asdf plugin-add "$plugin_name" "$plugin_url"); then
       fail_test "could not install $plugin_name from $plugin_url"
@@ -74,23 +74,20 @@ plugin_test_command() {
     local list_all="$plugin_path/bin/list-all"
     if grep api.github.com "$list_all" >/dev/null; then
       if ! grep Authorization "$list_all" >/dev/null; then
-        echo
-        echo "Looks like ${plugin_name}/bin/list-all relies on GitHub releases"
-        echo "but it does not properly sets an Authorization header to prevent"
-        echo "GitHub API rate limiting."
-        echo
-        echo "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting"
+        printf "\\nLooks like %s/bin/list-all relies on GitHub releases\\n" "$plugin_name"
+        printf "but it does not properly sets an Authorization header to prevent\\n"
+        printf "GitHub API rate limiting.\\n\\n"
+        printf "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting\\n"
 
         fail_test "$plugin_name/bin/list-all does not set GitHub Authorization token"
       fi
 
       # test for most common token names we have on plugins. If both are empty show this warning
       if [ -z "$OAUTH_TOKEN" ] && [ -z "$GITHUB_API_TOKEN" ]; then
-        echo "$plugin_name/bin/list-all is using GitHub API, just be sure you provide an API Authorization token"
-        echo "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:"
-        echo
+        printf "%s/bin/list-all is using GitHub API, just be sure you provide an API Authorization token\\n" "$plugin_name"
+        printf "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:\\n\\n"
         curl -s https://api.github.com/rate_limit
-        echo
+        printf "\\n"
       fi
     fi
 
@@ -109,7 +106,10 @@ plugin_test_command() {
     # Use the version passed in if it was set. Otherwise grab the latest
     # version from the versions list
     if [ -z "$tool_version" ] || [[ "$tool_version" == *"latest"* ]]; then
-      version="$(asdf latest "$plugin_name" "$(echo "$tool_version" | sed -e 's#latest##;s#^:##')")"
+      version="$(asdf latest "$plugin_name" "$(sed -e 's#latest##;s#^:##' <<<"$tool_version")")"
+      if [ -z "$version" ]; then
+        fail_test "could not get latest version"
+      fi
     else
       version="$tool_version"
     fi

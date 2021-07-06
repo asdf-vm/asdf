@@ -8,7 +8,7 @@ handle_failure() {
 
 handle_cancel() {
   local install_path="$1"
-  echo -e "\\nreceived sigint, cleaning up"
+  printf "\\nreceived sigint, cleaning up"
   handle_failure "$install_path"
 }
 
@@ -20,8 +20,7 @@ install_command() {
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions "$extra_args"
   elif [[ $# -eq 1 ]]; then
-    display_error "You must specify a name and a version to install"
-    exit 1
+    install_one_local_tool "$plugin_name"
   else
     install_tool_version "$plugin_name" "$full_version" "$extra_args"
   fi
@@ -35,10 +34,34 @@ get_concurrency() {
   elif [ -f /proc/cpuinfo ]; then
     grep -c processor /proc/cpuinfo
   else
-    echo "1"
+    printf "1\\n"
   fi
 }
 
+install_one_local_tool() {
+  local plugin_name=$1
+  local search_path
+  search_path=$(pwd)
+
+  local plugin_versions
+
+  local plugin_version
+
+  local plugin_version_and_path
+  plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
+
+  if [ -n "$plugin_version_and_path" ]; then
+    local plugin_version
+    some_tools_installed='yes'
+    plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
+    for plugin_version in $plugin_versions; do
+      install_tool_version "$plugin_name" "$plugin_version"
+    done
+  else
+    printf "No versions specified for %s in config files or environment\\n" "$plugin_name"
+    exit 1
+  fi
+}
 install_local_tool_versions() {
   local plugins_path
   plugins_path=$(get_plugin_path)
@@ -66,14 +89,14 @@ install_local_tool_versions() {
       fi
     done
   else
-    echo "Install plugins first to be able to install tools"
+    printf "Install plugins first to be able to install tools\\n"
     exit 1
   fi
 
   if [ -z "$some_tools_installed" ]; then
-    echo "Either specify a tool & version in the command"
-    echo "OR add .tool-versions file in this directory"
-    echo "or in a parent directory"
+    printf "Either specify a tool & version in the command\\n"
+    printf "OR add .tool-versions file in this directory\\n"
+    printf "or in a parent directory\\n"
     exit 1
   fi
 }
@@ -90,13 +113,13 @@ install_tool_version() {
 
   for flag in $flags; do
     case "$flag" in
-      "--keep-download")
-        keep_download=true
-        shift
-        ;;
-      *)
-        shift
-        ;;
+    "--keep-download")
+      keep_download=true
+      shift
+      ;;
+    *)
+      shift
+      ;;
     esac
   done
 
@@ -129,7 +152,7 @@ install_tool_version() {
   trap 'handle_cancel $install_path' INT
 
   if [ -d "$install_path" ]; then
-    echo "$plugin_name $full_version is already installed"
+    printf "%s %s is already installed\\n" "$plugin_name" "$full_version"
   else
 
     if [ -f "${plugin_path}/bin/download" ]; then
@@ -150,24 +173,27 @@ install_tool_version() {
       )
     fi
 
-    (
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_TYPE=$install_type
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_VERSION=$version
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_PATH=$install_path
-      # shellcheck disable=SC2031
-      export ASDF_DOWNLOAD_PATH=$download_path
-      # shellcheck disable=SC2031
-      export ASDF_CONCURRENCY=$concurrency
-      mkdir "$install_path"
-      asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
-      bash "${plugin_path}"/bin/install
-    )
+    local download_exit_code=$?
+    if [ $download_exit_code -eq 0 ]; then
+      (
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_TYPE=$install_type
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_VERSION=$version
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_PATH=$install_path
+        # shellcheck disable=SC2031
+        export ASDF_DOWNLOAD_PATH=$download_path
+        # shellcheck disable=SC2031
+        export ASDF_CONCURRENCY=$concurrency
+        mkdir "$install_path"
+        asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
+        bash "${plugin_path}"/bin/install
+      )
+    fi
 
-    local exit_code=$?
-    if [ $exit_code -eq 0 ]; then
+    local install_exit_code=$?
+    if [ $install_exit_code -eq 0 ] && [ $download_exit_code -eq 0 ]; then
       # Remove download directory if --keep-download flag or always_keep_download config setting are not set
       always_keep_download=$(get_asdf_config_value "always_keep_download")
       if [ ! "$keep_download" = "true" ] && [ ! "$always_keep_download" = "yes" ] && [ -d "$download_path" ]; then

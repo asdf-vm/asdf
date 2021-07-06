@@ -13,13 +13,13 @@ teardown() {
 
 @test "latest_command shows latest stable version" {
   run asdf latest dummy
-  [ "$(echo "2.0")" == "$output" ]
+  [ "$(echo "2.0.0")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "latest_command with version shows latest stable version that matches the given string" {
   run asdf latest dummy 1
-  [ "$(echo "1.1")" == "$output" ]
+  [ "$(echo "1.1.0")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 

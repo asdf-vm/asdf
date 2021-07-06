@@ -1,47 +1,48 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: "bug"
+assignees: ""
 ---
 
 **Describe the bug**
 
-A clear and concise description of what the bug is.
+<!-- A clear and concise description of what the bug is. -->
 
 **To Reproduce**
 
-Tell us what actions you performed before the issue occurred
+<!-- Tell us what actions you performed before the issue occurred -->
 
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-
 **Expected behavior**
 
-Tell us what should have happened
+<!-- Tell us what should have happened -->
 
 **Actual behavior**
 
-Tell us what happened instead
+<!-- Tell us what happened instead -->
 
 ### Environment
 
-**OS**:
+<!-- Copy the output of `asdf info` here -->
 
-**asdf version**:
+```shell
+
+```
 
 **asdf plugins affected (if relevant)**:
 
-**asdf plugins installed**:
-
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+
+<!-- If applicable, add screenshots to help explain your problem. -->
 
 **Additional context**
-Add any other context about the problem here.
+
+<!-- Add any other context about the problem here. -->

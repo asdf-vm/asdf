@@ -17,7 +17,7 @@ cleaned_path() {
     set -e ASDF_DATA_DIR
     set PATH $(cleaned_path)
 
-    source asdf.fish
+    . asdf.fish
     echo \$ASDF_DIR
   ")
 
@@ -32,7 +32,7 @@ cleaned_path() {
    set -e ASDF_DATA_DIR
    set PATH $(cleaned_path)
 
-   source (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
+   . (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
    echo \$PATH
  ")
 
@@ -48,8 +48,8 @@ cleaned_path() {
     set -e ASDF_DATA_DIR
     set PATH $(cleaned_path)
 
-    source asdf.fish
-    source asdf.fish
+    . asdf.fish
+    . asdf.fish
     echo \$PATH
   ")
 
@@ -64,7 +64,7 @@ cleaned_path() {
     set -e ASDF_DIR
     set PATH $(cleaned_path)
 
-    source asdf.fish
+    . asdf.fish
     type asdf
   ")
 
