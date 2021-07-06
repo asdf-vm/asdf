@@ -109,10 +109,6 @@ if ! git diff-index --cached --exit-code -r --ignore-submodules HEAD -- >&2; the
   exit 1
 fi
 
-# Update version in README
-sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" README.md
-rm README.md.bak
-
 # Update version in docs/core-manage-asdf.md
 sed -i.bak "s|^\\(git clone.*--branch \\).*$|\\1$new_tag_name|" docs/core-manage-asdf.md
 rm docs/core-manage-asdf.md.bak
