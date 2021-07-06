@@ -86,23 +86,6 @@ get_download_path() {
   fi
 }
 
-get_latest_version() {
-  # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-  local versions=$1
-  versions=$(printf "%s\n" "$versions" |
-    grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\.]rc|-alpha|-beta|[-\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-    awk '{ print $1 }' |
-    sort --version-sort |
-    tail -1)
-
-  if [ -z "$versions" ]; then
-    display_error "No compatible stable versions available"
-    exit 1
-  fi
-
-  printf "%s\n" "$versions"
-}
-
 list_installed_versions() {
   local plugin_name=$1
   local plugin_path
