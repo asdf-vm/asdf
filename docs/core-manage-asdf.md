@@ -174,7 +174,7 @@ Add the following to `~/.bashrc`:
 Add the following to `~/.config/fish/config.fish`:
 
 ```shell
-source /opt/asdf-vm/asdf.sh
+source /opt/asdf-vm/asdf.fish
 ```
 
 !> Completions are automatically configured on installation by the AUR package.
@@ -617,7 +617,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 2. Uninstall with your package manager:
 
 ```shell
-brew uninstall asdf --force
+brew uninstall asdf --force && brew autoremove
 ```
 
 3. Run this command to remove all `asdf` config files:

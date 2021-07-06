@@ -4,6 +4,6 @@
     not amenable to docs supporting git refs. Solution to be determined.
  -->
 
-`asdf` or `asdf help` will list all available commands for your current asdf version.
+`asdf` ou `asdf help` para listar todos os comandos disponíveis para sua versão.
 
 [](https://raw.githubusercontent.com/asdf-vm/asdf/master/help.txt ':include')

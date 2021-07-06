@@ -32,6 +32,11 @@ list_all_command() {
     output=$(cat "$std_out_file")
   fi
 
+  if [ -z "$output" ]; then
+    display_error "No compatible versions available ($plugin_name $query)"
+    exit 1
+  fi
+
   IFS=' ' read -r -a versions_list <<<"$output"
 
   for version in "${versions_list[@]}"; do
