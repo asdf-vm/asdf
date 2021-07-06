@@ -89,7 +89,7 @@ get_download_path() {
 get_latest_version() {
   # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
   local versions=$1
-  versions=$(echo "$versions" |
+  versions=$(printf "%s\n" "$versions" |
     grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\.]rc|-alpha|-beta|[-\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
     awk '{ print $1 }' |
     sort --version-sort |
@@ -100,7 +100,7 @@ get_latest_version() {
     exit 1
   fi
 
-  echo "$versions"
+  printf "%s\n" "$versions"
 }
 
 list_installed_versions() {

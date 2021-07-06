@@ -11,7 +11,7 @@ list_command() {
     if ls "$plugins_path" &>/dev/null; then
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
-        echo "$plugin_name"
+        printf "%s\\n" "$plugin_name"
         display_installed_versions "$plugin_name" "$query"
       done
     else
@@ -30,7 +30,7 @@ display_installed_versions() {
   versions=$(list_installed_versions "$plugin_name")
 
   if [[ $query ]]; then
-    versions=$(echo "$versions" | grep -E "^\s*$query")
+    versions=$(printf "%s\n" "$versions" | grep -E "^\s*$query")
 
     if [ -z "${versions}" ]; then
       display_error "No compatible versions installed ($plugin_name $query)"
