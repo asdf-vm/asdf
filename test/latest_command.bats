@@ -13,12 +13,18 @@ teardown() {
 
 @test "latest_command shows latest stable version" {
   run asdf latest dummy
-  [ "$(echo -e "2.0.0")" == "$output" ]
+  [ "$(echo "2.0.0")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "latest_command with version shows latest stable version that matches the given string" {
   run asdf latest dummy 1
-  [ "$(echo -e "1.1.0")" == "$output" ]
+  [ "$(echo "1.1.0")" == "$output" ]
   [ "$status" -eq 0 ]
+}
+
+@test "latest_command with an invalid version should return an error" {
+  run asdf latest dummy 3
+  [ "$(echo "No compatible versions available (dummy 3)")" == "$output" ]
+  [ "$status" -eq 1 ]
 }

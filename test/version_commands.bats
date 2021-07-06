@@ -47,6 +47,24 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "local with latest should use the latest installed version" {
+  run asdf local "dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 2.0.0" ]
+}
+
+@test "local with latest:version should use the latest valid installed version" {
+  run asdf local "dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0" ]
+}
+
+@test "local with latest:version should return an error for invalid versions" {
+  run asdf local "dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
+}
+
 @test "local should allow multiple versions" {
   run asdf local "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
@@ -75,6 +93,7 @@ teardown() {
 
 @test "local should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
@@ -139,6 +158,24 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global with latest should use the latest installed version" {
+  run asdf global "dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 2.0.0" ]
+}
+
+@test "global with latest:version should use the latest valid installed version" {
+  run asdf global "dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0" ]
+}
+
+@test "global with latest:version should return an error for invalid versions" {
+  run asdf global "dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
 }
 
 @test "global should accept multiple versions" {
