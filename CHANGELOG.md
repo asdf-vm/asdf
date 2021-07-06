@@ -77,22 +77,6 @@ Fixed Bugs
 * Add CODEOWNERS file for GitHub reviews (#705)
 * Add unit test for `asdf plugin-add` exit code (#689)
 
-Features
-
-* Add support for using the latest installed version with `asdf global` and `asdf local`
-
-    ```shell
-    asdf global python latest
-    asdf local python latest
-    asdf local python latest:3.7 # sets local Python version to latest installed version of Python 3.7
-    ```
-
-* Add support for filtering installed versions with `asdf list`
-
-    ```shell
-    asdf list python 3.7 # lists installed versions of Python 3.7
-    ```
-
 ## 0.7.8
 
 Features
