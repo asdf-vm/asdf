@@ -21,13 +21,13 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "[latest_command - dummy_plugin] with version shows latest stable version that matches the given string" {
+@test "[latest_command - dummy_plugin] shows latest stable version that matches the given string" {
   run asdf latest dummy 1
   [ "$(echo "1.1.0")" == "$output" ]
   [ "$status" -eq 0 ]
 }
 
-@test "[latest_command - dummy_plugin] with an invalid version should return an error" {
+@test "[latest_command - dummy_plugin] an invalid version should return an error" {
   run asdf latest dummy 3
   [ "$(echo "No compatible versions available (dummy 3)")" == "$output" ]
   [ "$status" -eq 1 ]
@@ -44,7 +44,7 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "[latest_command - dummy_legacy_plugin] with version shows latest stable version that matches the given string" {
+@test "[latest_command - dummy_legacy_plugin] shows latest stable version that matches the given string" {
   run asdf latest legacy-dummy 1
   echo "status: $status"
   echo "output: $output"
@@ -52,7 +52,7 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "[latest_command - dummy_legacy_plugin] with an invalid version should return an error" {
+@test "[latest_command - dummy_legacy_plugin] an invalid version should return an error" {
   run asdf latest legacy-dummy 3
   echo "status: $status"
   echo "output: $output"
