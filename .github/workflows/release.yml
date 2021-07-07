@@ -9,20 +9,19 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: GoogleCloudPlatform/release-please-action@v2
-        name: create release
-        with:
-          release-type: simple
-
       - uses: actions/checkout@v2
         name: checkout repo
 
       - run: sed -i "s|^\\(git clone.*--branch \\).*$|\\1v$(cat version.txt)|" docs/core-manage-asdf.md
         name: replace version in docs
-        if: ${{ steps.release.outputs.release_created }}
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: commit docs version update
-        if: ${{ steps.release.outputs.release_created }}
         with:
           commit_message: "docs: update version in install instructions"
+
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        name: create release
+        with:
+          release-type: simple
+          bump-minor-pre-major: true
