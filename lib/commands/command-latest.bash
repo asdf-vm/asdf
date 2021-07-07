@@ -28,7 +28,7 @@ latest_command() {
 
     printf "%s\n" "$versions"
 
-    fi
+  fi
 }
 
 latest_command "$@"
