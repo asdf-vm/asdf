@@ -60,7 +60,7 @@ No match for _Operating System_ and _Installation Method_ selections. Please try
 Clone only the latest branch:
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1111111111
 ```
 
 Alternately, you can clone the whole repo and checkout the latest branch:
