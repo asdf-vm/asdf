@@ -16,17 +16,19 @@ latest_command() {
 
   if [ -f "${plugin_path}/bin/latest-stable" ]; then
     versions=$(bash "${plugin_path}"/bin/latest-stable "$query")
+    if [ -z "${versions}" ]; then
+      printf "No compatible versions available (%s %s)\n" "$plugin_name" "$query" >&2
+      exit 1
+    fi
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
     versions=$(asdf list-all "$plugin_name" "$query" |
       grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
       sed 's/^\s\+//' |
-      tail -1) 2>/dev/null
-  fi
-
-  if [ -z "${versions}" ]; then
-    display_error "No compatible versions available ($plugin_name $query)"
-    exit 1
+      tail -1)
+    if [ -z "${versions}" ]; then
+      exit 1
+    fi
   fi
 
   printf "%s\n" "$versions"
