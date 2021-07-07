@@ -73,6 +73,10 @@ install_dummy_version() {
   install_mock_plugin_version "dummy" "$1"
 }
 
+install_dummy_legacy_version() {
+  install_mock_plugin_version "legacy-dummy" "$1"
+}
+
 install_dummy_exec_path_script() {
   local name=$1
   local exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
