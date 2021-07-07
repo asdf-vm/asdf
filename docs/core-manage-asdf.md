@@ -67,8 +67,7 @@ Alternately, you can clone the whole repo and checkout the latest branch:
 
 ```shell
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-cd ~/.asdf
-git checkout "$(git describe --abbrev=0 --tags)"
+git -C ~/.asdf checkout "$(git -C ~/.asdf describe --abbrev=0 --tags)"
 ```
 
 ### --Homebrew--
