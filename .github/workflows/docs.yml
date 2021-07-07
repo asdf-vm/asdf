@@ -9,8 +9,11 @@ jobs:
   bump-version-in-docs:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v2
         name: checkout repo
+        with:
+          ref: "refs/heads/master"
 
       - run: sed -i "s|^\\(git clone.*--branch \\).*$|\\1v$(cat version.txt)|" docs/core-manage-asdf.md
         name: replace version in docs
