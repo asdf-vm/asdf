@@ -10,15 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        if: ${{ github.ref == 'refs/heads/master' }}
         name: checkout repo
 
       - run: sed -i "s|^\\(git clone.*--branch \\).*$|\\1v$(cat version.txt)|" docs/core-manage-asdf.md
-        if: ${{ github.ref == 'refs/heads/master' }}
         name: replace version in docs
 
       - uses: stefanzweifel/git-auto-commit-action@v4
-        if: ${{ github.ref == 'refs/heads/master' }}
         name: commit docs version update
         with:
           commit_message: "docs: update version in install instructions"
