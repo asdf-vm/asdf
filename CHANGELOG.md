@@ -1,7 +1,5 @@
 # Changelog
 
-## 0.8.2-dev
-
 ## 0.8.1
 
 Features
