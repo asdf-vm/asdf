@@ -1,0 +1,16 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        name: create release
+        with:
+          release-type: simple
+          bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
