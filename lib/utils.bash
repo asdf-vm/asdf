@@ -198,7 +198,7 @@ find_versions() {
   local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f "$legacy_list_filenames_script" ]; then
-    legacy_filenames=$(bash "$legacy_list_filenames_script")
+    legacy_filenames=$($legacy_list_filenames_script)
   fi
 
   while [ "$search_path" != "/" ]; do
@@ -329,7 +329,7 @@ parse_legacy_version_file() {
 
   if [ -f "$file_path" ]; then
     if [ -f "$parse_legacy_script" ]; then
-      bash "$parse_legacy_script" "$file_path"
+      "$parse_legacy_script" "$file_path"
     else
       cat "$file_path"
     fi
@@ -481,7 +481,7 @@ list_plugin_bin_paths() {
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
-      bash "${plugin_path}/bin/list-bin-paths"
+      "${plugin_path}/bin/list-bin-paths"
     )
   else
     local space_separated_list_of_bin_paths="bin"
