@@ -8,17 +8,21 @@ unset ASDF_DIR
 . "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
 
 setup_asdf_dir() {
-  BASE_DIR=$(mktemp -dt asdf.XXXX)
-  HOME=$BASE_DIR/home
-  ASDF_DIR=$HOME/.asdf
+  if [ -n "${ASDF_BATS_SPACE_IN_PATH:-}" ]; then
+    BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
+  else
+    BASE_DIR="$(mktemp -dt asdf.XXXX)"
+  fi
+  HOME="$BASE_DIR/home"
+  ASDF_DIR="$HOME/.asdf"
   mkdir -p "$ASDF_DIR/plugins"
   mkdir -p "$ASDF_DIR/installs"
   mkdir -p "$ASDF_DIR/shims"
   mkdir -p "$ASDF_DIR/tmp"
-  ASDF_BIN=$(dirname "$BATS_TEST_DIRNAME")/bin
+  ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # shellcheck disable=SC2031
-  PATH=$ASDF_BIN:$ASDF_DIR/shims:$PATH
+  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
 install_mock_plugin() {
