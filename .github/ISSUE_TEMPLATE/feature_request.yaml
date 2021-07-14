@@ -1,6 +1,5 @@
 name: Feature Request
-about: Suggest an idea for this project
-title: ""
+description: Suggest an idea for this project
 labels: "enhancement"
 body: 
   - type: markdown
@@ -31,9 +30,9 @@ body:
     validations:
       required: true
   - type: textarea
-    id: alternatives
+    id: workarounds
     attributes:
-      label: "Describe workarounds you've considered"
+      label: "Describe other workarounds you've considered"
       description: "A clear and concise description of any alternative solutions or features you've considered."
     validations:
       required: true
