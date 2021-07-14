@@ -53,8 +53,3 @@ body:
     attributes:
       label: asdf plugins affected (if relevant)
       description: The plugins you list here should appear in the list from `asdf info`
-  - type: textarea
-    id: additional-information
-    attributes:
-      label: Additional Information
-      description: Is there more information you would like to share? Screenshots?
