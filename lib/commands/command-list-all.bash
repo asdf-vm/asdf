@@ -13,7 +13,7 @@ list_all_command() {
   # Capture return code to allow error handling
   std_out_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
   std_err_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stderr.XXXXXX")"
-  return_code=0 && bash "${plugin_path}/bin/list-all" >"$std_out_file" 2>"$std_err_file" || return_code=$?
+  return_code=0 && "${plugin_path}/bin/list-all" >"$std_out_file" 2>"$std_err_file" || return_code=$?
 
   if [[ $return_code -ne 0 ]]; then
     # Printing all output to allow plugin to handle error formatting

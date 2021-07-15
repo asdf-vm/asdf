@@ -94,18 +94,18 @@ print_plugin_help() {
 
   # Eventually @jthegedus or someone else will format the output from these
   # scripts in a certain way.
-  bash "${plugin_path}"/bin/help.overview
+  "${plugin_path}"/bin/help.overview
 
   if [ -f "${plugin_path}"/bin/help.deps ]; then
-    bash "${plugin_path}"/bin/help.deps
+    "${plugin_path}"/bin/help.deps
   fi
 
   if [ -f "${plugin_path}"/bin/help.config ]; then
-    bash "${plugin_path}"/bin/help.config
+    "${plugin_path}"/bin/help.config
   fi
 
   if [ -f "${plugin_path}"/bin/help.links ]; then
-    bash "${plugin_path}"/bin/help.links
+    "${plugin_path}"/bin/help.links
   fi
 }
 

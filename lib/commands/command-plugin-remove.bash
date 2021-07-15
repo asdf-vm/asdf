@@ -13,7 +13,7 @@ plugin_remove_command() {
   if [ -f "${plugin_path}/bin/pre-plugin-remove" ]; then
     (
       export ASDF_PLUGIN_PATH=$plugin_path
-      bash "${plugin_path}/bin/pre-plugin-remove"
+      "${plugin_path}/bin/pre-plugin-remove"
     )
   fi
 

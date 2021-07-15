@@ -41,7 +41,7 @@ plugin_add_command() {
       (
         export ASDF_PLUGIN_SOURCE_URL=$source_url
         export ASDF_PLUGIN_PATH=$plugin_path
-        bash "${plugin_path}/bin/post-plugin-add"
+        "${plugin_path}/bin/post-plugin-add"
       )
     fi
 

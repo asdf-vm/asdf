@@ -15,7 +15,7 @@ latest_command() {
   local versions
 
   if [ -f "${plugin_path}/bin/latest-stable" ]; then
-    versions=$(bash "${plugin_path}"/bin/latest-stable "$query")
+    versions=$("${plugin_path}"/bin/latest-stable "$query")
     if [ -z "${versions}" ]; then
       # this branch requires this print to mimic the error from the list-all branch
       printf "No compatible versions available (%s %s)\n" "$plugin_name" "$query" >&2
