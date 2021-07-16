@@ -3,11 +3,11 @@
 load test_helpers
 
 setup() {
-  setup_asdf_dir
+  ASDF_BATS_SPACE_IN_PATH=true setup_asdf_dir
   install_dummy_plugin
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir "$PROJECT_DIR"
 }
 
 teardown() {
@@ -69,28 +69,28 @@ teardown() {
 }
 
 @test "reshim should not duplicate shims" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf install dummy 1.0
   run asdf install dummy 1.1
   [ "$status" -eq 0 ]
   [ -f "$ASDF_DIR/shims/dummy" ]
 
-  run rm $ASDF_DIR/shims/*
+  run rm "$ASDF_DIR/shims/"*
   [ "$status" -eq 0 ]
-  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 
   run asdf reshim dummy
   [ "$status" -eq 0 ]
-  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 
   run asdf reshim dummy
   [ "$status" -eq 0 ]
-  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 }
 
 @test "reshim should create shims only for files and not folders" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf install dummy 1.0
   run asdf install dummy 1.1
@@ -98,32 +98,32 @@ teardown() {
   [ -f "$ASDF_DIR/shims/dummy" ]
   [ ! -f "$ASDF_DIR/shims/subdir" ]
 
-  run rm $ASDF_DIR/shims/*
+  run rm "$ASDF_DIR/shims/"*
   [ "$status" -eq 0 ]
-  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
-  [ "0" -eq "$(ls $ASDF_DIR/shims/subdir* | wc -l)" ]
+  [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
+  [ "0" -eq "$(ls "$ASDF_DIR/shims/"subdir* | wc -l)" ]
 
   run asdf reshim dummy
   [ "$status" -eq 0 ]
-  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
-  [ "0" -eq "$(ls $ASDF_DIR/shims/subdir* | wc -l)" ]
+  [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
+  [ "0" -eq "$(ls "$ASDF_DIR/shims/"subdir* | wc -l)" ]
 
 }
 
 @test "reshim without arguments reshims all installed plugins" {
   run asdf install dummy 1.0
-  run rm $ASDF_DIR/shims/*
+  run rm "$ASDF_DIR/shims/"*
   [ "$status" -eq 0 ]
-  [ "0" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
   run asdf reshim
   [ "$status" -eq 0 ]
-  [ "1" -eq "$(ls $ASDF_DIR/shims/dummy* | wc -l)" ]
+  [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 }
 
 @test "reshim command executes configured pre hook" {
   run asdf install dummy 1.0
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat > "$HOME/.asdfrc" <<-'EOM'
 pre_asdf_reshim_dummy = echo RESHIM
 EOM
 
@@ -134,7 +134,7 @@ EOM
 @test "reshim command executes configured post hook" {
   run asdf install dummy 1.0
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat > "$HOME/.asdfrc" <<-'EOM'
 post_asdf_reshim_dummy = echo RESHIM
 EOM
 

@@ -103,7 +103,9 @@ generate_shim_for_executable() {
 generate_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
-  for executable_path in $(plugin_executables "$plugin_name" "$full_version"); do
+  local all_executable_paths
+  IFS=$'\n' read -rd '' -a all_executable_paths <<<"$(plugin_executables "$plugin_name" "$full_version")"
+  for executable_path in "${all_executable_paths[@]}"; do
     write_shim_script "$plugin_name" "$full_version" "$executable_path"
   done
 }
