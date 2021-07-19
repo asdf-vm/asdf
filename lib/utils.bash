@@ -10,7 +10,7 @@ ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
 
 asdf_version() {
   local version git_rev
-  version="$(cat "$(asdf_dir)/VERSION")"
+  version="v$(cat "$(asdf_dir)/version.txt")"
   if [ -d "$(asdf_dir)/.git" ]; then
     git_rev="$(git --git-dir "$(asdf_dir)/.git" rev-parse --short HEAD)"
     printf "%s-%s\\n" "$version" "$git_rev"
