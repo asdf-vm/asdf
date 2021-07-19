@@ -6,9 +6,9 @@ Here are some common questions regarding `asdf`.
 
 WSL1 ([Windows Subsystem for Linux](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) 1) is not officially supported. Some aspects of `asdf` may not work properly. We do not intend to add official support for WSL1.
 
-## [WSL2](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux#WSL_2) support?
+## WSL2 support?
 
-WSL2 ([Windows Subsystem for Linux](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) 2) should work using the setup & dependency instructions for you chosen WSL distro.
+WSL2 ([Windows Subsystem for Linux](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux#WSL_2) 2) should work using the setup & dependency instructions for you chosen WSL distro.
 
 Importantly, WSL2 is _only_ expected to work properly when the current working directory is a Unix drive and not a bound Windows drive.
 
