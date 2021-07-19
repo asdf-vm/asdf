@@ -25,9 +25,6 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Check docs/ formatting
-        run: npm run check
-
       - name: Cache dependencies
         uses: actions/cache@v2
         id: npm-cache
