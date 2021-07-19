@@ -3,7 +3,7 @@ name: docs
 on:
   # trigger deployment on every push to main branch
   push:
-    branches: [master,'docs/site-v2']
+    branches: [master]
   # trigger deployment manually
   workflow_dispatch:
 
