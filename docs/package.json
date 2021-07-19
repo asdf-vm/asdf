@@ -11,8 +11,5 @@
     "@vuepress/plugin-search": "^2.0.0-beta.22",
     "@vuepress/plugin-shiki": "^2.0.0-beta.22",
     "vuepress-vite": "^2.0.0-beta.22"
-  },
-  "dependencies": {
-    "update": "^0.7.4"
   }
 }
