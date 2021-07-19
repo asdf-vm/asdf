@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vuepress-vite dev .",
     "build": "vuepress-vite build .",
+    "check": "npx -y prettier --check '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'",
     "format": "npx -y prettier --write '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'"
   },
   "devDependencies": {
