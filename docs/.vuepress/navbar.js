@@ -1,7 +1,8 @@
 const en = [
   {
     text: "Getting Started",
-    link: "/guide/getting-started.md"
+    link: "/guide/getting-started.html",
+    activeMatch: "/guide/"
   },
   {
     text: "Reference",
@@ -129,7 +130,8 @@ const en = [
 const pt_br = [
   {
     text: "Getting Started",
-    link: "/pt-BR/guide/getting-started.md"
+    link: "/pt-BR/guide/getting-started.html",
+    activeMatch: "/pt-BR/guide/"
   }
 ];
 
