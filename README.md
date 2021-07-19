@@ -19,10 +19,10 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 
 [Please head over to the documentation site for more information](https://asdf-vm.github.io/asdf/)!
 
-- [Getting Started](https://asdf-vm.github.io/asdf/#/core-manage-asdf)
-- [All Commands](https://asdf-vm.github.io/asdf/#/core-commands)
-- [All Plugins](https://asdf-vm.github.io/asdf/#/plugins-all)
-- [Create a Plugin](https://asdf-vm.github.io/asdf/#/plugins-create) with our [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template)
+- [Getting Started](https://asdf-vm.github.io/asdf/guide/getting-started.html)
+- [All Commands](https://asdf-vm.github.io/asdf/manage/commands.html)
+- [All Plugins](https://github.com/asdf-vm/asdf-plugins)
+- [Create a Plugin](https://asdf-vm.github.io/asdf/plugins/create.html) with our [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template)
 - [asdf GitHub Actions](https://github.com/asdf-vm/actions)
 
 ## Contributing
@@ -31,6 +31,45 @@ See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CO
 
 ## Community & Questions
 
+- [FAQ](https://asdf-vm.github.io/asdf/learn-more/faq.html)
 - [![GitHub Issues](https://icongr.am/simple/github.svg?color=808080&size=16) GitHub Issues](https://github.com/asdf-vm/asdf/issues): report a bug or raise a feature request to the `asdf` core team
 - [![GitHub Discussions](https://icongr.am/simple/github.svg?color=808080&size=16) GitHub Discussions](https://github.com/asdf-vm/asdf/discussions): our preferred method for community Q&A and interaction
 - [![StackOverflow Tag](https://icongr.am/fontawesome/stack-overflow.svg?size=16&color=808080) StackOverflow Tag](https://stackoverflow.com/questions/tagged/asdf-vm): see existing Q&A for `asdf`. Some of the core team watch this tag in addition to our helpful community
+
+## Ballad of asdf
+
+> Once upon a time there was a programming language<br/>
+> There were many versions of it<br/>
+> So people wrote a version manager for it<br/>
+> To switch between versions for projects<br/>
+> Different, old, new.
+
+> Then there came more programming languages<br/>
+> So there came more version managers<br/>
+> And many commands for them
+
+> I installed a lot of them<br/>
+> I learnt a lot of commands
+
+> Then I said, just one more version manager<br/>
+> Which I will write instead
+
+> So, there came another version manager<br/>
+> **asdf version manager** - <https://github.com/asdf-vm/asdf>
+
+> A version manager so extendable<br/>
+> for which anyone can create a plugin<br/>
+> To support their favourite language<br/>
+> No more installing more version managers<br/>
+> Or learning more commands
+
+---
+
+<figure>
+  <blockquote>
+  This was the mail I wrote to a few friends to tell them about the project. Thanks to <a href="https://twitter.com/roshanvid" target="_blank" rel="noreferrer">@roshanvid</a> for suggesting that this go into the readme
+  </blockquote>
+  <figcaption>
+    <a href="https://github.com/HashNuke" target="_blank" rel="noreferrer">@HashNuke</a>
+  </figcaption>
+</figure>

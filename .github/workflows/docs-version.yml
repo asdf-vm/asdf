@@ -1,0 +1,24 @@
+name: "Docs Version Update"
+
+on:
+  create:
+    tags:
+      - "*"
+
+jobs:
+  bump-version-in-docs:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+        name: checkout repo
+        with:
+          ref: "refs/heads/master"
+
+      - run: sed -i "s|^\\(git clone.*--branch \\).*$|\\1v$(cat version.txt)|" docs/guide/getting-started.md
+        name: replace version in docs
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        name: commit docs version update
+        with:
+          commit_message: "docs: update version in install instructions"
