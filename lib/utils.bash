@@ -576,7 +576,9 @@ with_plugin_env() {
 plugin_executables() {
   local plugin_name=$1
   local full_version=$2
-  for bin_path in $(list_plugin_exec_paths "$plugin_name" "$full_version"); do
+  local all_bin_paths
+  IFS=$'\n' read -rd '' -a all_bin_paths <<<"$(list_plugin_exec_paths "$plugin_name" "$full_version")"
+  for bin_path in "${all_bin_paths[@]}"; do
     for executable_file in "$bin_path"/*; do
       if is_executable "$executable_file"; then
         printf "%s\\n" "$executable_file"
