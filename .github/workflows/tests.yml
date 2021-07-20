@@ -10,53 +10,6 @@ env:
   BATS_VERSION: v1.3.0
 
 jobs:
-  wsl1:
-    if: github.ref != 'refs/heads/master'
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - windows-2019
-        distribution:
-          - Ubuntu-20.04
-          - Ubuntu-18.04
-          # - Alpine
-          # - Debian
-          # - kali-linux
-          # - openSUSE-Leap-15.2
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Set git to use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Setup WSL & install test dependencies
-        uses: Vampire/setup-wsl@v1
-        with:
-          distribution: ${{ matrix.distribution }}
-          additional-packages: curl git fish
-
-      - name: Install bats
-        shell: wsl-bash {0}
-        run: |
-          git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
-          cd $HOME/bats-core
-          ./install.sh $HOME
-          $HOME/bin/bats --version
-
-      - name: Run tests
-        shell: wsl-bash {0}
-        run: |
-          $HOME/bin/bats test
-        env:
-          GITHUB_API_TOKEN: ${{ github.token }}
-
   nix:
     strategy:
       fail-fast: false
