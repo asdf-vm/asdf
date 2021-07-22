@@ -1,4 +1,4 @@
-# How to Contribute to `asdf`
+# How to Contribute to asdf
 
 There are many ways to contribute to `asdf`, thanks for taking the time to read and help.
 
@@ -18,11 +18,11 @@ Please [open a new Feature Request](https://github.com/asdf-vm/asdf/issues/new/c
 
 See [docs/contribute/core.md](docs/contribute/core.md) or on our [Docs Site](https://asdf-vm.com/contribute/core.html).
 
-## `asdf` Documentation
+## Documentation
 
 Documentation can always be improved! See [docs/contribute/documentation.md](docs/contribute/documentation.md) or on our [Docs Site](https://asdf-vm.com/contribute/documentation.html).
 
-## `asdf` First-Party Plugins
+## First-Party Plugins
 
 We always need help to maintain our plugins. See [docs/contribute/first-party-plugins.md](docs/contribute/first-party-plugins.md) or on our [Docs Site](https://asdf-vm.com/contribute/first-party-plugins.html).
 
@@ -30,7 +30,7 @@ We always need help to maintain our plugins. See [docs/contribute/first-party-pl
 
 Please read the [docs/plugins/create.md](docs/plugins/create.md) or on our [Docs Site](https://asdf-vm.com/plugins/create.html).
 
-## `asdf` GitHub Action
+## GitHub Action
 
 See the [asdf actions repo](https://github.com/asdf-vm/actions) for existing Issues, conversations and Contributing Guidelines.
 
