@@ -13,7 +13,7 @@ git clone https://github.com/<GITHUB_USER>/asdf.git
 git clone https://github.com/asdf-vm/asdf.git
 ```
 
-The tools for core development are managed with `asdf` in this repo's `.tool-versions`. Add the plugins with:
+The tools for core development are in this repo's `.tool-versions`. If you wish to manage with `asdf` itself, add the plugins:
 
 ```shell:no-line-numbers
 asdf plugin add bats https://github.com/timgluz/asdf-bats.git
@@ -26,6 +26,8 @@ Install the versions to develop `asdf` with:
 ```shell:no-line-numbers
 asdf install
 ```
+
+It *may* be useful to not use `asdf` to manage the tools during development on your local machine as you may need to break functionality which would then break your dev tooling. Here's the raw list of tools:
 
 - [bats-core](https://github.com/bats-core/bats-core): Bash Automated Testing System, for unit testing Bash or POSIX compliant scripts.
 - [shellcheck](https://github.com/koalaman/shellcheck): Static analysis tool for shell scripts.
@@ -52,7 +54,7 @@ bats test/list_commands.bash
 
 ::: tip
 
-**Add tests!** - Please add new tests to cover new code paths before you create a Pull Request. See [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html)
+**Add tests!** - Tests are **required** for new features and speed up review of bug fixes. Please cover new code paths before you create a Pull Request. See [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html)
 
 :::
 
