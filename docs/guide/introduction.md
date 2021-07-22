@@ -2,12 +2,7 @@
 
 `asdf` is a tool version manager. All tool version definitions are contained within one file (`.tool-versions`) which you can check-in to your project's Git repository to share with your team, ensuring everyone is using the **exact** same versions of tools.
 
-`asdf` was built to address two core issues:
-
-1. different CLI tools to manage each runtime/tool in a repository/project
-2. different CLI commands & configuration files (`.*-version` files) per manager for each of the runtime/tools
-
-With a small dependency list of common system packages `asdf` is aimed to be portable across systems and environments.
+The old way of working required multiple CLI version managers, each with their distinct API, configurations files and implementation (e.g. `$PATH` manipulation, shims, environment variables, etc...). `asdf` provides a single interface and configuration file to simplify development workflows, and can be extended to all tools and runtimes via a simple plugin interface.
 
 ## How It Works
 
