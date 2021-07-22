@@ -55,7 +55,7 @@ npm run format
 
 ## Pull Requests, Releases & Conventional Commits
 
-`asdf` is using an automated release pipeline which relies on Conventional Commits in PR titls. Detailed documentation found in the [core contribution guide](./core.md).
+`asdf` is using an automated release pipeline which relies on Conventional Commits in PR titles. Detailed documentation found in the [core contribution guide](./core.md).
 
 When creating a PR for documentation changes please make the PR title with the Conventional Commit type `docs` in the format `docs: <description>`.
 
