@@ -46,7 +46,7 @@ jobs:
         run: npm run build
         
       - name: Bundle CNAME with site dist
-        run: cp ./docs/CNAME ./docs/.vuepress/dist
+        run: cp CNAME .vuepress/dist
 
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
