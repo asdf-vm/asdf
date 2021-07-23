@@ -33,7 +33,11 @@ module.exports = {
         selectLanguageName: "Brazilian Portuguese",
         sidebar: sidebar.pt_br,
         navbar: navbar.pt_br,
-        editLinkText: "Edit this page"
+        editLinkText: "Edit this page",
+
+        // 404 page
+        notFound: ["Parece que estamos perdido!"],
+        backToHome: "Voltar para a página inicial"
       }
     }
   },
