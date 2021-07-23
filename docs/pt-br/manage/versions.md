@@ -106,7 +106,6 @@ Para usar o sistema de versão da ferramenta `<name>` inicie um gerenciador de v
 Selecione o sistema com `global`, `local` ou `shell`
 Set system with either `global`, `local` or `shell` conforme descrito em [Selecionar versão atual](#selecionar-versão-atual).
 
-
 ```shell:no-line-numbers
 asdf local <name> system
 # asdf local python system
