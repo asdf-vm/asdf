@@ -95,7 +95,7 @@ can set an environment variable like `ASDF_${TOOL}_VERSION`.
 The following example runs tests on an Elixir project with version `1.4.0`.
 The version format is the same supported by the `.tool-versions` file.
 
-```shell
+```shell:no-line-numbers
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 

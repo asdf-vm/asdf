@@ -3,11 +3,11 @@ home: true
 title: Home
 # heroImage: https://vuejs.org/images/logo.png
 actions:
-  - text: "TODO: Translate"
-    link: /pt-BR/guide/getting-started.html
+  - text: "Começar"
+    link: /pt-br/guide/getting-started.html
     type: primary
-  - text: "TODO: Translate"
-    link: /pt-BR/guide/introduction.html
+  - text: "Introduction"
+    link: /pt-br/guide/introduction.html
     type: secondary
 features:
   - title: One Tool
