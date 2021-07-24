@@ -9,12 +9,12 @@ module.exports = {
       lang: "en-US",
       title: "asdf",
       description: "Manage multiple runtime versions with a single CLI tool"
+    },
+    "/pt-br/": {
+      lang: "pt-br",
+      title: "asdf",
+      description: "Gerencie múltiplas versões com um simples CLI"
     }
-    // "/pt-BR/": {
-    //   lang: "pt-BR",
-    //   title: "asdf",
-    //   description: "TODO: translate"
-    // }
   },
 
   themeConfig: {
@@ -26,13 +26,19 @@ module.exports = {
       "/": {
         selectLanguageName: "English",
         sidebar: sidebar.en,
-        navbar: navbar.en
+        navbar: navbar.en,
+        editLinkText: "Edit this page"
+      },
+      "/pt-br/": {
+        selectLanguageName: "Brazilian Portuguese",
+        sidebar: sidebar.pt_br,
+        navbar: navbar.pt_br,
+        editLinkText: "Edit this page",
+
+        // 404 page
+        notFound: ["Parece que estamos perdido!"],
+        backToHome: "Voltar para a página inicial"
       }
-      // "/pt-BR/": {
-      //   selectLanguageName: "Brazilian Portuguese",
-      //   sidebar: sidebar.pt_br,
-      //   navbar: navbar.pt_br
-      // }
     }
   },
 
@@ -43,10 +49,10 @@ module.exports = {
         locales: {
           "/": {
             placeholder: "Search"
+          },
+          "/pt-br/": {
+            placeholder: "Search"
           }
-          // "/pt-BR/": {
-          //   placeholder: "Search"
-          // }
         }
       }
     ],
