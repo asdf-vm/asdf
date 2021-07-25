@@ -25,6 +25,7 @@ The versions can be in the following format:
 - `system` - this keyword causes asdf to passthrough to the version of the tool on the system that is not managed by asdf.
 
 ::: tip
+
 Multiple versions can be set by separating them with a space. For example, to use Python `3.7.2`, fallback to Python `2.7.15` and finally to the `system` Python, the following line can be added to `.tool-versions`.
 
 ```:no-line-numbers
@@ -41,18 +42,43 @@ Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 ## `$HOME/.asdfrc`
 
-Add a `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file should be formatted like this:
+Add an `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
 
 ```:no-line-numbers
-legacy_version_file = yes
+legacy_version_file = no
+use_release_candidates = no
+always_keep_download = no
+plugin_repository_last_check_duration = 60
 ```
 
-**Settings**
+### `legacy_version_file`
 
-- `legacy_version_file` - defaults to `no`. If set to yes it will cause plugins that support this feature to read the version files used by other version managers (e.g. `.ruby-version` in the case of Ruby's `rbenv`).
-- `use_release_candidates` - defaults to `no`. If set to yes it will cause the `asdf update` command to upgrade to the latest release candidate release instead of the latest semantic version.
-- `always_keep_download` - defaults to `no`. If set to `yes` it will cause `asdf install` always keep the source code or binary it downloads. If set to `no` the source code or binary downloaded by `asdf install` will be deleted after successful installation.
-- `plugin_repository_last_check_duration` - defaults to `60` mins (1 hrs). It will set asdf plugins repository last check duration. When `asdf plugin add <name>`, `asdf plugin list all` command be executed, it will check last update duration to update repository. If set to `0` it will update asdf plugins repository every time.
+If set to `yes`, plugins with support will read the versions files used by other version managers (e.g. `.ruby-version` in the case of Ruby's `rbenv`).
+
+- Defaults to `no`
+- Valid values: `yes` or `no`
+
+### `use_release_candidates`
+
+If set to `yes`, the `asdf update` command to upgrade will use the latest release candidate release instead of the latest semantic version.
+
+- Defaults to `no`
+- Valid values: `yes` or `no`
+
+### `always_keep_download`
+
+If set to `yes`, `asdf install` will always keep the source code or binary it downloads. If set to `no` the source code or binary downloaded by `asdf install` will be deleted after successful installation.
+
+- Defaults to `no`
+- Valid values: `yes` or `no`
+
+### `plugin_repository_last_check_duration`
+
+Sets the duration (in minutes) until the asdf plugins repository should be synced since previous sync. The check occurs when command `asdf plugin add <name>` or `asdf plugin list all` are executed.
+
+- Defaults to `60`
+- Valid values: `never` or a number in the range `0` to `999999999` (1902 years).
+
 
 ## Environment Variables
 
