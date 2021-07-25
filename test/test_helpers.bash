@@ -46,7 +46,7 @@ install_mock_broken_plugin() {
 install_mock_plugin_repo() {
   local plugin_name=$1
   local location="${BASE_DIR}/repo-${plugin_name}"
-  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "${location}"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/${plugin_name}_plugin" "${location}"
   git -C "${location}" init -q
   git -C "${location}" config user.name "Test"
   git -C "${location}" config user.email "test@example.com"
