@@ -46,10 +46,6 @@ bar                           http://example.com/bar
 dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
 
-  printf "%s\n" "status: $status"
-  printf "%s\n" "--------------------------------------------"
-  printf "%s\n" "output: $output"
-
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
@@ -60,6 +56,7 @@ foo                           http://example.com/foo"
 bar                           http://example.com/bar
 dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
+
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
