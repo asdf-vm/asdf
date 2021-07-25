@@ -74,10 +74,12 @@ If set to `yes`, `asdf install` will always keep the source code or binary it do
 
 ### `plugin_repository_last_check_duration`
 
-Sets the duration (in minutes) until the asdf plugins repository should be synced since previous sync. The check occurs when command `asdf plugin add <name>` or `asdf plugin list all` are executed.
+Sets the duration (in minutes) until the asdf plugins repository should be synced since previous sync. The check triggers when command `asdf plugin add <name>` or `asdf plugin list all` are executed.
 
 - Defaults to `60`
 - Valid values: `never` or a number in the range `0` to `999999999` (1902 years).
+
+When set to `0` a sync will occur on **each** trigger. When set to `never` a sync will **never** occur. When set to a number `>0` a sync will occur on next trigger if the set number of **minutes** has passed since previous trigger.
 
 
 ## Environment Variables
