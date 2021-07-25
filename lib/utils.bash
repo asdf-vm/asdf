@@ -379,6 +379,9 @@ get_asdf_config_value() {
     get_asdf_config_value_from_file "$default_config_path" "$key"
 }
 
+# Whether the plugin shortname repo needs to be synced
+# 0: if sync needs to occur
+# 1: if no sync needs to occur
 repository_needs_update() {
   local update_file_dir
   update_file_dir="$(asdf_data_dir)/tmp"
@@ -387,9 +390,13 @@ repository_needs_update() {
   # `find` outputs filename if it has not been modified in plugin_repository_last_check_duration setting.
   local plugin_repository_last_check_duration
   plugin_repository_last_check_duration="$(get_asdf_config_value "plugin_repository_last_check_duration")"
-  local find_result
-  find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mmin +"${plugin_repository_last_check_duration:-60}" -print)
-  [ -n "$find_result" ]
+  if [ "never" == "$plugin_repository_last_check_duration" ]; then
+    ! [ "never" == "$plugin_repository_last_check_duration" ]
+  else
+    local find_result
+    find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mmin +"${plugin_repository_last_check_duration:-60}" -print)
+    [ -n "$find_result" ]
+  fi
 }
 
 initialize_or_update_repository() {

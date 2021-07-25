@@ -38,6 +38,22 @@ foo                           http://example.com/foo"
   [ "$output" = "$expected" ]
 }
 
+@test "plugin_list_all skips repo sync because check_duration is set to never" {
+  echo 'plugin_repository_last_check_duration = never' > $HOME/.asdfrc
+  run asdf plugin-list-all
+  local expected="\
+bar                           http://example.com/bar
+dummy                        *http://example.com/dummy
+foo                           http://example.com/foo"
+
+  printf "%s\n" "status: $status"
+  printf "%s\n" "--------------------------------------------"
+  printf "%s\n" "output: $output"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}
+
 @test "plugin_list_all list all plugins in the repository" {
   run asdf plugin-list-all
   local expected="\
