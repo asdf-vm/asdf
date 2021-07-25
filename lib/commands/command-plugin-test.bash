@@ -57,7 +57,7 @@ plugin_test_command() {
     # shellcheck disable=SC1090
     . "$ASDF_DIR/asdf.sh"
 
-    if ! (asdf plugin-add "$plugin_name" "$plugin_url"); then
+    if ! (asdf plugin add "$plugin_name" "$plugin_url"); then
       fail_test "could not install $plugin_name from $plugin_url"
     fi
 
