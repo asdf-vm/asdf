@@ -71,7 +71,6 @@ teardown() {
   install_mock_plugin_repo "dummy"
 
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-
   [ "$output" = "plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy" ]
 }
 

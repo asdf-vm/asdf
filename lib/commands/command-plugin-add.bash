@@ -2,7 +2,7 @@
 
 plugin_add_command() {
   if [[ $# -lt 1 || $# -gt 2 ]]; then
-    display_error "usage: asdf plugin-add <name> [<git-url>]"
+    display_error "usage: asdf plugin add <name> [<git-url>]"
     exit 1
   fi
 
