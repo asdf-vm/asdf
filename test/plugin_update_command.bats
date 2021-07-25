@@ -21,8 +21,8 @@ teardown() {
 }
 
 @test "asdf plugin-update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if default branch changes" {
-  install_mock_plugin_repo "dummy"
-  remote_dir="$BASE_DIR/repo-dummy"
+  install_mock_plugin_repo "dummy-remote"
+  remote_dir="$BASE_DIR/repo-dummy-remote"
   # set HEAD to refs/head/main in dummy-remote
   git -C "${remote_dir}" checkout -b main
   # track & fetch remote repo (dummy-remote) in plugin (dummy)
@@ -39,8 +39,8 @@ teardown() {
 }
 
 @test "asdf plugin-update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if the default branch contains a forward slash" {
-  install_mock_plugin_repo "dummy"
-  remote_dir="$BASE_DIR/repo-dummy"
+  install_mock_plugin_repo "dummy-remote"
+  remote_dir="$BASE_DIR/repo-dummy-remote"
   # set HEAD to refs/head/my/default in dummy-remote
   git -C "${remote_dir}" checkout -b my/default
   # track & fetch remote repo (dummy-remote) in plugin (dummy)
@@ -62,8 +62,8 @@ teardown() {
   run asdf plugin-update dummy "${current_sha}"
 
   # setup mock plugin remote
-  install_mock_plugin_repo "dummy"
-  remote_dir="$BASE_DIR/repo-dummy"
+  install_mock_plugin_repo "dummy-remote"
+  remote_dir="$BASE_DIR/repo-dummy-remote"
   # set HEAD to refs/head/main in dummy-remote
   git -C "${remote_dir}" checkout -b main
   # track & fetch remote repo (dummy-remote) in plugin (dummy)
