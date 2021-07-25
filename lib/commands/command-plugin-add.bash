@@ -8,6 +8,11 @@ plugin_add_command() {
 
   local plugin_name=$1
 
+  if ! printf "%s" "$plugin_name" | grep --extended-regexp "^[a-zA-Z0-9_-]+$"; then
+    display_error "$plugin_name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$"
+    exit 1
+  fi
+
   if [ -n "$2" ]; then
     local source_url=$2
   else
