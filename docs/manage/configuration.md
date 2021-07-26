@@ -63,4 +63,6 @@ legacy_version_file = yes
 
 ## Internal Configuration
 
+Users should not worry about this section as it describes configuration internal to `asdf` useful for Package Managers and integrators.
+
 - `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by Package Managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.
