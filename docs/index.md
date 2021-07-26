@@ -3,7 +3,7 @@ home: true
 title: Home
 # heroImage: https://vuejs.org/images/logo.png
 actions:
-  - text: Get Started
+  - text: Install Guide
     link: /guide/getting-started.html
     type: primary
   - text: Introduction
