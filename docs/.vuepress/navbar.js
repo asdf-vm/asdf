@@ -1,6 +1,6 @@
 const en = [
   {
-    text: "Install Guide",
+    text: "Getting Started",
     link: "/guide/getting-started.html",
     activeMatch: "/guide/"
   },
