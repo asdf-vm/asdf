@@ -53,34 +53,40 @@ plugin_repository_last_check_duration = 60
 
 ### `legacy_version_file`
 
-If set to `yes`, plugins with support will read the versions files used by other version managers (e.g. `.ruby-version` in the case of Ruby's `rbenv`).
+Plugins with support can read the versions files used by other version managers, for example, `.ruby-version` in the case of Ruby's `rbenv`.
 
-- Defaults to `no`
-- Valid values: `yes` or `no`
+| Options                                                    | Description                                                   |
+| :--------------------------------------------------------- | :------------------------------------------------------------ |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Use `.tool-versions` to read versions                         |
+| `yes`                                                      | Use plugin fallback to legacy version files (`.ruby-version`) |
 
 ### `use_release_candidates`
 
-If set to `yes`, the `asdf update` command to upgrade will use the latest release candidate release instead of the latest semantic version.
+Configure the `asdf update` command to upgrade to the latest Release Candidate instead of the latest Semantic Version.
 
-- Defaults to `no`
-- Valid values: `yes` or `no`
+| Options                                                    | Description               |
+| :--------------------------------------------------------- | :------------------------ |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Semantic Version is used  |
+| `yes`                                                      | Release Candidate is used |
 
 ### `always_keep_download`
 
-If set to `yes`, `asdf install` will always keep the source code or binary it downloads. If set to `no` the source code or binary downloaded by `asdf install` will be deleted after successful installation.
+Configure the `asdf install` command to keep or delete the source code or binary it downloads.
 
-- Defaults to `no`
-- Valid values: `yes` or `no`
+| Options                                                    | Description                                |
+| :--------------------------------------------------------- | :----------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Delete source code or binary after install |
+| `yes`                                                      | Keep source code or binary after install   |
 
 ### `plugin_repository_last_check_duration`
 
-Sets the duration (in minutes) until the asdf plugins repository should be synced since previous sync. The check triggers when command `asdf plugin add <name>` or `asdf plugin list all` are executed.
+Configure the duration since the last asdf plugin repository sync to the next. Commands `asdf plugin add <name>` or `asdf plugin list all` will trigger a check of the duration, if the duration has passed then a sync occurs.
 
-- Defaults to `60`
-- Valid values: `never` or a number in the range `0` to `999999999` (1902 years).
-
-When set to `0` a sync will occur on **each** trigger. When set to `never` a sync will **never** occur. When set to a number `>0` a sync will occur on next trigger if the set number of **minutes** has passed since previous trigger.
-
+| Options                                                                                                 | Description                                                  |
+| :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
+| integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
+| `0`                                                                                                     | Sync on each trigger event                                   |
+| `never`                                                                                                 | Never sync                                                   |
 
 ## Environment Variables
 
