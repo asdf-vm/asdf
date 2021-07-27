@@ -3,11 +3,11 @@
 `asdf` installation involves:
 
 1. Installing dependencies
-2. Installing `asdf` core
-3. Adding `asdf` to your shell
-4. install a plugin for each tool/runtime you wish to manage
-5. install a version of the tool/runtime
-6. set global and project versions via `.tool-versions` config files
+2. Downloading `asdf` core
+3. Installing `asdf`
+4. Installing a plugin for each tool/runtime you wish to manage
+5. Installing a version of the tool/runtime
+6. Setting global and project versions via `.tool-versions` config files
 
 ## 1. Install Dependencies
 
@@ -27,9 +27,9 @@
 | Homebrew        | Dependencies will be automatically installed by Homebrew. |
 | Spack           | `spack install coreutils curl git`                        |
 
-## 2. Install asdf
+## 2. Download asdf
 
-We recommend installing via Git, though there are other platform specific methods:
+We recommend using Git, though there are other platform specific methods:
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,7 +37,7 @@ We recommend installing via Git, though there are other platform specific method
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
-## 3. Add to your Shell
+## 3. Install asdf
 
 There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system:
 
@@ -197,6 +197,12 @@ Completions are placed in a ZSH friendly location, but [ZSH must be configured t
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
+## Core Installation Complete!
+
+This completes the installation of the `asdf` core  :tada:
+
+`asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this.
+
 ## 4. Install a Plugin
 
 For demonstration purposes we will install & set [Node.js](https://nodejs.org/) via the [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) plugin.
@@ -284,9 +290,9 @@ legacy_version_file = yes
 
 See the [configuration](/manage/configuration.md) reference page for more config options.
 
-## Setup Complete!
+## Guide Complete!
 
-That completes the initial setup of `asdf` :tada: You can now manage `nodejs` versions for your project. Follow similar steps for each type of tool in your project!
+That completes the Getting Started guide for `asdf` :tada: You can now manage `nodejs` versions for your project. Follow similar steps for each type of tool in your project!
 
 `asdf` has a many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
 
