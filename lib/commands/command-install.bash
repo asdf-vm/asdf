@@ -169,7 +169,7 @@ install_tool_version() {
         export ASDF_DOWNLOAD_PATH=$download_path
         mkdir "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
-        bash "${plugin_path}"/bin/download
+        "${plugin_path}"/bin/download
       )
     fi
 
@@ -188,7 +188,7 @@ install_tool_version() {
         export ASDF_CONCURRENCY=$concurrency
         mkdir "$install_path"
         asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
-        bash "${plugin_path}"/bin/install
+        "${plugin_path}"/bin/install
       )
     fi
 
