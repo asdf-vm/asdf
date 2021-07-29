@@ -21,6 +21,6 @@ features:
   - title: "Shells"
     details: "Supports Bash, ZSH & Fish with completions available."
   - title: "GitHub Actions"
-    details: "Provides a GitHub Action to install and utilize your .tool-verions in your CICD workflows."
+    details: "Provides a GitHub Action to install and utilize your .tool-versions in your CI/CD workflows."
 # footer: MIT Licensed
 ---
