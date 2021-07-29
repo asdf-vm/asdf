@@ -5,7 +5,7 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_mock_plugin_repo "dummy"
-  run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
 }
 
 teardown() {
