@@ -73,10 +73,10 @@ Configure the `asdf update` command to upgrade to the latest Release Candidate i
 
 Configure the `asdf install` command to keep or delete the source code or binary it downloads.
 
-| Options                                                    | Description                                |
-| :--------------------------------------------------------- | :----------------------------------------- |
-| `no` <Badge type="tip" text="default" vertical="middle" /> | Delete source code or binary after install |
-| `yes`                                                      | Keep source code or binary after install   |
+| Options                                                    | Description                                           |
+| :--------------------------------------------------------- | :---------------------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Delete source code or binary after successful install |
+| `yes`                                                      | Keep source code or binary after install              |
 
 ### `plugin_repository_last_check_duration`
 
