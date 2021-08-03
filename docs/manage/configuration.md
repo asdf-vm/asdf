@@ -53,12 +53,12 @@ plugin_repository_last_check_duration = 60
 
 ### `legacy_version_file`
 
-Plugins with support can read the versions files used by other version managers, for example, `.ruby-version` in the case of Ruby's `rbenv`.
+Plugins **with support** can read the versions files used by other version managers, for example, `.ruby-version` in the case of Ruby's `rbenv`.
 
-| Options                                                    | Description                                                   |
-| :--------------------------------------------------------- | :------------------------------------------------------------ |
-| `no` <Badge type="tip" text="default" vertical="middle" /> | Use `.tool-versions` to read versions                         |
-| `yes`                                                      | Use plugin fallback to legacy version files (`.ruby-version`) |
+| Options                                                    | Description                                                                |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Use `.tool-versions` to read versions                                      |
+| `yes`                                                      | Use plugin fallback to legacy version files (`.ruby-version`) if available |
 
 ### `use_release_candidates`
 
