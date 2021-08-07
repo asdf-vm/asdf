@@ -84,7 +84,7 @@ If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. 
 Add `asdf.sh` to your `~/.bash_profile` with:
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
 ```
 
 Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
@@ -127,7 +127,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 Add `asdf.fish` to your `~/.config/fish/config.fish` with:
 
 ```shell:no-line-numbers
-echo -e "\nsource "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
+echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
 Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
@@ -176,7 +176,7 @@ If you are using a ZSH Framework the associated `asdf` plugin may need to be upd
 Add `asdf.sh` to your `~/.zshrc` with:
 
 ```shell
-echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.

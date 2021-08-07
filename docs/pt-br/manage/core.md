@@ -133,7 +133,7 @@ Caso esteja usando **macOs Catalina ou mais recente**, por padrão o _shell_ é 
 1. Em seu `~/.bash_profile` remova as linhas do `asdf.sh` e remova seus complementos:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+. $(brew --prefix asdf)/libexec/asdf.sh
 . $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
 ```
 
@@ -214,7 +214,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.config/fish/config.fish` remova as linhas do `asdf.fish`:
 
 ```shell
-source "(brew --prefix asdf)"/asdf.fish
+source "(brew --prefix asdf)"/libexec/asdf.fish
 ```
 
 2. Desinstale usando seu gerenciador de pacotes:
@@ -292,7 +292,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.zshrc` remova as linhas do `asdf.sh`:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+. $(brew --prefix asdf)/libexec/asdf.sh
 ```
 
 2. Desinstale usando seu gerenciador de pacotes:

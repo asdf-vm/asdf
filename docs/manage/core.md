@@ -131,7 +131,7 @@ If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. 
 1. In your `~/.bash_profile` remove the lines that source `asdf.sh` and the completions:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+. $(brew --prefix asdf)/libexec/asdf.sh
 . $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
 ```
 
@@ -212,7 +212,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. In your `~/.config/fish/config.fish` remove the lines that source `asdf.fish`:
 
 ```shell
-source "(brew --prefix asdf)"/asdf.fish
+source "(brew --prefix asdf)"/libexec/asdf.fish
 ```
 
 2. Uninstall with your package manager:
@@ -290,7 +290,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. In your `~/.zshrc` remove the lines that source `asdf.sh`:
 
 ```shell
-. $(brew --prefix asdf)/asdf.sh
+. $(brew --prefix asdf)/libexec/asdf.sh
 ```
 
 2. Uninstall with your package manager:
