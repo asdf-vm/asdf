@@ -57,8 +57,9 @@ install_mock_plugin_repo() {
 install_mock_plugin_repo_with_ref() {
   install_mock_plugin_repo "$1"
   local plugin_name=$1
+  local tagname=$2
   local location="${BASE_DIR}/repo-${plugin_name}"
-  git -C "${location}" tag "tagname"
+  git -C "${location}" tag "${tagname}"
 }
 
 install_mock_plugin_version() {

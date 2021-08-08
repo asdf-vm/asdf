@@ -30,11 +30,21 @@ update_plugin() {
   plugin_remote_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')
   local gitref=${3:-${plugin_remote_default_branch}}
   logfile=$(mktemp)
-  {
-    printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
-    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch --prune --update-head-ok origin "$gitref:$gitref"
-    git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" -c advice.detachedHead=false checkout --force "$gitref"
-  } >"$logfile" 2>&1
+
+  local current_ref
+  current_ref=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref --symbolic-full-name HEAD)
+  if [ "$current_ref" = "HEAD" ]; then
+    {
+      printf "Skipping detached %s\\n" "$plugin_name"
+    } >"$logfile" 2>&1
+  else
+    {
+      printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
+      git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch --prune --update-head-ok origin "$gitref:$gitref"
+      git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" -c advice.detachedHead=false checkout --force "$gitref"
+    } >"$logfile" 2>&1
+  fi
+
   cat "$logfile"
   rm "$logfile"
 }

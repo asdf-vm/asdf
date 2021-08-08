@@ -80,6 +80,21 @@ teardown() {
   [ "$repo_head" = "main" ]
 }
 
+@test "asdf plugin-update should skip updates for detached plugin" {
+  install_mock_plugin_repo_with_ref "dummy" "tagname"
+
+  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy" "tagname"
+  [ "$status" -eq 0 ]
+
+  run asdf plugin update dummy-tagname
+
+  current_ref="$(git --git-dir "$ASDF_DIR/plugins/dummy-tagname/.git" --work-tree "$ASDF_DIR/plugins/dummy-tagname" describe --tags)"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ "Skipping detached dummy-tagname"* ]]
+  [ "$current_ref" = "tagname" ]
+}
+
 @test "asdf plugin-update should not remove plugin versions" {
   run asdf install dummy 1.1
   [ "$status" -eq 0 ]

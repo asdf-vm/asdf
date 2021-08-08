@@ -53,7 +53,7 @@ teardown() {
 }
 
 @test "plugin_add command with URL and git-ref specified adds a plugin using repo" {
-  install_mock_plugin_repo_with_ref "dummy"
+  install_mock_plugin_repo_with_ref "dummy" "tagname"
 
   run asdf plugin-add "dummy" "${BASE_DIR}/repo-dummy" "tagname"
   [ "$status" -eq 0 ]
