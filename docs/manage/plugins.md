@@ -46,7 +46,7 @@ asdf plugin list --urls
 asdf plugin list all
 ```
 
-See [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugin-template) for the entire short-name list of plugins.
+See [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugins) for the entire short-name list of plugins.
 
 ## Update
 
