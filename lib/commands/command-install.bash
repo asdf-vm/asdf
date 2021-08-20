@@ -169,28 +169,31 @@ install_tool_version() {
         export ASDF_DOWNLOAD_PATH=$download_path
         mkdir "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
-        bash "${plugin_path}"/bin/download
+        "${plugin_path}"/bin/download
       )
     fi
 
-    (
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_TYPE=$install_type
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_VERSION=$version
-      # shellcheck disable=SC2031
-      export ASDF_INSTALL_PATH=$install_path
-      # shellcheck disable=SC2031
-      export ASDF_DOWNLOAD_PATH=$download_path
-      # shellcheck disable=SC2031
-      export ASDF_CONCURRENCY=$concurrency
-      mkdir "$install_path"
-      asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
-      bash "${plugin_path}"/bin/install
-    )
+    local download_exit_code=$?
+    if [ $download_exit_code -eq 0 ]; then
+      (
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_TYPE=$install_type
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_VERSION=$version
+        # shellcheck disable=SC2031
+        export ASDF_INSTALL_PATH=$install_path
+        # shellcheck disable=SC2031
+        export ASDF_DOWNLOAD_PATH=$download_path
+        # shellcheck disable=SC2031
+        export ASDF_CONCURRENCY=$concurrency
+        mkdir "$install_path"
+        asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
+        "${plugin_path}"/bin/install
+      )
+    fi
 
-    local exit_code=$?
-    if [ $exit_code -eq 0 ]; then
+    local install_exit_code=$?
+    if [ $install_exit_code -eq 0 ] && [ $download_exit_code -eq 0 ]; then
       # Remove download directory if --keep-download flag or always_keep_download config setting are not set
       always_keep_download=$(get_asdf_config_value "always_keep_download")
       if [ ! "$keep_download" = "true" ] && [ ! "$always_keep_download" = "yes" ] && [ -d "$download_path" ]; then

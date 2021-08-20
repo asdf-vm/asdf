@@ -10,7 +10,7 @@ ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
 
 asdf_version() {
   local version git_rev
-  version="$(cat "$(asdf_dir)/VERSION")"
+  version="v$(cat "$(asdf_dir)/version.txt")"
   if [ -d "$(asdf_dir)/.git" ]; then
     git_rev="$(git --git-dir "$(asdf_dir)/.git" rev-parse --short HEAD)"
     printf "%s-%s\\n" "$version" "$git_rev"
@@ -198,7 +198,7 @@ find_versions() {
   local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f "$legacy_list_filenames_script" ]; then
-    legacy_filenames=$(bash "$legacy_list_filenames_script")
+    legacy_filenames=$($legacy_list_filenames_script)
   fi
 
   while [ "$search_path" != "/" ]; do
@@ -329,7 +329,7 @@ parse_legacy_version_file() {
 
   if [ -f "$file_path" ]; then
     if [ -f "$parse_legacy_script" ]; then
-      bash "$parse_legacy_script" "$file_path"
+      "$parse_legacy_script" "$file_path"
     else
       cat "$file_path"
     fi
@@ -379,15 +379,25 @@ get_asdf_config_value() {
     get_asdf_config_value_from_file "$default_config_path" "$key"
 }
 
+# Whether the plugin shortname repo needs to be synced
+# 0: if no sync needs to occur
+# 1: if sync needs to occur
 repository_needs_update() {
-  local update_file_dir
-  update_file_dir="$(asdf_data_dir)/tmp"
-  local update_file_name
-  update_file_name="repo-updated"
-  # `find` outputs filename if it has not been modified in the last day
-  local find_result
-  find_result=$(find "$update_file_dir" -name "$update_file_name" -type f -mtime +1 -print)
-  [ -n "$find_result" ]
+  local plugin_repository_last_check_duration
+  local sync_required
+
+  plugin_repository_last_check_duration="$(get_asdf_config_value "plugin_repository_last_check_duration")"
+
+  if [ "never" != "$plugin_repository_last_check_duration" ]; then
+    local update_file_dir
+    local update_file_name
+    update_file_dir="$(asdf_data_dir)/tmp"
+    update_file_name="repo-updated"
+    # `find` outputs filename if it has not been modified in plugin_repository_last_check_duration setting.
+    sync_required=$(find "$update_file_dir" -name "$update_file_name" -type f -mmin +"${plugin_repository_last_check_duration:-60}" -print)
+  fi
+
+  [ "$sync_required" ]
 }
 
 initialize_or_update_repository() {
@@ -479,7 +489,7 @@ list_plugin_bin_paths() {
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
-      bash "${plugin_path}/bin/list-bin-paths"
+      "${plugin_path}/bin/list-bin-paths"
     )
   else
     local space_separated_list_of_bin_paths="bin"
@@ -566,7 +576,7 @@ with_plugin_env() {
   ASDF_INSTALL_TYPE=$install_type \
     ASDF_INSTALL_VERSION=$version \
     ASDF_INSTALL_PATH=$install_path \
-    source "${plugin_path}/bin/exec-env"
+    . "${plugin_path}/bin/exec-env"
 
   PATH=$path "$callback"
 }
@@ -574,7 +584,9 @@ with_plugin_env() {
 plugin_executables() {
   local plugin_name=$1
   local full_version=$2
-  for bin_path in $(list_plugin_exec_paths "$plugin_name" "$full_version"); do
+  local all_bin_paths
+  IFS=$'\n' read -rd '' -a all_bin_paths <<<"$(list_plugin_exec_paths "$plugin_name" "$full_version")"
+  for bin_path in "${all_bin_paths[@]}"; do
     for executable_file in "$bin_path"/*; do
       if is_executable "$executable_file"; then
         printf "%s\\n" "$executable_file"
@@ -658,14 +670,18 @@ get_shim_versions() {
 
 preset_versions() {
   shim_name=$1
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c "source $(asdf_dir)/lib/utils.bash; printf \"%s %s\\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
+  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
 }
 
 select_from_preset_version() {
-  shim_name=$1
+  local shim_name=$1
+  local shim_versions
+  local preset_versions
+
   shim_versions=$(get_shim_versions "$shim_name")
   if [ -n "$shim_versions" ]; then
-    preset_versions "$shim_name" | grep -F "$shim_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
+    preset_versions=$(preset_versions "$shim_name")
+    grep -f "$shim_versions" "$preset_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
   fi
 }
 

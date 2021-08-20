@@ -1,7 +1,7 @@
 # -*- sh -*-
 
 # shellcheck source=lib/commands/reshim.bash
-source "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
+. "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
 
 reshim_command() {
   local plugin_name=$1
@@ -103,7 +103,9 @@ generate_shim_for_executable() {
 generate_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
-  for executable_path in $(plugin_executables "$plugin_name" "$full_version"); do
+  local all_executable_paths
+  IFS=$'\n' read -rd '' -a all_executable_paths <<<"$(plugin_executables "$plugin_name" "$full_version")"
+  for executable_path in "${all_executable_paths[@]}"; do
     write_shim_script "$plugin_name" "$full_version" "$executable_path"
   done
 }
@@ -119,7 +121,19 @@ remove_obsolete_shims() {
   exec_names=$(plugin_executables "$plugin_name" "$full_version" | xargs -IX basename X | sort)
 
   local obsolete_shims
-  obsolete_shims=$(comm -23 <(printf "%s\\n" "$shims") <(printf "%s\\n" "$exec_names"))
+  local formatted_shims
+  local formatted_exec_names
+
+  # comm only takes to files, so we write this data to temp files so we can
+  # pass it to comm.
+  formatted_shims=$(mktemp /tmp/asdf-command-reshim-formatted-shims.XXXXXX)
+  printf "%s\\n" "$shims" >"$formatted_shims"
+
+  formatted_exec_names=$(mktemp /tmp/asdf-command-reshim-formatted-exec-names.XXXXXX)
+  printf "%s\\n" "$exec_names" >"$formatted_exec_names"
+
+  obsolete_shims=$(comm -23 "$formatted_shims" "$formatted_exec_names")
+  rm -f "$formatted_exec_names" "$formatted_shims"
 
   for shim_name in $obsolete_shims; do
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"

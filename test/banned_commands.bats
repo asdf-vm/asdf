@@ -20,6 +20,10 @@ banned_commands=(
     # echo isn't consistent across operating systems, and sometimes output can
     # be confused with echo flags. printf does everything echo does and more.
     echo
+    # Process substitution isn't POSIX compliant and cause trouble
+    "<("
+    # source isn't POSIX compliant. . behaves the same and is POSIX compliant
+    source
 )
 
 setup() {
@@ -34,8 +38,20 @@ teardown() {
   for cmd in "${banned_commands[@]}"; do
       # Assert command is not used in the lib and bin dirs
       # or expect an explicit comment at end of line, allowing it.
-      run bash -c "grep -nHR '$cmd' lib bin | grep -v '# asdf_allow: $cmd'"
-      echo "banned command $cmd: $output"
+      # Also ignore matches that are contained in comments or a string or
+      # followed by an underscore (indicating it's a variable and not a
+      # command).
+      run bash -c "grep -nHR '$cmd' lib bin\
+        | grep -v '#.*$cmd'\
+        | grep -v '\".*$cmd.*\"' \
+        | grep -v '${cmd}_'\
+        | grep -v '# asdf_allow: $cmd'"
+
+      # Only print output if we've found a banned command
+      if [ "$status" -ne 1 ]; then
+        echo "banned command $cmd: $output"
+      fi
+
       [ "$status" -eq 1 ]
       [ "" == "$output" ]
   done

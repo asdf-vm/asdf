@@ -8,17 +8,21 @@ unset ASDF_DIR
 . "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
 
 setup_asdf_dir() {
-  BASE_DIR=$(mktemp -dt asdf.XXXX)
-  HOME=$BASE_DIR/home
-  ASDF_DIR=$HOME/.asdf
+  if [ -n "${ASDF_BATS_SPACE_IN_PATH:-}" ]; then
+    BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
+  else
+    BASE_DIR="$(mktemp -dt asdf.XXXX)"
+  fi
+  HOME="$BASE_DIR/home"
+  ASDF_DIR="$HOME/.asdf"
   mkdir -p "$ASDF_DIR/plugins"
   mkdir -p "$ASDF_DIR/installs"
   mkdir -p "$ASDF_DIR/shims"
   mkdir -p "$ASDF_DIR/tmp"
-  ASDF_BIN=$(dirname "$BATS_TEST_DIRNAME")/bin
+  ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # shellcheck disable=SC2031
-  PATH=$ASDF_BIN:$ASDF_DIR/shims:$PATH
+  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
 install_mock_plugin() {
@@ -33,6 +37,12 @@ install_mock_legacy_plugin() {
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_legacy_plugin" "$location/plugins/$plugin_name"
 }
 
+install_mock_broken_plugin() {
+  local plugin_name=$1
+  local location="${2:-$ASDF_DIR}"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_broken_plugin" "$location/plugins/$plugin_name"
+}
+
 install_mock_plugin_repo() {
   local plugin_name=$1
   local location="${BASE_DIR}/repo-${plugin_name}"
@@ -41,7 +51,7 @@ install_mock_plugin_repo() {
   git -C "${location}" config user.name "Test"
   git -C "${location}" config user.email "test@example.com"
   git -C "${location}" add -A
-  git -C "${location}" commit -q -m 'asdf dummy plugin'
+  git -C "${location}" commit -q -m "asdf ${plugin_name} plugin"
 }
 
 install_mock_plugin_version() {
@@ -59,8 +69,16 @@ install_dummy_legacy_plugin() {
   install_mock_legacy_plugin "legacy-dummy"
 }
 
+install_dummy_broken_plugin() {
+  install_mock_broken_plugin "dummy-broken"
+}
+
 install_dummy_version() {
   install_mock_plugin_version "dummy" "$1"
+}
+
+install_dummy_legacy_version() {
+  install_mock_plugin_version "legacy-dummy" "$1"
 }
 
 install_dummy_exec_path_script() {

@@ -1,6 +1,50 @@
 # Changelog
 
-## 0.8.1-dev
+## 0.8.1
+
+Features
+
+* Support for latest version in shell, local, and global commands (#802, #801)
+* Parallel updating of all plugins (#626, #530)
+* Print documentation website and GitHub URLs in help command (#820)
+
+Fixed Bugs
+
+* Fix plugin-update --all when there are no plugins (#805, #803)
+* Ban `echo` command from asdf codebase (#806, #781)
+* Add basic tests for for plugin-update command (#807)
+* Cleanup unused code in plugin update tests (#810)
+* Fix resolution of relative symlinks (#815, #625)
+* Fixes to GitHub workflow (#833)
+* Update no plugin installed error message (#818)
+* Remove process substitution that was problematic when POSIXLY_CORRECT is set (#851, #581)
+* Fix warnings from find command (#853)
+* Ban the `sort -V` command from the asdf codebase (#755, #867)
+* Fix `plugin update --all` so that the default branch is used for each plugin (#800)
+* Fix issues with awk command on some platforms used by plugin update command (#924, #899, #919)
+* Add completion for the `system` version (#911)
+
+Documentation
+
+* Link to Homebrew common issues from documentation site (#795)
+* Remove -vm suffix name in documentation (#798, #796)
+* Fix file renames in release script (#809)
+* Update supported versions in documentation (#825)
+* Fix references to icongram files (#827)
+* Fix broken links in CONTRIBUTING.md (#832, #852)
+* Fix broken link in README.md (#835)
+* Improve zsh completion directions for macOS,ZSH,Homebrew (#843)
+* Add GitHub discussions link (#839)
+* Add note about unsolicited formatting pull requests (#848)
+* Fix formatting of GitHub name (#847)
+* Explain the difference between ASDF_DIR and ASDF_DATA_DIR (#855)
+* Update BATS link to bats-core GitHub repo (#858)
+* Instruct users to symlink completions for Fish shell (#860)
+* Support alternate locations for `.zshrc` (#871)
+* Add "Add translation" link to navbar (#876)
+* Clarify usage of the ASDF_DEFAULT_TOOL_VERSIONS_FILENAME variable (#912, #900)
+* Show how to use the `system` version (#925, #868)
+* Remove instructions for installing dependencies for Homebrew installs (#937, #936)
 
 ## 0.8.0
 
@@ -18,7 +62,7 @@ Fixed Bugs
 * Fix typo that caused plugin-test to erroneously fail (#780)
 * Make sure shims are only appended to `PATH` once in Fish shell (#767, #777, #778)
 * Print `.tool-versions` file path on shim error (#749, #750)
-* Add `column` and `sort -V` to list of banned commands for the asdf codebase (#661, #754, #755)
+* Add `column` and `sort -V` to list of banned commands for the asdf codebase (#661, #754)
 * Use editorconfig for shell formatting (#751)
 * Remove use of `column` command in favor of awk (#721)
 * Add `asdf shell` command to help output (#715, #737)

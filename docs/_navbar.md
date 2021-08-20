@@ -1,2 +1,0 @@
-- Translations
-  - [:uk: English](/)
