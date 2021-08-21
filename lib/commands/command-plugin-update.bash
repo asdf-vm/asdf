@@ -32,8 +32,8 @@ update_plugin() {
   logfile=$(mktemp)
 
   local current_ref
-  current_ref=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref --symbolic-full-name HEAD)
-  if [ "$current_ref" = "HEAD" ]; then
+  current_ref=$(git --git-dir "$plugin_path/.git" branch --show-current)
+  if [ ! "$current_ref" = "$plugin_remote_default_branch" ]; then
     {
       printf "Skipping detached %s\\n" "$plugin_name"
     } >"$logfile" 2>&1
