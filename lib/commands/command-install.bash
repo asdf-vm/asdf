@@ -89,13 +89,13 @@ install_local_tool_versions() {
       plugin_name=$(basename "$plugin_path")
       plugins_installed="$plugins_installed $plugin_name"
     done
-    plugins_installed=$(echo "$plugins_installed" | tr " " "\n")
+    plugins_installed=$(printf "%s" "$plugins_installed" | tr " " "\n")
   fi
 
   # Combine both lists into one
   local tools
   tools="${tools_file[*]} ${plugins_installed[*]}"
-  tools=$(echo "$tools" | sort | uniq)
+  tools=$(printf "%s" "$tools" | sort | uniq)
 
   if [ -n "$tools" ]; then
     for plugin_name in $tools; do
