@@ -95,7 +95,7 @@ install_local_tool_versions() {
   # Combine both lists into one
   local tools
   tools="${tools_file[*]} ${plugins_installed[*]}"
-  tools=$(echo $tools | sort | uniq)
+  tools=$(echo "$tools" | sort | uniq)
 
   if [ -n "$tools" ]; then
     for plugin_name in $tools; do
