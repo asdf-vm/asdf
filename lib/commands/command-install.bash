@@ -62,6 +62,7 @@ install_one_local_tool() {
     exit 1
   fi
 }
+
 install_local_tool_versions() {
   local plugins_path
   plugins_path=$(get_plugin_path)
@@ -71,11 +72,33 @@ install_local_tool_versions() {
 
   local some_tools_installed
 
+  local tool_versions_path
+  tool_versions_path=$(find_tool_versions)
+
+  # Locate all the plugins defined in the versions file.
+  local tools_file
+  if [ -f "$tool_versions_path" ]; then
+    tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
+  fi
+
+  # Locate all the plugins installed in the system
+  local plugins_installed
   if ls "$plugins_path" &>/dev/null; then
     for plugin_path in "$plugins_path"/*; do
       local plugin_name
       plugin_name=$(basename "$plugin_path")
+      plugins_installed="$plugins_installed $plugin_name"
+    done
+    plugins_installed=$(echo "$plugins_installed" | tr " " "\n")
+  fi
 
+  # Combine both lists into one
+  local tools
+  tools="${tools_file[*]} ${plugins_installed[*]}"
+  tools=$(echo $tools | sort | uniq)
+
+  if [ -n "$tools" ]; then
+    for plugin_name in $tools; do
       local plugin_version_and_path
       plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
