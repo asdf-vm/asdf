@@ -112,3 +112,10 @@ teardown() {
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/shims/dummy ]
 }
+
+@test "asdf plugin-update done for all plugins" {
+  local command="asdf plugin-update --all"
+  # Count the number of update processes remaining after the update command is completed.
+  run bash -c "${command} >/dev/null && ps -o 'ppid,args' | awk '{if(\$1==1 && \$0 ~ /${command}/ ) print}' | wc -l"
+  [[ 0 -eq "$output" ]]
+}
