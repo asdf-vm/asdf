@@ -136,6 +136,19 @@ See also the related hooks:
 - `post_asdf_plugin_add`
 - `post_asdf_plugin_add_${plugin_name}`
 
+#### bin/post-plugin-update
+
+This can be used to run any post-plugin-update actions after the plugin has been updated to asdf.
+
+The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`), previous git-ref (`${ASDF_PLUGIN_PREV_REF}`), and updated git-ref (`${ASDF_PLUGIN_POST_REF}`).
+
+See also the related hooks:
+
+- `pre_asdf_plugin_updated`
+- `pre_asdf_plugin_updated_${plugin_name}`
+- `post_asdf_plugin_updated`
+- `post_asdf_plugin_updated_${plugin_name}`
+
 #### bin/pre-plugin-remove
 
 This can be used to run any pre-removal actions before the plugin will be removed from asdf.
