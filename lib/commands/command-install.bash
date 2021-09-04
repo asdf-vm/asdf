@@ -75,12 +75,6 @@ install_local_tool_versions() {
   local tool_versions_path
   tool_versions_path=$(find_tool_versions)
 
-  # Locate all the plugins defined in the versions file.
-  local tools_file
-  if [ -f "$tool_versions_path" ]; then
-    tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
-  fi
-
   # Locate all the plugins installed in the system
   local plugins_installed
   if ls "$plugins_path" &>/dev/null; then
@@ -97,13 +91,19 @@ install_local_tool_versions() {
     exit 1
   fi
 
-  if [ -n "$tools_file" ]; then
+  # Locate all the plugins defined in the versions file.
+  local tools_file
+  if [ -f "$tool_versions_path" ]; then
+    tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
     for plugin_name in $tools_file; do
       if [[ ! "${plugins_installed[*]}" =~ $plugin_name ]]; then
         printf "%s plugin is not installed\n" "$plugin_name"
-        continue
       fi
+    done
+  fi
 
+  if [ -n "$plugins_installed" ]; then
+    for plugin_name in $plugins_installed; do
       local plugin_version_and_path
       plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
