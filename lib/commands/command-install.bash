@@ -92,13 +92,18 @@ install_local_tool_versions() {
     plugins_installed=$(printf "%s" "$plugins_installed" | tr " " "\n")
   fi
 
-  # Combine both lists into one
-  local tools
-  tools="${tools_file[*]} ${plugins_installed[*]}"
-  tools=$(printf "%s" "$tools" | sort | uniq)
+  if [ -z "$plugins_installed" ]; then
+    printf "Install plugins first to be able to install tools\\n"
+    exit 1
+  fi
 
-  if [ -n "$tools" ]; then
-    for plugin_name in $tools; do
+  if [ -n "$tools_file" ]; then
+    for plugin_name in $tools_file; do
+      if [[ ! "${plugins_installed[*]}" =~ $plugin_name ]]; then
+        printf "%s plugin is not installed\n" "$plugin_name"
+        continue
+      fi
+
       local plugin_version_and_path
       plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
@@ -111,9 +116,6 @@ install_local_tool_versions() {
         done
       fi
     done
-  else
-    printf "Install plugins first to be able to install tools\\n"
-    exit 1
   fi
 
   if [ -z "$some_tools_installed" ]; then
