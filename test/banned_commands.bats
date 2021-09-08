@@ -23,6 +23,7 @@ banned_commands=(
     # Process substitution isn't POSIX compliant and cause trouble
     "<("
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
+    # Except in fish, where . is deprecated, and will be removed in the future.
     source
 )
 
