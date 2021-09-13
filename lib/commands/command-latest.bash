@@ -25,7 +25,7 @@ latest_command() {
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
     versions=$(asdf list-all "$plugin_name" "$query" |
       grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-      sed 's/^\s\+//' |
+      sed 's/^[[:space:]]\+//' |
       tail -1)
     if [ -z "${versions}" ]; then
       exit 1
