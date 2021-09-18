@@ -71,6 +71,7 @@ install_local_tool_versions() {
   search_path=$(pwd)
 
   local some_tools_installed
+  local some_plugin_not_installed
 
   local tool_versions_path
   tool_versions_path=$(find_tool_versions)
@@ -96,10 +97,15 @@ install_local_tool_versions() {
   if [ -f "$tool_versions_path" ]; then
     tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
     for plugin_name in $tools_file; do
-      if [[ ! "${plugins_installed[*]}" =~ $plugin_name ]]; then
+      if ! printf '%s\n' "${plugins_installed[@]}" | grep -P -q "^$plugin_name\$"; then
         printf "%s plugin is not installed\n" "$plugin_name"
+        some_plugin_not_installed='yes'
       fi
     done
+  fi
+
+  if [ -n "$some_plugin_not_installed" ]; then
+    exit 1
   fi
 
   if [ -n "$plugins_installed" ]; then
