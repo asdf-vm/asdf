@@ -138,7 +138,7 @@ See also the related hooks:
 
 #### bin/post-plugin-update
 
-This can be used to run any post-plugin-update actions after the plugin has been updated to asdf.
+This can be used to run any post-plugin-update actions after asdf has downloaded the updated plugin
 
 The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`), previous git-ref (`${ASDF_PLUGIN_PREV_REF}`), and updated git-ref (`${ASDF_PLUGIN_POST_REF}`).
 
