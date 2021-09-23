@@ -119,3 +119,105 @@ teardown() {
   run bash -c "${command} >/dev/null && ps -o 'ppid,args' | awk '{if(\$1==1 && \$0 ~ /${command}/ ) print}' | wc -l"
   [[ 0 -eq "$output" ]]
 }
+
+@test "asdf plugin-update executes post-plugin update script" {
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}"
+  [[ "$output" = *"${expected_output}" ]]
+}
+
+@test "asdf plugin-update executes post-plugin update script if git-ref updated" {
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  # setup mock plugin remote
+  install_mock_plugin_repo "dummy-remote"
+  remote_dir="$BASE_DIR/repo-dummy-remote"
+  # set HEAD to refs/head/main in dummy-remote
+  git -C "${remote_dir}" checkout -b main
+  # track & fetch remote repo (dummy-remote) in plugin (dummy)
+  git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" remote remove origin
+  git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" remote add origin "$remote_dir"
+  git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" fetch origin
+
+  # update plugin to the default branch
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}"
+  [[ "$output" = *"${expected_output}" ]]
+}
+
+@test "asdf plugin-update executes configured pre hook (generic)" {
+  cat >$HOME/.asdfrc <<-'EOM'
+pre_asdf_plugin_update = echo UPDATE ${@}
+EOM
+
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}"
+  [[ "$output" = "UPDATE dummy"*"${expected_output}" ]]
+}
+
+@test "asdf plugin-update executes configured pre hook (specific)" {
+  cat >$HOME/.asdfrc <<-'EOM'
+pre_asdf_plugin_update_dummy = echo UPDATE
+EOM
+
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}"
+  [[ "$output" = "UPDATE"*"${expected_output}" ]]
+}
+
+@test "asdf plugin-update executes configured post hook (generic)" {
+  cat >$HOME/.asdfrc <<-'EOM'
+post_asdf_plugin_update = echo UPDATE ${@}
+EOM
+
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}
+UPDATE dummy"
+  [[ "$output" = *"${expected_output}" ]]
+}
+
+@test "asdf plugin-update executes configured post hook (specific)" {
+  cat >$HOME/.asdfrc <<-'EOM'
+post_asdf_plugin_update_dummy = echo UPDATE
+EOM
+
+  local plugin_path
+  plugin_path="$(get_plugin_path dummy)"
+
+  old_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+  run asdf plugin-update dummy
+  new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
+
+  local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}
+UPDATE"
+  [[ "$output" = *"${expected_output}" ]]
+}
