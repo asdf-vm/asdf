@@ -71,7 +71,7 @@ nodejs 16.5.0
 | Method         | Latest Stable Release                                                                                                          | Latest commit on `master`  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
 | asdf (via Git) | `asdf update`                                                                                                                  | `asdf update --head`       |
-| Homebrew       | `brew upgrade asdf`                                                                                                            | `brew upgrade asdf --HEAD` |
+| Homebrew       | `brew upgrade asdf`                                                                                                            | `brew upgrade asdf --fetch-HEAD` |
 | Pacman         | Download a new `PKGBUILD` & rebuild <br/> or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |                            |
 
 ## Uninstall
