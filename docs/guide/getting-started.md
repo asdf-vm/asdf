@@ -294,7 +294,7 @@ See the [configuration](/manage/configuration.md) reference page for more config
 
 That completes the Getting Started guide for `asdf` :tada: You can now manage `nodejs` versions for your project. Follow similar steps for each type of tool in your project!
 
-`asdf` has a many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
+`asdf` has many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
 
 - [core `asdf`](/manage/core.md)
 - [plugins](/manage/plugins.md)
