@@ -32,10 +32,10 @@ plugin_current_command() {
     printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
     return 1
   elif [ -z "$full_version" ]; then
-    if [ "$tool_versions" == "false" ]; then 
-        description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
-        printf "$terminal_format" "$plugin" "______" "$description" 1>&2
-        return 126
+    if [ "$tool_versions" == "false" ]; then
+      description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
+      printf "$terminal_format" "$plugin" "______" "$description" 1>&2
+      return 126
     fi
   else
     description="$version_file_path"

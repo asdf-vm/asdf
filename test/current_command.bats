@@ -143,3 +143,36 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
+
+@test "should be able to output the equivalent of a .tool-versions" {
+  install_dummy_plugin
+  install_dummy_version "1.1.0"
+
+  install_mock_plugin "y"
+  install_mock_plugin_version "y" "2.1.0"
+
+  cd $PROJECT_DIR
+  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
+  echo 'y 2.1.0' >> $PROJECT_DIR/.tool-versions
+
+  run asdf current --as-tool-versions
+  [ "$status" -eq 0 ]
+  echo "$output" | grep '^dummy 1.1.0$'
+  echo "$output" | grep '^y 2.1.0$'
+}
+
+@test "should be able to output the equivalent of a .tool-versions for a single tool" {
+  install_dummy_plugin
+  install_dummy_version "1.1.0"
+
+  install_mock_plugin "y"
+  install_mock_plugin_version "y" "2.1.0"
+
+  cd $PROJECT_DIR
+  echo 'dummy 1.1.0' >> $PROJECT_DIR/.tool-versions
+  echo 'y 2.1.0' >> $PROJECT_DIR/.tool-versions
+
+  run asdf current --as-tool-versions y
+  [ "$status" -eq 0 ]
+  [ "$output" = "y 2.1.0" ]
+}
