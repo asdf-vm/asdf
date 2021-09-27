@@ -70,7 +70,7 @@ write_shim_script() {
   if [ -f "$shim_path" ]; then
     if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
       sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
-      rm "$shim_path".bak
+      rm -f "$shim_path".bak
     fi
   else
     cat <<EOF >"$shim_path"

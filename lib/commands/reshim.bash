@@ -20,6 +20,6 @@ remove_shim_for_version() {
 
   if ! grep "# asdf-plugin:" "$shim_path" >/dev/null ||
     [ "$count_installed" -eq 0 ]; then
-    rm "$shim_path"
+    rm -f "$shim_path"
   fi
 }
