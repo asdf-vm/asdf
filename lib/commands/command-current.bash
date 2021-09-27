@@ -4,6 +4,7 @@
 plugin_current_command() {
   local plugin_name=$1
   local terminal_format=$2
+  local tool_versions=$3
 
   check_if_plugin_exists "$plugin_name"
 
@@ -31,9 +32,11 @@ plugin_current_command() {
     printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
     return 1
   elif [ -z "$full_version" ]; then
-    description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
-    printf "$terminal_format" "$plugin" "______" "$description" 1>&2
-    return 126
+    if [ "$tool_versions" == "false" ]; then 
+        description="No version set. Run \"asdf <global|shell|local> $plugin <version>\""
+        printf "$terminal_format" "$plugin" "______" "$description" 1>&2
+        return 126
+    fi
   else
     description="$version_file_path"
     printf "$terminal_format" "$plugin" "$full_version" "$description"
@@ -44,15 +47,29 @@ plugin_current_command() {
 current_command() {
   local terminal_format="%-15s %-15s %-10s\\n"
   local exit_status=0
+  local plugin=""
+  local tool_versions=false
+  while [ -n "$*" ]; do
+    case "$1" in
+    "--as-tool-versions")
+      tool_versions=true
+      terminal_format="%s %s%.0s\\n"
+      shift
+      ;;
+    *)
+      plugin="$1"
+      shift
+      ;;
+    esac
+  done
 
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
-  if [ $# -eq 0 ]; then
+  if [ -z "$plugin" ]; then
     for plugin in $(asdf plugin list); do
-      plugin_current_command "$plugin" "$terminal_format"
+      plugin_current_command "$plugin" "$terminal_format" "$tool_versions"
     done
   else
-    local plugin=$1
-    plugin_current_command "$plugin" "$terminal_format"
+    plugin_current_command "$plugin" "$terminal_format" "$tool_versions"
     exit_status="$?"
   fi
 
