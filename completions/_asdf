@@ -9,7 +9,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   # plugins
   'plugin:plugin management sub-commands'
   'plugin-add:add plugin from asdf-plugins repo or from git URL'
-  'plugin-list:list installed plugins (--url with URLs)'
+  'plugin-list:list installed plugins (--urls with URLs)'
   'plugin-list-all:list all plugins registered in asdf-plugins repo'
   'plugin-remove:remove named plugin and all packages for it'
   'plugin-update:update named plugin (or --all)'
