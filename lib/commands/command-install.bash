@@ -97,7 +97,7 @@ install_local_tool_versions() {
   if [ -f "$tool_versions_path" ]; then
     tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
     for plugin_name in $tools_file; do
-      if ! printf '%s\n' "${plugins_installed[@]}" | grep -P -q "^$plugin_name\$"; then
+      if ! printf '%s\n' "${plugins_installed[@]}" | grep -q "^$plugin_name\$"; then
         printf "%s plugin is not installed\n" "$plugin_name"
         some_plugin_not_installed='yes'
       fi
