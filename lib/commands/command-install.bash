@@ -62,6 +62,7 @@ install_one_local_tool() {
     exit 1
   fi
 }
+
 install_local_tool_versions() {
   local plugins_path
   plugins_path=$(get_plugin_path)
@@ -70,12 +71,45 @@ install_local_tool_versions() {
   search_path=$(pwd)
 
   local some_tools_installed
+  local some_plugin_not_installed
 
+  local tool_versions_path
+  tool_versions_path=$(find_tool_versions)
+
+  # Locate all the plugins installed in the system
+  local plugins_installed
   if ls "$plugins_path" &>/dev/null; then
     for plugin_path in "$plugins_path"/*; do
       local plugin_name
       plugin_name=$(basename "$plugin_path")
+      plugins_installed="$plugins_installed $plugin_name"
+    done
+    plugins_installed=$(printf "%s" "$plugins_installed" | tr " " "\n")
+  fi
 
+  if [ -z "$plugins_installed" ]; then
+    printf "Install plugins first to be able to install tools\\n"
+    exit 1
+  fi
+
+  # Locate all the plugins defined in the versions file.
+  local tools_file
+  if [ -f "$tool_versions_path" ]; then
+    tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
+    for plugin_name in $tools_file; do
+      if ! printf '%s\n' "${plugins_installed[@]}" | grep -q "^$plugin_name\$"; then
+        printf "%s plugin is not installed\n" "$plugin_name"
+        some_plugin_not_installed='yes'
+      fi
+    done
+  fi
+
+  if [ -n "$some_plugin_not_installed" ]; then
+    exit 1
+  fi
+
+  if [ -n "$plugins_installed" ]; then
+    for plugin_name in $plugins_installed; do
       local plugin_version_and_path
       plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
@@ -88,9 +122,6 @@ install_local_tool_versions() {
         done
       fi
     done
-  else
-    printf "Install plugins first to be able to install tools\\n"
-    exit 1
   fi
 
   if [ -z "$some_tools_installed" ]; then
