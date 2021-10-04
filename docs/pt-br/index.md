@@ -16,7 +16,7 @@ features:
     details: "Grande ecossistema de runtimes e ferramentas existentes. API simples para adicionar suporte para novas ferramentas conforme necessário!"
   - title: "Compatível com varios arquivos de configuração"
     details: "Suporte para arquivos de configuração existentes .nvmrc, .node-versions, .ruby-version para uma migração tranquila!"
-  - title: "Um arquivo de configuração"
+  - title: "Só um arquivo de configuração"
     details: ".tool-versions para gerenciar todas as suas ferramentas, runtimes e suas versões em um único arquivo"
   - title: "Shells"
     details: "Suporta Bash, ZSH & Fish com autocomplete."
