@@ -3,29 +3,30 @@
 load test_helpers
 
 banned_commands=(
-    realpath
-    # readlink on OSX behaves differently from readlink on other Unix systems
-    readlink
-    # It's best to avoid eval as it makes it easier to accidentally execute
-    # arbitrary strings
-    eval
+    # Process substitution isn't POSIX compliant and cause trouble
+    "<("
     # Command isn't included in the Ubuntu packages asdf depends on. Also not
     # defined in POSIX
     column
-    # does not work on alpine and should be grep -i either way
-    "grep.* -y"
-    # sort --sort-version isn't supported everywhere
-    "sort.*-V"
-    "sort.*--sort-versions"
     # echo isn't consistent across operating systems, and sometimes output can
     # be confused with echo flags. printf does everything echo does and more.
     echo
-    # Process substitution isn't POSIX compliant and cause trouble
-    "<("
-    # source isn't POSIX compliant. . behaves the same and is POSIX compliant
-    source
+    # It's best to avoid eval as it makes it easier to accidentally execute
+    # arbitrary strings
+    eval
+    # grep -y does not work on alpine and should be "grep -i" either way
+    "grep.* -y"
     # grep -P is not a valid option in OSX.
     "grep.* -P"
+    # realpath not available by default on OSX.
+    realpath
+    # readlink on OSX behaves differently from readlink on other Unix systems
+    readlink
+    # sort --sort-version isn't supported everywhere
+    "sort.*-V"
+    "sort.*--sort-versions"
+    # source isn't POSIX compliant. . behaves the same and is POSIX compliant
+    source
  )
 
 setup() {
