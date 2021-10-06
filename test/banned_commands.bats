@@ -27,7 +27,7 @@ banned_commands=(
     "sort.*--sort-versions"
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
     source
- )
+)
 
 setup() {
   setup_asdf_dir
