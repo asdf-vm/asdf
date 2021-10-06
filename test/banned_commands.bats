@@ -24,7 +24,9 @@ banned_commands=(
     "<("
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
     source
-)
+    # grep -P is not a valid option in OSX.
+    "grep.* -P"
+ )
 
 setup() {
   setup_asdf_dir
