@@ -7,7 +7,7 @@ function asdf
     switch "$command"
         case "shell"
             # source commands that need to export variables
-            . (asdf export-shell-version fish $argv | psub)
+            command asdf export-shell-version fish $argv | source # asdf_allow: source
         case '*'
             # forward other commands to asdf script
             command asdf "$command" $argv

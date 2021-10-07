@@ -26,6 +26,7 @@ banned_commands=(
     "sort.*-V"
     "sort.*--sort-versions"
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
+    # Except in fish, where . is deprecated, and will be removed in the future.
     source
 )
 
