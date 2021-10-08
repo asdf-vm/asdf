@@ -23,6 +23,9 @@ shell_command() {
     fish)
       printf "set -e %s\\n" "$version_env_var"
       ;;
+    elvish)
+      echo "unset-env $version_env_var"
+      ;;
     *)
       printf "unset %s\\n" "$version_env_var"
       ;;
@@ -41,6 +44,9 @@ shell_command() {
   case "$asdf_shell" in
   fish)
     printf "set -gx %s \"%s\"\\n" "$version_env_var" "$version"
+    ;;
+  elvish)
+    echo "set-env $version_env_var \"$version\""
     ;;
   *)
     printf "export %s=\"%s\"\\n" "$version_env_var" "$version"
