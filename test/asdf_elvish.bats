@@ -79,7 +79,7 @@ cleaned_path() {
   [[ "$output" =~ "<closure " ]]
 }
 
-@test "runs asdf subcommands" {
+@test "function calls asdf command" {
   result=$(elvish --norc -c "
     unset-env ASDF_DIR
     unset-env ASDF_DATA_DIR

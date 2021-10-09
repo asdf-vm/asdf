@@ -67,3 +67,18 @@ cleaned_path() {
   [ "$?" -eq 0 ]
   [[ "$output" =~ "is a function" ]]
 }
+
+@test "function calls asdf command" {
+  result=$(fish -c "
+    set -e asdf
+    set -e ASDF_DIR
+    set PATH $(cleaned_path)
+
+    . asdf.fish
+    asdf info
+  ")
+  [ "$?" -eq 0 ]
+  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
+  [ "$output" != "" ]
+}
+
