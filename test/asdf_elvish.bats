@@ -4,7 +4,7 @@ load test_helpers
 
 setup() {
   cd $(dirname "$BATS_TEST_DIRNAME")
-  cp ../asdf.elv $HOME/.elvish/lib/asdftest.elv
+  cp ./asdf.elv $HOME/.elvish/lib/asdftest.elv
 }
 
 teardown() {
@@ -16,48 +16,64 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  result=$(elvish --norc -c "
-    unset-env ASDF_DIR ASDF_DATA_DIR
-    set-env PATH $(cleaned_path)
+  output=$(elvish --norc -c "
+    unset-env ASDF_DIR
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
     use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
-    get-env ASDF_DIR
+    echo \$E:ASDF_DIR
   ")
-
   [ "$?" -eq 0 ]
-  [ "$result" != "" ]
+  [ "$output" = "$HOME/.asdf" ]
+}
+
+@test "retains ASDF_DIR" {
+  output=$(elvish --norc -c "
+    set-env ASDF_DIR "/path/to/asdf"
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
+    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    echo \$E:ASDF_DIR
+  ")
+  [ "$?" -eq 0 ]
+  [ "$output" = "/path/to/asdf" ]
 }
 
 @test "adds asdf dirs to PATH" {
   result=$(elvish --norc -c "
-    unset-env ASDF_DIR ASDF_DATA_DIR
-    set-env PATH $(cleaned_path)
+    unset-env ASDF_DIR
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
     use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
-    get-env PATH
+    echo \$E:PATH
   ")
-
-  output=$(echo "$result" | grep "asdf")
   [ "$?" -eq 0 ]
+  echo "$result"
+  output=$(echo "$result" | grep "asdf")
   [ "$output" != "" ]
 }
 
 @test "defines the _asdf namespace" {
-  result=$(elvish --norc -c "
-    unset-env ASDF_DIR ASDF_DATA_DIR
-    set-env PATH $(cleaned_path)
+  output=$(elvish --norc -c "
+    unset-env ASDF_DIR
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
     use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
     pprint \$_asdf:
   ")
-
+  [ "$?" -eq 0 ]
   [[ "$output" =~ "<ns " ]]
 }
 
 @test "defines the asdf function" {
-  result=$(elvish --norc -c "
-    unset-env ASDF_DIR ASDF_DATA_DIR
-    set-env PATH $(cleaned_path)
+  output=$(elvish --norc -c "
+    unset-env ASDF_DIR
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
     use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
     pprint \$asdf~
   ")
-
+  [ "$?" -eq 0 ]
+  echo "$output"
   [[ "$output" =~ "<closure " ]]
 }
