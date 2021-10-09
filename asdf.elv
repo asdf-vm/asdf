@@ -110,7 +110,7 @@ for path [
 }
 
 # Setup argument completions
-set edit:completion:arg-completer[asdf] = [@argz]{
+fn arg-completer [@argz]{
   argz = $argz[1:-1]  # strip 'asdf' and trailing empty string
   var num = (count $argz)
   if (== $num 0) {

@@ -259,10 +259,11 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. In your `~/.elvish/rc.elv` remove the line that imports the `asdf` module:
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
@@ -287,10 +288,11 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. In your `~/.elvish/rc.elv` remove the line that imports the `asdf` module:
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
@@ -315,10 +317,11 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. In your `~/.elvish/rc.elv` remove the line that imports the `asdf` module:
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
