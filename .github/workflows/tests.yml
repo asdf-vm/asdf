@@ -33,10 +33,14 @@ jobs:
       - name: Install test dependencies
         if: runner.os == 'linux'
         run: |
-          PPA="ppa:fish-shell/nightly-master"
-          sudo add-apt-repository -y "$PPA"
+          sudo add-apt-repository -y ppa:fish-shell/nightly-master
+          sudo add-apt-repository -y ppa:longsleep/golang-backports
           sudo apt-get update
-          sudo apt-get -y install fish elvish
+          sudo apt-get -y install fish golang-go
+          git clone --depth 1 --single-branch https://github.com/elves/elvish
+          cd elvish
+          make get
+          echo "$HOME/go/bin" >>"$GITHUB_PATH"
 
       - name: Install bats
         run: |
