@@ -78,3 +78,16 @@ cleaned_path() {
   echo "$output"
   [[ "$output" =~ "<closure " ]]
 }
+
+@test "runs asdf subcommands" {
+  result=$(elvish --norc -c "
+    unset-env ASDF_DIR
+    unset-env ASDF_DATA_DIR
+    paths = [$(cleaned_path)]
+    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    asdf info
+  ")
+  [ "$?" -eq 0 ]
+  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
+  [ "$output" != "" ]
+}
