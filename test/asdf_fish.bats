@@ -71,7 +71,7 @@ cleaned_path() {
 @test "function calls asdf command" {
   result=$(fish -c "
     set -e asdf
-    set -e ASDF_DIR
+    set -x ASDF_DIR $(pwd)
     set PATH $(cleaned_path)
 
     . asdf.fish
