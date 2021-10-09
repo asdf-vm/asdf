@@ -75,9 +75,13 @@ fn ls-executables []{
         if (test -x $p) {
           path:base $p
         }
-      } except { }
+      } except {
+        # don't fail if permission denied
+      }
     }
-  } except { }
+  } except {
+    # silence default non-zero exit status
+  }
 }
 
 fn ls-installed-versions [plugin_name]{
