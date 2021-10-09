@@ -142,6 +142,42 @@ source /opt/asdf-vm/asdf.fish
 Completions are automatically configured on installation by the AUR package.
 :::
 
+::: details Elvish & Git
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib
+ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\nuse asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}" >> ~/.elvish/rc.elv
+```
+
+:::
+
+::: details Elvish & Homebrew
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib
+ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\nuse asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}" >> ~/.elvish/rc.elv
+```
+
+:::
+
+::: details Elvish & Pacman
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib
+ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\nuse asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}" >> ~/.elvish/rc.elv
+```
+
+:::
+
 ::: details ZSH & Git
 
 Add the following to `~/.zshrc`:

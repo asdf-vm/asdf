@@ -46,7 +46,10 @@ shell_command() {
     printf "set -gx %s \"%s\"\\n" "$version_env_var" "$version"
     ;;
   elvish)
-    echo "set-env $version_env_var \"$version\""
+    # Elvish doesn't have a `source` command, and eval is banned, so the
+    # var name and value are printed on separate lines for asdf.elv to parse
+    # and pass to set-env.
+    printf "$version_env_var\n$version"
     ;;
   *)
     printf "export %s=\"%s\"\\n" "$version_env_var" "$version"
