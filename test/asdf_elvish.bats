@@ -38,6 +38,17 @@ cleaned_path() {
   [ "$output" = "/path/to/asdf" ]
 }
 
+@test "retains ASDF_DATA_DIR" {
+  output=$(elvish -norc -c "
+    set-env ASDF_DATA_DIR "/path/to/asdf-data"
+    paths = [$(cleaned_path)]
+    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    echo \$E:ASDF_DATA_DIR
+  ")
+  [ "$?" -eq 0 ]
+  [ "$output" = "/path/to/asdf-data" ]
+}
+
 @test "adds asdf dirs to PATH" {
   result=$(elvish -norc -c "
     unset-env ASDF_DIR
