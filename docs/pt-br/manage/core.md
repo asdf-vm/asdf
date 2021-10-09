@@ -270,13 +270,13 @@ use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -rf ~/.elvish/lib/asdf.elv
+rm -f ~/.elvish/lib/asdf.elv
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell:no-line-numbers
-if (!=s $E:ASDF_DATA_DIR "") { rm -rf $ASDF_DATA_DIR"/.asdf" } else { rm -rf ~/.asdf }
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 ```
 
 3. Execute este comando para remover todos os arquivos de configuração `asdf`:
@@ -298,7 +298,7 @@ use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -rf ~/.elvish/lib/asdf.elv
+rm -f ~/.elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
@@ -326,7 +326,7 @@ use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -rf ~/.elvish/lib/asdf.elv
+rm -f ~/.elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
@@ -338,7 +338,7 @@ pacman -Rs asdf-vm
 3. Remova o diretório `$ HOME/.asdf`:
 
 ```shell:no-line-numbers
-if (!=s $E:ASDF_DATA_DIR "") { rm -rf $ASDF_DATA_DIR"/.asdf" } else { rm -rf ~/.asdf }
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 ```
 
 4. Execute este comando para remover todos os arquivos de configuração `asdf`:
