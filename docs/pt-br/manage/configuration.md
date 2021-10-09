@@ -59,4 +59,4 @@ legacy_version_file = yes
 - `ASDF_CONFIG_FILE` - O padrão é `~ / .asdfrc` conforme descrito acima. Pode ser definido para qualquer local.
 - `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - O nome do arquivo que armazena os nomes e versões das ferramentas. O padrão é `.tool-versions`. Pode ser qualquer nome de arquivo válido. Normalmente você não deve substituir o valor padrão, a menos que deseja que o asdf ignore os arquivos `.tool-versions`.
 - `ASDF_DIR` - O padrão é `~/.asdf` - Localização dos arquivos `asdf`. Se você instalar `asdf` em algum outro diretório, defina-o para esse diretório. Por exemplo, se você estiver instalando através do AUR, você deve definir isso para `/ opt / asdf-vm`.
-- `ASDF_DATA_DIR` - O padrão é `~/.asdf` - Local onde `asdf` instala plugins, correções e instalações. Pode ser definido para qualquer local antes de fornecer `asdf.sh` ou`asdf.fish` mencionado na seção acima.
+- `ASDF_DATA_DIR` - O padrão é `~/.asdf` - Local onde `asdf` instala plugins, correções e instalações. Pode ser definido para qualquer local antes de fornecer `asdf.sh` ou `asdf.fish` mencionado na seção acima. Para Elvish, isso pode ser definido acima de `use asdf`.

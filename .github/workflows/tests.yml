@@ -28,7 +28,7 @@ jobs:
 
       - name: Install test dependencies
         if: runner.os == 'macos'
-        run: brew install coreutils fish
+        run: brew install coreutils fish elvish
 
       - name: Install test dependencies
         if: runner.os == 'linux'
@@ -36,7 +36,7 @@ jobs:
           PPA="ppa:fish-shell/nightly-master"
           sudo add-apt-repository -y "$PPA"
           sudo apt-get update
-          sudo apt-get -y install fish
+          sudo apt-get -y install fish elvish
 
       - name: Install bats
         run: |

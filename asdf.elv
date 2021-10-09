@@ -1,6 +1,6 @@
 use path
 
-asdf_dir = (path:eval-symlinks (path:dir (path:eval-symlinks (src)[name]))"/..")
+asdf_dir = (path:eval-symlinks (path:dir (path:eval-symlinks (src)[name])))
 set-env ASDF_DIR $asdf_dir
 
 var asdf_user_shims
@@ -20,7 +20,11 @@ fn asdf [command @args]{
   if (==s $command "shell") {
     # set environment variables
     parts = [($asdf_dir"/bin/asdf" export-shell-version elvish $@args)]
-    set-env $parts[0] $parts[1]
+    if (==s $parts[0] "set-env") {
+      set-env $parts[1] $parts[2]
+    } elif (==s $parts[0] "unset-env") {
+      unset-env $parts[1]
+    }
   } else {
     # forward other commands to asdf script
     command $asdf_dir"/bin/asdf" $command $@args

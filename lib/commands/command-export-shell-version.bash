@@ -24,7 +24,10 @@ shell_command() {
       printf "set -e %s\\n" "$version_env_var"
       ;;
     elvish)
-      echo "unset-env $version_env_var"
+      # Elvish doesn't have a `source` command, and eval is banned, so the
+      # var name and value are printed on separate lines for asdf.elv to parse
+      # and pass to unset-env.
+      printf "unset-env\n$version_env_var"
       ;;
     *)
       printf "unset %s\\n" "$version_env_var"
@@ -49,7 +52,7 @@ shell_command() {
     # Elvish doesn't have a `source` command, and eval is banned, so the
     # var name and value are printed on separate lines for asdf.elv to parse
     # and pass to set-env.
-    printf "$version_env_var\n$version"
+    printf "set-env\n$version_env_var\n$version"
     ;;
   *)
     printf "export %s=\"%s\"\\n" "$version_env_var" "$version"
