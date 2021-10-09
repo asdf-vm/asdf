@@ -4,6 +4,7 @@ load test_helpers
 
 setup() {
   cd $(dirname "$BATS_TEST_DIRNAME")
+  mkdir -p $HOME/.elvish/lib
   cp ./asdf.elv $HOME/.elvish/lib/asdftest.elv
 }
 
