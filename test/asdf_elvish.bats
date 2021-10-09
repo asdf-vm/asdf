@@ -17,7 +17,7 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  output=$(elvish --norc -c "
+  output=$(elvish -c "
     unset-env ASDF_DIR
     unset-env ASDF_DATA_DIR
     paths = [$(cleaned_path)]
@@ -29,7 +29,7 @@ cleaned_path() {
 }
 
 @test "retains ASDF_DIR" {
-  output=$(elvish --norc -c "
+  output=$(elvish -c "
     set-env ASDF_DIR "/path/to/asdf"
     unset-env ASDF_DATA_DIR
     paths = [$(cleaned_path)]
@@ -41,7 +41,7 @@ cleaned_path() {
 }
 
 @test "adds asdf dirs to PATH" {
-  result=$(elvish --norc -c "
+  result=$(elvish -c "
     unset-env ASDF_DIR
     unset-env ASDF_DATA_DIR
     paths = [$(cleaned_path)]
@@ -55,7 +55,7 @@ cleaned_path() {
 }
 
 @test "defines the _asdf namespace" {
-  output=$(elvish --norc -c "
+  output=$(elvish -c "
     unset-env ASDF_DIR
     unset-env ASDF_DATA_DIR
     paths = [$(cleaned_path)]
@@ -67,7 +67,7 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
-  output=$(elvish --norc -c "
+  output=$(elvish -c "
     unset-env ASDF_DIR
     unset-env ASDF_DATA_DIR
     paths = [$(cleaned_path)]
