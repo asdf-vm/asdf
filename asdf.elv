@@ -3,6 +3,8 @@ use path
 var asdf_dir = $E:HOME'/.asdf'
 if (and (has-env ASDF_DIR) (!=s $E:ASDF_DIR '')) {
   asdf_dir = $E:ASDF_DIR
+} else {
+  set-env ASDF_DIR $asdf_dir
 }
 
 var asdf_data_dir = $asdf_dir
