@@ -25,6 +25,6 @@ fn asdf [command @args]{
     }
   } else {
     # forward other commands to asdf script
-    command $E:ASDF_DIR"/bin/asdf" $command $@args
+    $E:ASDF_DIR"/bin/asdf" $command $@args
   }
 }
