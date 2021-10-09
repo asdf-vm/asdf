@@ -1,4 +1,4 @@
-# PERGUNTAS FREQUENTES
+# Perguntas frequentes
 
 Aqui estão algumas perguntas comuns sobre `asdf`.
 
