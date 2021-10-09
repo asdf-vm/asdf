@@ -4,14 +4,11 @@ if (not (has-env ASDF_DIR)) {
   set-env ASDF_DIR $E:HOME"/.asdf"
 }
 
-var asdf_shims_dir
+# Append shims to PATH
+var asdf_shims_dir = $E:ASDF_DIR"/shims"
 if (and (has-env ASDF_DATA_DIR) (not (==s $E:ASDF_DATA_DIR ""))) {
   asdf_shims_dir = $E:ASDF_DATA_DIR"/shims"
-} else {
-  asdf_shims_dir = $E:ASDF_DIR"/shims"
 }
-
-# Append shims to PATH
 if (not (has-value $paths $asdf_shims_dir)) {
   paths = [$@paths $asdf_shims_dir]
 }
