@@ -32,22 +32,17 @@ fn asdf [command @args]{
 }
 
 fn match [argz name]{
-  try {
-    var num = (count $argz)
-    if (== $num 0) {
-      ==s $name ''
-    } elif (==s $name $argz[0]) {
-      == $num 1
-    } else {
-      ==s $name (str:join '-' $argz)
-    }
-  } except err {
-    echo '$err'
+  var num = (count $argz)
+  if (== $num 0) {
+    ==s $name ''
+  } elif (==s $name $argz[0]) {
+    == $num 1
+  } else {
+    ==s $name (str:join '-' $argz)
   }
 }
 
 fn match-nested [argz name @pattern]{
-  try {
   var num_pat = (count $pattern)
   var i = 0
   var matched = $true
@@ -66,9 +61,6 @@ fn match-nested [argz name @pattern]{
     matched = $false
   }
   put $matched
-  } except err {
-    echo '$err'
-  }
 }
 
 fn ls-shims []{
