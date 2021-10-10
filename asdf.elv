@@ -42,14 +42,15 @@ fn match [argz name]{
   }
 }
 
-fn match-nested [argz @pattern]{
+fn match-pats [argz @pats]{
   var matched = $true;
-  if (!= (count $argz) (count $pattern)) {
+  if (!= (count $argz) (count $pats)) {
     matched = $false
   } else {
-    for i [(range (count $pattern))] {
-      chunk = $pattern[$i]
-      if (and (!=s $chunk '*') (!=s $chunk $argz[$i])) {
+    for i [(range (count $pats))] {
+      pat = '^'$pats[$i]'$'
+      arg = $argz[$i]
+      if (not (re:match $pat $arg)) {
         matched = $false
         break
       }
@@ -81,13 +82,13 @@ fn ls-executables []{
 
 fn ls-installed-versions [plugin_name]{
   asdf list $plugin_name | each [version]{
-    put (re:replace '^\s*(.*)\s*' '${1}' $version)
+    put (re:replace '\s*(.*)\s*' '${1}' $version)
   }
 }
 
 fn ls-all-versions [plugin_name]{
   asdf list-all $plugin_name | each [version]{
-    put (re:replace '^\s*(.*)\s*' '${1}' $version)
+    put (re:replace '\s*(.*)\s*' '${1}' $version)
   }
 }
 
@@ -122,7 +123,7 @@ fn arg-completer [@argz]{
     } elif (match $argz 'env') {
       # asdf env <command>
       ls-shims
-    } elif (match-nested $argz 'env' '*') {
+    } elif (match-pats $argz 'env' '.*') {
       # asdf env <command> [util]
       ls-executables
     } elif (match $argz 'exec') {
@@ -131,43 +132,58 @@ fn arg-completer [@argz]{
     } elif (match $argz 'global') {
       # asdf global <name>
       asdf plugin-list
-    } elif (match-nested $argz 'global' '*') {
+    } elif (match-pats $argz 'global' '.*') {
       # asdf global <name> <version>
       ls-installed-versions $argz[-1]
     } elif (match $argz 'install') {
       # asdf install <name>
       asdf plugin-list
-    } elif (match-nested $argz 'install' '*') {
+    } elif (match-pats $argz 'install' '.*') {
       # asdf install <name> <version>
       ls-all-versions $argz[-1]
-    } elif (match-nested $argz 'install' '*' '*') {
+    } elif (match-pats $argz 'install' '.*' '.*') {
       # asdf install <name> <version> [--keep-download]
       put '--keep-download'
     } elif (match $argz 'latest') {
       # asdf latest <name>
       asdf plugin-list
-    } elif (match-nested $argz 'latest' '*') {
+    } elif (match-pats $argz 'latest' '.*') {
       # asdf latest <name> [<version>]
       ls-all-versions $argz[-1]
     } elif (match $argz 'list-all') {
       # asdf list all <name>
       asdf plugin-list
-    } elif (match-nested $argz 'list-all' '*') {
+    } elif (match-pats $argz 'list-all' '.*') {
       # asdf list all <name> [<version>]
       ls-all-versions $argz[-1]
     } elif (match $argz 'list') {
       # asdf list <name>
       asdf plugin-list
-    } elif (match-nested $argz 'list' '*') {
+    } elif (match-pats $argz 'list' '.*') {
       # asdf list <name> [<version>]
       ls-installed-versions $argz[-1]
     } elif (match $argz 'local') {
-      # asdf local <name> [-p] [--parent]
+      # asdf local <name> [-p|--parent]
       asdf plugin-list
-    } elif (match-nested $argz 'local' '*') {
-      # asdf local <name> [<version>] [-p] [--parent]
-      # asdf local <name> [<version>]
+      put '-p'
+      put '--parent'
+    } elif (match-pats $argz 'local' '(-p|(--parent))') {
+      # asdf local <name> [-p|--parent] <version>
+      asdf plugin-list
+    } elif (match-pats $argz 'local' '.*') {
+      # asdf local <name> [-p|--parent]
+      # asdf local <name> <version>
       ls-installed-versions $argz[-1]
+      put '-p'
+      put '--parent'
+    } elif (match-pats $argz 'local' '(-p|(--parent))' '.*') {
+      # asdf local [-p|--parent] <name> <version>
+      ls-installed-versions $argz[-1]
+    } elif (match-pats $argz 'local' '.*' '(-p|(--parent))') {
+      # asdf local <name> [-p|--parent] <version>
+      ls-installed-versions $argz[-2]
+    } elif (match-pats $argz 'local' '.*' '.*') {
+      # asdf local <name> <version> [-p|--parent]
       put '-p'
       put '--parent'
     } elif (match $argz 'plugin-add') {
@@ -198,7 +214,7 @@ fn arg-completer [@argz]{
     } elif (match $argz 'reshim') {
       # asdf reshim <name>
       asdf plugin-list
-    } elif (match-nested $argz 'reshim' '*') {
+    } elif (match-pats $argz 'reshim' '.*') {
       # asdf reshim <name> <version>
       ls-installed-versions $argz[-1]
     } elif (match $argz 'shim-versions') {
@@ -207,7 +223,7 @@ fn arg-completer [@argz]{
     } elif (match $argz 'uninstall') {
       # asdf uninstall <name>
       asdf plugin-list
-    } elif (match-nested $argz 'uninstall' '*') {
+    } elif (match-pats $argz 'uninstall' '.*') {
       # asdf uninstall <name> <version>
       ls-installed-versions $argz[-1]
     } elif (match $argz 'update') {
@@ -218,7 +234,7 @@ fn arg-completer [@argz]{
     } elif (match $argz 'where') {
       # asdf where <name>
       asdf plugin-list
-    } elif (match-nested $argz 'where' '*') {
+    } elif (match-pats $argz 'where' '.*') {
       # asdf where <name> [<version>]
       ls-installed-versions $argz[-1]
     } elif (match $argz 'which') {
