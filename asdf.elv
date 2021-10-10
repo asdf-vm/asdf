@@ -42,23 +42,18 @@ fn match [argz name]{
   }
 }
 
-fn match-nested [argz name @pattern]{
-  var num_pat = (count $pattern)
-  var i = 0
-  var matched = $true
-  if (match $argz[:(- 0 $num_pat)] $name) {
-    var nested = $argz[(- 0 $num_pat):]
-    if (== (count $nested) (count $pattern)) {
-      for pat [$@pattern] {
-        if (and (!=s $pat '*') (==s $pat $nested[$i])) {
-          matched = $false
-          break
-        }
-        i = (+ $i 1)
+fn match-nested [argz @pattern]{
+  var matched = $true;
+  if (!= (count $argz) (count $pattern)) {
+    matched = $false
+  } else {
+    for i [(range (count $pattern))] {
+      chunk = $pattern[$i]
+      if (and (!=s $chunk '*') (!=s $chunk $argz[$i])) {
+        matched = $false
+        break
       }
     }
-  } else {
-    matched = $false
   }
   put $matched
 }
@@ -145,6 +140,9 @@ fn arg-completer [@argz]{
     } elif (match-nested $argz 'install' '*') {
       # asdf install <name> <version>
       ls-all-versions $argz[-1]
+    } elif (match-nested $argz 'install' '*' '*') {
+      # asdf install <name> <version> [--keep-download]
+      put '--keep-download'
     } elif (match $argz 'latest') {
       # asdf latest <name>
       asdf plugin-list
@@ -164,11 +162,14 @@ fn arg-completer [@argz]{
       # asdf list <name> [<version>]
       ls-installed-versions $argz[-1]
     } elif (match $argz 'local') {
-      # asdf local <name>
+      # asdf local <name> [-p] [--parent]
       asdf plugin-list
     } elif (match-nested $argz 'local' '*') {
+      # asdf local <name> [<version>] [-p] [--parent]
       # asdf local <name> [<version>]
       ls-installed-versions $argz[-1]
+      put '-p'
+      put '--parent'
     } elif (match $argz 'plugin-add') {
       # asdf plugin add <name>
       asdf plugin-list-all | each [line]{
