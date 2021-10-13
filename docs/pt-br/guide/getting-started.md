@@ -1,21 +1,23 @@
-# Getting Started
+# Começando
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-`asdf` installation involves:
+A instalação do `asdf` envolve:
 
-1. Installing dependencies
-2. Installing `asdf` core
-3. Adding `asdf` to your shell
-4. install a plugin for each tool/runtime you wish to manage
-5. install a version of the tool/runtime
-6. set global and project versions via `.tool-versions` config files
+1. Instalar as dependências
+2. Instalar o núcleo do `asdf`
+3. Adicionar o `asdf` ao seu shell
+4. Instalar um plugin para cada ferramenta que você gostaria de gerenciar
+5. Instalar uma versão desta ferramenta
+6. Definir uma versão global e uma versão local através do arquivo de configuração `.tool-versions`
 
-## 1. Install Dependencies
+Você pode também acompanhar o passo a passo da instalação através [deste vídeo](https://youtu.be/8W3xaSPjeog).
+
+## 1. Instalando as dependências
 
 **Linux**:
 
-| Package Manager | Command                        |
+| Gerenciador de Pacotes | Comando                        |
 | --------------- | ------------------------------ |
 | Aptitude        | `sudo apt install curl git`    |
 | DNF             | `sudo dnf install curl git`    |
@@ -24,34 +26,34 @@
 
 **macOS**:
 
-| Package Manager | Command                                                   |
+| Gerenciador de Pacotes | Comando                                                   |
 | --------------- | --------------------------------------------------------- |
-| Homebrew        | Dependencies will be automatically installed by Homebrew. |
+| Homebrew        | As dependências serão automaticamente instaladas pelo Homebrew. |
 | Spack           | `spack install coreutils curl git`                        |
 
-## 2. Install asdf
+## 2. Instalando o asdf
 
-We recommend installing via Git, though there are other platform specific methods:
+Nós recomendamos a instalação através do Git, entretanto existem outros métodos específicos para algumas plataformas:
 
-| Method   | Command                                                                                                                                                             |
+| Método   | Comando                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
-## 3. Add to your Shell
+## 3. Adicionando ao seu shell
 
-There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system:
+Existem diversas combinações de shells, sistemas operacionais e métodos de instalação que podem impactar a configuração. Abaixo, expanda a seção que se adeque mais com o seu sistema:
 
 ::: details Bash & Git
 
-Add the following to `~/.bashrc`:
+Adicione esta linha ao seu `~/.bashrc`:
 
 ```shell
 . $HOME/.asdf/asdf.sh
 ```
 
-Completions must be configured by adding the following to your `.bashrc`:
+O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bashrc`:
 
 ```shell
 . $HOME/.asdf/completions/asdf.bash
@@ -61,15 +63,15 @@ Completions must be configured by adding the following to your `.bashrc`:
 
 ::: details Bash & Git (macOS)
 
-If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
+Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mudou para o **ZSH**. A não ser que você tenha voltado para o bash, siga as instruções de instalação para o ZSH.
 
-Add the following to `~/.bash_profile`:
+Adicione esta linha ao seu `~/.bash_profile`:
 
 ```shell
 . $HOME/.asdf/asdf.sh
 ```
 
-Completions must be configured manually with the following entry in your `.bash_profile`:
+O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bash_profile`:
 
 ```shell
 . $HOME/.asdf/completions/asdf.bash
@@ -79,15 +81,15 @@ Completions must be configured manually with the following entry in your `.bash_
 
 ::: details Bash & Homebrew (macOS)
 
-If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
+Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mudou para o **ZSH**. A não ser que você tenha voltado para o bash, siga as instruções de instalação para o ZSH.
 
-Add `asdf.sh` to your `~/.bash_profile` with:
+Adicione `asdf.sh` ao `~/.bash_profile` através do comando:
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 ```
 
-Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
+O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
 ```shell:no-line-numbers
 echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
@@ -97,24 +99,24 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_p
 
 ::: details Bash & Pacman
 
-Add the following to `~/.bashrc`:
+Adicione a seguinte linha ao seu `~/.bashrc`:
 
 ```shell
 . /opt/asdf-vm/asdf.sh
 ```
 
-[`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) needs to be installed for the completions to work.
+O [pacote `bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) precisa ser instalado para o auto completar funcionar.
 :::
 
 ::: details Fish & Git
 
-Add the following to `~/.config/fish/config.fish`:
+Adicione a seguinte linha ao seu `~/.config/fish/config.fish`:
 
 ```shell
 source ~/.asdf/asdf.fish
 ```
 
-Completions must be configured manually with the following command:
+O auto completar deve ser configurado manualmente através do seguinte comando:
 
 ```shell:no-line-numbers
 mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
@@ -124,37 +126,37 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 
 ::: details Fish & Homebrew
 
-Add `asdf.fish` to your `~/.config/fish/config.fish` with:
+Adicione `asdf.fish` ao seu `~/.config/fish/config.fish` através do comando:
 
 ```shell:no-line-numbers
-echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
+echo -e "\nsource "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
-Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
+O auto completar é [configurado pela Homebrew para o fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish).
 :::
 
 ::: details Fish & Pacman
 
-Add the following to `~/.config/fish/config.fish`:
+Adicione a seguinte linha ao seu `~/.config/fish/config.fish`:
 
 ```shell
 source /opt/asdf-vm/asdf.fish
 ```
 
-Completions are automatically configured on installation by the AUR package.
+O auto completar é configurado automaticamente durante a instalação do pacote AUR.
 :::
 
 ::: details ZSH & Git
 
-Add the following to `~/.zshrc`:
+Adicione a seguinte linha ao seu `~/.zshrc`:
 
 ```shell
 . $HOME/.asdf/asdf.sh
 ```
 
-**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
 
-Completions are configured by either a ZSH Framework `asdf` plugin or by adding the following to your `.zshrc`:
+O auto completar pode ser configurado ou pelo plugin do asdf para framework para ZSH, ou através da adição das seguintes linhas ao seu `.zshrc`:
 
 ```shell
 # append completions to fpath
@@ -163,135 +165,135 @@ fpath=(${ASDF_DIR}/completions $fpath)
 autoload -Uz compinit && compinit
 ```
 
-- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
-- if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
+- Se você está utilizando uma configuração `compinit` customizada, garanta que `compinit` esteja abaixo chamada `asdf.sh`
+- Se você está utilizando uma configuração `compinit` customizada com um framework para ZSH, garanta que `compinit` esteja abaixo da chamada do framework.
 
-**Warning**
+**Aviso**
 
-If you are using a ZSH Framework the associated `asdf` plugin may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+Se você está utilizando um framework para ZSH, o plugin do asdf pode precisar ser atualizado para utilização adequada do novo auto completar do ZSH através do `fpath`. O plugin do asdf para o oh-my-zsh ainda não foi atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
 
 ::: details ZSH & Homebrew
 
-Add `asdf.sh` to your `~/.zshrc` with:
+Adicione `asdf.sh` ao seu `~/.zshrc` através do comando:
 
 ```shell
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 
-**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
 
-Completions are configured by either a ZSH Framework `asdf` or will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated plugin for asdf may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+O auto completar pode ser configurado ou pelo framework para ZSH, ou de acordo com as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). Se você está usando um framework para ZSH, pode ser que seja necessário atualizar o plugin do asdf para que o novo auto completar funcione adequadamente através do `fpath`. O plugin do asdf para o Oh-My-ZSH ainda será atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
 
 ::: details ZSH & Pacman
 
-Add the following to `~/.zshrc`:
+Adicione a seguinte linha ao seu `~/.zshrc`:
 
 ```shell
 . /opt/asdf-vm/asdf.sh
 ```
 
-Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
+O auto completar é colocado em um local familiar para o ZSH, [mas o ZSH deve ser configurado para conseguir utilizá-lo](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
-`asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
+Os scripts do `asdf` precisam ser chamados **depois** de ter configurado a sua variável `$PATH` e **depois** de ter chamado o seu framework para ZSH (oh-my-zsh etc).
 
-Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
+Reinicie seu shell para que as mudanças na variável `PATH` tenham efeito. Abrir uma nova janela/sessão de terminal o fará.
 
-## 4. Install a Plugin
+## 4. Instalando um plugin
 
-For demonstration purposes we will install & set [Node.js](https://nodejs.org/) via the [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) plugin.
+Para demonstração, vamos instalar e configurar o [Node.js](https://nodejs.org/) através do plugin [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/).
 
-### Plugin Dependencies
+### Dependências dos plugins
 
-Each plugin has dependencies so we need to check the plugin repo where they should be listed. For `asdf-nodejs` they are:
+Cada plugin possui algumas dependências, por isso precisamos checar no repositório onde elas estão listadas. Por exemplo, para o `asdf-nodejs` são:
 
-| OS             | Dependency Installation                 |
+| SO             | Instalação de dependencia                 |
 | -------------- | --------------------------------------- |
 | Linux (Debian) | `apt-get install dirmngr gpg curl gawk` |
 | macOS          | `brew install gpg gawk`                 |
 
-We should install dependencies first as some Plugins have post-install hooks.
+Devemos instalar instalar as dependências primeiro, pois alguns plugins exigem algumas ações após a instalação.
 
-### Install the Plugin
+### Instalando o plugin
 
 ```shell:no-line-numbers
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
-## 5. Install a Version
+## 5. Instalando uma versão
 
-Now we have a plugin for Node.js we can install a version of the tool.
+Agora temos o plugin para o Node.js, nós podemos instalar uma versão desta ferramenta.
 
-We can observer which versions are available with `asdf list all nodejs` or a subset of versions with `asdf list all nodejs 14`.
+Podemos ver quais versões tão disponíveis através do comando `asdf list all nodejs`, ou uma lista específica de versões com `asdf list all nodejs 14`
 
-We will just install the `latest` available version:
+Vamos instalar somente a última versão disponível, utilizando a tag `latest`:
 
 ```shell:no-line-numbers
 asdf install nodejs latest
 ```
 
-::: tip Note
-`asdf` enforces exact versions. `latest` is a helper throughout `asdf` that will resolve to the actual version number at the time of execution.
+::: tip Nota
+`asdf` exige versões exatas. A palavra `latest` resulta na instalação da versão atual na data da execução.
 :::
 
-## 6. Set a Version
+## 6. Definindo uma versão
 
-`asdf` performs a version lookup of a tool in all `.tool-versions` files from the current working directory up to the `$HOME` directory. The lookup occurs just-in-time when you execute a tool that `asdf` manages.
+`asdf` executa uma verificação das versões das ferramentas a serem utilizadas através do arquivo `.tool-versions` presente desde diretório atual, até o diretório `$HOME`. A varredura ocorre no momento em que você executa uma ferramenta que o asdf gerencia.
 
 ::: warning
-Without a version listed for a tool execution of the tool will **error**. `asdf current` will show you the tool & version resolution, or absence of, from your current directory so you can observe which tools will fail to execute.
+Se uma versão não for especificada para uma ferramenta, ao executá-la resultará em erro. `asdf current` mostrará a ferramenta e sua versão, ou então a falta dela no seu diretório atual para que você possa observar quais ferramentas falharão ao serem executadas.
 :::
 
-### Global
+### Versões globais
 
-Global defaults are managed in `$HOME/.tool-versions`. Set a global version with:
+Os padrões globais são gerenciados em `$HOME/.tool-versions`. Defina uma versão global através do comando:
 
 ```shell:no-line-numbers
 asdf global nodejs latest
 ```
 
-`$HOME/.tool-versions` will then look like:
+`$HOME/.tool-versions` ficará assim:
 
 ```
 nodejs 16.5.0
 ```
 
-Some OSs already have tools installed that are managed by the system and not `asdf`, `python` is a common example. You need to tell `asdf` to pass the management back to the system. The [Versions reference section](/pt-br/manage/versions.md) will guide you.
+Alguns sistemas operacionais vêm por padrão com ferramentas que são gerenciadas pelo próprio sistema e não pelo `asdf`, `python` é um exemplo. Você precisa indicar para o `asdf` para devolver o gerenciamento para o sistema. A [seção de referência de versões](/pt-br/manage/versions.md) irá guiá-lo.
 
-### Local
+### Versões locais
 
-Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git respository for a project. When in your desired directory execute:
+Versões locais são definidas no arquivo `$PWD/.tool-versions` (seu diretório atual). Geralmente, será um repositório Git para um projeto. Quando estiver no diretório desejado, execute:
 
 ```shell:no-line-numbers
 asdf local nodejs latest
 ```
 
-`$PWD/.tool-versions` will then look like:
+`$PWD/.tool-versions` ficará assim:
 
 ```
 nodejs 16.5.0
 ```
 
-### Using Existing Tool Version Files
+### Usando arquivos de versão existentes
 
-`asdf` supports the migration from existing version files from other version managers. Eg: `.ruby-version` for the case of `rbenv`. This is supported on a per-plugin basis.
+`asdf` suporta a migração de arquivos de versão provenientes de outros gerenciadores de versão. Por exemplo: `.ruby-version` para o `rbenv`. Essa funcionalidade é baseada no plugin de cada ferramenta.
 
-[`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) supports this via both `.nvmrc` and `.node-version` files. To enable this, add the following to your `asdf` configuration file `$HOME/.asdfrc`:
+O [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) suporta tanto arquivos `.nvmrc` quanto `.node-version`. Para ativar essa funcionalidade, adicione a seguinte linha ao seu arquivo de configuração do `asdf` - `$HOME/.asdfrc`:
 
 ```
 legacy_version_file = yes
 ```
 
-See the [configuration](/pt-br/manage/configuration.md) reference page for more config options.
+Veja a página de refencia da [configuração](/pt-br/manage/configuration.md) para mais opções de configuração.
 
-## Setup Complete!
+## Setup finalizado!
 
-That completes the initial setup of `asdf` :tada: You can now manage `nodejs` versions for your project. Follow similar steps for each type of tool in your project!
+A configuração inicial do `asdf` foi finalizada :tada:. Agora, você pode gerenciar versões do `nodejs` para o seus projetos. Siga passos semelhantes para cada ferramenta do seu projeto.
 
-`asdf` has a many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
+O `asdf` possui diversos outros comandos para se acustomar ainda, você pode ver todos eles através do comando `asdf --help` ou simplesmente `asdf`. Eles estão divididos em três categorias:
 
-- [core `asdf`](/pt-br/manage/core.md)
+- [núcleo `asdf`](/pt-br/manage/core.md)
 - [plugins](/pt-br/manage/plugins.md)
-- [versions (of tools)](/pt-br/manage/versions.md)
+- [versões (de ferramentas)](/pt-br/manage/versions.md)
