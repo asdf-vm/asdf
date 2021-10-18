@@ -14,7 +14,7 @@ Importantly, WSL2 is _only_ expected to work properly when the current working d
 
 We intend to run out test suite on WSL2 when host runner support is available on GitHub Actions, currently this does not appear to be the case.
 
-## Newly installed exectable not running?
+## Newly installed executable not running?
 
 > I just `npm install -g yarn`, but cannot execute `yarn`. What gives?
 
