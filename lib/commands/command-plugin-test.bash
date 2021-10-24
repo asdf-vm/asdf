@@ -4,12 +4,10 @@ plugin_test_command() {
 
   local plugin_name=$1
   local plugin_url=$2
-  local plugin_command_array=()
-  local plugin_command
+  local plugin_command=()
   local plugin_gitref="master"
   local tool_version
-  # shellcheck disable=SC2086
-  set -- ${*:3}
+  shift 2
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -24,13 +22,15 @@ plugin_test_command() {
       shift # past value
       ;;
     *)
-      plugin_command_array+=("$1") # save it in an array for later
+      plugin_command+=("$1") # save it in an array for later
       shift                        # past argument
       ;;
     esac
   done
 
-  plugin_command="${plugin_command_array[*]}"
+  if [ "${#plugin_command[@]}" -eq 1 ]; then
+      plugin_command=(sh -c "${plugin_command[@]}")
+  fi
 
   local exit_code
   local TEST_DIR
@@ -129,10 +129,10 @@ plugin_test_command() {
     fi
 
     if [ -n "$plugin_command" ]; then
-      $plugin_command
+      "${plugin_command[@]}"
       exit_code=$?
       if [ $exit_code != 0 ]; then
-        fail_test "$plugin_command failed with exit code $?"
+        fail_test "$plugin_command[*] failed with exit code $?"
       fi
     fi
 
