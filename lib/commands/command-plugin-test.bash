@@ -23,13 +23,13 @@ plugin_test_command() {
       ;;
     *)
       plugin_command+=("$1") # save it in an array for later
-      shift                        # past argument
+      shift                  # past argument
       ;;
     esac
   done
 
   if [ "${#plugin_command[@]}" -eq 1 ]; then
-      plugin_command=(sh -c "${plugin_command[@]}")
+    plugin_command=(sh -c "${plugin_command[@]}")
   fi
 
   local exit_code
@@ -128,11 +128,11 @@ plugin_test_command() {
       fail_test "could not reshim plugin"
     fi
 
-    if [ -n "$plugin_command" ]; then
+    if [ "${#plugin_command[@]}" -gt 0 ]; then
       "${plugin_command[@]}"
       exit_code=$?
       if [ $exit_code != 0 ]; then
-        fail_test "$plugin_command[*] failed with exit code $?"
+        fail_test "${plugin_command[*]} failed with exit code $?"
       fi
     fi
 
