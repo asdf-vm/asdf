@@ -36,7 +36,7 @@ plugin_test_command() {
   done
 
   if [ "$#" -eq 1 ]; then
-      set -- sh -c "$@"
+      set -- "${SHELL:-sh}" -c "$@"
   fi
 
   local exit_code
