@@ -43,7 +43,7 @@ plugin_test_command() {
   local TEST_DIR
 
   fail_test() {
-    printf "FAILED: %s\\n" "$*"
+    printf "FAILED: %s\\n" "$1"
     rm -rf "$TEST_DIR"
     exit 1
   }
