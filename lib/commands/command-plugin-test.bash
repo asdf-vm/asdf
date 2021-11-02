@@ -11,32 +11,32 @@ plugin_test_command() {
   local interpret_args_literally
 
   for arg; do
-      shift
-      if [ -n "${interpret_args_literally}" ]; then
-          set -- "$@" "${arg}"
-      else
-          case "${arg}" in
-              --asdf-plugin-gitref)
-                  plugin_gitref="$2"
-                  shift 2
-                  ;;
-              --asdf-tool-version)
-                  tool_version="$2"
-                  shift 2
-                  ;;
-              --)
-                  interpret_args_literally=true
-                  shift
-                  ;;
-              *)
-                  set -- "$@" "${arg}"
-                  ;;
-          esac
-      fi
+    shift
+    if [ -n "${interpret_args_literally}" ]; then
+      set -- "$@" "${arg}"
+    else
+      case "${arg}" in
+      --asdf-plugin-gitref)
+        plugin_gitref="$2"
+        shift 2
+        ;;
+      --asdf-tool-version)
+        tool_version="$2"
+        shift 2
+        ;;
+      --)
+        interpret_args_literally=true
+        shift
+        ;;
+      *)
+        set -- "$@" "${arg}"
+        ;;
+      esac
+    fi
   done
 
   if [ "$#" -eq 1 ]; then
-      set -- "${SHELL:-sh}" -c "$1"
+    set -- "${SHELL:-sh}" -c "$1"
   fi
 
   local exit_code
