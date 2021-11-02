@@ -21,6 +21,9 @@ setup() {
   mkdir -p $CHILD_DIR
 
   cd $PROJECT_DIR
+
+  # asdf lib needed to run asdf.sh
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 }
 
 teardown() {
