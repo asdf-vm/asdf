@@ -9,24 +9,26 @@ plugin_test_command() {
   local plugin_gitref="master"
   local tool_version
   local interpret_args_literally
+  local skip_next_arg
 
   for arg; do
     shift
-    if [ -n "${interpret_args_literally}" ]; then
+    if [ -n "${skip_next_arg}" ]; then
+      skip_next_arg=
+    elif [ -n "${interpret_args_literally}" ]; then
       set -- "$@" "${arg}"
     else
       case "${arg}" in
       --asdf-plugin-gitref)
-        plugin_gitref="$2"
-        shift 2
+        plugin_gitref="$1"
+        skip_next_arg=true
         ;;
       --asdf-tool-version)
-        tool_version="$2"
-        shift 2
+        tool_version="$1"
+        skip_next_arg=true
         ;;
       --)
         interpret_args_literally=true
-        shift
         ;;
       *)
         set -- "$@" "${arg}"
