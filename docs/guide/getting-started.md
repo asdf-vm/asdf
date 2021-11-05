@@ -228,7 +228,7 @@ asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
 Now we have a plugin for Node.js we can install a version of the tool.
 
-We can observer which versions are available with `asdf list all nodejs` or a subset of versions with `asdf list all nodejs 14`.
+We can see which versions are available with `asdf list all nodejs` or a subset of versions with `asdf list all nodejs 14`.
 
 We will just install the `latest` available version:
 
