@@ -223,7 +223,7 @@ find_versions() {
 
 display_no_version_set() {
   local plugin_name=$1
-  printf "No version set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
+  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
 }
 
 get_version_from_env() {
