@@ -17,6 +17,14 @@ ruby 2.5.3
 nodejs 10.15.0
 ```
 
+You can also include comments:
+
+```:no-line-numbers
+ruby 2.5.3 # This is a comment
+# This is another comment
+nodejs 10.15.0
+```
+
 The versions can be in the following format:
 
 - `10.15.0` - an actual version. Plugins that support downloading binaries, will download binaries.
