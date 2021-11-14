@@ -27,7 +27,7 @@ function teardown() {
 }
 
 @test "where shows install location of current version if no version specified" {
-  echo 'dummy 2.1' >> $HOME/.tool-versions
+  echo 'dummy 2.1' >>$HOME/.tool-versions
 
   run asdf where 'dummy'
 
@@ -36,7 +36,7 @@ function teardown() {
 }
 
 @test "where shows install location of first current version if not version specified and multiple current versions" {
-  echo 'dummy 2.1 1.0' >> $HOME/.tool-versions
+  echo 'dummy 2.1 1.0' >>$HOME/.tool-versions
   run asdf where 'dummy'
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
@@ -64,7 +64,7 @@ function teardown() {
   run asdf where 'dummy'
 
   local expected
-  expected="No version set for dummy; please run \`asdf <global | shell | local> dummy <version>\`"
+  expected="No version is set for dummy; please run \`asdf <global | shell | local> dummy <version>\`"
 
   [ "$status" -eq 1 ]
   [ "$output" = "$expected" ]
