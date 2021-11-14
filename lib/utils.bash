@@ -223,7 +223,7 @@ find_versions() {
 
 display_no_version_set() {
   local plugin_name=$1
-  printf "No version set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
+  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
 }
 
 get_version_from_env() {
@@ -798,7 +798,7 @@ with_shim_executable() {
       done
       printf "\\n%s %s\\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
-      printf "%s %s\\n" "No version set for command" "$shim_name"
+      printf "%s %s\\n" "No version is set for command" "$shim_name"
       printf "%s %s\\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
     shim_plugin_versions "${shim_name}"
