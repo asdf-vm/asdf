@@ -289,7 +289,7 @@ get_executable_path() {
   check_if_version_exists "$plugin_name" "$version"
 
   if [ "$version" = "system" ]; then
-    path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
+    path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
@@ -755,7 +755,7 @@ with_shim_executable() {
 
     run_within_env() {
       local path
-      path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
+      path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
 
       executable_path=$(PATH=$path command -v "$shim_name")
 
@@ -805,4 +805,21 @@ with_shim_executable() {
   ) >&2
 
   return 126
+}
+
+substitute() {
+  # Use Bash substituion rather than sed as it will handle escaping of all
+  # strings for us.
+  local input=$1
+  local find_str=$2
+  local replace=$3
+  printf "%s" "${input//"$find_str"/"$replace"}"
+}
+
+remove_path_from_path() {
+  # A helper function for removing an arbitrary path from the PATH variable.
+  # Output is a new string suitable for assignment to PATH
+  local PATH=$1
+  local path=$2
+  substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
 }

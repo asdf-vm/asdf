@@ -14,20 +14,17 @@ EOF
 }
 
 asdf_extension_cmds() {
-  local plugins_path ext_cmd_path ext_cmds plugin
+  local plugins_path plugin_path ext_cmd_path ext_cmds plugin
   plugins_path="$(get_plugin_path)"
-  # use find instead of ls -1
-  # shellcheck disable=SC2012
-  for plugin in $(ls -1 "$plugins_path" 2>/dev/null | sed "s#^$plugins_path/##"); do
-    ext_cmd_path="$plugins_path/$plugin/lib/commands"
-    ext_cmds=$(
-      ls -1 "$ext_cmd_path"/command*.bash 2>/dev/null |
-        sed "s#$ext_cmd_path/##"
-    )
+  for plugin_path in "$plugins_path"/*; do
+    plugin="$(basename "$plugin_path")"
+    ext_cmd_path="$plugin_path/lib/commands"
+    ext_cmds="$(find "$ext_cmd_path" -name "command*.bash")"
     if [[ -n $ext_cmds ]]; then
       printf "\\nPLUGIN %s\\n" "$plugin"
       for ext_cmd in $ext_cmds; do
-        sed "s/-/ /g;s/.bash//;s/command-*/  asdf $plugin/;" <<<"$ext_cmd"
+        ext_cmd_name="$(basename "$ext_cmd")"
+        sed "s/-/ /g;s/.bash//;s/command-*/  asdf $plugin/;" <<<"$ext_cmd_name"
       done | sort
     fi
   done
