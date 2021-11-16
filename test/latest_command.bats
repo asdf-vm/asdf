@@ -59,3 +59,12 @@ teardown() {
   [ "$(echo "No compatible versions available (legacy-dummy 3)")" == "$output" ]
   [ "$status" -eq 1 ]
 }
+
+################################
+####      latest --all      ####
+################################
+@test "[latest_command - all plugins] shows the latest stable version of all plugins" {
+  run asdf latest --all
+  [ "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t2.0.0\tinstalled\n")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
