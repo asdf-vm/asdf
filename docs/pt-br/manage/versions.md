@@ -133,7 +133,7 @@ asdf uninstall <name> <version>
 
 ## Shims
 
-Quando asdf instala um pacote é criado _shims_ para cada programa executado no pacote do diretório `$ASDF_DATA_DIR/shims` (padrão `~/.asdf/shims`). Esse diretório começa no `$PATH` (pelos `asdf.sh` ou `asdf.fish`) é como o programa instalado é disponibilizado no ambiente do sistema.
+Quando asdf instala um pacote é criado _shims_ para cada programa executado no pacote do diretório `$ASDF_DATA_DIR/shims` (padrão `~/.asdf/shims`). Esse diretório começa no `$PATH` (pelos `asdf.sh`, `asdf.fish`, etc) é como o programa instalado é disponibilizado no ambiente do sistema.
 
 Os _shims_ em si são atalhos simples que executam um programa auxiliar `asdf exec` passando o nome do plugin e o caminho para o executável no pacote instalado que o _shim_ está contido.
 

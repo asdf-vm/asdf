@@ -45,7 +45,7 @@ teardown() {
       # Also ignore matches that are contained in comments or a string or
       # followed by an underscore (indicating it's a variable and not a
       # command).
-      run bash -c "grep -nHR '$cmd' lib bin\
+      run bash -c "grep -nHR '$cmd' asdf.* lib bin\
         | grep -v '#.*$cmd'\
         | grep -v '\".*$cmd.*\"' \
         | grep -v '${cmd}_'\

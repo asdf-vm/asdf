@@ -259,6 +259,99 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 :::
 
+::: details Elvish & Git
+
+1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+e desinstale o módulo `asdf` com este comando:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Remova o diretório `$HOME/.asdf`:
+
+```shell:no-line-numbers
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
+```
+
+3. Execute este comando para remover todos os arquivos de configuração `asdf`:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
+::: details Elvish & Homebrew
+
+1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+e desinstale o módulo `asdf` com este comando:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Desinstale com seu gerenciador de pacotes:
+
+```shell:no-line-numbers
+brew uninstall asdf --force
+```
+
+3. Execute este comando para remover todos os arquivos de configuração `asdf`:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
+::: details Elvish & Pacman
+
+1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+e desinstale o módulo `asdf` com este comando:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Desinstale com seu gerenciador de pacotes:
+
+```shell:no-line-numbers
+pacman -Rs asdf-vm
+```
+
+3. Remova o diretório `$ HOME/.asdf`:
+
+```shell:no-line-numbers
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
+```
+
+4. Execute este comando para remover todos os arquivos de configuração `asdf`:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
 ::: details ZSH & Git
 
 1. Em seu `~/.zshrc` remova as linhas do `asdf.sh` e seus complementos:

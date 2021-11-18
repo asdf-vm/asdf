@@ -19,7 +19,7 @@ features:
   - title: "Só um arquivo de configuração"
     details: ".tool-versions para gerenciar todas as suas ferramentas, runtimes e suas versões em um único arquivo"
   - title: "Shells"
-    details: "Suporta Bash, ZSH & Fish com autocomplete."
+    details: "Suporta Bash, ZSH, Fish & Elvish com autocomplete."
   - title: "GitHub Actions"
     details: "Fornece um GitHub Action para instalar e utilizar seu .tool-verions em seu fluxo de trabalho CICD."
 # footer: MIT Licensed

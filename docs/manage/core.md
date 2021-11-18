@@ -257,6 +257,99 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 :::
 
+::: details Elvish & Git
+
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+and uninstall the `asdf` module with this command:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Remove the `$HOME/.asdf` dir:
+
+```shell:no-line-numbers
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
+::: details Elvish & Homebrew
+
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+and uninstall the `asdf` module with this command:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Uninstall with your package manager:
+
+```shell:no-line-numbers
+brew uninstall asdf --force
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
+::: details Elvish & Pacman
+
+1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+
+```shell
+use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+```
+
+and uninstall the `asdf` module with this command:
+
+```shell:no-line-numbers
+rm -f ~/.elvish/lib/asdf.elv
+```
+
+2. Uninstall with your package manager:
+
+```shell:no-line-numbers
+pacman -Rs asdf-vm
+```
+
+3. Remove the `$HOME/.asdf` dir:
+
+```shell:no-line-numbers
+if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
+```
+
+4. Run this command to remove all `asdf` config files:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
 ::: details ZSH & Git
 
 1. In your `~/.zshrc` remove the lines that source `asdf.sh` and completions:

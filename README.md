@@ -13,7 +13,7 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 - support for existing config files `.node-version`, `.nvmrc`, `.ruby-version` for easy migration
 - automatically switches runtime versions as you traverse your directories
 - simple plugin system to add support for your language of choice
-- shell completion available for common shells (Bash, Zsh, Fish)
+- shell completion available for common shells (Bash, Zsh, Fish, Elvish)
 
 ## Documentation
 

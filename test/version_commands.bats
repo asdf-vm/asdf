@@ -374,6 +374,12 @@ false"
   [ "$output" = "set -gx ASDF_DUMMY_VERSION \"1.1.0\"" ]
 }
 
+@test "export-shell-version should use set-env when shell is elvish" {
+  run asdf export-shell-version elvish "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$output" = $'set-env\nASDF_DUMMY_VERSION\n1.1.0' ]
+}
+
 @test "export-shell-version should unset when --unset flag is passed" {
   run asdf export-shell-version sh "dummy" "--unset"
   [ "$status" -eq 0 ]
@@ -384,6 +390,12 @@ false"
   run asdf export-shell-version fish "dummy" "--unset"
   [ "$status" -eq 0 ]
   [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}
+
+@test "export-shell-version should use unset-env when --unset flag is passed and shell is elvish" {
+  run asdf export-shell-version elvish "dummy" "--unset"
+  [ "$status" -eq 0 ]
+  [ "$output" = $'unset-env\nASDF_DUMMY_VERSION' ]
 }
 
 @test "[shell - dummy_plugin] wrapper function should support latest" {

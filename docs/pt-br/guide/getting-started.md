@@ -146,6 +146,46 @@ source /opt/asdf-vm/asdf.fish
 O auto completar é configurado automaticamente durante a instalação do pacote AUR.
 :::
 
+::: details Elvish & Git
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+
+:::
+
+::: details Elvish & Homebrew
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+:::
+
+::: details Elvish & Pacman
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+:::
+
 ::: details ZSH & Git
 
 Adicione a seguinte linha ao seu `~/.zshrc`:

@@ -11,7 +11,7 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  result=$(fish -c "
+  output=$(fish -c "
     set -e asdf
     set -e ASDF_DIR
     set -e ASDF_DATA_DIR
@@ -20,9 +20,8 @@ cleaned_path() {
     . asdf.fish
     echo \$ASDF_DIR
   ")
-
   [ "$?" -eq 0 ]
-  [ "$result" != "" ]
+  [ "$output" != "" ]
 }
 
 @test "adds asdf dirs to PATH" {
@@ -35,9 +34,8 @@ cleaned_path() {
    . (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
    echo \$PATH
  ")
-
- output=$(echo "$result" | grep "asdf")
  [ "$?" -eq 0 ]
+ output=$(echo "$result" | grep "asdf")
  [ "$output" != "" ]
 }
 
@@ -52,9 +50,8 @@ cleaned_path() {
     . asdf.fish
     echo \$PATH
   ")
-
-  output=$(echo $PATH | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$?" -eq 0 ]
+  output=$(echo $PATH | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$output" = "" ]
 }
 
@@ -67,7 +64,21 @@ cleaned_path() {
     . asdf.fish
     type asdf
   ")
-
-  echo $output
+  [ "$?" -eq 0 ]
   [[ "$output" =~ "is a function" ]]
 }
+
+@test "function calls asdf command" {
+  result=$(fish -c "
+    set -e asdf
+    set -x ASDF_DIR $(pwd)
+    set PATH $(cleaned_path)
+
+    . asdf.fish
+    asdf info
+  ")
+  [ "$?" -eq 0 ]
+  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
+  [ "$output" != "" ]
+}
+
