@@ -21,6 +21,14 @@ banned_commands=(
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
     # Except in fish, where . is deprecated, and will be removed in the future.
     source
+
+    # ls often gets used when we want to glob for files that match a pattern
+    # or when we want to find all files/directories that match a pattern or are
+    # found in a certain location. Using shell globs is preferred over ls, and
+    # find is better at locating files that are in a certain location or that
+    # match certain filename patterns.
+    # https://github-wiki-see.page/m/koalaman/shellcheck/wiki/SC2012
+    ls
 )
 
 banned_commands_regex=(
