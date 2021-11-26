@@ -111,7 +111,9 @@ check_if_plugin_exists() {
     exit 1
   fi
 
-  if [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
+  # ".." is evaluated to the parent plugins folder, which should not be valid
+  if [ ".." == "${plugin_name}" ] \
+    || [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
     display_error "No such plugin: $plugin_name"
     exit 1
   fi
