@@ -95,8 +95,7 @@ list_installed_versions() {
   plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
   if [ -d "$plugin_installs_path" ]; then
-    for install in "${plugin_installs_path}"/*/; do
-      [[ -e "$install" ]] || break
+    for install in $(ls -1v ${plugin_installs_path}); do
       basename "$install" | sed 's/^ref-/ref:/'
     done
   fi
