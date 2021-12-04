@@ -19,7 +19,7 @@ asdf_extension_cmds() {
   for plugin_path in "$plugins_path"/*; do
     plugin="$(basename "$plugin_path")"
     ext_cmd_path="$plugin_path/lib/commands"
-    ext_cmds="$(find "$ext_cmd_path" -name "command*.bash")"
+    ext_cmds="$(find "$ext_cmd_path" -name "command*.bash" 2>/dev/null)"
     if [[ -n $ext_cmds ]]; then
       printf "\\nPLUGIN %s\\n" "$plugin"
       for ext_cmd in $ext_cmds; do
