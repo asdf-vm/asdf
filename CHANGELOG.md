@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.9.1](https://www.github.com/asdf-vm/asdf/compare/v0.9.0...v0.9.1) (2021-12-05)
+
+
+### Bug Fixes
+
+* do not print `find` errors ([#1102](https://www.github.com/asdf-vm/asdf/issues/1102)) ([5992abb](https://www.github.com/asdf-vm/asdf/commit/5992abb09e6f5e0af690bf0e99619386187949db))
+* shorthand grep options for alpine support ([#1106](https://www.github.com/asdf-vm/asdf/issues/1106)) ([234778a](https://www.github.com/asdf-vm/asdf/commit/234778a397f19c398d2f76a0321fef3273c9a086))
+
 ## [0.9.0](https://www.github.com/asdf-vm/asdf/compare/v0.8.1...v0.9.0) (2021-11-18)
 
 
