@@ -16,7 +16,7 @@ if [ -z "$ASDF_DIR" ]; then
 fi
 export ASDF_DIR
 # shellcheck disable=SC2016
-[ -d "$ASDF_DIR" ] || printf '$ASDF_DIR is not a directory'
+[ -d "$ASDF_DIR" ] || printf '$ASDF_DIR is not a directory\n'
 
 # Add asdf to PATH
 #
