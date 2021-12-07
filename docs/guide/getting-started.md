@@ -13,12 +13,16 @@
 
 **Linux**:
 
+::: tip Note
+`sudo` may be required depending on your system configuration.
+:::
+
 | Package Manager | Command                        |
 | --------------- | ------------------------------ |
-| Aptitude        | `sudo apt install curl git`    |
-| DNF             | `sudo dnf install curl git`    |
-| Pacman          | `sudo pacman -S curl git`      |
-| Zypper          | `sudo zypper install curl git` |
+| Aptitude        | `apt install curl git`    |
+| DNF             | `dnf install curl git`    |
+| Pacman          | `pacman -S curl git`      |
+| Zypper          | `zypper install curl git` |
 
 **macOS**:
 
