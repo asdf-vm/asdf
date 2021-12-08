@@ -14,20 +14,26 @@ banned_commands=(
     # It's best to avoid eval as it makes it easier to accidentally execute
     # arbitrary strings
     eval
-    # grep -y does not work on alpine and should be "grep -i" either way
-    "grep.* -y"
-    # grep -P is not a valid option in OSX.
-    "grep.* -P"
+
     # realpath not available by default on OSX.
     realpath
     # readlink on OSX behaves differently from readlink on other Unix systems
     readlink
-    # sort --sort-version isn't supported everywhere
-    "sort.*-V"
-    "sort.*--sort-versions"
     # source isn't POSIX compliant. . behaves the same and is POSIX compliant
     # Except in fish, where . is deprecated, and will be removed in the future.
     source
+)
+
+banned_commands_regex=(
+    # grep -y does not work on alpine and should be "grep -i" either way
+    "grep.* -y"
+    # grep -P is not a valid option in OSX.
+    "grep.* -P"
+    # Ban grep long commands as they do not work on alpine
+    "grep[^|]+--\w{2,}"
+    # sort --sort-version isn't supported everywhere
+    "sort.*-V"
+    "sort.*--sort-versions"
 )
 
 setup() {
@@ -39,12 +45,12 @@ teardown() {
 }
 
 @test "banned commands are not found in source code" {
+  # Assert command is not used in the lib and bin dirs
+  # or expect an explicit comment at end of line, allowing it.
+  # Also ignore matches that are contained in comments or a string or
+  # followed by an underscore (indicating it's a variable and not a
+  # command).
   for cmd in "${banned_commands[@]}"; do
-      # Assert command is not used in the lib and bin dirs
-      # or expect an explicit comment at end of line, allowing it.
-      # Also ignore matches that are contained in comments or a string or
-      # followed by an underscore (indicating it's a variable and not a
-      # command).
       run bash -c "grep -nHR '$cmd' asdf.* lib bin\
         | grep -v '#.*$cmd'\
         | grep -v '\".*$cmd.*\"' \
@@ -52,7 +58,25 @@ teardown() {
         | grep -v '# asdf_allow: $cmd'"
 
       # Only print output if we've found a banned command
-      if [ "$status" -ne 1 ]; then
+      #if [ "$status" -ne 1 ]; then
+      if [ "" != "$output" ]; then
+        echo "banned command $cmd: $output"
+      fi
+
+      [ "$status" -eq 1 ]
+      [ "" == "$output" ]
+  done
+
+  for cmd in "${banned_commands_regex[@]}"; do
+      run bash -c "grep -nHRE '$cmd' asdf.* lib bin\
+        | grep -v '#.*$cmd'\
+        | grep -v '\".*$cmd.*\"' \
+        | grep -v '${cmd}_'\
+        | grep -v '# asdf_allow: $cmd'"
+
+      # Only print output if we've found a banned command
+      #if [ "$status" -ne 1 ]; then
+      if [ "" != "$output" ]; then
         echo "banned command $cmd: $output"
       fi
 
