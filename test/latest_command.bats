@@ -64,7 +64,16 @@ teardown() {
 ####      latest --all      ####
 ################################
 @test "[latest_command - all plugins] shows the latest stable version of all plugins" {
+  run asdf install dummy 2.0.0
+  run asdf install legacy-dummy 1.0.0
   run asdf latest --all
-  [ "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t2.0.0\tinstalled\n")" == "$output" ]
+  echo "output $output"
+  [ "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t2.0.0\tmissing\n")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
+
+@test "[latest_command - all plugins] not installed plugin should return missing" {
+  run asdf latest --all
+  [ "$(echo -e "dummy\t2.0.0\tmissing\nlegacy-dummy\t2.0.0\tmissing\n")" == "$output" ]
   [ "$status" -eq 0 ]
 }

@@ -40,6 +40,8 @@ asdf global <name> latest[:<version>]   Set the package local version to the
 asdf shell <name> <version>             Set the package version to
                                         `ASDF_${LANG}_VERSION` in the current shell
 asdf latest <name> [<version>]          Show latest stable version of a package
+asdf latest --all                       Show latest stable version of all the
+                                        packages and if they are installed
 asdf list <name> [version]              List installed versions of a package and
                                         optionally filter the versions
 asdf list all <name> [<version>]        List all versions of a package and

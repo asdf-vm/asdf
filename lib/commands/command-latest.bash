@@ -73,7 +73,7 @@ latest_all() {
       local installed_versions
       installed_versions=$(list_installed_versions "$plugin_name")
 
-      if ! printf '%s\n' "$installed_versions" | grep -q "^$version\$"; then
+      if [ -n "$installed_versions" ] && printf '%s\n' "$installed_versions" | grep -q "^$version\$"; then
         installed_status="installed"
       fi
       printf "%s\\t%s\\t%s\\n" "$plugin_name" "$version" "$installed_status"
