@@ -14,7 +14,6 @@ banned_commands=(
     # It's best to avoid eval as it makes it easier to accidentally execute
     # arbitrary strings
     eval
-
     # realpath not available by default on OSX.
     realpath
     # readlink on OSX behaves differently from readlink on other Unix systems
