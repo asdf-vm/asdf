@@ -28,7 +28,7 @@ latest_command() {
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
     versions=$(asdf list-all "$plugin_name" "$query" |
-      grep -vE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
       sed 's/^[[:space:]]\+//' |
       tail -1)
     if [ -z "${versions}" ]; then
@@ -59,7 +59,7 @@ latest_all() {
       else
         # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
         version=$(asdf list-all "$plugin_name" |
-          grep -vE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+          grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
           sed 's/^[[:space:]]\+//' |
           tail -1)
         if [ -z "${version}" ]; then
