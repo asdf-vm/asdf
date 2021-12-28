@@ -78,7 +78,7 @@ install_local_tool_versions() {
 
   # Locate all the plugins installed in the system
   local plugins_installed
-  if ls "$plugins_path" &>/dev/null; then
+  if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
     for plugin_path in "$plugins_path"/*; do
       local plugin_name
       plugin_name=$(basename "$plugin_path")
