@@ -33,6 +33,14 @@ banned_commands_regex=(
     # sort --sort-version isn't supported everywhere
     "sort.*-V"
     "sort.*--sort-versions"
+
+    # ls often gets used when we want to glob for files that match a pattern
+    # or when we want to find all files/directories that match a pattern or are
+    # found in a certain location. Using shell globs is preferred over ls, and
+    # find is better at locating files that are in a certain location or that
+    # match certain filename patterns.
+    # https://github-wiki-see.page/m/koalaman/shellcheck/wiki/SC2012
+    '\bls '
 )
 
 setup() {
@@ -50,7 +58,7 @@ teardown() {
   # followed by an underscore (indicating it's a variable and not a
   # command).
   for cmd in "${banned_commands[@]}"; do
-      run bash -c "grep -nHR '$cmd' asdf.* lib bin\
+      run bash -c "grep -nHR --include \*.bash --include \*.sh '$cmd' asdf.* lib bin\
         | grep -v '#.*$cmd'\
         | grep -v '\".*$cmd.*\"' \
         | grep -v '${cmd}_'\
@@ -67,7 +75,7 @@ teardown() {
   done
 
   for cmd in "${banned_commands_regex[@]}"; do
-      run bash -c "grep -nHRE '$cmd' asdf.* lib bin\
+      run bash -c "grep -nHRE --include \*.bash --include \*.sh '$cmd' asdf.* lib bin\
         | grep -v '#.*$cmd'\
         | grep -v '\".*$cmd.*\"' \
         | grep -v '${cmd}_'\
