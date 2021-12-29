@@ -13,6 +13,7 @@ setup() {
   install_dummy_legacy_version "1.0.0"
   install_dummy_legacy_version "1.1.0"
   install_dummy_legacy_version "2.0.0"
+  install_dummy_legacy_version "5.1.0"
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
@@ -76,7 +77,7 @@ teardown() {
 @test "[local - dummy_legacy_plugin] with latest should use the latest installed version" {
   run asdf local "legacy-dummy" "latest"
   [ "$status" -eq 0 ]
-  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 2.0.0" ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 5.1.0" ]
 }
 
 @test "[local - dummy_legacy_plugin] with latest:version should use the latest valid installed version" {
@@ -207,7 +208,7 @@ teardown() {
 @test "[global - dummy_legacy_plugin] with latest should use the latest installed version" {
   run asdf global "legacy-dummy" "latest"
   [ "$status" -eq 0 ]
-  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 2.0.0" ]
+  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 5.1.0" ]
 }
 
 @test "[global - dummy_legacy_plugin] with latest:version should use the latest valid installed version" {
@@ -408,7 +409,7 @@ false"
 @test "[shell - dummy_legacy_plugin] wrapper function should support latest" {
   . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "legacy-dummy" "latest"
-  [ $(echo $ASDF_LEGACY_DUMMY_VERSION) = "2.0.0" ]
+  [ $(echo $ASDF_LEGACY_DUMMY_VERSION) = "5.1.0" ]
   unset ASDF_LEGACY_DUMMY_VERSION
 }
 
@@ -423,7 +424,7 @@ false"
   echo 'legacy-dummy 1.0.0' >> $HOME/.tool-versions
   run asdf global "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
-  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 1.0.0 2.0.0" ]
+  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
 }
 
 @test "[local - dummy_plugin] should support latest" {
@@ -437,5 +438,5 @@ false"
   echo 'legacy-dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
   run asdf local "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
-  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 1.0.0 2.0.0" ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
 }
