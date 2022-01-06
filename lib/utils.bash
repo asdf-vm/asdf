@@ -223,7 +223,7 @@ find_versions() {
 
 display_no_version_set() {
   local plugin_name=$1
-  printf "No version set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
+  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\\n" "$plugin_name" "$plugin_name"
 }
 
 get_version_from_env() {
@@ -289,7 +289,7 @@ get_executable_path() {
   check_if_version_exists "$plugin_name" "$version"
 
   if [ "$version" = "system" ]; then
-    path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
+    path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
     cmd=$(basename "$executable_path")
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
@@ -454,7 +454,7 @@ resolve_symlink() {
   # This seems to be the only cross-platform way to resolve symlink paths to
   # the real file path.
   # shellcheck disable=SC2012
-  resolved_path=$(ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|')
+  resolved_path=$(ls -l "$symlink" | sed -e 's|.*-> \(.*\)|\1|') # asdf_allow: ls '
 
   # Check if resolved path is relative or not by looking at the first character.
   # If it is a slash we can assume it's root and absolute. Otherwise we treat it
@@ -681,7 +681,7 @@ select_from_preset_version() {
   shim_versions=$(get_shim_versions "$shim_name")
   if [ -n "$shim_versions" ]; then
     preset_versions=$(preset_versions "$shim_name")
-    grep -f "$shim_versions" "$preset_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
+    grep -F "$shim_versions" <<<"$preset_versions" | head -n 1 | xargs -IVERSION printf "%s\\n" VERSION
   fi
 }
 
@@ -755,7 +755,7 @@ with_shim_executable() {
 
     run_within_env() {
       local path
-      path=$(sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g" <<<"$PATH")
+      path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
 
       executable_path=$(PATH=$path command -v "$shim_name")
 
@@ -798,11 +798,28 @@ with_shim_executable() {
       done
       printf "\\n%s %s\\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
-      printf "%s %s\\n" "No version set for command" "$shim_name"
+      printf "%s %s\\n" "No version is set for command" "$shim_name"
       printf "%s %s\\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
     shim_plugin_versions "${shim_name}"
   ) >&2
 
   return 126
+}
+
+substitute() {
+  # Use Bash substituion rather than sed as it will handle escaping of all
+  # strings for us.
+  local input=$1
+  local find_str=$2
+  local replace=$3
+  printf "%s" "${input//"$find_str"/"$replace"}"
+}
+
+remove_path_from_path() {
+  # A helper function for removing an arbitrary path from the PATH variable.
+  # Output is a new string suitable for assignment to PATH
+  local PATH=$1
+  local path=$2
+  substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
 }

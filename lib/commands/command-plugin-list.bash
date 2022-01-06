@@ -23,7 +23,7 @@ plugin_list_command() {
     esac
   done
 
-  if ls "$plugins_path" &>/dev/null; then
+  if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
     (
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")

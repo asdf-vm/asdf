@@ -60,7 +60,7 @@ version_command() {
 
   if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then
     sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
-    rm "$file".bak
+    rm -f "$file".bak
   else
     printf "%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
   fi

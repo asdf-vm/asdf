@@ -2,35 +2,44 @@
 
 plugin_test_command() {
 
-  local plugin_name=$1
-  local plugin_url=$2
-  local plugin_command_array=()
-  local plugin_command
+  local plugin_name="$1"
+  local plugin_url="$2"
+  shift 2
+
   local plugin_gitref="master"
   local tool_version
-  # shellcheck disable=SC2086
-  set -- ${*:3}
+  local interpret_args_literally
+  local skip_next_arg
 
-  while [[ $# -gt 0 ]]; do
-    case $1 in
-    --asdf-plugin-gitref)
-      plugin_gitref="$2"
-      shift # past flag
-      shift # past value
-      ;;
-    --asdf-tool-version)
-      tool_version="$2"
-      shift # past flag
-      shift # past value
-      ;;
-    *)
-      plugin_command_array+=("$1") # save it in an array for later
-      shift                        # past argument
-      ;;
-    esac
+  for arg; do
+    shift
+    if [ -n "${skip_next_arg}" ]; then
+      skip_next_arg=
+    elif [ -n "${interpret_args_literally}" ]; then
+      set -- "$@" "${arg}"
+    else
+      case "${arg}" in
+      --asdf-plugin-gitref)
+        plugin_gitref="$1"
+        skip_next_arg=true
+        ;;
+      --asdf-tool-version)
+        tool_version="$1"
+        skip_next_arg=true
+        ;;
+      --)
+        interpret_args_literally=true
+        ;;
+      *)
+        set -- "$@" "${arg}"
+        ;;
+      esac
+    fi
   done
 
-  plugin_command="${plugin_command_array[*]}"
+  if [ "$#" -eq 1 ]; then
+    set -- "${SHELL:-sh}" -c "$1"
+  fi
 
   local exit_code
   local TEST_DIR
@@ -128,11 +137,11 @@ plugin_test_command() {
       fail_test "could not reshim plugin"
     fi
 
-    if [ -n "$plugin_command" ]; then
-      $plugin_command
+    if [ "$#" -gt 0 ]; then
+      "$@"
       exit_code=$?
       if [ $exit_code != 0 ]; then
-        fail_test "$plugin_command failed with exit code $?"
+        fail_test "$* failed with exit code $?"
       fi
     fi
 
@@ -155,7 +164,7 @@ plugin_test_command() {
   }
 
   # run test in a subshell
-  (plugin_test)
+  (plugin_test "$@")
   exit_code=$?
   rm -rf "$TEST_DIR"
   exit $exit_code

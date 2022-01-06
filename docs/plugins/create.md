@@ -74,6 +74,12 @@ Each of these scripts should tailor their output to the current operating system
 
 The help callback script MUST NOT output any information that is already covered in the core asdf-vm documentation. General asdf usage information must not be present.
 
+#### bin/latest-stable
+
+If this callback is implemented asdf will use it to determine the latest stable version of your tool instead of trying deduce it for you on its own. `asdf latest` deduces the latest version by looking at the last version printed by the `list-all` callback, after a few types of versions (like release candidate versions) are excluded from the output. This default behavior is undesirable when your plugin's `list-all` callback prints different variations of the same tool and the last version isn't the latest stable version of the variation you'd like to default to. For example with Ruby the latest stable version should be the regular implementation of Ruby (MRI), but truffleruby versions are printed last by the `list-all` callback.
+
+This callback is invoked with a single "filter" string as it's only argument. This should be used for filter all latest stable versions. For example with Ruby, the user may choose to pass in `jruby` to select the latest stable version of `jruby`.
+
 #### bin/list-bin-paths
 
 List executables for the specified version of the tool. Must print a string with a space-separated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
@@ -135,6 +141,19 @@ See also the related hooks:
 - `pre_asdf_plugin_add_${plugin_name}`
 - `post_asdf_plugin_add`
 - `post_asdf_plugin_add_${plugin_name}`
+
+#### bin/post-plugin-update
+
+This can be used to run any post-plugin-update actions after asdf has downloaded the updated plugin
+
+The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`), previous git-ref (`${ASDF_PLUGIN_PREV_REF}`), and updated git-ref (`${ASDF_PLUGIN_POST_REF}`).
+
+See also the related hooks:
+
+- `pre_asdf_plugin_updated`
+- `pre_asdf_plugin_updated_${plugin_name}`
+- `post_asdf_plugin_updated`
+- `post_asdf_plugin_updated_${plugin_name}`
 
 #### bin/pre-plugin-remove
 

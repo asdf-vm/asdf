@@ -6,21 +6,21 @@ actions:
   - text: "Começar"
     link: /pt-br/guide/getting-started.html
     type: primary
-  - text: "Introduction"
+  - text: "Introdução"
     link: /pt-br/guide/introduction.html
     type: secondary
 features:
-  - title: One Tool
-    details: "Manage each of your project runtimes with a single CLI tool and command interface."
+  - title: Uma super ferramenta
+    details: "Gerencie cada um dos runtimes e ferramentas dos seus projetos com uma única ferramenta de CLI"
   - title: Plugins
-    details: "Large ecosystem of existing runtimes & tools. Simple API to add support for new tools as you need!"
-  - title: Backwards Compatible
-    details: "Support for existing config files .nvmrc, .node-versions, .ruby-version for smooth migration!"
-  - title: "One Config File"
-    details: ".tool-versions to manage all your tools, runtimes and their versions in a single, sharable place."
+    details: "Grande ecossistema de runtimes e ferramentas existentes. API simples para adicionar suporte para novas ferramentas conforme necessário!"
+  - title: "Compatível com varios arquivos de configuração"
+    details: "Suporte para arquivos de configuração existentes .nvmrc, .node-versions, .ruby-version para uma migração tranquila!"
+  - title: "Só um arquivo de configuração"
+    details: ".tool-versions para gerenciar todas as suas ferramentas, runtimes e suas versões em um único arquivo"
   - title: "Shells"
-    details: "Supports Bash, ZSH & Fish with completions available."
+    details: "Suporta Bash, ZSH, Fish & Elvish com autocomplete."
   - title: "GitHub Actions"
-    details: "Provides a GitHub Action to install and utilize your .tool-verions in your CICD workflows."
+    details: "Fornece um GitHub Action para instalar e utilizar seu .tool-verions em seu fluxo de trabalho CICD."
 # footer: MIT Licensed
 ---

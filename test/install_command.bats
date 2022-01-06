@@ -133,6 +133,24 @@ teardown() {
   [ ! -f $ASDF_DIR/installs/dummy/1.1.0/version ]
 }
 
+@test "install_command fails if the plugin is not installed" {
+  cd $PROJECT_DIR
+  echo 'other_dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+
+  run asdf install
+  [ "$status" -eq 1 ]
+  [ "$output" =  "other_dummy plugin is not installed" ]
+}
+
+@test "install_command fails if the plugin is not installed without collisions" {
+  cd $PROJECT_DIR
+  printf "dummy 1.0.0\ndum 1.0.0" > $PROJECT_DIR/.tool-versions
+
+  run asdf install
+  [ "$status" -eq 1 ]
+  [ "$output" =  "dum plugin is not installed" ]
+}
+
 @test "install_command fails when tool is specified but no version of the tool is configured in config file" {
   echo 'dummy 1.0.0' > $PROJECT_DIR/.tool-versions
   run asdf install other-dummy

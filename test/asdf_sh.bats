@@ -69,3 +69,17 @@ cleaned_path() {
 
   [[ "$output" =~ "is a function" ]]
 }
+
+@test "function calls asdf command" {
+  result=$(
+    unset -f asdf
+    ASDF_DIR=$(pwd)
+    PATH=$(cleaned_path)
+
+    source_asdf_sh
+    asdf info
+  )
+  [ "$?" -eq 0 ]
+  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
+  [ "$output" != "" ]
+}

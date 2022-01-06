@@ -19,7 +19,7 @@ features:
   - title: "One Config File"
     details: ".tool-versions to manage all your tools, runtimes and their versions in a single, sharable place."
   - title: "Shells"
-    details: "Supports Bash, ZSH & Fish with completions available."
+    details: "Supports Bash, ZSH, Fish & Elvish with completions available."
   - title: "GitHub Actions"
     details: "Provides a GitHub Action to install and utilize your .tool-versions in your CI/CD workflows."
 # footer: MIT Licensed

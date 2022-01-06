@@ -13,12 +13,16 @@
 
 **Linux**:
 
+::: tip Note
+`sudo` may be required depending on your system configuration.
+:::
+
 | Package Manager | Command                        |
 | --------------- | ------------------------------ |
-| Aptitude        | `sudo apt install curl git`    |
-| DNF             | `sudo dnf install curl git`    |
-| Pacman          | `sudo pacman -S curl git`      |
-| Zypper          | `sudo zypper install curl git` |
+| Aptitude        | `apt install curl git`    |
+| DNF             | `dnf install curl git`    |
+| Pacman          | `pacman -S curl git`      |
+| Zypper          | `zypper install curl git` |
 
 **macOS**:
 
@@ -33,7 +37,7 @@ We recommend using Git, though there are other platform specific methods:
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1`                                                                                             |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
@@ -142,6 +146,46 @@ source /opt/asdf-vm/asdf.fish
 Completions are automatically configured on installation by the AUR package.
 :::
 
+::: details Elvish & Git
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+
+:::
+
+::: details Elvish & Homebrew
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+:::
+
+::: details Elvish & Pacman
+
+Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+
+```shell:no-line-numbers
+mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+```
+
+Completions are automatically configured.
+:::
+
 ::: details ZSH & Git
 
 Add the following to `~/.zshrc`:
@@ -228,7 +272,7 @@ asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
 Now we have a plugin for Node.js we can install a version of the tool.
 
-We can observer which versions are available with `asdf list all nodejs` or a subset of versions with `asdf list all nodejs 14`.
+We can see which versions are available with `asdf list all nodejs` or a subset of versions with `asdf list all nodejs 14`.
 
 We will just install the `latest` available version:
 
@@ -294,7 +338,7 @@ See the [configuration](/manage/configuration.md) reference page for more config
 
 That completes the Getting Started guide for `asdf` :tada: You can now manage `nodejs` versions for your project. Follow similar steps for each type of tool in your project!
 
-`asdf` has a many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
+`asdf` has many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
 
 - [core `asdf`](/manage/core.md)
 - [plugins](/manage/plugins.md)

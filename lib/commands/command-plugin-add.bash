@@ -8,7 +8,7 @@ plugin_add_command() {
 
   local plugin_name=$1
 
-  if ! printf "%s" "$plugin_name" | grep --quiet --extended-regexp "^[a-zA-Z0-9_-]+$"; then
+  if ! printf "%s" "$plugin_name" | grep -q -E "^[a-zA-Z0-9_-]+$"; then
     display_error "$plugin_name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$"
     exit 1
   fi

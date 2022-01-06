@@ -11,7 +11,7 @@ reshim_command() {
     local plugins_path
     plugins_path=$(get_plugin_path)
 
-    if ls "$plugins_path" &>/dev/null; then
+    if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
       for plugin_path in "$plugins_path"/*; do
         plugin_name=$(basename "$plugin_path")
         reshim_command "$plugin_name"
@@ -25,7 +25,7 @@ reshim_command() {
 
   if [ "$full_version" != "" ]; then
     # generate for the whole package version
-    asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version_name"
+    asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version"
     generate_shims_for_version "$plugin_name" "$full_version"
     asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version"
   else
@@ -70,7 +70,7 @@ write_shim_script() {
   if [ -f "$shim_path" ]; then
     if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
       sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
-      rm "$shim_path".bak
+      rm -f "$shim_path".bak
     fi
   else
     cat <<EOF >"$shim_path"

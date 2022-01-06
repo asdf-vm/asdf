@@ -28,15 +28,22 @@ jobs:
 
       - name: Install test dependencies
         if: runner.os == 'macos'
-        run: brew install coreutils fish
+        run: brew install coreutils fish elvish
 
       - name: Install test dependencies
         if: runner.os == 'linux'
         run: |
-          PPA="ppa:fish-shell/nightly-master"
-          sudo add-apt-repository -y "$PPA"
+          sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
-          sudo apt-get -y install fish
+          sudo apt-get -y install fish curl
+
+          # Download elvish binary and add to path
+          curl https://dl.elv.sh/linux-amd64/elvish-v0.16.3.tar.gz -o elvish-v0.16.3.tar.gz
+          tar xzf elvish-v0.16.3.tar.gz
+          rm elvish-v0.16.3.tar.gz
+          mkdir -p "$HOME/bin"
+          mv elvish-v0.16.3 "$HOME/bin/elvish"
+          echo "$HOME/bin" >>"$GITHUB_PATH"
 
       - name: Install bats
         run: |

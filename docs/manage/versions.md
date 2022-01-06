@@ -132,7 +132,7 @@ asdf uninstall <name> <version>
 
 ## Shims
 
-When asdf installs a package it creates shims for every executable program in that package in a `$ASDF_DATA_DIR/shims` directory (default `~/.asdf/shims`). This directory being on the `$PATH` (by means of `asdf.sh` or `asdf.fish`) is how the installed programs are made available in the environment.
+When asdf installs a package it creates shims for every executable program in that package in a `$ASDF_DATA_DIR/shims` directory (default `~/.asdf/shims`). This directory being on the `$PATH` (by means of `asdf.sh`, `asdf.fish`, etc) is how the installed programs are made available in the environment.
 
 The shims themselves are really simple wrappers that `exec` a helper program `asdf exec` passing it the name of the plugin and path to the executable in the installed package that the shim is wrapping.
 

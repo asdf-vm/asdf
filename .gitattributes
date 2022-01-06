@@ -22,6 +22,7 @@
 *.sh       text
 *.bash     text
 *.fish     text
+*.elv      text
 #### asdf/bin/* explicitly define as text
 *asdf      text
 *asdf-exec text

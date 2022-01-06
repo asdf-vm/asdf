@@ -2,9 +2,9 @@ set -x ASDF_DIR (dirname (status -f))
 
 set -l asdf_user_shims (
   if test -n "$ASDF_DATA_DIR"
-    echo $ASDF_DATA_DIR/shims
+    printf "%s\n" "$ASDF_DATA_DIR/shims"
   else
-    echo $HOME/.asdf/shims
+    printf "%s\n" "$HOME/.asdf/shims"
   end
 )
 
