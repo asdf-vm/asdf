@@ -306,7 +306,7 @@ asdf global nodejs latest
 nodejs 16.5.0
 ```
 
-Some OSs already have tools installed that are managed by the system and not `asdf`, `python` is a common example. You need to tell `asdf` to pass the management back to the system. The [Versions reference section](/manage/versions.md) will guide you.
+Some OSs already have tools installed that are managed by the system and not `asdf`, `python` is a common example. You need to tell `asdf` to pass the management back to the system. The [Versions reference section](/docs/manage/versions.md) will guide you.
 
 ### Local
 
@@ -332,7 +332,7 @@ nodejs 16.5.0
 legacy_version_file = yes
 ```
 
-See the [configuration](/manage/configuration.md) reference page for more config options.
+See the [configuration](/docs/manage/configuration.md) reference page for more config options.
 
 ## Guide Complete!
 
@@ -340,6 +340,6 @@ That completes the Getting Started guide for `asdf` :tada: You can now manage `n
 
 `asdf` has many more commands to become familiar with, you can see them all by running `asdf --help` or `asdf`. The core of the commands are broken into three categories:
 
-- [core `asdf`](/manage/core.md)
-- [plugins](/manage/plugins.md)
-- [versions (of tools)](/manage/versions.md)
+- [core `asdf`](/docs/manage/core.md)
+- [plugins](/docs/manage/plugins.md)
+- [versions (of tools)](/docs/manage/versions.md)

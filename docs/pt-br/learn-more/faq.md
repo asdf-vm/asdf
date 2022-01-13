@@ -18,7 +18,7 @@ Pretendemos executar o conjunto de testes no WSL2 quando o suporte ao host runne
 
 > Acabei de instalar o `npm -g yarn`, mas não consigo executar o `yarn`. O que da?
 
-`asdf` usa [shims](<https://en.wikipedia.org/wiki/Shim_(computing)>) para gerenciar executáveis. Aqueles instalados por plug-ins têm shims criados automaticamente, enquanto a instalação de executáveis ​​por meio de uma ferramenta gerenciada `asdf` exigirá que você notifique o`asdf` sobre a necessidade de criar shims. Neste caso, para criar um shim para [Yarn](https://yarnpkg.com/). Veja a documentação do comando [`asdf reshim`](/ manage / core.md # reshim).
+`asdf` usa [shims](<https://en.wikipedia.org/wiki/Shim_(computing)>) para gerenciar executáveis. Aqueles instalados por plug-ins têm shims criados automaticamente, enquanto a instalação de executáveis ​​por meio de uma ferramenta gerenciada `asdf` exigirá que você notifique o` asdf` sobre a necessidade de criar shims. Neste caso, para criar um shim para [Yarn](https://yarnpkg.com/). Veja a documentação do comando [`asdf reshim`](/docs/manage/core.md#reshim).
 
 ## Shell não detecta shims recém-instalados?
 

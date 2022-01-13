@@ -300,7 +300,7 @@ asdf global nodejs latest
 nodejs 16.5.0
 ```
 
-Alguns sistemas operacionais vêm por padrão com ferramentas que são gerenciadas pelo próprio sistema e não pelo `asdf`, `python` é um exemplo. Você precisa indicar para o `asdf` para devolver o gerenciamento para o sistema. A [seção de referência de versões](/pt-br/manage/versions.md) irá guiá-lo.
+Alguns sistemas operacionais vêm por padrão com ferramentas que são gerenciadas pelo próprio sistema e não pelo `asdf`, `python` é um exemplo. Você precisa indicar para o `asdf` para devolver o gerenciamento para o sistema. A [seção de referência de versões](/docs/pt-br/manage/versions.md) irá guiá-lo.
 
 ### Versões locais
 
@@ -326,7 +326,7 @@ O [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) suporta tanto arquivo
 legacy_version_file = yes
 ```
 
-Veja a página de refencia da [configuração](/pt-br/manage/configuration.md) para mais opções de configuração.
+Veja a página de refencia da [configuração](/docs/pt-br/manage/configuration.md) para mais opções de configuração.
 
 ## Setup finalizado!
 
@@ -334,6 +334,6 @@ A configuração inicial do `asdf` foi finalizada :tada:. Agora, você pode gere
 
 O `asdf` possui diversos outros comandos para se acustomar ainda, você pode ver todos eles através do comando `asdf --help` ou simplesmente `asdf`. Eles estão divididos em três categorias:
 
-- [núcleo `asdf`](/pt-br/manage/core.md)
-- [plugins](/pt-br/manage/plugins.md)
-- [versões (de ferramentas)](/pt-br/manage/versions.md)
+- [núcleo `asdf`](/docs/pt-br/manage/core.md)
+- [plugins](/docs/pt-br/manage/plugins.md)
+- [versões (de ferramentas)](/docs/pt-br/manage/versions.md)

@@ -86,7 +86,7 @@ asdf local <name> latest[:<version>]
 
 `local` escreve a versão para `$PWD/.tool-versions`, crie se necessário .
 
-Veja em `.tool-versions` [arquivo de seleção de configuração](/pt-br/core-configuration) para mais detalhes.
+Veja em `.tool-versions` [arquivo de seleção de configuração](/docs/pt-br/core-configuration) para mais detalhes.
 
 ::: warning Alternativa
 Se você quiser selecionar a versão atual do seu _shell_ ou para executar um comando em uma versão específica de sua ferramenta, você pode selecionar a versão na variável de ambiente `ASDF_${TOOL}_VERSION`.

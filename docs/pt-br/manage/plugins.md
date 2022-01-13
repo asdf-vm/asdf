@@ -4,7 +4,7 @@
 
 Plugins são como `asdf` sabe lidar com diferentes ferramentas, tais quais Node.js, Ruby, Elixir etc.
 
-See [Creating Plugins](/pt-br/plugins/create.md) for the plugin API used to support more tools.
+See [Creating Plugins](/docs/pt-br/plugins/create.md) for the plugin API used to support more tools.
 
 ## Adicionar
 
@@ -80,4 +80,4 @@ O nome abreviado do repositório é sincronizado em seu máquina local e periodi
 
 - comandos `asdf plugin add <name>` ou `asdf plugin list all` disparam a sincronização
 - ocorre uma sincronização se não houver nenhuma nos últimos `X` minutos
-- `X` por padrão é `60`, mas pode ser mudado em `.asdfrc` via as opções do `plugin_repository_last_check_duration`. Seja mais em [asdf documentação de configuração](/pt-br/manage/configuration.md).
+- `X` por padrão é `60`, mas pode ser mudado em `.asdfrc` via as opções do `plugin_repository_last_check_duration`. Seja mais em [asdf documentação de configuração](/docs/pt-br/manage/configuration.md).

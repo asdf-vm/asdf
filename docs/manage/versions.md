@@ -84,7 +84,7 @@ asdf local <name> latest[:<version>]
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
-See the `.tool-versions` [file in the Configuration section](/manage/configuration.md) for details.
+See the `.tool-versions` [file in the Configuration section](/docs/manage/configuration.md) for details.
 
 :::warning Alternatively
 If you want to set a version only for the current shell session

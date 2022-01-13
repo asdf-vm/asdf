@@ -6,7 +6,7 @@ The core `asdf` command list is rather small, but can facilitate many workflows.
 
 ## Installation & Setup
 
-Covered in the [Getting Started](/pt-br/guide/getting-started.md) guide.
+Covered in the [Getting Started](/docs/pt-br/guide/getting-started.md) guide.
 
 ## Exec
 

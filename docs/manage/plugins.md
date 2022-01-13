@@ -2,7 +2,7 @@
 
 Plugins are how `asdf` knows to handle different tools like Node.js, Ruby, Elixir etc.
 
-See [Creating Plugins](/plugins/create.md) for the plugin API used to support more tools.
+See [Creating Plugins](/docs/plugins/create.md) for the plugin API used to support more tools.
 
 ## Add
 
@@ -78,4 +78,4 @@ The short-name repo is synced to your local machine and periodically refreshed. 
 
 - commands `asdf plugin add <name>` or `asdf plugin list all` can trigger a sync
 - a sync occurs if there has not been one in the last `X` minutes
-- `X` defaults to `60`, but can be configured in your `.asdfrc` via the `plugin_repository_last_check_duration` option. See the [asdf config docs](/manage/configuration.md) for more.
+- `X` defaults to `60`, but can be configured in your `.asdfrc` via the `plugin_repository_last_check_duration` option. See the [asdf config docs](/docs/manage/configuration.md) for more.
