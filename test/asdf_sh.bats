@@ -26,6 +26,22 @@ cleaned_path() {
   [ "$output" != "" ]
 }
 
+@test "does not error if nounset is enabled" {
+  result=$(
+    unset -f asdf
+    unset ASDF_DIR
+    PATH=$(cleaned_path)
+    set -o nounset
+
+    source_asdf_sh
+    echo $ASDF_DIR
+  )
+
+  output=$(echo "$result" | grep "asdf")
+  [ "$?" -eq 0 ]
+  [ "$output" != "" ]
+}
+
 @test "adds asdf dirs to PATH" {
   result=$(
     unset -f asdf
