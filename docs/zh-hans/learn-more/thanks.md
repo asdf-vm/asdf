@@ -18,4 +18,4 @@ asdf 作者和贡献者的感谢页！
 
 ## 贡献者
 
-请查看 Github 上的 [贡献者名单](https://github.com/asdf-vm/asdf/graphs/contributors) 🙏  了解更多。
+请查看 Github 上的 [贡献者名单](https://github.com/asdf-vm/asdf/graphs/contributors) 🙏 了解更多。

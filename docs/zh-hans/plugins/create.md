@@ -15,7 +15,7 @@
 所有脚本除了 `bin/list-all` 之外对以下环境变量有权限进行操作：
 
 - `ASDF_INSTALL_TYPE` - `version` 或者 `ref`
-- `ASDF_INSTALL_VERSION` - 如果 `ASDF_INSTALL_TYPE` 是 `version`，那么这将是版本号。否则它将传递为 git 的 ref。可能指向存储库的一个标签/提交/分支。 
+- `ASDF_INSTALL_VERSION` - 如果 `ASDF_INSTALL_TYPE` 是 `version`，那么这将是版本号。否则它将传递为 git 的 ref。可能指向存储库的一个标签/提交/分支。
 - `ASDF_INSTALL_PATH` - _已经_ 安装到的目录（或 `bin/install` 脚本执行情况下 _应该_ 安装到的目录）
 
 这些附加的环境变量将可用于 `bin/install` 脚本：
@@ -51,7 +51,7 @@
 
 #### bin/install
 
-本脚本应在 `ASDF_INSTALL_PATH` 中安装版本。默认情况下，asdf 将为 `$ASDF_INSTALL_PATH/bin` （可以通过可选的 [bin/list-bin-paths](#binlist-bin-paths)  脚本自定义）目录中的任意文件创建垫片。
+本脚本应在 `ASDF_INSTALL_PATH` 中安装版本。默认情况下，asdf 将为 `$ASDF_INSTALL_PATH/bin` （可以通过可选的 [bin/list-bin-paths](#binlist-bin-paths) 脚本自定义）目录中的任意文件创建垫片。
 
 安装成功时，安装脚本应以 `0` 状态退出。如果安装失败，脚本应以任何非零退出状态退出。
 

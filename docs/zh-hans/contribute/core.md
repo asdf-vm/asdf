@@ -91,12 +91,13 @@ docs: some documentation update
 docs(website): some change for the website
 feat!: feature with breaking change
 ```
+
 `<types>` 的所有类型包含： `feat`、`fix`、`docs`、`style`、`refactor`、`perf`、`test`、`build`、`ci`、`chore`、`revert`。
 
-* `!`：表示重大更改
-* `fix`：将会创建一个新的 SemVer `patch` 补丁
-* `feat`：将会创建一个新的 SemVer `minor` 小版本
-* `<type>!`：将会创建一个新的 SemVer `major` 大版本
+- `!`：表示重大更改
+- `fix`：将会创建一个新的 SemVer `patch` 补丁
+- `feat`：将会创建一个新的 SemVer `minor` 小版本
+- `<type>!`：将会创建一个新的 SemVer `major` 大版本
 
 拉取请求标题必须遵循这种格式。
 

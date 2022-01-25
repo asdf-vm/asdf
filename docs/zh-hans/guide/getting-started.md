@@ -17,28 +17,28 @@
 根据你的系统配置可能会需要 `sudo` 权限。
 :::
 
-|     包管理器     |           命令             |
-| --------------- | ------------------------- |
-| Aptitude        | `apt install curl git`    |
-| DNF             | `dnf install curl git`    |
-| Pacman          | `pacman -S curl git`      |
-| Zypper          | `zypper install curl git` |
+| 包管理器 | 命令                      |
+| -------- | ------------------------- |
+| Aptitude | `apt install curl git`    |
+| DNF      | `dnf install curl git`    |
+| Pacman   | `pacman -S curl git`      |
+| Zypper   | `zypper install curl git` |
 
 **macOS**：
 
-|      包管理器    |               命令                  |
-| --------------- | ---------------------------------- |
-| Homebrew        | Homebrew 将会自动安装所需要的依赖。     |
-| Spack           | `spack install coreutils curl git` |
+| 包管理器 | 命令                                |
+| -------- | ----------------------------------- |
+| Homebrew | Homebrew 将会自动安装所需要的依赖。 |
+| Spack    | `spack install coreutils curl git`  |
 
 ## 2. 下载 asdf
 
 尽管还有其他特定于平台的方法，我们建议使用 Git：
 
-|    方法   |                                 命令                                       |
-| -------- | -------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0`    |
-| Homebrew | `brew install asdf`                                                        |
+| 方法     | 命令                                                                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0`                                                                                          |
+| Homebrew | `brew install asdf`                                                                                                                                              |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` 或者使用你更习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
 ## 3. 安装 asdf
@@ -245,7 +245,7 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 ## 核心安装完成！
 
-这样就完成了 `asdf` 核心的安装  🎉
+这样就完成了 `asdf` 核心的安装 🎉
 
 `asdf` 仅在你安装**插件**、**工具**和管理它们的**版本**时才开始真正发挥作用。请继续阅读下面的指南来了解这些是如何做到的。
 
@@ -257,7 +257,7 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 每个插件都有依赖，所以我们需要确认应该列举了这些依赖的插件源码。对于 `asdf-nodejs` 来说，它们是：
 
-|     操作系统     |               安装依赖                  |
+| 操作系统       | 安装依赖                                |
 | -------------- | --------------------------------------- |
 | Linux (Debian) | `apt-get install dirmngr gpg curl gawk` |
 | macOS          | `brew install gpg gawk`                 |

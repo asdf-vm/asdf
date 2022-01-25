@@ -8,7 +8,7 @@ WSL1 ([Windows Subsystem for Linux 1](https://en.wikipedia.org/wiki/Windows_Subs
 
 ## 支持 WSL2 吗？
 
-WSL2 ([Windows Subsystem for Linux 2](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux#WSL_2))  应该作为你选择的 WSL 发行版来使用本设置和依赖说明。
+WSL2 ([Windows Subsystem for Linux 2](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux#WSL_2)) 应该作为你选择的 WSL 发行版来使用本设置和依赖说明。
 
 重要的是，只有当前工作目录是 Unix 驱动器而不是绑定的 Windows 驱动器时，WSL2 _才能_ 正常工作。
 
@@ -18,7 +18,7 @@ WSL2 ([Windows Subsystem for Linux 2](https://en.wikipedia.org/wiki/Windows_Subs
 
 > 我执行了 `npm install -g yarn` 命令，但是之后不能运行 `yarn` 命令。这是为什么？
 
-`asdf` 使用 [垫片](https://zh.wikipedia.org/wiki/垫片_(程序设计)) 来管理可执行程序。插件所安装的那些命令会自动创建垫片，而通过 `asdf` 管理工具安装过的可执行程序则需要通知 `asdf` 创建垫片的需要。在这个例子中，为 [Yarn](https://yarnpkg.com/) 创建一个垫片即可。请查看 [`asdf reshim` 命令文档](/zh-hans/manage/core.md#reshim) 了解更多。
+`asdf` 使用 [垫片](<https://zh.wikipedia.org/wiki/垫片_(程序设计)>) 来管理可执行程序。插件所安装的那些命令会自动创建垫片，而通过 `asdf` 管理工具安装过的可执行程序则需要通知 `asdf` 创建垫片的需要。在这个例子中，为 [Yarn](https://yarnpkg.com/) 创建一个垫片即可。请查看 [`asdf reshim` 命令文档](/zh-hans/manage/core.md#reshim) 了解更多。
 
 ## Shell 没有检测到新安装的垫片？
 

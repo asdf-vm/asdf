@@ -48,7 +48,7 @@ asdf shim-versions <command>
 
 列举为命令提供垫片的插件和版本。
 
-例如，[Node.js](https://nodejs.org/) 附带了两个可执行程序，`node` 和 `npm`。当使用 [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)` 插件安装了这些工具的很多版本时，执行 `shim-versions` 命令会返回：
+例如，[Node.js](https://nodejs.org/) 附带了两个可执行程序，`node` 和 `npm`。当使用 [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)`插件安装了这些工具的很多版本时，执行`shim-versions` 命令会返回：
 
 ```shell:no-line-numbers
 ➜ asdf shim-versions node
@@ -68,11 +68,11 @@ nodejs 16.5.0
 
 `asdf` 有一个依赖于 Git （我们推荐的安装方法）的内置命令用于更新。如果你使用了其他方法安装，则应按照该方法的步骤操作：
 
-|       方法      |                         最新稳定版本                                            | `master` 分支上的最新提交 |
-| -------------- | ----------------------------------------------------------------------------- | ------------------------------- |
-| asdf (Git)     | `asdf update`                                                                 | `asdf update --head`       |
-| Homebrew       | `brew upgrade asdf`                                                           | `brew upgrade asdf --fetch-HEAD` |
-| Pacman         | 下载一个新的 `PKGBUILD` 并且重新编译 <br/> 或者使用你习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |  |
+| 方法       | 最新稳定版本                                                                                                               | `master` 分支上的最新提交        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| asdf (Git) | `asdf update`                                                                                                              | `asdf update --head`             |
+| Homebrew   | `brew upgrade asdf`                                                                                                        | `brew upgrade asdf --fetch-HEAD` |
+| Pacman     | 下载一个新的 `PKGBUILD` 并且重新编译 <br/> 或者使用你习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |                                  |
 
 ## 卸载
 
@@ -126,7 +126,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Bash & Homebrew (macOS)
 
-如果你正在使用 **macOS Catalina 以及更新版本**，默认的 shell 已经变成了 **ZSH**。如果你在 `~/.bash_profile` 文件中找不到任何配置，则可能位于 `~/.zshrc` 中。在这种情况下，请按照 ZSH 指南进行操作。 
+如果你正在使用 **macOS Catalina 以及更新版本**，默认的 shell 已经变成了 **ZSH**。如果你在 `~/.bash_profile` 文件中找不到任何配置，则可能位于 `~/.zshrc` 中。在这种情况下，请按照 ZSH 指南进行操作。
 
 1. 在 `~/.bash_profile` 配置文件中移除生效 `asdf.sh` 和补全功能的行：
 
