@@ -38,3 +38,11 @@ teardown() {
     [ $(get_asdf_config_value "key1") = "value1" ]
     [ $(get_asdf_config_value "legacy_version_file") = "yes" ]
 }
+
+@test "get_config returns config file complete value including '=' symbols" {
+  cat >> $ASDF_CONFIG_FILE <<-'EOM'
+key3 = VAR=val
+EOM
+
+    [ $(get_asdf_config_value "key3") = "VAR=val" ]
+}
