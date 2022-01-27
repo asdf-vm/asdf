@@ -18,18 +18,18 @@ Você pode também acompanhar o passo a passo da instalação através [deste v�
 **Linux**:
 
 | Gerenciador de Pacotes | Comando                        |
-| --------------- | ------------------------------ |
-| Aptitude        | `sudo apt install curl git`    |
-| DNF             | `sudo dnf install curl git`    |
-| Pacman          | `sudo pacman -S curl git`      |
-| Zypper          | `sudo zypper install curl git` |
+| ---------------------- | ------------------------------ |
+| Aptitude               | `sudo apt install curl git`    |
+| DNF                    | `sudo dnf install curl git`    |
+| Pacman                 | `sudo pacman -S curl git`      |
+| Zypper                 | `sudo zypper install curl git` |
 
 **macOS**:
 
-| Gerenciador de Pacotes | Comando                                                   |
-| --------------- | --------------------------------------------------------- |
-| Homebrew        | As dependências serão automaticamente instaladas pelo Homebrew. |
-| Spack           | `spack install coreutils curl git`                        |
+| Gerenciador de Pacotes | Comando                                                         |
+| ---------------------- | --------------------------------------------------------------- |
+| Homebrew               | As dependências serão automaticamente instaladas pelo Homebrew. |
+| Spack                  | `spack install coreutils curl git`                              |
 
 ## 2. Instalando o asdf
 
@@ -194,7 +194,7 @@ Adicione a seguinte linha ao seu `~/.zshrc`:
 . $HOME/.asdf/asdf.sh
 ```
 
-**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
 
 O auto completar pode ser configurado ou pelo plugin do asdf para framework para ZSH, ou através da adição das seguintes linhas ao seu `.zshrc`:
 
@@ -221,7 +221,7 @@ Adicione `asdf.sh` ao seu `~/.zshrc` através do comando:
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 
-**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
 
 O auto completar pode ser configurado ou pelo framework para ZSH, ou de acordo com as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). Se você está usando um framework para ZSH, pode ser que seja necessário atualizar o plugin do asdf para que o novo auto completar funcione adequadamente através do `fpath`. O plugin do asdf para o Oh-My-ZSH ainda será atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
@@ -249,7 +249,7 @@ Para demonstração, vamos instalar e configurar o [Node.js](https://nodejs.org/
 
 Cada plugin possui algumas dependências, por isso precisamos checar no repositório onde elas estão listadas. Por exemplo, para o `asdf-nodejs` são:
 
-| SO             | Instalação de dependencia                 |
+| SO             | Instalação de dependencia               |
 | -------------- | --------------------------------------- |
 | Linux (Debian) | `apt-get install dirmngr gpg curl gawk` |
 | macOS          | `brew install gpg gawk`                 |

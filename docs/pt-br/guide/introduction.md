@@ -36,7 +36,7 @@ Veja a [documentação do direnv](https://direnv.net/) para mais detalhes.
 
 > O gerenciador de pacotes faltante para o macOS (ou Linux)
 
-O Homebrew gerencia seus pacotes e dependências destes pacotes. O `asdf` não gerencia dependencias, não é um gerenciador de pacotes, a escolha do gerenciador de pacotes é reservada ao usuário. 
+O Homebrew gerencia seus pacotes e dependências destes pacotes. O `asdf` não gerencia dependencias, não é um gerenciador de pacotes, a escolha do gerenciador de pacotes é reservada ao usuário.
 
 Veja a [documentação do Homebrew](https://brew.sh/) para mais detalhes.
 

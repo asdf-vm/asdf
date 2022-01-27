@@ -94,10 +94,10 @@ feat!: feature with breaking change
 
 The full list of `<types>` are: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
 
-* `!`: indicates a breaking change
-* `fix`: will create a new SemVer `patch`
-* `feat`: will create a new SemVer `minor`
-* `<type>!`: will create a new SemVer `major`
+- `!`: indicates a breaking change
+- `fix`: will create a new SemVer `patch`
+- `feat`: will create a new SemVer `minor`
+- `<type>!`: will create a new SemVer `major`
 
 The Pull Request Title must follow this format.
 
