@@ -262,7 +262,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
@@ -291,7 +291,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
@@ -320,7 +320,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 

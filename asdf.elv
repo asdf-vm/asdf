@@ -2,7 +2,7 @@ use re
 use str
 use path
 
-var asdf_dir = $E:HOME'/.asdf'
+var asdf_dir = ~/.asdf
 if (and (has-env ASDF_DIR) (!=s $E:ASDF_DIR '')) {
   set asdf_dir = $E:ASDF_DIR
 } else {
@@ -18,11 +18,11 @@ if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
 fn asdf {|@args|
   if (and (> (count $args) 0) (==s $args[0] 'shell')) {
     # set environment variables
-    var parts = [($asdf_dir'/bin/asdf' export-shell-version elvish (drop 1 $args))]
-    if (==s $parts[0] 'set-env') {
-      set-env $parts[1] $parts[2]
-    } elif (==s $parts[0] 'unset-env') {
-      unset-env $parts[1]
+    var fn @fn_args = ($asdf_dir'/bin/asdf' export-shell-version elvish (drop 1 $args))
+    if (==s $fn 'set-env') {
+      set-env $@fn_args
+    } elif (==s $fn 'unset-env') {
+      unset-env $@fn_args
     }
   } else {
     # forward other commands to asdf script

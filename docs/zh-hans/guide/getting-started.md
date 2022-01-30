@@ -152,7 +152,7 @@ source /opt/asdf-vm/asdf.fish
 
 ```shell:no-line-numbers
 mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
 ```
 
@@ -166,7 +166,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 
 ```shell:no-line-numbers
 mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
 ```
 
@@ -180,7 +180,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 
 ```shell:no-line-numbers
 mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
 ```
 

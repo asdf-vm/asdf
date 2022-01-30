@@ -264,7 +264,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
@@ -293,7 +293,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
@@ -322,7 +322,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
+use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
