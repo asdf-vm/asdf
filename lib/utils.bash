@@ -41,6 +41,8 @@ asdf_data_dir() {
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
+  elif [ -n "$HOME" ]; then
+    data_dir="$HOME/.asdf"
   else
     data_dir=$(asdf_dir)
   fi
