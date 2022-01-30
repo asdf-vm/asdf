@@ -4,12 +4,12 @@ load test_helpers
 
 setup() {
   cd $(dirname "$BATS_TEST_DIRNAME")
-  mkdir -p $HOME/.elvish/lib
-  cp ./asdf.elv $HOME/.elvish/lib/asdftest.elv
+  mkdir -p $HOME/.config/elvish/lib
+  cp ./asdf.elv $HOME/.config/elvish/lib/asdftest.elv
 }
 
 teardown() {
-  rm $HOME/.elvish/lib/asdftest.elv
+  rm $HOME/.config/elvish/lib/asdftest.elv
 }
 
 cleaned_path() {

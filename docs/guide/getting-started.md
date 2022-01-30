@@ -148,12 +148,12 @@ Completions are automatically configured on installation by the AUR package.
 
 ::: details Elvish & Git
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your [RC file][elvish rc] such as `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -162,13 +162,13 @@ Completions are automatically configured.
 
 ::: details Elvish & Homebrew
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your [RC file][elvish rc] such as `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'set-env ASDF_DIR (brew --prefix asdf)/libexec; set-env ASDF_DATA_DIR ~/.asdf' >> ~/.elvish/rc.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'set-env ASDF_DIR (brew --prefix asdf)/libexec; set-env ASDF_DATA_DIR ~/.asdf' >> ~/.config/elvish/rc.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -176,12 +176,12 @@ Completions are automatically configured.
 
 ::: details Elvish & Pacman
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your [RC file][elvish rc] such as `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -344,3 +344,5 @@ That completes the Getting Started guide for `asdf` :tada: You can now manage `n
 - [core `asdf`](/manage/core.md)
 - [plugins](/manage/plugins.md)
 - [versions (of tools)](/manage/versions.md)
+
+[elvish rc]: https://elv.sh/ref/command.html#rc-file

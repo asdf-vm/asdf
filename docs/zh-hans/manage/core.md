@@ -259,7 +259,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. 在 `~/.elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
+1. 在 `~/.config/elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
 
 ```shell
 use asdf _asdf; var asdf~ = $_asdf:asdf~
@@ -269,7 +269,7 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 以及使用以下命令卸载 `asdf` 模块：
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. 移除 `$HOME/.asdf` 目录：
@@ -288,7 +288,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. 在 `~/.elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
+1. 在 `~/.config/elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
 
 ```shell
 set-env ASDF_DIR (brew --prefix asdf)/libexec; set-env ASDF_DATA_DIR ~/.asdf
@@ -299,7 +299,7 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 以及使用以下命令卸载 `asdf` 模块：
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. 用包管理器卸载：
@@ -318,7 +318,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. 在 `~/.elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
+1. 在 `~/.config/elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
 
 ```shell
 use asdf _asdf; var asdf~ = $_asdf:asdf~
@@ -328,7 +328,7 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 以及使用以下命令卸载 `asdf` 模块：
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. 用包管理器卸载：
