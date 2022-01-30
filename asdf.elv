@@ -15,10 +15,10 @@ if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
 }
 
 # Add function wrapper so we can export variables
-fn asdf {|command @args|
-  if (==s $command 'shell') {
+fn asdf {|@args|
+  if (and (> (count $args) 0) (==s $args[0] 'shell')) {
     # set environment variables
-    var parts = [($asdf_dir'/bin/asdf' export-shell-version elvish $@args)]
+    var parts = [($asdf_dir'/bin/asdf' export-shell-version elvish (drop 1 $args))]
     if (==s $parts[0] 'set-env') {
       set-env $parts[1] $parts[2]
     } elif (==s $parts[0] 'unset-env') {
@@ -26,7 +26,7 @@ fn asdf {|command @args|
     }
   } else {
     # forward other commands to asdf script
-    $asdf_dir'/bin/asdf' $command $@args
+    $asdf_dir'/bin/asdf' $@args
   }
 }
 
