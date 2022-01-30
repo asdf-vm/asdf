@@ -265,7 +265,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
@@ -294,7 +294,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
@@ -323,7 +323,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ```shell
 use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
