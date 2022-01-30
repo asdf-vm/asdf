@@ -293,6 +293,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
+set-env ASDF_DIR (brew --prefix asdf)/libexec; set-env ASDF_DATA_DIR ~/.asdf
 use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```

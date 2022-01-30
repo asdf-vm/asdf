@@ -291,6 +291,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. 在 `~/.elvish/rc.elv` 配置文件中移除使用 `asdf` 模块的行：
 
 ```shell
+set-env ASDF_DIR (brew --prefix asdf)/libexec; set-env ASDF_DATA_DIR ~/.asdf
 use asdf _asdf; var asdf~ = $_asdf:asdf~
 set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
