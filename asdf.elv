@@ -48,11 +48,11 @@ fn match {|argz @pats|
   put $matched
 }
 
-fn ls-shims {||
+fn ls-shims {
   ls $asdf_data_dir'/shims'
 }
 
-fn ls-executables {||
+fn ls-executables {
   # Print all executable files and links in path
   try {
     find $@paths '(' -type f -o -type l ')' -print 2>/dev/null | each {|p|
@@ -96,7 +96,7 @@ for path [
 
 # Setup argument completions
 fn arg-completer {|@argz|
-  set argz = $argz[1:-1]  # strip 'asdf' and trailing empty string
+  set argz = $argz[1..-1]  # strip 'asdf' and trailing empty string
   var num = (count $argz)
   if (== $num 0) {
     # list all subcommands
@@ -190,13 +190,13 @@ fn arg-completer {|@argz|
     } elif (or (match $argz 'plugin-remove') (match $argz 'plugin' 'remove')) {
       # asdf plugin remove <name>
       asdf plugin-list
-    } elif (and (>= (count $argz) 3) (match $argz[:3] 'plugin-test' '.*' '.*')) {
+    } elif (and (>= (count $argz) 3) (match $argz[..3] 'plugin-test' '.*' '.*')) {
       # asdf plugin-test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
       put '--asdf-plugin-gitref'
       put '--asdf-tool-version'
       ls-executables
       ls-shims
-    } elif (and (>= (count $argz) 4) (match $argz[:4] 'plugin' 'test' '.*' '.*')) {
+    } elif (and (>= (count $argz) 4) (match $argz[..4] 'plugin' 'test' '.*' '.*')) {
       # asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
       put '--asdf-plugin-gitref'
       put '--asdf-tool-version'
