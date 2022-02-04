@@ -17,8 +17,8 @@
 `sudo` may be required depending on your system configuration.
 :::
 
-| Package Manager | Command                        |
-| --------------- | ------------------------------ |
+| Package Manager | Command                   |
+| --------------- | ------------------------- |
 | Aptitude        | `apt install curl git`    |
 | DNF             | `dnf install curl git`    |
 | Pacman          | `pacman -S curl git`      |
@@ -243,7 +243,7 @@ Restart your shell so that `PATH` changes take effect. Opening a new terminal ta
 
 ## Core Installation Complete!
 
-This completes the installation of the `asdf` core  :tada:
+This completes the installation of the `asdf` core :tada:
 
 `asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this.
 
