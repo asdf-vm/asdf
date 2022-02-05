@@ -308,7 +308,7 @@ asdf global nodejs latest
 nodejs 16.5.0
 ```
 
-某些操作系统已经有一些由系统而非 `asdf` 安装和管理的工具了，`python` 就是一个常见的例子。你需要告诉 `asdf` 将管理权还给系统。[版本参考部分](/zh-hans/manage/versions.md) 将会引导你。
+某些操作系统已经有一些由系统而非 `asdf` 安装和管理的工具了，`python` 就是一个常见的例子。你需要告诉 `asdf` 将管理权还给系统。[版本参考部分](/docs/zh-hans/manage/versions.md) 将会引导你。
 
 ### 本地
 
@@ -334,7 +334,7 @@ nodejs 16.5.0
 legacy_version_file = yes
 ```
 
-请查看 [配置](/zh-hans/manage/configuration.md) 参考页面可以了解更多配置选项。
+请查看 [配置](/docs/zh-hans/manage/configuration.md) 参考页面可以了解更多配置选项。
 
 ## 完成指南！
 
@@ -342,6 +342,6 @@ legacy_version_file = yes
 
 `asdf` 还有更多命令需要熟悉，你可以通过运行 `asdf --help` 或者 `asdf` 来查看它们。命令主要分为三类：
 
-- [`asdf` 核心](/zh-hans/manage/core.md)
-- [插件](/zh-hans/manage/plugins.md)
-- [（工具的）版本](/zh-hans/manage/versions.md)
+- [`asdf` 核心](/docs/zh-hans/manage/core.md)
+- [插件](/docs/zh-hans/manage/plugins.md)
+- [（工具的）版本](/docs/zh-hans/manage/versions.md)

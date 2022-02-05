@@ -4,7 +4,7 @@
 
 ## 安装和配置
 
-请查看 [快速上手](/zh-hans/guide/getting-started.md) 了解更多详情。
+请查看 [快速上手](/docs/zh-hans/guide/getting-started.md) 了解更多详情。
 
 ## Exec
 

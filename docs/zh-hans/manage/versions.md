@@ -84,7 +84,7 @@ asdf local <name> latest[:<version>]
 
 `local` 将版本写到 `$PWD/.tool-versions` 文件中，如果有需要也会创建此文件。
 
-请查看 [配置部分](/zh-hans/manage/configuration.md) 的 `.tool-versions` 文件了解更多详情。
+请查看 [配置部分](/docs/zh-hans/manage/configuration.md) 的 `.tool-versions` 文件了解更多详情。
 
 :::warning 可选
 如果你只是想为当前 shell 会话或者在特定工具版本下执行一条命令，你可以设置一个类似 `ASDF_${TOOL}_VERSION` 的环境变量。

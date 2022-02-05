@@ -2,7 +2,7 @@
 
 插件告诉 `asdf` 如何处理不同的工具，如 Node.js、 Ruby、 Elixir 等。
 
-请参考 [创建插件](/zh-hans/plugins/create.md) 了解用于支持更多工具的插件 API。
+请参考 [创建插件](/docs/zh-hans/plugins/create.md) 了解用于支持更多工具的插件 API。
 
 ## 添加
 
@@ -78,4 +78,4 @@ asdf plugin remove <name>
 
 - 命令 `asdf plugin add <name>` 或者 `asdf plugin list all` 将会触发同步
 - 如果在过去的 `X` 分钟内没有同步，则进行同步
-- `X` 默认是 `60`，但可以通过在 `.asdfrc` 文件中配置 `plugin_repository_last_check_duration` 选项来进行配置。请查看 [asdf 配置文档](/zh-hans/manage/configuration.md) 了解更多。
+- `X` 默认是 `60`，但可以通过在 `.asdfrc` 文件中配置 `plugin_repository_last_check_duration` 选项来进行配置。请查看 [asdf 配置文档](/docs/zh-hans/manage/configuration.md) 了解更多。
