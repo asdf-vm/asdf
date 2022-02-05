@@ -2,7 +2,7 @@ const navbar = require("./navbar");
 const sidebar = require("./sidebar");
 
 module.exports = {
-  base: "/",
+  base: "/docs/",
   head: [],
   locales: {
     "/": {
