@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "vuepress-vite dev .",
-    "build": "vuepress-vite build .",
+    "build": "vuepress-vite build .; cp SERVER_REDIRECT .vuepress/dist/index.html; cp .vuepress/dist/docs/404.html .vuepress/dist/404.html",
     "format": "npx -y prettier --write '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'"
   },
   "devDependencies": {
