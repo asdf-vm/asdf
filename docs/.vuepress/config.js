@@ -3,6 +3,7 @@ const sidebar = require("./sidebar");
 
 module.exports = {
   base: "/docs/",
+  dest: ".vuepress/dist/docs",
   head: [],
   locales: {
     "/": {
