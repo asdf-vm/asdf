@@ -19,7 +19,7 @@ cleaned_path() {
 @test "exports ASDF_DIR" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR
   ")
@@ -30,7 +30,7 @@ cleaned_path() {
 @test "retains ASDF_DIR" {
   output=$(elvish -norc -c "
     set-env ASDF_DIR "/path/to/asdf"
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR
   ")
@@ -41,7 +41,7 @@ cleaned_path() {
 @test "retains ASDF_DATA_DIR" {
   output=$(elvish -norc -c "
     set-env ASDF_DATA_DIR "/path/to/asdf-data"
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DATA_DIR
   ")
@@ -52,7 +52,7 @@ cleaned_path() {
 @test "adds asdf dirs to PATH" {
   result=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:PATH
   ")
@@ -65,7 +65,7 @@ cleaned_path() {
 @test "defines the _asdf namespace" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$_asdf:
   ")
@@ -76,7 +76,7 @@ cleaned_path() {
 @test "defines the asdf function" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$asdf~
   ")
@@ -88,7 +88,7 @@ cleaned_path() {
 @test "function calls asdf command" {
   result=$(elvish -norc -c "
     set-env ASDF_DIR $(pwd)
-    paths = [$(cleaned_path)]
+    set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     asdf info
   ")
