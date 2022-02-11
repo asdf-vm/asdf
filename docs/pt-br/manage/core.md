@@ -261,17 +261,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
@@ -290,17 +290,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
@@ -319,17 +319,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:

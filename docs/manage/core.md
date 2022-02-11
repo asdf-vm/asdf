@@ -259,17 +259,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Remove the `$HOME/.asdf` dir:
@@ -288,17 +288,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Uninstall with your package manager:
@@ -317,17 +317,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Uninstall with your package manager:
