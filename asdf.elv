@@ -1,9 +1,8 @@
-
+use path
 use re
 use str
-use path
 
-var asdf_dir = $E:HOME'/.asdf'
+var asdf_dir = ~'/.asdf'
 if (and (has-env ASDF_DIR) (!=s $E:ASDF_DIR '')) {
   set asdf_dir = $E:ASDF_DIR
 } else {
@@ -32,7 +31,7 @@ fn asdf {|command @args|
 }
 
 fn match {|argz @pats|
-  var matched = $true;
+  var matched = $true
   if (!= (count $argz) (count $pats)) {
     set matched = $false
   } else {
