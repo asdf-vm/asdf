@@ -88,8 +88,8 @@ for path [
 ] {
   if (not (has-value $paths $path)) {
     set paths = [
-      $@paths
       $path
+      $@paths
     ]
   }
 }
