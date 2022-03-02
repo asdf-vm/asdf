@@ -89,10 +89,6 @@ const en = {
           link: "https://github.com/asdf-vm/asdf/issues"
         },
         {
-          text: "GitHub Discussions",
-          link: "https://github.com/asdf-vm/asdf/discussions"
-        },
-        {
           text: "StackOverflow Tag",
           link: "https://stackoverflow.com/questions/tagged/asdf-vm"
         }
