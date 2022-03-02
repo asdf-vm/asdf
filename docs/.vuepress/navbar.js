@@ -110,10 +110,6 @@ const en = [
             link: "https://github.com/asdf-vm/asdf/issues"
           },
           {
-            text: "GitHub Discussions",
-            link: "https://github.com/asdf-vm/asdf/discussions"
-          },
-          {
             text: "StackOverflow Tag",
             link: "https://stackoverflow.com/questions/tagged/asdf-vm"
           }
@@ -242,10 +238,6 @@ const pt_br = [
             link: "https://github.com/asdf-vm/asdf/issues"
           },
           {
-            text: "GitHub Discussions",
-            link: "https://github.com/asdf-vm/asdf/discussions"
-          },
-          {
             text: "StackOverflow Tag",
             link: "https://stackoverflow.com/questions/tagged/asdf-vm"
           }
@@ -372,10 +364,6 @@ const zh_hans = [
           {
             text: "GitHub Issues",
             link: "https://github.com/asdf-vm/asdf/issues"
-          },
-          {
-            text: "GitHub Discussions",
-            link: "https://github.com/asdf-vm/asdf/discussions"
           },
           {
             text: "StackOverflow Tag",
