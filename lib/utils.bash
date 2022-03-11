@@ -138,11 +138,32 @@ version_not_installed_text() {
   printf "version %s is not installed for %s\\n" "$version" "$plugin_name"
 }
 
-get_plugin_path() {
+get_plugin_root() {
   if test -n "$1"; then
     printf "%s\\n" "$(asdf_data_dir)/plugins/$1"
   else
     printf "%s\\n" "$(asdf_data_dir)/plugins"
+  fi
+}
+
+get_plugin_path() {
+  local plugins_dir=
+  plugins_dir="$(asdf_data_dir)/plugins"
+
+  if test -n "$1"; then
+    local config_file=
+    config_file="$plugins_dir/$1/.asdf-plugin"
+    if [ -f "$config_file" ]; then
+      local plugin_directory=
+      plugin_directory=$(get_asdf_config_value_from_file "$config_file" plugin_directory)
+      if [ -n "$plugin_directory" ] && [ -d "$plugins_dir/$1/$plugin_directory" ]; then
+        printf "%s\\n" "$plugins_dir/$1/$plugin_directory"
+        return
+      fi
+    fi
+    printf "%s\\n" "$plugins_dir/$1"
+  else
+    printf "%s\\n" "$plugins_dir"
   fi
 }
 
