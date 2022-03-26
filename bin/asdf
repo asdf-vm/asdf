@@ -7,6 +7,10 @@ find_cmd() {
   local cmd_dir="$1"
   shift
 
+  if [ ! -d "$cmd_dir" ]; then
+    return
+  fi
+
   local cmd_name
   local args_offset="$#"
   cmd_name="command-$(tr ' ' '-' <<<"${@:1:${args_offset}}").bash"
