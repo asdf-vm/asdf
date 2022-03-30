@@ -140,7 +140,7 @@ latest_command() {
     versions=$("${plugin_path}"/bin/latest-stable "$query")
     if [ -z "${versions}" ]; then
       # this branch requires this print to mimic the error from the list-all branch
-      printf "No compatible versions available (%s %s)\\n" "$plugin_name" "$query" >&2
+      printf "No compatible versions available (%s %s)\n" "$plugin_name" "$query" >&2
       exit 1
     fi
   else
@@ -154,7 +154,7 @@ latest_command() {
     fi
   fi
 
-  printf "%s\\n" "$versions"
+  printf "%s\n" "$versions"
 }
 
 latest_all() {
@@ -165,36 +165,72 @@ latest_all() {
     for plugin_path in "$plugins_path"/*/; do
       plugin_name=$(basename "$plugin_path")
 
+      local installed_versions
+      installed_versions=$(list_installed_versions "$plugin_name")
+
+      # Get a distinct list of distributions/variants
+      local installed_variants
+      installed_variants=$(echo "$installed_versions" |
+        sed -e "s/\(^.*\)\-.*/\1/" |        # extract variant prefix
+        sort -u |                           # unique
+        sed -e "s/^[[:space:]]*[0-9].*//" | # remove versions without variant prefix
+        sed '/^[[:space:]]*$/d')            # remove empty lines
+
       # Retrieve the version of the plugin
-      local version
+      local versions=()
       if [ -f "${plugin_path}/bin/latest-stable" ]; then
         # We can't filter by a concrete query because different plugins might
         # have different queries.
+        local version
         version=$("${plugin_path}"/bin/latest-stable "")
+
         if [ -z "${version}" ]; then
-          version="unknown"
+          versions+=("unknown")
+        else
+          versions+=("$version")
         fi
+      elif [ -n "$installed_variants" ]; then
+        # get latest version for each variant
+        for variant in $installed_variants; do
+          local version
+          version=$(list_all_command "$plugin_name" "$(echo "$variant" | tr -d '[:space:]')" |
+            grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+            # filter for exact match or with version suffix to deal with overlaps (e.g. zulu-18.28.13, zulu-jre-18.28.13)
+            grep -iE "^($variant|$variant(-\d+.*)?)\$" |
+            sed 's/^[[:space:]]\+//' |
+            tail -1)
+
+          if [ -z "$version" ]; then
+            versions+=("unknown")
+          else
+            versions+=("$version")
+          fi
+        done
       else
         # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
+        local version
         version=$(list_all_command "$plugin_name" |
           grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
           sed 's/^[[:space:]]\+//' |
           tail -1)
+
         if [ -z "${version}" ]; then
-          version="unknown"
+          versions+=("unknown")
+        else
+          versions+=("$version")
         fi
       fi
 
-      local installed_status
-      installed_status="missing"
+      for version in "${versions[@]}"; do
+        local installed_status
+        installed_status="missing"
 
-      local installed_versions
-      installed_versions=$(list_installed_versions "$plugin_name")
+        if [ -n "$installed_versions" ] && printf '%s\n' "$installed_versions" | grep -q "^$version\$"; then
+          installed_status="installed"
+        fi
+        printf "%s\\t%s\\t%s\\n" "$plugin_name" "$version" "$installed_status"
+      done
 
-      if [ -n "$installed_versions" ] && printf '%s\n' "$installed_versions" | grep -q "^$version\$"; then
-        installed_status="installed"
-      fi
-      printf "%s\\t%s\\t%s\\n" "$plugin_name" "$version" "$installed_status"
     done
   else
     printf "%s\\n" 'No plugins installed'
