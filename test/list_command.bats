@@ -66,6 +66,13 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "list_all_command lists available versions with installed status" {
+  run asdf install dummy 1.0.0
+  run asdf list-all dummy
+  [ "$(echo -e "1.0.0\tinstalled\n1.1.0\n2.0.0")" == "$output" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "list_all_command with version filters available versions" {
   run asdf list-all dummy 1
   [ "$(echo -e "1.0.0\n1.1.0")" == "$output" ]
@@ -80,6 +87,7 @@ teardown() {
 
 @test "list_all_command fails when list-all script exits with non-zero code" {
   run asdf list-all dummy-broken
+  echo $status
   echo $output
   [ "$status" -eq 1 ]
   [[ "$output" == "Plugin dummy-broken's list-all callback script failed with output:"* ]]

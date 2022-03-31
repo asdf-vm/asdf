@@ -56,7 +56,7 @@ teardown() {
   run asdf latest legacy-dummy 3
   echo "status: $status"
   echo "output: $output"
-  [ -z "$output" ]
+  [ "$(echo "No compatible versions available (legacy-dummy 3)")" == "$output" ]
   [ "$status" -eq 1 ]
 }
 
