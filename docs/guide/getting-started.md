@@ -245,7 +245,9 @@ Restart your shell so that `PATH` changes take effect. Opening a new terminal ta
 
 This completes the installation of the `asdf` core :tada:
 
-`asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this.
+`asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this. 
+
+You can also head to [this page](https://github.com/asdf-vm/asdf-plugins) for an up-to-date list of all supported plugins.
 
 ## 4. Install a Plugin
 
