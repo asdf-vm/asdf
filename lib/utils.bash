@@ -637,16 +637,14 @@ shim_plugins() {
 
 strip_tool_version_comments() {
   local tool_version_path="$1"
-
-  while IFS= read -r tool_line || [ -n "$tool_line" ]; do
-    # Remove whitespace before pound sign, the pound sign, and everything after it
-    new_line="$(cut -f1 -d"#" <<<"$tool_line" | sed -e 's/[[:space:]]*$//')"
-
-    # Only print the line if it is not empty
-    if [[ -n "$new_line" ]]; then
-      printf "%s\\n" "$new_line"
-    fi
-  done <"$tool_version_path"
+  # Use sed to strip comments from the tool version file
+  # Breakdown of sed command:
+  # This command represents 3 steps, seperated by a semi-colon (;), that run on each line.
+  # 1. Delete line if it starts with any blankspace and a #.
+  # 2. Find a # and delete it and everything after the #.
+  # 3. Remove any whitespace from the end of the line.
+  # Finally, the command will print the lines that are not empty.
+  sed '/^[[:blank:]]*#/d;s/#.*//;s/[[:blank:]]*$//' "$tool_version_path"
 }
 
 asdf_run_hook() {
