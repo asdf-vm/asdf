@@ -59,11 +59,11 @@ fn ls-executables {
         if (test -x $p) {
           path:base $p
         }
-      } except {
+      } catch {
         # don't fail if permission denied
       }
     }
-  } except {
+  } catch {
     # silence default non-zero exit status
   }
 }
