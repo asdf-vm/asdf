@@ -52,6 +52,20 @@ teardown() {
   [ "$output" = "dummy" ]
 }
 
+@test "plugin_add command with URL and git-ref specified adds a plugin at branch" {
+  install_mock_plugin_repo "dummy" "develop"
+
+  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy" "develop"
+  [ "$status" -eq 0 ]
+
+  run asdf plugin-list
+  [ "$output" = "dummy" ]
+
+ # Make sure asdf info reports dummy plugin on develop branch
+  run asdf info
+  echo "$output" | grep dummy | grep develop
+}
+
 @test "plugin_add command with URL specified run twice returns error second time" {
   install_mock_plugin_repo "dummy"
 
