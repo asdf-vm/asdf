@@ -42,7 +42,7 @@ reshim_command() {
       asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version_name"
     done
   fi
-
+  cleanup_invalid_shim_metadata "$plugin_name"
 }
 
 ensure_shims_dir() {
@@ -109,6 +109,56 @@ generate_shims_for_version() {
     write_shim_script "$plugin_name" "$full_version" "$executable_path"
   done
 }
+
+cleanup_invalid_shim_metadata() (
+  # Function that searches for shims corresponding to plugins which are not installed, and deletes its metadata.
+  # Made as a subshell so that `shopt` and other values are local only to this function
+  shopt -s extglob
+
+  local plugin_name=$1
+  local full_version=$2
+
+  local plugins_path
+  plugins_path=$(get_plugin_path)
+
+  if ls "$plugins_path" &>/dev/null; then
+    local shim_path="$(asdf_data_dir)/shims/"
+
+    local valid_plugin_names
+    valid_plugin_names=($(find "$plugins_path" -maxdepth 1 -type d | xargs basename | sort))
+
+    local valid_plugin_regex
+    valid_plugin_regex=$(IFS='|'; printf %s "${valid_plugin_names[*]}")
+    valid_plugin_regex="${valid_plugin_regex//./\\.}"
+
+    local shims_glob
+    if [ -z "$plugin_name" ]; then
+      shims_glob="$shim_path/*"
+    else
+      shims_glob=($(plugin_shims "$plugin_name" "$full_version" | xargs basename))
+      shims_glob="$shim_path/@($(IFS='|'; printf %s "${shims_glob[*]}"))"
+    fi
+
+    local shims_with_invalid_plugins
+    shims_with_invalid_plugins=($(perl -ne 'print "$ARGV\n" if /\# asdf-plugin: (?!'"$valid_plugin_regex"')/' $shims_glob \
+    | xargs -n1 basename))
+
+    if [ ${#shims_with_invalid_plugins[@]} -ne 0 ]; then
+      local invalid_shims_glob
+      invalid_shims_glob="$shim_path/@($(IFS='|'; printf %s "${shims_with_invalid_plugins[*]}"))"
+    
+      local invalid_plugin_names
+      invalid_plugin_names=($(perl -ne 'print "$1\n" if /# asdf-plugin: (?!'"$valid_plugin_regex"')(\W*)/;' $invalid_shims_glob | sort -u))
+
+      local invalid_plugin_regex
+      invalid_plugin_regex=$(IFS='|'; printf %s "${invalid_plugin_names[*]}")
+      invalid_plugin_regex="/\# asdf-plugin: (${invalid_plugin_regex//./\\.})/d"
+
+      sed -i.bak -E "$invalid_plugin_regex" $invalid_shims_glob
+      rm "$shim_path".bak
+    fi
+  fi
+)
 
 remove_obsolete_shims() {
   local plugin_name=$1
