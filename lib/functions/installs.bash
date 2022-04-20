@@ -237,4 +237,3 @@ install_tool_version() {
     fi
   fi
 }
-

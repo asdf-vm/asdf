@@ -138,9 +138,9 @@ latest_command() {
     fi
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-    versions=$(list_all_command "$plugin_name" "$query" | \
-      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" | \
-      sed 's/^[[:space:]]\+//' | \
+    versions=$(list_all_command "$plugin_name" "$query" |
+      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+      sed 's/^[[:space:]]\+//' |
       tail -1)
     if [ -z "${versions}" ]; then
       exit 1
@@ -220,4 +220,3 @@ local_command() {
     version_command local "$@"
   fi
 }
-
