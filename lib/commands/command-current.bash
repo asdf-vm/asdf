@@ -50,6 +50,7 @@ current_command() {
 
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
   if [ $# -eq 0 ]; then
+    # shellcheck disable=SC2119
     for plugin in $(plugin_list_command); do
       plugin_current_command "$plugin" "$terminal_format"
     done

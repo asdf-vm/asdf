@@ -78,6 +78,7 @@ plugin_test_command() {
       fail_test "could not install $plugin_name from $plugin_url"
     fi
 
+    # shellcheck disable=SC2119
     if ! (plugin_list_command | grep "^$plugin_name$" >/dev/null); then
       fail_test "$plugin_name was not properly installed"
     fi
