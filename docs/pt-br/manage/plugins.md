@@ -4,7 +4,7 @@
 
 Plugins são como `asdf` sabe lidar com diferentes ferramentas, tais quais Node.js, Ruby, Elixir etc.
 
-See [Creating Plugins](/pt-br/plugins/create.md) for the plugin API used to support more tools.
+Veja [Criando Plugins](/pt-br/plugins/create.md) para a API do plugin usada para suportar mais ferramentas.
 
 ## Adicionar
 
@@ -48,8 +48,8 @@ asdf plugin list --urls
 asdf plugin list all
 ```
 
-See [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugin-template) for the entire short-name list of plugins.
-
+Veja [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugin-template) para toda a lista de nomes curtos de plugins.
+ 
 ## Atualizar
 
 ```shell:no-line-numbers
