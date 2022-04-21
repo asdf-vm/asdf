@@ -1,4 +1,6 @@
-set -x ASDF_DIR (dirname (status -f))
+if not set -q ASDF_DIR
+  set -x ASDF_DIR (dirname (status -f))
+end
 
 set -l asdf_user_shims (
   if test -n "$ASDF_DATA_DIR"
