@@ -37,7 +37,7 @@
 
 | 方法     | 命令                                                                                                                                                             |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0`                                                                                          |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                          |
 | Homebrew | `brew install asdf`                                                                                                                                              |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` 或者使用你更习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
