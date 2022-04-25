@@ -1,8 +1,8 @@
 # -*- sh -*-
 
 plugin_add_command() {
-  if [[ $# -lt 1 || $# -gt 2 ]]; then
-    display_error "usage: asdf plugin add <name> [<git-url>]"
+  if [[ $# -lt 1 || $# -gt 3 ]]; then
+    display_error "usage: asdf plugin add <name> [<git-url>] [<git-ref>]"
     exit 1
   fi
 
@@ -26,6 +26,8 @@ plugin_add_command() {
     exit 1
   fi
 
+  local git_ref="$3"
+
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
 
@@ -38,7 +40,13 @@ plugin_add_command() {
     asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_add_${plugin_name}"
 
-    if ! git clone -q "$source_url" "$plugin_path"; then
+    declare -a git_clone_opts
+    git_clone_opts+=("-q")
+    if [ -n "$git_ref" ]; then
+      git_clone_opts+=("-b" "$git_ref")
+    fi
+
+    if ! git clone "${git_clone_opts[@]}" "$source_url" "$plugin_path"; then
       exit 1
     fi
 
