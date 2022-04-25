@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 asdf_help() {
   printf "version: %s\\n\\n" "$(asdf_version)"
@@ -53,7 +55,7 @@ help_command() {
 
             if [ "${version_info[0]}" = "latest" ]; then
               local version
-              version=$(asdf latest "$plugin_name" "${version_info[1]}")
+              version=$(latest_command "$plugin_name" "${version_info[1]}")
             else
               local version="${version_info[0]}"
             fi
