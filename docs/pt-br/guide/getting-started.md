@@ -37,7 +37,7 @@ Nós recomendamos a instalação através do Git, entretanto existem outros mét
 
 | Método   | Comando                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1`                                                                                             |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
