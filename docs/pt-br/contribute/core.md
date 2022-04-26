@@ -60,11 +60,11 @@ bats test/list_commands.bash
 
 :::
 
-## Teste de morcego
+## Teste de BATS
 
 É **fortemente recomendado** examinar o conjunto de testes existente e a [documentação do bats-core](https://bats-core.readthedocs.io/en/stable/index.html) antes de escrever os testes.
 
-A depuração de morcegos pode ser difícil às vezes. Usar a saída TAP com o sinalizador `-t` permitirá que você imprima saídas com o descritor de arquivo especial `>&3` durante a execução do teste, simplificando a depuração. Como um exemplo:
+A depuração de BATs pode ser difícil às vezes. Usar a saída TAP com o sinalizador `-t` permitirá que você imprima saídas com o descritor de arquivo especial `>&3` durante a execução do teste, simplificando a depuração. Como um exemplo:
 
 ```shell
 # test/some_tests.bats
