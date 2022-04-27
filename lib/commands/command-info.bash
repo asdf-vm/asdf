@@ -4,13 +4,13 @@
 
 get_shell() {
   if [[ -z $FISH_VERSION ]]; then
-    echo "fish"
+    echo "fish, version $FISH_VERSION"
   elif [[ -z $ZSH_VERSION ]]; then
-    echo "zsh"
+    echo "zsh, version $ZSH_VERSION"
   elif [[ -z $BASH_VERSION ]]; then
-    echo "bash"
+    echo "bash, $BASH_VERSION"
   else
-    echo $SHELL --version
+    echo $($SHELL --version)
   fi
 }
 
