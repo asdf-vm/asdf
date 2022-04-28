@@ -10,7 +10,7 @@ get_shell() {
   elif [[ -z $BASH_VERSION ]]; then
     echo "bash, $BASH_VERSION"
   else
-    echo $($SHELL --version)
+    $SHELL --version
   fi
 }
 
