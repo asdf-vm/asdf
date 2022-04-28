@@ -4,11 +4,11 @@
 
 get_shell() {
   if [[ -z $FISH_VERSION ]]; then
-    echo "fish, version $FISH_VERSION"
+    printf "fish, version %s" "$FISH_VERSION"
   elif [[ -z $ZSH_VERSION ]]; then
-    echo "zsh, version $ZSH_VERSION"
+    printf "zsh, version %s" "$ZSH_VERSION"
   elif [[ -z $BASH_VERSION ]]; then
-    echo "bash, $BASH_VERSION"
+    printf "bash, version %s" "$BASH_VERSION"
   else
     $SHELL --version
   fi
