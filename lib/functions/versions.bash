@@ -74,9 +74,12 @@ list_all_command() {
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
 
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
+
   # Capture return code to allow error handling
-  std_out_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
-  std_err_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stderr.XXXXXX")"
+  std_out_file="$(mktemp "$temp_dir/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
+  std_err_file="$(mktemp "$temp_dir/asdf-command-list-all-${plugin_name}.stderr.XXXXXX")"
   return_code=0 && "${plugin_path}/bin/list-all" >"$std_out_file" 2>"$std_err_file" || return_code=$?
 
   if [[ $return_code -ne 0 ]]; then
