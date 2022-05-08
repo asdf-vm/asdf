@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/plugins.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
 
 # shellcheck disable=SC2059
 plugin_current_command() {
@@ -44,14 +46,16 @@ plugin_current_command() {
 current_command() {
   local terminal_format="%-15s %-15s %-10s\\n"
   local exit_status=0
+  local plugin
 
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
   if [ $# -eq 0 ]; then
-    for plugin in $(asdf plugin list); do
+    # shellcheck disable=SC2119
+    for plugin in $(plugin_list_command); do
       plugin_current_command "$plugin" "$terminal_format"
     done
   else
-    local plugin=$1
+    plugin=$1
     plugin_current_command "$plugin" "$terminal_format"
     exit_status="$?"
   fi

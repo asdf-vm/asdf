@@ -1,100 +1,101 @@
-# Create a Plugin
+# Criar um plug-in
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-## What's in a Plugin
+## O que há em um plug-in
 
-A plugin is a git repo, with a couple executable scripts, to support versioning another language or tool. These scripts are run when `list-all`, `install` or `uninstall` commands are run. You can set or unset env vars and do anything required to setup the environment for the tool.
+Um plugin é um repositório git, com alguns scripts executáveis, para dar suporte ao versionamento de outra linguagem ou ferramenta.  Esses scripts são executados quando os comandos `list-all`, `install` ou `uninstall` são executados.  Você pode definir ou desmarcar env vars e fazer qualquer coisa necessária para configurar o ambiente para a ferramenta.
 
-## Required Scripts
+## Scripts obrigatórios
 
-- `bin/list-all` - lists all installable versions
-- `bin/download` - download source code or binary for the specified version
-- `bin/install` - installs the specified version
 
-## Environment Variables
+- `bin/list-all` - lista todas as versões instaláveis
+- `bin/download` - baixe o código fonte ou binário para a versão especificada
+- `bin/install` - instala a versão especificada
 
-All scripts except `bin/list-all` will have access to the following env vars to act upon:
+## Variavéis de Ambiente
 
-- `ASDF_INSTALL_TYPE` - `version` or `ref`
-- `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
-- `ASDF_INSTALL_PATH` - the dir where the it _has been_ installed (or _should_ be installed in case of the `bin/install` script)
+Todos os scripts, exceto `bin/list-all`, terão acesso aos seguintes env vars para agir:
 
-These additional environment variables will be available to the `bin/install` script:
+- `ASDF_INSTALL_TYPE` - `version` ou `ref`
+- `ASDF_INSTALL_VERSION` - se `ASDF_INSTALL_TYPE` é `version` então este será o número da versão. Caso contrário, será o git ref que será passado. Pode apontar para uma tag/commit/branch no repositório.
+- `ASDF_INSTALL_PATH` - o diretório onde _foi_ instalado (ou _deve_ ser instalado no caso do script `bin/install`)
 
-- `ASDF_CONCURRENCY` - the number of cores to use when compiling the source code. Useful for setting `make -j`.
-- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary was downloaded by the `bin/download` script.
+Essas variáveis de ambiente adicionais estarão disponíveis para o script `bin/install`:
 
-These additional environment variables will be available to the `bin/download` script:
+- `ASDF_CONCURRENCY` - o número de núcleos a serem usados ao compilar o código-fonte. Útil para definir `make -j`.
+- `ASDF_DOWNLOAD_PATH` - o caminho para onde o código fonte ou binário foi baixado pelo script `bin/download`.
 
-- `ASDF_DOWNLOAD_PATH` - the path to where the source code or binary should be downloaded.
+Essas variáveis de ambiente adicionais estarão disponíveis para o script `bin/download`:
+
+- `ASDF_DOWNLOAD_PATH` - o caminho para onde o código-fonte ou binário deve ser baixado.
 
 #### bin/list-all
 
-Must print a string with a space-separated list of versions. Example output would be the following:
+Deve imprimir uma string com uma lista de versões separadas por espaço. A saída de exemplo seria a seguinte:
 
 ```shell
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
-Note that the newest version should be listed last so it appears closer to the user's prompt. This is helpful since the `list-all` command prints each version on it's own line. If there are many versions it's possible the early versions will be off screen.
+Observe que a versão mais recente deve ser listada por último para que apareça mais próxima do prompt do usuário. Isso é útil já que o comando `list-all` imprime cada versão em sua própria linha. Se houver muitas versões, é possível que as primeiras versões fiquem fora da tela.
 
-If versions are being pulled from releases page on a website it's recommended to not sort the versions if at all possible. Often the versions are already in the correct order or, in reverse order, in which case something like `tac` should suffice. If you must sort versions manually you cannot rely on `sort -V` since it is not supported on OSX. An alternate sort function [like this is a better choice](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6).
+Se as versões estiverem sendo extraídas da página de lançamentos em um site, é recomendável não classificar as versões, se possível. Muitas vezes as versões já estão na ordem correta ou, na ordem inversa, nesse caso algo como `tac` deve ser suficiente. Se você precisar classificar as versões manualmente, não poderá confiar em `sort -V`, pois não é suportado no OSX. Uma função de classificação alternativa [como esta é uma escolha melhor](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6).
 
 #### bin/download
 
-This script must download the source or binary, in the path contained in the `ASDF_DOWNLOAD_PATH` environment variable. If the downloaded source or binary is compressed, only the uncompressed source code or binary may be placed in the `ASDF_DOWNLOAD_PATH` directory.
+Este script deve baixar o código fonte ou binário, no caminho contido na variável de ambiente `ASDF_DOWNLOAD_PATH`. Se o código-fonte ou binário baixado estiver compactado, apenas o código-fonte ou binário descompactado poderá ser colocado no diretório `ASDF_DOWNLOAD_PATH`.
 
-The script must exit with a status of `0` when the download is successful. If the download fails the script must exit with any non-zero exit status.
+O script deve sair com um status de `0` quando o download for bem-sucedido. Se o download falhar, o script deve sair com qualquer status de saída diferente de zero.
 
-If possible the script should only place files in the `ASDF_DOWNLOAD_PATH`. If the download fails no files should be placed in the directory.
+Se possível, o script deve apenas colocar arquivos no `ASDF_DOWNLOAD_PATH`.  Se o download falhar, nenhum arquivo deve ser colocado no diretório.
 
-If this script is not present asdf will assume that the `bin/install` script is present and will download and install the version. asdf only works without this script to support legacy plugins. All plugins must include this script, and eventually support for legacy plugins will be removed.
+Se este script não estiver presente, o asdf assumirá que o script `bin/install` está presente e fará o download e instalará a versão. asdf só funciona sem este script para suportar plugins legados. Todos os plugins devem incluir este script e, eventualmente, o suporte para plugins legados será removido.
 
 #### bin/install
 
-This script should install the version, in the path mentioned in `ASDF_INSTALL_PATH`. By default, asdf will create shims for any files in `$ASDF_INSTALL_PATH/bin` (this can be customized with the optional [bin/list-bin-paths](#binlist-bin-paths) script).
+Este script deve instalar a versão, no caminho mencionado em `ASDF_INSTALL_PATH`. Por padrão, o asdf criará shims para qualquer arquivo em `$ASDF_INSTALL_PATH/bin` (isso pode ser personalizado com o script opcional [bin/list-bin-paths](#binlist-bin-paths)).
 
-The install script should exit with a status of `0` when the installation is successful. If the installation fails the script should exit with any non-zero exit status.
+O script de instalação deve sair com um status de `0` quando a instalação for bem-sucedida.  Se a instalação falhar, o script deve sair com qualquer status de saída diferente de zero.
 
-If possible the script should only place files in the `ASDF_INSTALL_PATH` directory once the build and installation of the tool is deemed successful by the install script. asdf [checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) of the `ASDF_INSTALL_PATH` directory in order to determine if that version of the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the beginning of the installation process other asdf commands run in other terminals during the installation may consider that version of the tool installed, even when it is not fully installed.
+Se possível, o script deve apenas colocar os arquivos no diretório `ASDF_INSTALL_PATH` uma vez que a compilação e instalação da ferramenta são consideradas bem sucedidas pelo script de instalação. asdf [verifica a existência](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) do diretório `ASDF_INSTALL_PATH` para determinar se essa versão da ferramenta está instalado. Se o diretório `ASDF_INSTALL_PATH` for preenchido no início do processo de instalação, outros comandos asdf executados em outros terminais durante a instalação podem considerar essa versão da ferramenta instalada, mesmo quando não estiver totalmente instalada.
 
-If you want your plugin to work with asdf version 0.7._ and earlier and version 0.8._ and newer check for the presence of the `ASDF_DOWNLOAD_PATH` environment variable. If it is not set download the source code in the bin/install callback. If it is set assume the `bin/download` script already downloaded it.
+Se você quiser que seu plugin funcione com asdf versão 0.7._ e anterior e versão 0.8._ e mais recente, verifique a presença da variável de ambiente `ASDF_DOWNLOAD_PATH`.  Se não estiver definido, baixe o código-fonte no retorno de chamada bin/install.  Se estiver definido, suponha que o script `bin/download` já tenha baixado.
 
-## Optional Scripts
+## Scripts Opcional
 
-#### bin/help scripts
+#### scripts bin/help
 
-This is not one callback script but rather a set of callback scripts that each print different documentation to STDOUT. The possible callback scripts are listed below. Note that `bin/help.overview` is a special case as it must be present for any help output to be displayed for the script.
+Este não é um script de retorno de chamada, mas sim um conjunto de scripts de retorno de chamada que imprimem documentação diferente para STDOUT. Os scripts de retorno de chamada possíveis estão listados abaixo. Observe que `bin/help.overview` é um caso especial, pois deve estar presente para que qualquer saída de ajuda seja exibida para o script.
 
-- `bin/help.overview` - This script should output a general description about the plugin and the tool being managed. No heading should be printed as asdf will print headings. Output may be free-form text but ideally only one short paragraph. This script must be present if you want asdf to provide help information for your plugin. All other help callback scripts are optional.
-- `bin/help.deps` - This script should output the list of dependencies tailored to the operating system. One dependency per line.
-- `bin/help.config` - This script should print any required or optional configuration that may be available for the plugin and tool. Any environment variables or other flags needed to install or compile the tool (for the users operating system when possible). Output can be free-form text.
-- `bin/help.links` - This should be a list of links relevant to the plugin and tool (again, tailored to the current operating system when possible). One link per line. Lines may be in the format `<title>: <link>` or just `<link>`.
+- `bin/help.overview` - Este script deve gerar uma descrição geral sobre o plugin e a ferramenta que está sendo gerenciada. Nenhum título deve ser impresso, pois o asdf imprimirá títulos. A saída pode ser um texto de formato livre, mas idealmente apenas um parágrafo curto. Este script deve estar presente se você quiser que o asdf forneça informações de ajuda para seu plugin. Todos os outros scripts de retorno de chamada de ajuda são opcionais.
+- `bin/help.deps` - Esse script deve gerar a lista de dependências adaptadas ao sistema operacional. Uma dependência por linha.
+- `bin/help.config` - Este script deve imprimir qualquer configuração obrigatória ou opcional que possa estar disponível para o plug-in e a ferramenta. Quaisquer variáveis de ambiente ou outros sinalizadores necessários para instalar ou compilar a ferramenta (para o sistema operacional dos usuários quando possível). A saída pode ser texto de formato livre.
+- `bin/help.links` - Esta deve ser uma lista de links relevantes para o plug-in e a ferramenta (mais uma vez, adaptados ao sistema operacional atual, quando possível). Um link por linha. As linhas podem estar no formato `<title>: <link>` ou apenas `<link>`.
 
-Each of these scripts should tailor their output to the current operating system. For example, when on Ubuntu the deps script could output the dependencies as apt-get packages that must be installed. The script should also tailor its output to the value of `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE` when the variables are set. They are optional and will not always be set.
+Cada um desses scripts deve adaptar sua saída ao sistema operacional atual. Por exemplo, quando no Ubuntu, o script deps pode gerar as dependências como pacotes apt-get que devem ser instalados. O script também deve adaptar sua saída ao valor de `ASDF_INSTALL_VERSION` e `ASDF_INSTALL_TYPE` quando as variáveis forem definidas.  Eles são opcionais e nem sempre serão definidos.
 
-The help callback script MUST NOT output any information that is already covered in the core asdf-vm documentation. General asdf usage information must not be present.
+O script de retorno de chamada de ajuda NÃO DEVE gerar nenhuma informação que já esteja coberta na documentação principal do asdf-vm. As informações gerais de uso do asdf não devem estar presentes.
 
 #### bin/list-bin-paths
 
-List executables for the specified version of the tool. Must print a string with a space-separated list of dir paths that contain executables. The paths must be relative to the install path passed. Example output would be:
+Liste os executáveis para a versão especificada da ferramenta. Deve imprimir uma string com uma lista separada por espaços de caminhos de diretórios que contêm executáveis. Os caminhos devem ser relativos ao caminho de instalação passado. A saída de exemplo seria:
 
 ```shell
 bin tools veggies
 ```
 
-This will instruct asdf to create shims for the files in `<install-path>/bin`, `<install-path>/tools` and `<install-path>/veggies`
+Isso instruirá o asdf a criar shims para os arquivos em `<install-path>/bin`, `<install-path>/tools` e `<install-path>/veggies`
 
-If this script is not specified, asdf will look for the `bin` dir in an installation and create shims for those.
+Se este script não for especificado, o asdf procurará o diretório `bin` em uma instalação e criará shims para eles.
 
 #### bin/exec-env
 
-Setup the env to run the binaries in the package.
+Configure o env para executar os binários no pacote.
 
 #### bin/exec-path
 
-Get the executable path for the specified version of the tool. Must print a string with the relative executable path. This allows the plugin to conditionally override the shim's specified executable path, otherwise return the default path specified by the shim.
+Obtenha o caminho executável para a versão especificada da ferramenta. Deve imprimir uma string com o caminho executável relativo. Isso permite que o plug-in substitua condicionalmente o caminho executável especificado do shim, caso contrário, retorne o caminho padrão especificado pelo shim.
 
 ```shell
 Usage:
@@ -109,29 +110,29 @@ Output:
 
 #### bin/uninstall
 
-Uninstalls a specific version of a tool.
+Desinstala uma versão específica de uma ferramenta.
 
 #### bin/list-legacy-filenames
 
-Register additional setter files for this plugin. Must print a string with a space-separated list of filenames.
+Registre arquivos setter adicionais para este plugin. Deve imprimir uma string com uma lista de nomes de arquivos separados por espaços.
 
 ```shell
 .ruby-version .rvmrc
 ```
 
-Note: This will only apply for users who have enabled the `legacy_version_file` option in their `~/.asdfrc`.
+Nota: Isso só se aplica a usuários que habilitaram a opção `legacy_version_file` em seu `~/.asdfrc`.
 
 #### bin/parse-legacy-file
 
-This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
+Isso pode ser usado para analisar ainda mais o arquivo legado encontrado pelo asdf. Se o `parse-legacy-file` não for implementado, o asdf simplesmente irá cat o arquivo para determinar a versão. O script receberá o caminho do arquivo como seu primeiro argumento.
 
 #### bin/post-plugin-add
 
-This can be used to run any post-installation actions after the plugin has been added to asdf.
+Isso pode ser usado para executar qualquer ação pós-instalação depois que o plug-in for adicionado ao asdf.
 
-The script has access to the path the plugin was installed (`${ASDF_PLUGIN_PATH}`) and the source URL (`${ASDF_PLUGIN_SOURCE_URL}`), if any was used.
+O script tem acesso ao caminho em que o plugin foi instalado (`${ASDF_PLUGIN_PATH}`) e o URL de origem (`${ASDF_PLUGIN_SOURCE_URL}`), se algum foi usado.
 
-See also the related hooks:
+Veja também os ganchos relacionados:
 
 - `pre_asdf_plugin_add`
 - `pre_asdf_plugin_add_${plugin_name}`
@@ -140,23 +141,23 @@ See also the related hooks:
 
 #### bin/pre-plugin-remove
 
-This can be used to run any pre-removal actions before the plugin will be removed from asdf.
+Isso pode ser usado para executar qualquer ação de pré-remoção antes que o plug-in seja removido do asdf.
 
-The script has access to the path the plugin was installed in (`${ASDF_PLUGIN_PATH}`).
+O script tem acesso ao caminho em que o plugin foi instalado (`${ASDF_PLUGIN_PATH}`).
 
-See also the related hooks:
+Veja também os ganchos relacionados:
 
 - `pre_asdf_plugin_remove`
 - `pre_asdf_plugin_remove_${plugin_name}`
 - `post_asdf_plugin_remove`
 - `post_asdf_plugin_remove_${plugin_name}`
 
-## Extension commands for asdf CLI.
+## Comandos de extensão para asdf CLI.
 
-It's possible for plugins to define new asdf commands by providing `lib/commands/command*.bash` scripts or executables that
-will be callable using the asdf command line interface by using the plugin name as a subcommand.
 
-For example, suppose a `foo` plugin has:
+É possível que plugins definam novos comandos asdf fornecendo scripts ou executáveis `lib/commands/command*.bash` que será chamado usando a interface de linha de comando asdf usando o nome do plug-in como um subcomando.
+
+Por exemplo, suponha que um plugin `foo` tenha:
 
 ```shell
 foo/
@@ -167,7 +168,7 @@ foo/
     command-help.bash
 ```
 
-Users can now execute
+Os usuários agora podem executar
 
 ```shell
 $ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash`
@@ -177,53 +178,53 @@ $ asdf foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/co
 $ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat.bash baz`
 ```
 
-Plugin authors can use this feature to provide utilities related to their tools,
-or even create plugins that are just new command extensions for asdf itself.
+Os autores de plugins podem usar esse recurso para fornecer utilitários relacionados às suas ferramentas,
+ou até mesmo criar plugins que são apenas novas extensões de comando para o próprio asdf.
 
-When invoked, if extension commands do not have their executable-bit set, they will be
-sourced as bash scripts, having all of the functions from `$ASDF_DIR/lib/utils.bash` available.
-Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
-If the executable bit is set, they are just executed and replace the asdf execution.
+Quando invocados, se os comandos de extensão não tiverem seus bits executáveis definidos, eles serão
+originado como scripts bash, tendo todas as funções de `$ASDF_DIR/lib/utils.bash` disponíveis.
+Além disso, o `$ASDF_CMD_FILE` resolve para o caminho completo do arquivo que está sendo originado.
+Se o bit executável estiver definido, eles são apenas executados e substituem a execução do asdf.
 
-A good example of this feature is for plugins like [`haxe`](https://github.com/asdf-community/asdf-haxe)
-which provides the `asdf haxe neko-dylibs-link` to fix an issue where haxe executables expect to find
-dynamic libraries relative to the executable directory.
+Um bom exemplo desse recurso é para plugins como [`haxe`](https://github.com/asdf-community/asdf-haxe)
+que fornece o `asdf haxe neko-dylibs-link` para corrigir um problema onde os executáveis haxe esperam encontrar
+bibliotecas dinâmicas relativas ao diretório executável.
 
-If your plugin provides an asdf extension command, be sure to mention about it on your plugin's README.
+Se o seu plug-in fornecer um comando de extensão asdf, certifique-se de mencioná-lo no README do seu plug-in.
 
-## Custom shim templates
+## Modelos de calços personalizados
 
-**PLEASE use this feature only if absolutely required**
+**POR FAVOR, use este recurso apenas se for absolutamente necessário**
 
-asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
+asdf permite modelos de calços personalizados. Para um executável chamado `foo`, se houver um arquivo `shims/foo` no plug-in, o asdf copiará esse arquivo em vez de usar seu modelo padrão de shim.
 
-This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
+Isso deve ser usado com sabedoria. Por enquanto AFAIK, está sendo usado apenas no plugin Elixir, porque um executável também é lido como um arquivo Elixir, além de ser apenas um executável. O que torna impossível usar o calço bash padrão.
 
-## Testing plugins
+## Testando plug-ins
 
-`asdf` contains the `plugin-test` command to test your plugin. You can use it as follows
+ `asdf` contém o comando `plugin-test` para testar seu plugin. Você pode usá-lo da seguinte forma
 
 ```shell
 asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
 ```
 
-Only the two first arguments are required.
-If \__version_ is specified, the tool will be installed with that specific version. Defaults to whatever returns `asdf latest <plugin-name>`.
-If _git-ref_ is specified, the plugin itself is checked out at that commit/branch/tag, useful for testing a pull-request on your plugin's CI.
+Apenas os dois primeiros argumentos são necessários.
+Se \__version_ for especificado, a ferramenta será instalada com essa versão específica. O padrão é o que retorna `asdf mais recente <plugin-name>`.
+Se _git-ref_ for especificado, o plug-in em si é verificado nesse commit/branch/tag, útil para testar um pull-request no CI do seu plug-in.
 
-Rest arguments are considered the command to execute to ensure the installed tool works correctly.
-Normally it would be something that takes `--version` or `--help`.
-For example, to test the NodeJS plugin, we could run
+Os argumentos Rest são considerados o comando a ser executado para garantir que a ferramenta instalada funcione corretamente.
+Normalmente seria algo que leva `--version` ou `--help`.
+Por exemplo, para testar o plugin NodeJS, podemos executar
 
 ```shell
 asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git node --version
 ```
 
-We strongly recommend you test your plugin on a CI environment and make sure it works on both Linux and OSX.
+É altamente recomendável que você teste seu plug-in em um ambiente CI e verifique se ele funciona no Linux e no OSX.
 
-#### Example GitHub Action
+#### Exemplo GitHub Action
 
-The [asdf-vm/actions](https://github.com/asdf-vm/actions) repo provides a GitHub Action for testing your plugins hosted on github.
+O repositório [asdf-vm/actions](https://github.com/asdf-vm/actions) fornece uma ação do GitHub para testar seus plugins hospedados no github.
 
 ```yaml
 steps:
@@ -235,9 +236,9 @@ steps:
       GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
 ```
 
-#### Example TravisCI config
+#### Exemplo de configuração do TravisCI
 
-Here is a sample `.travis.yml` file, customize it to your needs
+Aqui está um arquivo `.travis.yml` de amostra, personalize-o de acordo com suas necessidades
 
 ```yaml
 language: c
@@ -250,22 +251,22 @@ os:
   - osx
 ```
 
-Note:
-When using another CI, you will need to check what variable maps to the repo path.
+Notas:
+Ao usar outro IC, você precisará verificar qual variável mapeia para o caminho do repositório.
 
-You also have the option to pass a relative path to `plugin-test`.
+Você também tem a opção de passar um caminho relativo para `plugin-test`.
 
-For example, if the test script is ran in the repo directory: `asdf plugin test nodejs . 'node --version'`.
+Por exemplo, se o script de teste for executado no diretório: `asdf plugin test nodejs . 'node --version'`.
 
-## GitHub API Rate Limiting
+## Limitação de taxa da API do GitHub
 
-If your plugin's `list-all` depends on accessing the GitHub API, make sure you provide an Authorization token when accessing it, otherwise your tests might fail due to rate limiting.
+Se o `list-all` do seu plug-in depender do acesso à API do GitHub, certifique-se de fornecer um token de autorização ao acessá-lo, caso contrário, seus testes podem falhar devido à limitação de taxa.
 
-To do so, create a [new personal token](https://github.com/settings/tokens/new) with only `public_repo` access.
+Para fazer isso, crie um [novo token pessoal](https://github.com/settings/tokens/new) com apenas acesso `public_repo`.
 
-Then on your travis.ci build settings add a _secure_ environment variable for it named something like `GITHUB_API_TOKEN`. And _DO NOT_ EVER publish your token in your code.
+Em seguida, nas configurações de compilação do travis.ci, adicione uma variável de ambiente _secure_ para ela chamada algo como `GITHUB_API_TOKEN`.  E _NUNCA_ publique seu token em seu código.
 
-Finally, add something like the following to `bin/list-all`
+Finalmente, adicione algo como o seguinte para `bin/list-all`
 
 ```shell
 cmd="curl -s"
@@ -276,10 +277,10 @@ fi
 cmd="$cmd $releases_path"
 ```
 
-## Submitting plugins to the official plugins repository
+## Enviando plugins para o repositório oficial de plugins
 
-`asdf` can easily install plugins by specifying the plugin repository url, e.g. `plugin add my-plugin https://github.com/user/asdf-my-plugin.git`.
+`asdf` pode facilmente instalar plugins especificando o url do repositório de plugins, por exemplo. `plugin add my-plugin https://github.com/user/asdf-my-plugin.git`.
 
-To make it easier on your users, you can add your plugin to the official plugins repository to have your plugin listed and easily installable using a shorter command, e.g. `asdf plugin add my-plugin`.
+Para facilitar para seus usuários, você pode adicionar seu plugin ao repositório oficial de plugins para ter seu plugin listado e facilmente instalável usando um comando mais curto, por exemplo `asdf plugin add my-plugin`.
 
-Follow the instruction at the plugins repository: [asdf-vm/asdf-plugins](https://github.com/asdf-vm/asdf-plugins).
+Siga as instruções no repositório de plugins: [asdf-vm/asdf-plugins](https://github.com/asdf-vm/asdf-plugins).

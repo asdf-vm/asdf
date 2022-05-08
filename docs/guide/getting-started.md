@@ -17,8 +17,8 @@
 `sudo` may be required depending on your system configuration.
 :::
 
-| Package Manager | Command                        |
-| --------------- | ------------------------------ |
+| Package Manager | Command                   |
+| --------------- | ------------------------- |
 | Aptitude        | `apt install curl git`    |
 | DNF             | `dnf install curl git`    |
 | Pacman          | `pacman -S curl git`      |
@@ -37,7 +37,7 @@ We recommend using Git, though there are other platform specific methods:
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.9.0`                                                                                             |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
@@ -148,12 +148,12 @@ Completions are automatically configured on installation by the AUR package.
 
 ::: details Elvish & Git
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -162,12 +162,12 @@ Completions are automatically configured.
 
 ::: details Elvish & Homebrew
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -175,12 +175,12 @@ Completions are automatically configured.
 
 ::: details Elvish & Pacman
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -243,7 +243,7 @@ Restart your shell so that `PATH` changes take effect. Opening a new terminal ta
 
 ## Core Installation Complete!
 
-This completes the installation of the `asdf` core  :tada:
+This completes the installation of the `asdf` core :tada:
 
 `asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this.
 

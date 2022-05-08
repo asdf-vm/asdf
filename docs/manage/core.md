@@ -68,11 +68,11 @@ nodejs 16.5.0
 
 `asdf` has a built in command to update which relies on Git (our recommended installation method). If you installed using a different method you should follow the steps for that method:
 
-| Method         | Latest Stable Release                                                                                                          | Latest commit on `master`  |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
-| asdf (via Git) | `asdf update`                                                                                                                  | `asdf update --head`       |
+| Method         | Latest Stable Release                                                                                                          | Latest commit on `master`        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| asdf (via Git) | `asdf update`                                                                                                                  | `asdf update --head`             |
 | Homebrew       | `brew upgrade asdf`                                                                                                            | `brew upgrade asdf --fetch-HEAD` |
-| Pacman         | Download a new `PKGBUILD` & rebuild <br/> or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |                            |
+| Pacman         | Download a new `PKGBUILD` & rebuild <br/> or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |                                  |
 
 ## Uninstall
 
@@ -259,17 +259,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Remove the `$HOME/.asdf` dir:
@@ -288,17 +288,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Uninstall with your package manager:
@@ -317,17 +317,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. In your `~/.elvish/rc.elv` remove the lines that use the `asdf` module:
+1. In your `~/.config/elvish/rc.elv` remove the lines that use the `asdf` module:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 and uninstall the `asdf` module with this command:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Uninstall with your package manager:

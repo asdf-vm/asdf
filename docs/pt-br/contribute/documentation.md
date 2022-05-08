@@ -2,11 +2,11 @@
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-Documentation & site contribution guide.
+Documentação e guia de contribuição do site.
 
-## Initial Setup
+## Configuração inicial
 
-Fork `asdf` on GitHub and/or Git clone the default branch:
+Fork `asdf` no GitHub e/ou Git clone o branch padrão:
 
 ```shell:no-line-numbers
 # clone your fork
@@ -15,73 +15,72 @@ git clone https://github.com/<GITHUB_USER>/asdf.git
 git clone https://github.com/asdf-vm/asdf.git
 ```
 
-The tools for Docs site development are managed with `asdf` in the `docs/.tool-versions`. Add the plugins with:
+As ferramentas para desenvolvimento de sites Docs são gerenciadas com `asdf` em `docs/.tool-versions`. Adicione os plugins com:
 
 ```shell:no-line-numbers
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
 ```
 
-Install the tool version(s) with:
+Instale a(s) versão(ões) da ferramenta com:
 
 ```shell:no-line-numbers
 asdf install
 ```
 
-- [Node.js](https://nodejs.org): JavaScript runtime built on Chrome's V8 JavaScript engine.
-
-Install Node.js dependencies from `docs/package.json`:
+- [Node.js](https://nodejs.org): tempo de execução JavaScript criado no mecanismo JavaScript V8 do Chrome.
+- 
+Instale as dependências do Node.js do `docs/package.json`:
 
 ```shell:no-line-numbers
 npm install
 ```
 
-## Development
+## Desenvolvimento
 
-[Vuepress (v2)](https://v2.vuepress.vuejs.org/) is the Static Site Generator (SSG) we use to build the asdf documentation site. It was chosen to replace [Docsify.js](https://docsify.js.org/) as we would like to support an HTML only fallback when users do not have JavaScript available or enabled. This was not possible with Docsify. Other than this, the feature-set is largely the same, with the focus on writing Markdown files with minimal configuration.
+[Vuepress (v2)](https://v2.vuepress.vuejs.org/) é o Static Site Generator (SSG) que usamos para construir o site de documentação do asdf. Foi escolhido para substituir [Docsify.js](https://docsify.js.org/), pois gostaríamos de oferecer suporte a um substituto somente HTML quando os usuários não tiverem JavaScript disponível ou ativado. Isso não era possível com o Docsify. Fora isso, o conjunto de recursos é basicamente o mesmo, com foco em escrever arquivos Markdown com configuração mínima.
 
-`package.json` contains the scripts required for development:
+`package.json` contém os scripts necessários para o desenvolvimento:
 
 @[code json{3-5}](../package.json)
 
-To start the local development server:
+ Para iniciar o servidor de desenvolvimento local:
 
 ```shell:no-line-numbers
 npm run dev
 ```
 
-Format the code before committing:
+Formate o código antes de confirmar:
 
 ```shell:no-line-numbers
 npm run format
 ```
 
-## Pull Requests, Releases & Conventional Commits
+## Pull Requests, Releases e Commits Convencionais
 
-`asdf` is using an automated release pipeline which relies on Conventional Commits in PR titles. Detailed documentation found in the [core contribution guide](./core.md).
+`asdf` está usando um pipeline de lançamento automatizado que depende de Commits Convencionais em títulos de PR. Documentação detalhada encontrada no [guia de contribuição principal](./core.md).
 
-When creating a PR for documentation changes please make the PR title with the Conventional Commit type `docs` in the format `docs: <description>`.
+Ao criar um PR para alterações na documentação, por favor, faça o título do PR com o tipo de Commit Convencional `docs` no formato `docs: <description>`.
 
 ## Vuepress
 
-Configuration of the site is contained within a few JavaScript files with JS Objects used to represent the config. They are:
+A configuração do site está contida em alguns arquivos JavaScript com objetos JS usados para representar a configuração. Eles estão:
 
-- `docs/.vuepress/config.js`: the root config file for the site. Read the [Vuepress documentation](https://v2.vuepress.vuejs.org/guide/configuration.html#config-file) for it's spec.
+- `docs/.vuepress/config.js`: o arquivo de configuração raiz do site. Leia a [documentação do Vuepress](https://v2.vuepress.vuejs.org/guide/configuration.html#config-file) para obter as especificações.
 
-To simplify the root config, the larger JS Objects representing the _navbar_ and _sidebar_ configuration have been extracted and separated by their locale. See both in:
+Para simplificar a configuração raiz, os objetos JS maiores que representam a configuração _navbar_ e _sidebar_ foram extraídos e separados por sua localidade. Veja os dois em:
 
 - `docs/.vuepress/navbar.js`
 - `docs/.vuepress/sidebar.js`
 
-With the official documentation for these configs living in the [Default Theme Reference](https://v2.vuepress.vuejs.org/reference/default-theme/config.html#locale-config).
+Com a documentação oficial para essas configurações vivendo na [Referência de tema padrão](https://v2.vuepress.vuejs.org/reference/default-theme/config.html#locale-config).
 
 ## I18n
 
-Vuepress has first-class support for internationalization. The
-root config `docs/.vuepress/config.js` defines the supported locales with their URL, title in the selection dropdown menu and navbar/sidebar configs references.
+Vuepress tem suporte de primeira classe para internacionalização. O root config `docs/.vuepress/config.js` define os locais suportados com sua URL, título no menu suspenso de seleção e referências de configurações navbar/sidebar.
 
-The navbar/sidebar configs are captured in the aforementioned config files, separated by locale and exported individually.
+As configurações da barra de navegação/barra lateral são capturadas nos arquivos de configuração mencionados acima, separadas por localidade e exportadas individualmente.
 
-The markdown content for each locale must fall under a folder with the same name as the keys for `locales` in the root config. That is:
+O conteúdo de markdown para cada localidade deve estar em uma pasta com o mesmo nome das chaves para `locales` na configuração raiz.  Isso é:
 
 ```js
 {
@@ -103,7 +102,7 @@ The markdown content for each locale must fall under a folder with the same name
 }
 ```
 
-`/pt-BR/` will require the same set of markdown files located under `docs/pt-BR/`, like so:
+`/pt-BR/` exigirá o mesmo conjunto de arquivos markdown localizados em `docs/pt-BR/`, assim:
 
 ```shell:no-line-numbers
 docs
@@ -118,4 +117,4 @@ docs
       └─ README.md
 ```
 
-The [official Vuepress i18n documentation](https://v2.vuepress.vuejs.org/guide/i18n.html#site-i18n-config) goes into more detail.
+A [documentação oficial do Vuepress i18n](https://v2.vuepress.vuejs.org/guide/i18n.html#site-i18n-config) entra em mais detalhes.

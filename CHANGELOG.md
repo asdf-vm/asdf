@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.10.0](https://www.github.com/asdf-vm/asdf/compare/v0.9.0...v0.10.0) (2022-04-14)
+
+
+### Features
+
+* case-insensitive filtering of unstable versions in `latest` ([#1139](https://www.github.com/asdf-vm/asdf/issues/1139)) ([e61e3d9](https://www.github.com/asdf-vm/asdf/commit/e61e3d9ade0d7bdfb4413184284038c50ba1e09c))
+* **latest:** adds the flag --all to the latest command ([#1096](https://www.github.com/asdf-vm/asdf/issues/1096)) ([f85fef5](https://www.github.com/asdf-vm/asdf/commit/f85fef533f249df5a9f58307d288f2f069351e88))
+* upgrade elvish to 0.17.0 ([#1159](https://www.github.com/asdf-vm/asdf/issues/1159)) ([824550e](https://www.github.com/asdf-vm/asdf/commit/824550ed2009c7e8c4c84afd7a01197d451c47bf))
+
+
+### Bug Fixes
+
+* Ban `ls` command ([#1141](https://www.github.com/asdf-vm/asdf/issues/1141)) ([87137e4](https://www.github.com/asdf-vm/asdf/commit/87137e41031f17b30acf12ee35925e689c84e2d8))
+* ban grep long flags ([#1117](https://www.github.com/asdf-vm/asdf/issues/1117)) ([6e4c39c](https://www.github.com/asdf-vm/asdf/commit/6e4c39c244a289a54f235cf15a29874fb8885927))
+* do not print `find` errors ([#1102](https://www.github.com/asdf-vm/asdf/issues/1102)) ([5992abb](https://www.github.com/asdf-vm/asdf/commit/5992abb09e6f5e0af690bf0e99619386187949db))
+* don't generate on error if backup file doesn't exists ([#1057](https://www.github.com/asdf-vm/asdf/issues/1057)) ([288468f](https://www.github.com/asdf-vm/asdf/commit/288468f93f6c5cb4e7cca1173d4ad73154d0d564))
+* **elvish:** prepend asdf paths to `$PATH` ([#1174](https://www.github.com/asdf-vm/asdf/issues/1174)) ([682b7a1](https://www.github.com/asdf-vm/asdf/commit/682b7a1d6dc1a35f7f8b0ddbab977e0a3dae2c9c))
+* latest --all correctly report plugins as missing ([#1118](https://www.github.com/asdf-vm/asdf/issues/1118)) ([aafe1e5](https://www.github.com/asdf-vm/asdf/commit/aafe1e5304c2d2a026831976c18faa6fb48d25bc))
+* local plugin in then clause too ([#1203](https://www.github.com/asdf-vm/asdf/issues/1203)) ([448f750](https://www.github.com/asdf-vm/asdf/commit/448f750891a4366f45d905b112ad20d4be66c496))
+* newline after error msg for ASDF_DIR ([#1113](https://www.github.com/asdf-vm/asdf/issues/1113)) ([ac2791e](https://www.github.com/asdf-vm/asdf/commit/ac2791e49f7fcdbeb420415d8ddcb5f17bcf296e))
+* Prevent unbound variable error with nounset in asdf.sh ([#1158](https://www.github.com/asdf-vm/asdf/issues/1158)) ([b7dd291](https://www.github.com/asdf-vm/asdf/commit/b7dd291c983af321af20550fa89bf1cfbc888aec))
+* remove comments from whole file instead of line by line for performance ([#1198](https://www.github.com/asdf-vm/asdf/issues/1198)) ([de6e22f](https://www.github.com/asdf-vm/asdf/commit/de6e22f909946f7d17047f4aeab41e581546b674))
+* shorthand grep options for alpine support ([#1106](https://www.github.com/asdf-vm/asdf/issues/1106)) ([234778a](https://www.github.com/asdf-vm/asdf/commit/234778a397f19c398d2f76a0321fef3273c9a086))
+
 ## [0.9.0](https://www.github.com/asdf-vm/asdf/compare/v0.8.1...v0.9.0) (2021-11-18)
 
 

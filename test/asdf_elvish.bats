@@ -4,12 +4,12 @@ load test_helpers
 
 setup() {
   cd $(dirname "$BATS_TEST_DIRNAME")
-  mkdir -p $HOME/.elvish/lib
-  cp ./asdf.elv $HOME/.elvish/lib/asdftest.elv
+  mkdir -p $HOME/.config/elvish/lib
+  cp ./asdf.elv $HOME/.config/elvish/lib/asdftest.elv
 }
 
 teardown() {
-  rm $HOME/.elvish/lib/asdftest.elv
+  rm $HOME/.config/elvish/lib/asdftest.elv
 }
 
 cleaned_path() {
@@ -19,8 +19,8 @@ cleaned_path() {
 @test "exports ASDF_DIR" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR
   ")
   [ "$?" -eq 0 ]
@@ -30,8 +30,8 @@ cleaned_path() {
 @test "retains ASDF_DIR" {
   output=$(elvish -norc -c "
     set-env ASDF_DIR "/path/to/asdf"
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR
   ")
   [ "$?" -eq 0 ]
@@ -41,8 +41,8 @@ cleaned_path() {
 @test "retains ASDF_DATA_DIR" {
   output=$(elvish -norc -c "
     set-env ASDF_DATA_DIR "/path/to/asdf-data"
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DATA_DIR
   ")
   [ "$?" -eq 0 ]
@@ -52,8 +52,8 @@ cleaned_path() {
 @test "adds asdf dirs to PATH" {
   result=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:PATH
   ")
   [ "$?" -eq 0 ]
@@ -65,8 +65,8 @@ cleaned_path() {
 @test "defines the _asdf namespace" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$_asdf:
   ")
   [ "$?" -eq 0 ]
@@ -76,8 +76,8 @@ cleaned_path() {
 @test "defines the asdf function" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$asdf~
   ")
   [ "$?" -eq 0 ]
@@ -88,8 +88,8 @@ cleaned_path() {
 @test "function calls asdf command" {
   result=$(elvish -norc -c "
     set-env ASDF_DIR $(pwd)
-    paths = [$(cleaned_path)]
-    use asdftest _asdf; fn asdf [@args]{_asdf:asdf \$@args}
+    set paths = [$(cleaned_path)]
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     asdf info
   ")
   [ "$?" -eq 0 ]

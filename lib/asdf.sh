@@ -13,7 +13,7 @@ asdf() {
     ;;
   *)
     # forward other commands to asdf script
-    command asdf "$command" "$@"
+    command asdf "$command" "$@" # asdf_allow: ' asdf '
     ;;
 
   esac

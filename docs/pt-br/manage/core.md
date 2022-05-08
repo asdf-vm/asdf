@@ -2,23 +2,23 @@
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-The core `asdf` command list is rather small, but can facilitate many workflows.
+A lista de comandos do núcleo `asdf` é bastante pequena, mas pode facilitar muitos fluxos de trabalho.
 
-## Installation & Setup
+ ## Instalação e configuração
 
-Covered in the [Getting Started](/pt-br/guide/getting-started.md) guide.
+Baseado no [Guia de Introdução](/pt-br/guide/getting-started.md).
 
-## Exec
+## Execute
 
 ```shell:no-line-numbers
 asdf exec <command> [args...]
 ```
 
-Executes the command shim for the current version.
+Executa o comando shim para a versão atual
 
 <!-- TODO: expand on this with example -->
 
-## Env
+## Variável de Ambiente
 
 ```shell:no-line-numbers
 asdf env <command> [util]
@@ -26,13 +26,13 @@ asdf env <command> [util]
 
 <!-- TODO: expand on this with example -->
 
-## Info
+## Informações
 
 ```shell:no-line-numbers
 asdf info
 ```
 
-A helper command to print the OS, Shell and `asdf` debug information. Share this when making a bug report.
+ Um comando auxiliar para imprimir as informações de depuração do SO, Shell e `asdf`. Compartilhe isso ao fazer um relatório de bug.
 
 ## Reshim
 
@@ -40,17 +40,17 @@ A helper command to print the OS, Shell and `asdf` debug information. Share this
 asdf reshim <name> <version>
 ```
 
-This recreates the shims for the current version of a package. By default, shims are created by plugins during installation of a tool. Some tools like the [npm CLI](https://docs.npmjs.com/cli/) allow global installation of executables, for example, installing [Yarn](https://yarnpkg.com/) via `npm install -g yarn`. Since this executable was not installed via the plugin lifecycle, no shim exists for it yet. `asdf reshim nodejs <version>` will force recalculation of shims for any new executables, like `yarn`, for `<version>` of `nodejs` .
+Isso recria os shims para a versão atual de um pacote. Por padrão, os calços são criados por plugins durante a instalação de uma ferramenta. Algumas ferramentas como a [npm CLI](https://docs.npmjs.com/cli/) permitem a instalação global de executáveis, por exemplo, instalando [Yarn](https://yarnpkg.com/) via `npm install -g fio`.  Como este executável não foi instalado por meio do ciclo de vida do plug-in, ainda não existe shim para ele. `asdf reshim nodejs <version>` forçará o recálculo de shims para quaisquer novos executáveis, como `yarn`, para `<version>` de `nodejs`.
 
-## Shim-versions
+## Versionamento do Shim
 
 ```shell:no-line-numbers
 asdf shim-versions <command>
 ```
 
-Lists the plugins and versions that provide shims for a command.
+Lista os plugins e versões que fornecem shims para um comando.
 
-As an example, [Node.js](https://nodejs.org/) ships with two executables, `node` and `npm`. When many versions of the tools are installed with [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) `shim-versions` can return:
+Como exemplo, o [Node.js](https://nodejs.org/) vem com dois executáveis, `node` e `npm`. Quando muitas versões das ferramentas são instaladas com [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) `shim-versions` pode retornar:
 
 ```shell:no-line-numbers
 ➜ asdf shim-versions node
@@ -68,13 +68,13 @@ nodejs 16.5.0
 
 ## Atualizar
 
-`asdf` has a built in command to update which relies on Git (our recommended installation method). If you installed using a different method you should follow the steps for that method:
+`asdf` tem um comando embutido para atualização que depende do Git (nosso método de instalação recomendado). Se você instalou usando um método diferente, siga as etapas para esse método:
 
-| Method         | Latest Stable Release                                                                                                                          | Latest commit on `master`  |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| asdf (via Git) | `asdf update`                                                                                                                                  | `asdf update --head`       |
+| Method         | Latest Stable Release                                                                                                                          | Latest commit on `master`        |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| asdf (via Git) | `asdf update`                                                                                                                                  | `asdf update --head`             |
 | Homebrew       | `brew upgrade asdf`                                                                                                                            | `brew upgrade asdf --fetch-HEAD` |
-| Pacman         | Obter manualmente um novo `PKGBUILD` e <br/> reconstruir ou usar suas preferências de [AUR](https://wiki.archlinux.org/index.php/AUR_helpers). |                            |
+| Pacman         | Obter manualmente um novo `PKGBUILD` e <br/> reconstruir ou usar suas preferências de [AUR](https://wiki.archlinux.org/index.php/AUR_helpers). |                                  |
 
 ## Desinstalar
 
@@ -261,17 +261,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Git
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
@@ -290,17 +290,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Homebrew
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
@@ -319,17 +319,17 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 ::: details Elvish & Pacman
 
-1. Em seu `~/.elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
+1. Em seu `~/.config/elvish/rc.elv` remova as linhas que importa o módulo `asdf`:
 
 ```shell
-use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}
-edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
+use asdf _asdf; var asdf~ = $_asdf:asdf~
+set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 ```
 
 e desinstale o módulo `asdf` com este comando:
 
 ```shell:no-line-numbers
-rm -f ~/.elvish/lib/asdf.elv
+rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:

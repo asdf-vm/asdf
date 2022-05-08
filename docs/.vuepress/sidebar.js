@@ -89,10 +89,6 @@ const en = {
           link: "https://github.com/asdf-vm/asdf/issues"
         },
         {
-          text: "GitHub Discussions",
-          link: "https://github.com/asdf-vm/asdf/discussions"
-        },
-        {
           text: "StackOverflow Tag",
           link: "https://stackoverflow.com/questions/tagged/asdf-vm"
         }
@@ -199,10 +195,6 @@ const pt_br = {
           link: "https://github.com/asdf-vm/asdf/issues"
         },
         {
-          text: "GitHub Discussions",
-          link: "https://github.com/asdf-vm/asdf/discussions"
-        },
-        {
           text: "StackOverflow Tag",
           link: "https://stackoverflow.com/questions/tagged/asdf-vm"
         }
@@ -215,4 +207,114 @@ const pt_br = {
   ]
 };
 
-module.exports = { en, pt_br };
+const zh_hans = {
+  "/zh-hans/guide/": [
+    "/zh-hans/guide/introduction.md",
+    "/zh-hans/guide/getting-started.md"
+  ],
+  "/zh-hans/manage/": [
+    {
+      text: "管理",
+      children: [
+        "/zh-hans/manage/core.md",
+        "/zh-hans/manage/plugins.md",
+        "/zh-hans/manage/versions.md",
+        "/zh-hans/manage/configuration.md",
+        "/zh-hans/manage/commands.md",
+        {
+          text: "更新日志",
+          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md"
+        }
+      ]
+    }
+  ],
+  "/zh-hans/plugins/": [
+    {
+      text: "成为作者",
+      children: [
+        "/zh-hans/plugins/create.md",
+        {
+          text: "GitHub Plugin 模板",
+          link: "https://github.com/asdf-vm/asdf-plugin-template"
+        }
+      ]
+    },
+    {
+      text: "官方插件",
+      children: [
+        {
+          text: "Elixir",
+          link: "https://github.com/asdf-vm/asdf-elixir"
+        },
+        {
+          text: "Erlang",
+          link: "https://github.com/asdf-vm/asdf-erlang"
+        },
+        {
+          text: "Node.js",
+          link: "https://github.com/asdf-vm/asdf-nodejs"
+        },
+        {
+          text: "Ruby",
+          link: "https://github.com/asdf-vm/asdf-ruby"
+        }
+      ]
+    },
+    {
+      text: "社区插件",
+      children: [
+        {
+          text: "asdf-community",
+          link: "https://github.com/asdf-community/"
+        },
+        {
+          text: "GitHub 主题搜索",
+          link: "https://github.com/topics/asdf-plugin"
+        }
+      ]
+    },
+    {
+      text: "参考",
+      children: [
+        {
+          text: "插件缩写索引",
+          link: "https://github.com/asdf-vm/asdf-plugins"
+        }
+      ]
+    }
+  ],
+  "/zh-hans/contribute/": [
+    {
+      text: "如何贡献",
+      children: [
+        "/zh-hans/contribute/core.md",
+        "/zh-hans/contribute/documentation.md",
+        "/zh-hans/contribute/first-party-plugins.md",
+        "/zh-hans/contribute/github-actions.md"
+      ]
+    }
+  ],
+  "/zh-hans/learn-more/": [
+    {
+      text: "常见问题",
+      children: [
+        "/zh-hans/learn-more/faq.md",
+
+        {
+          text: "GitHub Issues",
+          link: "https://github.com/asdf-vm/asdf/issues"
+        },
+        {
+          text: "StackOverflow Tag",
+          link: "https://stackoverflow.com/questions/tagged/asdf-vm"
+        }
+      ]
+    },
+    {
+      text: "资源",
+      children: ["/zh-hans/learn-more/thanks.md"]
+    }
+  ]
+};
+
+module.exports = { en, pt_br, zh_hans };

@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 # Output from this command must be executable shell code
 shell_command() {
@@ -36,7 +38,7 @@ shell_command() {
     exit 0
   fi
   if [ "$version" = "latest" ]; then
-    version=$(asdf latest "$plugin")
+    version=$(latest_command "$plugin")
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
     version_not_installed_text "$plugin" "$version" 1>&2
