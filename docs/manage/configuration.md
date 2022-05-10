@@ -99,6 +99,10 @@ Configure the duration since the last asdf plugin repository sync to the next. C
 
 ### `asdf_repository_url`
 
+::: warning Note
+Custom short-name plugin repositories are not supported
+:::
+
 Configure the url of the short-name repository. Commands `asdf plugin add <name>` or `asdf plugin list all` will trigger a clone of the repository, if a value is set.
 
 | Options                                                                                                 | Description                                                  |
