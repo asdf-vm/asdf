@@ -57,6 +57,7 @@ legacy_version_file = no
 use_release_candidates = no
 always_keep_download = no
 plugin_repository_last_check_duration = 60
+asdf_repository_url = https://github.com/asdf-vm/asdf-plugins.git
 ```
 
 ### `legacy_version_file`
@@ -95,6 +96,16 @@ Configure the duration since the last asdf plugin repository sync to the next. C
 | integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
 | `0`                                                                                                     | Sync on each trigger event                                   |
 | `never`                                                                                                 | Never sync                                                   |
+
+### `asdf_repository_url`
+
+Configure the url of the short-name repository. Commands `asdf plugin add <name>` or `asdf plugin list all` will trigger a clone of the repository, if a value is set.
+
+| Options                                                                                                 | Description                                                  |
+| :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
+| Git URL                                                                                                 | Clone this repository if installing plugins without URL      |
+| `https://github.com/asdf-vm/asdf-plugins.git`                                                           | Default short-name plugin repository                         |
+| ``                                                                                                      | Disable short-name plugin repository.                        |
 
 ## Environment Variables
 
