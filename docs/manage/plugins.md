@@ -75,7 +75,7 @@ Removing a plugin will remove all installations of the tool made with the plugin
 ## Syncing the Short-name Repository
 
 ::: tip Recommendation
-The short-name repo can be disabled by removing `asdf_repository_url` from the configuration files.
+The short-name repo can be disabled by removing `asdf_repository_url` from the default configuration file.
 :::
 
 The short-name repo is synced to your local machine and periodically refreshed. This period is determined by the following method:

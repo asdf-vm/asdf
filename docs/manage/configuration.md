@@ -103,8 +103,7 @@ Configure the url of the short-name repository. Commands `asdf plugin add <name>
 
 | Options                                                                                                 | Description                                                  |
 | :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
-| Git URL                                                                                                 | Clone this repository if installing plugins without URL      |
-| `https://github.com/asdf-vm/asdf-plugins.git`                                                           | Default short-name plugin repository                         |
+| Git URL of a short-name repository                                                                      | Clone this repository if installing plugins without URL      |
 | ``                                                                                                      | Disable short-name plugin repository.                        |
 
 ## Environment Variables
