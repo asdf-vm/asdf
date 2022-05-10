@@ -41,6 +41,31 @@ teardown() {
   [ "$output" = "elixir" ]
 }
 
+@test "plugin_add command with no URL specified adds a plugin using repo from config" {
+  ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
+  cat > $ASDF_CONFIG_FILE <<-EOM
+asdf_repository_url = "https://github.com/asdf-vm/asdf-plugins.git"
+EOM
+
+  run asdf plugin add "elixir"
+  [ "$status" -eq 0 ]
+
+  run asdf plugin-list
+  # whitespace between 'elixir' and url is from printf %-15s %s format
+  [ "$output" = "elixir" ]
+}
+
+@test "plugin_add command with no URL specified fails to add a plugin when no default repo" {
+  ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
+  cat > $ASDF_CONFIG_FILE <<-EOM
+# no asdf_repository_url for the tests
+EOM
+
+  run asdf plugin add "elixir"
+  [ "$status" -eq 1 ]
+  [ "$output" = "No short-name plugin repository configured" ]
+}
+
 @test "plugin_add command with URL specified adds a plugin using repo" {
   install_mock_plugin_repo "dummy"
 

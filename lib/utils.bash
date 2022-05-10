@@ -32,10 +32,6 @@ asdf_dir() {
   printf "%s\\n" "$ASDF_DIR"
 }
 
-asdf_repository_url() {
-  printf "https://github.com/asdf-vm/asdf-plugins.git\\n"
-}
-
 asdf_data_dir() {
   local data_dir
 
@@ -404,7 +400,11 @@ initialize_or_update_repository() {
   local repository_url
   local repository_path
 
-  repository_url=$(asdf_repository_url)
+  repository_url="$(get_asdf_config_value "asdf_repository_url")"
+  if [ ! -n "$repository_url" ]; then
+    printf "No short-name plugin repository in configuration\\n" >&2
+    exit 1
+  fi
   repository_path=$(asdf_data_dir)/repository
 
   if [ ! -d "$repository_path" ]; then
