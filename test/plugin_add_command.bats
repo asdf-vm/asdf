@@ -42,9 +42,12 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo from config" {
-  ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
+  export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
+  echo "" > $ASDF_CONFIG_DEFAULT_FILE
+
+  export ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
   cat > $ASDF_CONFIG_FILE <<-EOM
-asdf_repository_url = "https://github.com/asdf-vm/asdf-plugins.git"
+asdf_repository_url = https://github.com/asdf-vm/asdf-plugins.git
 EOM
 
   run asdf plugin add "elixir"
@@ -56,14 +59,15 @@ EOM
 }
 
 @test "plugin_add command with no URL specified fails to add a plugin when no default repo" {
-  ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
-  cat > $ASDF_CONFIG_FILE <<-EOM
-# no asdf_repository_url for the tests
-EOM
+  export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
+  echo "" > $ASDF_CONFIG_DEFAULT_FILE
+
+  export ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
+  echo "" > $ASDF_CONFIG_FILE
 
   run asdf plugin add "elixir"
   [ "$status" -eq 1 ]
-  [ "$output" = "No short-name plugin repository configured" ]
+  [ "$output" = "No short-name plugin repository in configuration" ]
 }
 
 @test "plugin_add command with URL specified adds a plugin using repo" {
