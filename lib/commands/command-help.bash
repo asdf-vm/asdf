@@ -18,7 +18,7 @@ EOF
 asdf_extension_cmds() {
   local plugins_path plugin_path ext_cmd_path ext_cmds plugin
   plugins_path="$(get_plugin_path)"
-  for plugin_path in "$plugins_path"/*; do
+  for plugin_path in "$plugins_path"/*/; do
     plugin="$(basename "$plugin_path")"
     ext_cmd_path="$plugin_path/lib/commands"
     ext_cmds="$(find "$ext_cmd_path" -name "command*.bash" 2>/dev/null)"

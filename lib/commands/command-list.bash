@@ -9,7 +9,7 @@ list_command() {
     plugins_path=$(get_plugin_path)
 
     if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
-      for plugin_path in "$plugins_path"/*; do
+      for plugin_path in "$plugins_path"/*/; do
         plugin_name=$(basename "$plugin_path")
         printf "%s\\n" "$plugin_name"
         display_installed_versions "$plugin_name" "$query"

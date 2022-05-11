@@ -16,8 +16,8 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list
-  [[ "$output" == "$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")" ]]
+  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
+  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
   [ "$status" -eq 0 ]
 }
 
@@ -28,10 +28,10 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install tummy 2.0.0
   run asdf list
-  [[ "$output" == "$(echo -e "dummy\n  1.0.0")"* ]]
+  [[ "$output" == *"$(echo -e "dummy\n  1.0.0")"* ]]
   [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
   [[ "$output" == *"$(echo -e "mummy\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")" ]]
+  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")"* ]]
   [ "$status" -eq 0 ]
 }
 
