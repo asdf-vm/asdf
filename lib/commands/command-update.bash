@@ -2,7 +2,7 @@
 set -o nounset
 
 update_command() {
-  local update_to_head=${1:-}
+  local update_to_head="${1:-}"
 
   (
     cd "$(asdf_dir)" || exit 1
@@ -17,7 +17,7 @@ update_command() {
 }
 
 do_update() {
-  local update_to_head=${1:-}
+  local update_to_head="${1:-}"
 
   if [ "$update_to_head" = "--head" ]; then
     # Update to latest on the master branch

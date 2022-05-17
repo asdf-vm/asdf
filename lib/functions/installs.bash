@@ -1,18 +1,18 @@
 handle_failure() {
-  local install_path="$1"
+  local install_path="${1:-}"
   rm -rf "$install_path"
   exit 1
 }
 
 handle_cancel() {
-  local install_path="$1"
+  local install_path="${1:-}"
   printf "\\nreceived sigint, cleaning up"
   handle_failure "$install_path"
 }
 
 install_command() {
-  local plugin_name=$1
-  local full_version=$2
+  local plugin_name="${1:-}"
+  local full_version="${2:-}"
   local extra_args="${*:3}"
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
@@ -37,7 +37,7 @@ get_concurrency() {
 }
 
 install_one_local_tool() {
-  local plugin_name=$1
+  local plugin_name="${1:-}"
   local search_path
   search_path=$(pwd)
 
@@ -131,9 +131,9 @@ install_local_tool_versions() {
 }
 
 install_tool_version() {
-  local plugin_name=$1
-  local full_version=$2
-  local flags=$3
+  local plugin_name="${1:-}"
+  local full_version="${2:-}"
+  local flags="${3:-}"
   local keep_download
   local plugin_path
 

@@ -1,4 +1,5 @@
 # -*- sh -*-
+
 set -o nounset
 
 which_command() {

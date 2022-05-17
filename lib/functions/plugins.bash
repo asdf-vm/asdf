@@ -6,7 +6,7 @@ plugin_list_command() {
   local show_ref
 
   while [ -n "$*" ]; do
-    case "$1" in
+    case "${1:-}" in
     "--urls")
       show_repo=true
       shift
@@ -109,8 +109,8 @@ plugin_update_command() {
     exit 1
   fi
 
-  local plugin_name="$1"
-  local gitref="${2}"
+  local plugin_name="${1:-}"
+  local gitref="${2:-}"
   local plugins=
 
   if [ "$plugin_name" = "--all" ]; then
@@ -130,10 +130,10 @@ plugin_update_command() {
 }
 
 update_plugin() {
-  local plugin_name=$1
-  local plugin_path=$2
-  plugin_remote_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')
-  local gitref=${3:-${plugin_remote_default_branch}}
+  local plugin_name="${1:-}"
+  local plugin_path="${2:-}"
+  plugin_remote_default_branch="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')"
+  local gitref="${3:-${plugin_remote_default_branch}}"
   logfile=$(mktemp)
 
   local common_git_options=(--git-dir "$plugin_path/.git" --work-tree "$plugin_path")

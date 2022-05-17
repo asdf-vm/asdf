@@ -5,10 +5,10 @@ set -o nounset
 . "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
 
 uninstall_command() {
-  local plugin_name=${1:-}
-  local full_version=$2
+  local plugin_name="${1:-}"
+  local full_version="${2:-}"
   local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
+  plugin_path="$(get_plugin_path "$plugin_name")"
 
   check_if_plugin_exists "$plugin_name"
 
@@ -22,7 +22,7 @@ uninstall_command() {
   fi
 
   local install_path
-  install_path=$(get_install_path "$plugin_name" "$install_type" "$version")
+  install_path="$(get_install_path "$plugin_name" "$install_type" "$version")"
 
   if [ ! -d "$install_path" ]; then
     display_error "No such version"
@@ -47,8 +47,8 @@ uninstall_command() {
 }
 
 remove_shims_for_version() {
-  local plugin_name=${1:-}
-  local full_version=$2
+  local plugin_name="${1:-}"
+  local full_version="${2:-}"
   for shim_path in $(plugin_shims "$plugin_name" "$full_version"); do
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_path"
   done

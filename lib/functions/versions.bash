@@ -1,6 +1,6 @@
 version_command() {
-  local cmd=$1
-  local plugin_name=$2
+  local cmd="${1:-}"
+  local plugin_name="${2:-}"
 
   if [ "$#" -lt "3" ]; then
     if [ "$cmd" = "global" ]; then
@@ -65,17 +65,17 @@ version_command() {
 }
 
 list_all_command() {
-  local plugin_name=$1
-  local query=$2
+  local plugin_name="${1:-}"
+  local query="${2:-}"
   local plugin_path
   local std_out_file
   local std_err_file
   local output
-  plugin_path=$(get_plugin_path "$plugin_name")
+  plugin_path="$(get_plugin_path "$plugin_name")"
   check_if_plugin_exists "$plugin_name"
 
   local temp_dir
-  temp_dir=${TMPDIR:-/tmp}
+  temp_dir="${TMPDIR:-/tmp}"
 
   # Capture return code to allow error handling
   std_out_file="$(mktemp "$temp_dir/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
@@ -117,8 +117,8 @@ list_all_command() {
 latest_command() {
   DEFAULT_QUERY="[0-9]"
 
-  local plugin_name=$1
-  local query=$2
+  local plugin_name="${1:-}"
+  local query="${2:-}"
   local plugin_path
 
   if [ "$plugin_name" == "--all" ]; then
