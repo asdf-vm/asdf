@@ -1,9 +1,9 @@
 name: "Docs Version Update"
 
 on:
-  create:
+  push:
     tags:
-      - "*"
+      - '*'
 
 jobs:
   bump-version-in-docs:
