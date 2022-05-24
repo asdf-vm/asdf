@@ -88,6 +88,12 @@ write_shim_script() {
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
+  # Temporary fix for #1231
+  if ! grep '^exec \${ASDF_DIR}' "$shim_path" >/dev/null; then
+    sed -i.bak -e 's/^exec .*\/bin\/asdf /exec ${ASDF_DIR}\/bin\/asdf /' "$shim_path"
+    rm -rf "$shim_path".bak
+  fi
+
   if [ -f "$shim_path" ]; then
     if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
       sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
@@ -97,7 +103,7 @@ write_shim_script() {
     cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
 # asdf-plugin: ${plugin_name} ${version}
-exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
+exec \${ASDF_DIR}/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
   fi
 
