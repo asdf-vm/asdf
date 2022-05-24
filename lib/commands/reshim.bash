@@ -89,7 +89,9 @@ write_shim_script() {
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
   # Temporary fix for #1231
+  # shellcheck disable=SC2016
   if ! grep '^exec \${ASDF_DIR}' "$shim_path" >/dev/null; then
+    # shellcheck disable=SC2016
     sed -i.bak -e 's/^exec .*\/bin\/asdf /exec ${ASDF_DIR}\/bin\/asdf /' "$shim_path"
     rm -rf "$shim_path".bak
   fi
