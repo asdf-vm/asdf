@@ -249,21 +249,41 @@ teardown() {
   [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }
 
-@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  run asdf global "dummy" "1.1.0"
+@test "local should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat .tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+}
+
+@test "local should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
+  echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  run asdf local "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat .tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+}
+
+
+@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
 @test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
   echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
