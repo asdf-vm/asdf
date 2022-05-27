@@ -14,13 +14,17 @@ version_command() {
   shift 2
   local versions=("$@")
 
+  local file_name
   local file
+
+  file_name="$(version_file_name)"
+
   if [ "$cmd" = "global" ]; then
-    file=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-$HOME/.tool-versions}
+    file="$HOME/$file_name"
   elif [ "$cmd" = "local-tree" ]; then
     file=$(find_tool_versions)
   else # cmd = local
-    file="$(pwd)/.tool-versions"
+    file="$(pwd)/$file_name"
   fi
 
   if [ -L "$file" ]; then
