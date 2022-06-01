@@ -1,6 +1,6 @@
 # asdf [![Lint](https://github.com/asdf-vm/asdf/actions/workflows/lint.yml/badge.svg)](https://github.com/asdf-vm/asdf/actions/workflows/lint.yml) [![Tests](https://github.com/asdf-vm/asdf/actions/workflows/tests.yml/badge.svg)](https://github.com/asdf-vm/asdf/actions/workflows/tests.yml)
 
-**Manage multiple runtime versions with a single CLI tool, extendable via plugins** - [docs at asdf-vm.com](https://asdf-vm.github.io/asdf/)
+**Manage multiple runtime versions with a single CLI tool, extendable via plugins** - [docs at asdf-vm.com](https://asdf-vm.com/)
 
 asdf is a CLI tool that can manage multiple language runtime versions on a per-project basis. It is like `gvm`, `nvm`, `rbenv` & `pyenv` (and more) all in one! Simply install your language's plugin!
 
@@ -17,21 +17,21 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 
 ## Documentation
 
-[Please head over to the documentation site for more information](https://asdf-vm.github.io/asdf/)!
+[Please head over to the documentation site for more information](https://asdf-vm.com/)!
 
-- [Getting Started](https://asdf-vm.github.io/asdf/guide/getting-started.html)
-- [All Commands](https://asdf-vm.github.io/asdf/manage/commands.html)
+- [Getting Started](https://asdf-vm.com/guide/getting-started.html)
+- [All Commands](https://asdf-vm.com/manage/commands.html)
 - [All Plugins](https://github.com/asdf-vm/asdf-plugins)
-- [Create a Plugin](https://asdf-vm.github.io/asdf/plugins/create.html) with our [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template)
+- [Create a Plugin](https://asdf-vm.com/plugins/create.html) with our [asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template)
 - [asdf GitHub Actions](https://github.com/asdf-vm/actions)
 
 ## Contributing
 
-See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](https://asdf-vm.github.io/asdf/#/contributing-core-asdf).
+See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](http://asdf-vm.com/contribute/core.html#initial-setup).
 
 ## Community & Questions
 
-- [FAQ](https://asdf-vm.github.io/asdf/learn-more/faq.html)
+- [FAQ](https://asdf-vm.com/learn-more/faq.html)
 - [![GitHub Issues](https://icongr.am/simple/github.svg?color=808080&size=16) GitHub Issues](https://github.com/asdf-vm/asdf/issues): report a bug or raise a feature request to the `asdf` core team
 - [![StackOverflow Tag](https://icongr.am/fontawesome/stack-overflow.svg?size=16&color=808080) StackOverflow Tag](https://stackoverflow.com/questions/tagged/asdf-vm): see existing Q&A for `asdf`. Some of the core team watch this tag in addition to our helpful community
 
