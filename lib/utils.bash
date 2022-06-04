@@ -401,7 +401,7 @@ initialize_or_update_repository() {
   local repository_path
 
   repository_url="$(get_asdf_config_value "asdf_repository_url")"
-  if [ ! -z "$repository_url" ]; then
+  if [ -z "$repository_url" ]; then
     printf "No short-name plugin repository in configuration\\n" >&2
     exit 1
   fi
