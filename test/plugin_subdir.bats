@@ -4,6 +4,7 @@ load test_helpers
 
 setup() {
   setup_asdf_dir
+  echo 'use_asdf_plugin_configuration = yes' >$HOME/.asdfrc
 }
 
 teardown() {

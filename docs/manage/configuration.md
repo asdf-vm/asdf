@@ -57,6 +57,7 @@ legacy_version_file = no
 use_release_candidates = no
 always_keep_download = no
 plugin_repository_last_check_duration = 60
+use_asdf_plugin_configuration = no
 ```
 
 ### `legacy_version_file`
@@ -95,6 +96,18 @@ Configure the duration since the last asdf plugin repository sync to the next. C
 | integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
 | `0`                                                                                                     | Sync on each trigger event                                   |
 | `never`                                                                                                 | Never sync                                                   |
+
+### `use_asdf_plugin_configuration`
+
+Settings to use the configuration file `.asdf-plugin` provided by the plugin.
+
+When using a plugin that requires this setting, set to yes.
+
+| Options                                                    | Description                                                            |
+| :--------------------------------------------------------- |:-----------------------------------------------------------------------|
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Do not use the .asdf-plugin configuration file provided by the plugin. |
+| `yes`                                                      | Use the configuration file .asdf-plugin provided by the plugin.        |
+
 
 ## Environment Variables
 

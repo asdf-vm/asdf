@@ -309,6 +309,14 @@ Add an `.asdf-plugin` file to your plugin root directory and asdf will use the s
 plugin_directory =
 ```
 
+To enable this, add the following to your `asdf` configuration file `$HOME/.asdfrc`:
+
+```
+use_asdf_plugin_configuration = yes
+```
+
+See the [configuration](/manage/configuration.md) reference page for more config options.
+
 ### `plugin_directory`
 
 If you want to place plugin scripts (e.g. bin, lib) in a subdirectory, specify a path relative to the repository root.
