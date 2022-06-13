@@ -197,9 +197,8 @@ $ asdf foo bat baz # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/co
 Plugin authors can use this feature to provide utilities related to their tools,
 or even create plugins that are just new command extensions for asdf itself.
 
-When invoked, if extension commands do not have their executable-bit set, they will be
-sourced as bash scripts, having all of the functions from `$ASDF_DIR/lib/utils.bash` available.
-Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
+When invoked, if extension commands do not have their executable-bit set they will be
+sourced as bash scripts. Also, the `$ASDF_CMD_FILE` resolves to the full path of the file being sourced.
 If the executable bit is set, they are just executed and replace the asdf execution.
 
 A good example of this feature is for plugins like [`haxe`](https://github.com/asdf-community/asdf-haxe)
