@@ -46,6 +46,8 @@ plugin_current_command() {
 current_command() {
   local terminal_format="%s\t%s\t%s\\n"
   local exit_status=0
+  local verbose
+  local tsv
   local all_plugins
   all_plugins=$(plugin_list_command)
   local plugin
@@ -53,13 +55,33 @@ current_command() {
   declare -A max_widths
   declare -A widths
 
+  while [ -n "$*" ]; do
+    case "$1" in
+    "--verbose")
+      verbose=true
+      shift
+      ;;
+    "--tsv")
+      tsv=true
+      verbose=true
+      shift
+      ;;
+    *)
+      shift
+      ;;
+    esac
+  done
+
+
   # Set initial column widths to max the terminal can support
   local terminal_width
   terminal_width=$(stty size | cut -d ' ' -f 2)
+  
   # reset if less than 80 cols, likely reading the wrong device
   if [ "$terminal_width" -lt 80 ]; then
     terminal_width=80
   fi
+
   # leave room for spaces
   terminal_width=$((terminal_width - 3))
 
@@ -69,6 +91,7 @@ current_command() {
 
   widths[name]=10
   widths[version]=10
+  widths[path]=20
 
   # disable this until we release headings across the board
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
@@ -91,12 +114,17 @@ current_command() {
     plugin_name=$(cut -f 1 <<<"${collected_currents[$plugin]}")
     local plugin_version
     plugin_version=$(cut -f 2 <<<"${collected_currents[$plugin]}")
+    local plugin_path
+    plugin_path=$(cut -f 3 <<<"${collected_currents[$plugin]}")
 
     if [ "${widths[name]}" -lt ${#plugin_name} ]; then
       widths[name]=${#plugin_name}
     fi
     if [ "${widths[version]}" -lt ${#plugin_version} ]; then
       widths[version]=${#plugin_version}
+    fi
+    if [ "${widths[path]}" -lt ${#plugin_path} ]; then
+      widths[path]=${#plugin_path}
     fi
   done
 
@@ -111,7 +139,19 @@ current_command() {
     max_widths[version]=${widths[version]}
   fi
 
-  terminal_format="%-${widths[name]}s %-${widths[version]}s %-s\\n"
+  
+  # If verbose flag was passed, skip calculating widths so we always print everything
+  if [ -n "$verbose" ]; then
+    max_widths[name]=${widths[name]}
+    max_widths[version]=${widths[version]}
+    max_widths[path]=${widths[path]}
+  fi
+
+  # If tsv flag was passed, use tab delimited fields instead of variable spaces
+  # tsv implies verbose
+  if [ -z "$tsv" ]; then
+    terminal_format="%-${widths[name]}s %-${widths[version]}s %-s\\n"
+  fi
 
   # If we're still exceeding the max width for a column, truncate it with three dots
   for plugin in ${all_plugins[@]}; do
