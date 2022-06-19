@@ -30,11 +30,11 @@ plugin_current_command() {
 
   if [ -n "$version_not_installed" ]; then
     description="Not installed. Run \"asdf install $plugin $version\""
-    printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
+    printf "$terminal_format" "$plugin" "$version" "$description"
     return 1
   elif [ -z "$full_version" ]; then
     description="No version is set. Run \"asdf <global|shell|local> $plugin <version>\""
-    printf "$terminal_format" "$plugin" "______" "$description" 1>&2
+    printf "$terminal_format" "$plugin" "______" "$description"
     return 126
   else
     description="$version_file_path"
@@ -44,12 +44,12 @@ plugin_current_command() {
 
 # shellcheck disable=SC2059
 current_command() {
-  local terminal_format="%s %s %s\\n"
+  local terminal_format="%s\t%s\t%s\\n"
   local exit_status=0
   local plugin
   declare -A collected_currents
   declare -A max_widths
-  declare -A min_widths
+  declare -A widths
 
   # Set initial column widths to max the terminal can support
   local terminal_width
@@ -61,61 +61,69 @@ current_command() {
   # leave room for spaces
   terminal_width=$((terminal_width - 3))
 
-  # Integer divison, but floors/truncates so we should have a couple characters left over instead of running to the next line
   max_widths[name]=$((terminal_width / 4))
   max_widths[version]=$((terminal_width / 4))
   max_widths[path]=$((terminal_width * 2 / 4))
 
-  min_widths[name]=10
-  min_widths[version]=10
-  min_widths[path]=20
+  widths[name]=10
+  widths[version]=10
 
   # disable this until we release headings across the board
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
+
   if [ $# -eq 0 ]; then
     # shellcheck disable=SC2119
     for plugin in $(plugin_list_command); do
       collected_currents[$plugin]=$(plugin_current_command "$plugin" "$terminal_format")
-
-      local plugin_name
-      plugin_name=$(cut -d ' ' -f 1 <<<"${collected_currents[$plugin]}")
-      local plugin_version
-      plugin_version=$(cut -d ' ' -f 2 <<<"${collected_currents[$plugin]}")
-      local plugin_path
-      plugin_path=$(cut -d ' ' -f 3 <<<"${collected_currents[$plugin]}")
-
-      if [ "${min_widths[name]}" -lt ${#plugin_name} ]; then
-        # printf "${plugin_name} has a long name!\\n"
-        min_widths[name]=${#plugin_name}
-      fi
-      if [ "${min_widths[version]}" -lt ${#plugin_version} ]; then
-        # printf "${plugin_name} has a long version!\\n"
-        min_widths[version]=${#plugin_version}
-      fi
-      if [ "${min_widths[path]}" -lt ${#plugin_path} ]; then
-        # printf "${plugin_name} has a long path!\\n"
-        min_widths[path]=${#plugin_path}
-      fi
     done
-
-    # make first 2 cols equal size, make second as large as it needs to if there's room?
-    terminal_format="%-${min_widths[name]}.${max_widths[name]}s  %-${min_widths[version]}.${max_widths[version]}s  %-${min_widths[path]}.${max_widths[path]}s\\n"
-
-    for plugin in "${!collected_currents[@]}"; do
-      local plugin_name
-      plugin_name=$(cut -d ' ' -f 1 <<<"${collected_currents[$plugin]}")
-      local plugin_version
-      plugin_version=$(cut -d ' ' -f 2 <<<"${collected_currents[$plugin]}")
-      local plugin_path
-      plugin_path=$(cut -d ' ' -f 3 <<<"${collected_currents[$plugin]}")
-      printf "$terminal_format" "$plugin_name" "$plugin_version" "${plugin_path}"
-    done
-
   else
     plugin=$1
-    plugin_current_command "$plugin" "$terminal_format"
+    collected_currents[$plugin]=$(plugin_current_command "$plugin" "$terminal_format")
     exit_status="$?"
   fi
+
+  # Set column widths/precision
+  # This ensures names/versions are aligned and take up minimal space
+  for plugin in "${!collected_currents[@]}"; do
+    local plugin_name
+    plugin_name=$(cut -f 1 <<<"${collected_currents[$plugin]}")
+    local plugin_version
+    plugin_version=$(cut -f 2 <<<"${collected_currents[$plugin]}")
+
+    if [ "${widths[name]}" -lt ${#plugin_name} ]; then
+      widths[name]=${#plugin_name}
+    fi
+    if [ "${widths[version]}" -lt ${#plugin_version} ]; then
+      widths[version]=${#plugin_version}
+    fi
+  done
+
+  # Re-allocate width to path if possible
+  # This helps ensure we see the full error if a plugin/version is not installed
+  if [ "${widths[name]}" -lt "${max_widths[name]}" ]; then
+    max_widths[path]=$((max_widths[path] + max_widths[name] - widths[name]))
+    max_widths[name]=${widths[name]}
+  fi
+  if [ "${widths[version]}" -lt "${max_widths[version]}" ]; then
+    max_widths[path]=$((max_widths[path] + max_widths[version] - widths[version]))
+    max_widths[version]=${widths[version]}
+  fi
+
+  terminal_format="%-${widths[name]}s %-${widths[version]}s %-s\\n"
+
+  # If we're still exceeding the max width for a column, truncate it with three dots
+  for plugin in "${!collected_currents[@]}"; do
+    if [[ -n ${collected_currents[$plugin]} ]]; then
+      local plugin_name
+      plugin_name=$(awk -F'\t' -v max=$((max_widths[name])) '{ print ( length($1) > max ? substr($1, 1, max-3) "..." : $1 ) }' <<<"${collected_currents[$plugin]}")
+      local plugin_version
+      plugin_version=$(awk -F'\t' -v max=$((max_widths[version])) '{ print ( length($2) > max ? substr($2, 1, max-3) "..." : $2 ) }' <<<"${collected_currents[$plugin]}")
+      local plugin_path
+      plugin_path=$(awk -F'\t' -v max=$((max_widths[path])) '{ print ( length($3) > max ? substr($3, 1, max-3) "..." : $3 ) }' <<<"${collected_currents[$plugin]}")
+
+      printf "$terminal_format" "$plugin_name" "$plugin_version" "${plugin_path}"
+    fi
+  done
 
   exit "$exit_status"
 }
