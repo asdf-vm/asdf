@@ -46,6 +46,8 @@ plugin_current_command() {
 current_command() {
   local terminal_format="%s\t%s\t%s\\n"
   local exit_status=0
+  local all_plugins
+  all_plugins=$(plugin_list_command)
   local plugin
   declare -A collected_currents
   declare -A max_widths
@@ -73,7 +75,7 @@ current_command() {
 
   if [ $# -eq 0 ]; then
     # shellcheck disable=SC2119
-    for plugin in $(plugin_list_command); do
+    for plugin in ${all_plugins[@]}; do
       collected_currents[$plugin]=$(plugin_current_command "$plugin" "$terminal_format")
     done
   else
@@ -84,7 +86,7 @@ current_command() {
 
   # Set column widths/precision
   # This ensures names/versions are aligned and take up minimal space
-  for plugin in "${!collected_currents[@]}"; do
+  for plugin in ${all_plugins[@]}; do
     local plugin_name
     plugin_name=$(cut -f 1 <<<"${collected_currents[$plugin]}")
     local plugin_version
@@ -112,7 +114,7 @@ current_command() {
   terminal_format="%-${widths[name]}s %-${widths[version]}s %-s\\n"
 
   # If we're still exceeding the max width for a column, truncate it with three dots
-  for plugin in "${!collected_currents[@]}"; do
+  for plugin in ${all_plugins[@]}; do
     if [[ -n ${collected_currents[$plugin]} ]]; then
       local plugin_name
       plugin_name=$(awk -F'\t' -v max=$((max_widths[name])) '{ print ( length($1) > max ? substr($1, 1, max-3) "..." : $1 ) }' <<<"${collected_currents[$plugin]}")
