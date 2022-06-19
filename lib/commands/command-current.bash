@@ -55,7 +55,7 @@ current_command() {
   declare -A max_widths
   declare -A widths
 
-  while [ -n "$*" ]; do
+  for flag in "$*"; do
     case "$1" in
     "--verbose")
       verbose=true
@@ -67,11 +67,9 @@ current_command() {
       shift
       ;;
     *)
-      shift
       ;;
     esac
   done
-
 
   # Set initial column widths to max the terminal can support
   local terminal_width
