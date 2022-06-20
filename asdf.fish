@@ -1,10 +1,17 @@
-set -x ASDF_DIR (dirname (status -f))
-set -l asdf_data_dir (
-  if test -n "$ASDF_DATA_DIR"; echo $ASDF_DATA_DIR;
-  else; echo $HOME/.asdf; end)
+if not set -q ASDF_DIR
+  set -x ASDF_DIR (dirname (status -f))
+end
+
+set -l asdf_user_shims (
+  if test -n "$ASDF_DATA_DIR"
+    printf "%s\n" "$ASDF_DATA_DIR/shims"
+  else
+    printf "%s\n" "$HOME/.asdf/shims"
+  end
+)
 
 # Add asdf to PATH
-set -l asdf_bin_dirs $ASDF_DIR/bin $ASDF_DIR/shims $asdf_data_dir/shims
+set -l asdf_bin_dirs $ASDF_DIR/bin $asdf_user_shims
 
 for x in $asdf_bin_dirs
   if test -d $x
@@ -19,4 +26,4 @@ for x in $asdf_bin_dirs
 end
 
 # Load the asdf wrapper function
-source $ASDF_DIR/lib/asdf.fish
+. $ASDF_DIR/lib/asdf.fish

@@ -1,53 +1,5 @@
 # -*- sh -*-
-
-plugin_list_command() {
-  local plugins_path
-  plugins_path=$(get_plugin_path)
-
-  local show_repo
-  local show_ref
-
-  while [ -n "$*" ]; do
-    case "$1" in
-      "--urls")
-        show_repo=true
-        shift
-        ;;
-      "--refs")
-        show_ref=true
-        shift
-        ;;
-      *)
-        shift
-        ;;
-    esac
-  done
-
-  if ls "$plugins_path" &>/dev/null; then
-    (
-      for plugin_path in "$plugins_path"/*; do
-        plugin_name=$(basename "$plugin_path")
-        printf "%s" "$plugin_name"
-
-        if [ -n "$show_repo" ]; then
-          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
-        fi
-
-        if [ -n "$show_ref" ]; then
-          local branch
-          local gitref
-          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
-          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
-          printf "\\t%s\\t%s" "$branch" "$gitref"
-        fi
-
-        printf "\\n"
-      done
-    ) | column -t -s $'\t'
-  else
-    display_error 'Oohes nooes ~! No plugins installed'
-    exit 1
-  fi
-}
+# shellcheck source=lib/functions/plugins.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
 
 plugin_list_command "$@"

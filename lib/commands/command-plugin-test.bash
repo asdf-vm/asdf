@@ -1,42 +1,59 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
+# shellcheck source=lib/functions/plugins.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
+# shellcheck source=lib/commands/reshim.bash
+. "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
+# shellcheck source=lib/functions/installs.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/installs.bash"
 
 plugin_test_command() {
 
-  local plugin_name=$1
-  local plugin_url=$2
-  local plugin_command_array=()
-  local plugin_command
+  local plugin_name="$1"
+  local plugin_url="$2"
+  shift 2
+
   local plugin_gitref="master"
   local tool_version
-  # shellcheck disable=SC2086
-  set -- ${*:3}
+  local interpret_args_literally
+  local skip_next_arg
 
-  while [[ $# -gt 0 ]]; do
-    case $1 in
+  for arg; do
+    shift
+    if [ -n "${skip_next_arg}" ]; then
+      skip_next_arg=
+    elif [ -n "${interpret_args_literally}" ]; then
+      set -- "$@" "${arg}"
+    else
+      case "${arg}" in
       --asdf-plugin-gitref)
-        plugin_gitref="$2"
-        shift # past flag
-        shift # past value
+        plugin_gitref="$1"
+        skip_next_arg=true
         ;;
       --asdf-tool-version)
-        tool_version="$2"
-        shift # past flag
-        shift # past value
+        tool_version="$1"
+        skip_next_arg=true
+        ;;
+      --)
+        interpret_args_literally=true
         ;;
       *)
-        plugin_command_array+=("$1") # save it in an array for later
-        shift                        # past argument
+        set -- "$@" "${arg}"
         ;;
-    esac
+      esac
+    fi
   done
 
-  plugin_command="${plugin_command_array[*]}"
+  if [ "$#" -eq 1 ]; then
+    set -- "${SHELL:-sh}" -c "$1"
+  fi
 
   local exit_code
   local TEST_DIR
 
   fail_test() {
-    echo "FAILED: $1"
+    printf "FAILED: %s\\n" "$1"
     rm -rf "$TEST_DIR"
     exit 1
   }
@@ -55,17 +72,18 @@ plugin_test_command() {
     export ASDF_DATA_DIR=$TEST_DIR
 
     # shellcheck disable=SC1090
-    source "$ASDF_DIR/asdf.sh"
+    . "$ASDF_DIR/asdf.sh"
 
-    if ! (asdf plugin-add "$plugin_name" "$plugin_url"); then
+    if ! (plugin_add_command "$plugin_name" "$plugin_url"); then
       fail_test "could not install $plugin_name from $plugin_url"
     fi
 
-    if ! (asdf plugin-list | grep "^$plugin_name$" >/dev/null); then
+    # shellcheck disable=SC2119
+    if ! (plugin_list_command | grep "^$plugin_name$" >/dev/null); then
       fail_test "$plugin_name was not properly installed"
     fi
 
-    if ! (asdf plugin-update "$plugin_name" "$plugin_gitref"); then
+    if ! (plugin_update_command "$plugin_name" "$plugin_gitref"); then
       fail_test "failed to checkout $plugin_name gitref: $plugin_gitref"
     fi
 
@@ -74,29 +92,26 @@ plugin_test_command() {
     local list_all="$plugin_path/bin/list-all"
     if grep api.github.com "$list_all" >/dev/null; then
       if ! grep Authorization "$list_all" >/dev/null; then
-        echo
-        echo "Looks like ${plugin_name}/bin/list-all relies on GitHub releases"
-        echo "but it does not properly sets an Authorization header to prevent"
-        echo "GitHub API rate limiting."
-        echo
-        echo "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting"
+        printf "\\nLooks like %s/bin/list-all relies on GitHub releases\\n" "$plugin_name"
+        printf "but it does not properly sets an Authorization header to prevent\\n"
+        printf "GitHub API rate limiting.\\n\\n"
+        printf "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting\\n"
 
         fail_test "$plugin_name/bin/list-all does not set GitHub Authorization token"
       fi
 
       # test for most common token names we have on plugins. If both are empty show this warning
       if [ -z "$OAUTH_TOKEN" ] && [ -z "$GITHUB_API_TOKEN" ]; then
-        echo "$plugin_name/bin/list-all is using GitHub API, just be sure you provide an API Authorization token"
-        echo "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:"
-        echo
+        printf "%s/bin/list-all is using GitHub API, just be sure you provide an API Authorization token\\n" "$plugin_name"
+        printf "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:\\n\\n"
         curl -s https://api.github.com/rate_limit
-        echo
+        printf "\\n"
       fi
     fi
 
     local versions
     # shellcheck disable=SC2046
-    if ! read -r -a versions <<<$(asdf list-all "$plugin_name"); then
+    if ! read -r -a versions <<<$(list_all_command "$plugin_name"); then
       fail_test "list-all exited with an error"
     fi
 
@@ -109,30 +124,33 @@ plugin_test_command() {
     # Use the version passed in if it was set. Otherwise grab the latest
     # version from the versions list
     if [ -z "$tool_version" ] || [[ "$tool_version" == *"latest"* ]]; then
-      version="$(asdf latest "$plugin_name" "$(echo "$tool_version" | sed -e 's#latest##;s#^:##')")"
+      version="$(latest_command "$plugin_name" "$(sed -e 's#latest##;s#^:##' <<<"$tool_version")")"
+      if [ -z "$version" ]; then
+        fail_test "could not get latest version"
+      fi
     else
       version="$tool_version"
     fi
 
-    if ! (asdf install "$plugin_name" "$version"); then
+    if ! (install_command "$plugin_name" "$version"); then
       fail_test "install exited with an error"
     fi
 
     cd "$TEST_DIR" || fail_test "could not cd $TEST_DIR"
 
-    if ! (asdf local "$plugin_name" "$version"); then
+    if ! (local_command "$plugin_name" "$version"); then
       fail_test "install did not add the requested version"
     fi
 
-    if ! (asdf reshim "$plugin_name"); then
+    if ! (reshim_command "$plugin_name"); then
       fail_test "could not reshim plugin"
     fi
 
-    if [ -n "$plugin_command" ]; then
-      $plugin_command
+    if [ "$#" -gt 0 ]; then
+      "$@"
       exit_code=$?
       if [ $exit_code != 0 ]; then
-        fail_test "$plugin_command failed with exit code $?"
+        fail_test "$* failed with exit code $?"
       fi
     fi
 
@@ -155,7 +173,7 @@ plugin_test_command() {
   }
 
   # run test in a subshell
-  (plugin_test)
+  (plugin_test "$@")
   exit_code=$?
   rm -rf "$TEST_DIR"
   exit $exit_code

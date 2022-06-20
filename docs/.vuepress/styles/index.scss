@@ -1,0 +1,17 @@
+:root {
+  scroll-behavior: smooth;
+  --c-brand: #b744b8;
+  --c-brand-light: #a379c9;
+  // tip container
+  --c-tip: #0070f3;
+  --c-tip-bg: #e3eeff;
+  --c-tip-title: #004bad;
+  --c-tip-text: #002974;
+}
+
+html.dark {
+  --c-brand: #b744b8;
+  --c-brand-light: #a379c9;
+  // tip container
+  --c-tip: #31558a;
+}

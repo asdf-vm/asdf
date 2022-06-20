@@ -18,6 +18,47 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "get_install_path should output version path when version is provided" {
+  run get_install_path foo version "1.0.0"
+  [ "$status" -eq 0 ]
+  install_path=${output#$HOME/}
+  [ "$install_path" = ".asdf/installs/foo/1.0.0" ]
+}
+
+@test "get_install_path should output custom path when custom install type is provided" {
+  run get_install_path foo custom "1.0.0"
+  [ "$status" -eq 0 ]
+  install_path=${output#$HOME/}
+  [ "$install_path" = ".asdf/installs/foo/custom-1.0.0" ]
+}
+
+@test "get_install_path should output path when path version is provided" {
+  run get_install_path foo path "/some/path"
+  [ "$status" -eq 0 ]
+  [ "$output" = "/some/path" ]
+}
+
+@test "get_download_path should output version path when version is provided" {
+  run get_download_path foo version "1.0.0"
+  [ "$status" -eq 0 ]
+  download_path=${output#$HOME/}
+  echo $download_path
+  [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
+}
+
+@test "get_download_path should output custom path when custom download type is provided" {
+  run get_download_path foo custom "1.0.0"
+  [ "$status" -eq 0 ]
+  download_path=${output#$HOME/}
+  [ "$download_path" = ".asdf/downloads/foo/custom-1.0.0" ]
+}
+
+@test "get_download_path should output nothing when path version is provided" {
+  run get_download_path foo path "/some/path"
+  [ "$status" -eq 0 ]
+  [ "$output" = "" ]
+}
+
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
   run check_if_version_exists "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
@@ -27,6 +68,11 @@ teardown() {
 @test "check_if_version_exists should exit with 1 if version does not exist" {
   run check_if_version_exists "dummy" "1.0.0"
   [ "$status" -eq 1 ]
+}
+
+@test "version_not_installed_text is correct" {
+  run version_not_installed_text "dummy" "1.0.0"
+  [ "$status" -eq 0 ]
   [ "$output" = "version 1.0.0 is not installed for dummy" ]
 }
 
@@ -309,8 +355,17 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  echo $status
   [ "$output" = $(pwd)/foo ]
+  rm -f foo bar
+}
+
+@test "resolve_symlink converts relative symlink directory path to the real file path" {
+  mkdir baz
+  ln -s ../foo baz/bar
+
+  run resolve_symlink baz/bar
+  [ "$status" -eq 0 ]
+  [ "$output" = $(pwd)/baz/../foo ]
   rm -f foo bar
 }
 
@@ -320,7 +375,6 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  echo $status
   [ "$output" = $(pwd)/foo ]
   rm -f foo bar
 }

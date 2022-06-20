@@ -5,7 +5,7 @@ which_command() {
   shim_name=$(basename "$1")
 
   if [ -z "$shim_name" ]; then
-    echo "usage: asdf which <command>"
+    printf "usage: asdf which <command>\\n"
     exit 1
   fi
 
@@ -15,11 +15,11 @@ which_command() {
     local executable_path="$3"
 
     if [ ! -x "$executable_path" ]; then
-      echo "No ${shim_name} executable found for ${plugin_name} ${version}" >&2
+      printf "No %s executable found for %s %s\\n" "$shim_name" "$plugin_name" "$version" >&2
       exit 1
     fi
 
-    echo "$executable_path"
+    printf "%s\\n" "$executable_path"
     exit 0
   }
 

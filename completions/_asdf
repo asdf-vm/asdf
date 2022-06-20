@@ -9,7 +9,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   # plugins
   'plugin:plugin management sub-commands'
   'plugin-add:add plugin from asdf-plugins repo or from git URL'
-  'plugin-list:list installed plugins (--url with URLs)'
+  'plugin-list:list installed plugins (--urls with URLs)'
   'plugin-list-all:list all plugins registered in asdf-plugins repo'
   'plugin-remove:remove named plugin and all packages for it'
   'plugin-update:update named plugin (or --all)'
@@ -30,6 +30,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   # utils
   'exec:executes the command shim for the current version'
   'env:prints or runs an executable under a command environment'
+  'info:print os, shell and asdf debug information'
   'reshim:recreate shims for version of a package'
   'shim:shim management sub-commands'
   'shim-versions:list for given command which plugins and versions provide it'
@@ -74,6 +75,21 @@ _asdf__installed_versions_of() {
   _wanted "asdf-versions-$1" expl "ASDF Plugin ${(q-)1} versions" \
     compadd -a versions
 }
+
+_asdf__installed_versions_of_plus_system() {
+  local plugin_dir="${asdf_dir:?}/installs/${1:?need a plugin version}"
+  if [[ ! -d "$plugin_dir" ]]; then
+    _wanted "asdf-versions-$1" expl "ASDF Plugin ${(q-)1} versions" \
+      compadd -x "no versions installed"
+    return
+  fi
+  local -a versions
+  versions=( "$plugin_dir"/*(:t) )
+  versions+="system"
+  _wanted "asdf-versions-$1" expl "ASDF Plugin ${(q-)1} versions" \
+    compadd -a versions
+}
+
 
 local -i IntermediateCount=0
 
@@ -164,9 +180,13 @@ case "$subcmd" in
       compadd -- $(asdf list-all "$pkg" "$query")
   fi
   ;;
-(uninstall|shell|local|global|reshim)
+(uninstall|reshim)
   compset -n 2
   _arguments '1:plugin-name: _asdf__installed_plugins' '2:package-version:{_asdf__installed_versions_of ${words[2]}}'
+  ;;
+(shell|local|global)
+  compset -n 2
+  _arguments '1:plugin-name: _asdf__installed_plugins' '2:package-version:{_asdf__installed_versions_of_plus_system ${words[2]}}'
   ;;
 (where)
   # version is optional

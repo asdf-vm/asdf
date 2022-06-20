@@ -1,0 +1,66 @@
+## GITATTRIBUTES
+#
+# Details per file setting:
+#   text    These files should be normalized (i.e. convert CRLF to LF).
+#   binary  These files are binary and should be left untouched.
+#
+# Note that binary is a macro for -text -diff.
+######################################################################
+
+## AUTO-DETECT
+##   Handle line endings automatically for files detected as
+##   text and leave all files detected as binary untouched.
+##   This will handle all files NOT defined below.
+* text=auto
+
+## SOURCE CODE
+*.bats     text
+*.css      text
+*.htm      text
+*.html     text
+*.js       text
+*.sh       text
+*.bash     text
+*.fish     text
+*.elv      text
+#### asdf/bin/* explicitly define as text
+*asdf      text
+*asdf-exec text
+*_asdf     text
+#### asdf/test/fixtures/* should be covered by * text=auto on L14
+
+## DOCKER
+*.dockerignore    text
+Dockerfile        text
+
+## DOCUMENTATION
+*.markdown   text
+*.md         text
+*.mdwn       text
+*.mdown      text
+*.mkd        text
+*.mkdn       text
+*.mdtxt      text
+*.mdtext     text
+*.txt        text
+AUTHORS      text
+CHANGELOG    text
+CHANGES      text
+CONTRIBUTING text
+COPYING      text
+copyright    text
+*COPYRIGHT*  text
+INSTALL      text
+license      text
+LICENSE      text
+NEWS         text
+readme       text
+*README*     text
+TODO         text
+
+## CONFIGS
+.editorconfig  text
+.gitattributes text
+.gitconfig     text
+*.yaml         text
+*.yml          text

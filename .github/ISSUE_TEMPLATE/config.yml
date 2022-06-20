@@ -1,0 +1,6 @@
+# Force users to use one of our predefined issue templates
+blank_issues_enabled: false
+contact_links:
+  - name: Question (StackOverflow)
+    url: https://stackoverflow.com/questions/tagged/asdf-vm
+    about: Ask new or browse existing questions on StackOverflow.

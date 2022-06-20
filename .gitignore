@@ -1,6 +1,7 @@
-installs
+/installs
+/downloads
 /plugins
-shims
+/shims
 repository
 .vagrant
 keyrings

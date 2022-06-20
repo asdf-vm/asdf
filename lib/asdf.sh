@@ -7,14 +7,14 @@ asdf() {
   fi
 
   case "$command" in
-    "shell")
-      # commands that need to export variables
-      eval "$(asdf export-shell-version sh "$@")" # asdf_allow: eval
-      ;;
-    *)
-      # forward other commands to asdf script
-      command asdf "$command" "$@"
-      ;;
+  "shell")
+    # commands that need to export variables
+    eval "$(asdf export-shell-version sh "$@")" # asdf_allow: eval
+    ;;
+  *)
+    # forward other commands to asdf script
+    command asdf "$command" "$@" # asdf_allow: ' asdf '
+    ;;
 
   esac
 }

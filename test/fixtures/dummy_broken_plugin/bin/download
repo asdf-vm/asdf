@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "Download failed!"
+exit 1

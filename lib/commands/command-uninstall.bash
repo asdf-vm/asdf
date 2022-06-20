@@ -1,7 +1,7 @@
 # -*- sh -*-
 
 # shellcheck source=lib/commands/reshim.bash
-source "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
+. "$(dirname "$ASDF_CMD_FILE")/reshim.bash"
 
 uninstall_command() {
   local plugin_name=$1
@@ -36,7 +36,7 @@ uninstall_command() {
       export ASDF_INSTALL_TYPE=$install_type
       export ASDF_INSTALL_VERSION=$version
       export ASDF_INSTALL_PATH=$install_path
-      bash "${plugin_path}/bin/uninstall"
+      "${plugin_path}/bin/uninstall"
     )
   else
     rm -rf "$install_path"

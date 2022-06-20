@@ -7,6 +7,13 @@ setup() {
   install_dummy_plugin
   install_dummy_version "1.0.0"
   install_dummy_version "1.1.0"
+  install_dummy_version "2.0.0"
+
+  install_dummy_legacy_plugin
+  install_dummy_legacy_version "1.0.0"
+  install_dummy_legacy_version "1.1.0"
+  install_dummy_legacy_version "2.0.0"
+  install_dummy_legacy_version "5.1.0"
 
   PROJECT_DIR=$HOME/project
   mkdir -p $PROJECT_DIR
@@ -15,6 +22,9 @@ setup() {
   mkdir -p $CHILD_DIR
 
   cd $PROJECT_DIR
+
+  # asdf lib needed to run asdf.sh
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 }
 
 teardown() {
@@ -46,6 +56,42 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "[local - dummy_plugin] with latest should use the latest installed version" {
+  run asdf local "dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 2.0.0" ]
+}
+
+@test "[local - dummy_plugin] with latest:version should use the latest valid installed version" {
+  run asdf local "dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0" ]
+}
+
+@test "[local - dummy_plugin] with latest:version should return an error for invalid versions" {
+  run asdf local "dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
+}
+
+@test "[local - dummy_legacy_plugin] with latest should use the latest installed version" {
+  run asdf local "legacy-dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 5.1.0" ]
+}
+
+@test "[local - dummy_legacy_plugin] with latest:version should use the latest valid installed version" {
+  run asdf local "legacy-dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 1.0.0" ]
+}
+
+@test "[local - dummy_legacy_plugin] with latest:version should return an error for invalid versions" {
+  run asdf local "legacy-dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (legacy-dummy 99)")" ]
+}
+
 @test "local should allow multiple versions" {
   run asdf local "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
@@ -74,6 +120,7 @@ teardown() {
 
 @test "local should overwrite the existing version if it's set" {
   echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
@@ -140,6 +187,42 @@ teardown() {
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "[global - dummy_plugin] with latest should use the latest installed version" {
+  run asdf global "dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 2.0.0" ]
+}
+
+@test "[global - dummy_plugin] with latest:version should use the latest valid installed version" {
+  run asdf global "dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0" ]
+}
+
+@test "[global - dummy_plugin] with latest:version should return an error for invalid versions" {
+  run asdf global "dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
+}
+
+@test "[global - dummy_legacy_plugin] with latest should use the latest installed version" {
+  run asdf global "legacy-dummy" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 5.1.0" ]
+}
+
+@test "[global - dummy_legacy_plugin] with latest:version should use the latest valid installed version" {
+  run asdf global "legacy-dummy" "latest:1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 1.0.0" ]
+}
+
+@test "[global - dummy_legacy_plugin] with latest:version should return an error for invalid versions" {
+  run asdf global "legacy-dummy" "latest:99"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$(echo "No compatible versions available (legacy-dummy 99)")" ]
+}
+
 @test "global should accept multiple versions" {
   run asdf global "dummy" "1.1.0" "1.0.0"
   [ "$status" -eq 0 ]
@@ -166,21 +249,41 @@ teardown() {
   [ "$(cat $HOME/.tool-versions)" = "dummy path:$PROJECT_DIR/local" ]
 }
 
-@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  run asdf global "dummy" "1.1.0"
+@test "local should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat .tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+}
+
+@test "local should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
+  echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  run asdf local "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat .tool-versions)" = "" ]
+  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+}
+
+
+@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
 @test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
   echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat $HOME/.tool-versions)" = "" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
@@ -207,37 +310,37 @@ teardown() {
 }
 
 @test "global should preserve symlinks when setting versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "global should preserve symlinks when updating versions" {
-  mkdir other-dir
-  touch other-dir/.tool-versions
+  mkdir $HOME/other-dir
+  touch $HOME/other-dir/.tool-versions
   ln -s other-dir/.tool-versions $HOME/.tool-versions
 
   run asdf global "dummy" "1.1.0"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L $HOME/.tool-versions ]
-  [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
+  [ "$(cat $HOME/other-dir/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "shell wrapper function should export ENV var" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "1.1.0"
   [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "shell wrapper function with --unset should unset ENV var" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
   asdf shell "dummy" "1.1.0"
   [ $(echo $ASDF_DUMMY_VERSION) = "1.1.0" ]
   asdf shell "dummy" --unset
@@ -246,29 +349,38 @@ teardown() {
 }
 
 @test "shell wrapper function should return an error for missing plugins" {
-  source $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  expected="No such plugin: nonexistent
+version 1.0.0 is not installed for nonexistent"
+
   run asdf shell "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: nonexistent" ]
+  [ "$output" = "$expected" ]
 }
 
 @test "shell should emit an error when wrapper function is not loaded" {
   run asdf shell "dummy" "1.1.0"
-  echo $output
   [ "$status" -eq 1 ]
   [ "$output" = "Shell integration is not enabled. Please ensure you source asdf in your shell setup." ]
 }
 
 @test "export-shell-version should emit an error when plugin does not exist" {
+  expected="No such plugin: nonexistent
+version 1.0.0 is not installed for nonexistent
+false"
+
   run asdf export-shell-version sh "nonexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = $'No such plugin: nonexistent\nfalse' ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should emit an error when version does not exist" {
+  expected="version nonexistent is not installed for dummy
+false"
+
   run asdf export-shell-version sh "dummy" "nonexistent"
   [ "$status" -eq 1 ]
-  [ "$output" = $'version nonexistent is not installed for dummy\nfalse' ]
+  [ "$output" = "$expected" ]
 }
 
 @test "export-shell-version should export version if it exists" {
@@ -283,6 +395,12 @@ teardown() {
   [ "$output" = "set -gx ASDF_DUMMY_VERSION \"1.1.0\"" ]
 }
 
+@test "export-shell-version should use set-env when shell is elvish" {
+  run asdf export-shell-version elvish "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$output" = $'set-env\nASDF_DUMMY_VERSION\n1.1.0' ]
+}
+
 @test "export-shell-version should unset when --unset flag is passed" {
   run asdf export-shell-version sh "dummy" "--unset"
   [ "$status" -eq 0 ]
@@ -293,4 +411,52 @@ teardown() {
   run asdf export-shell-version fish "dummy" "--unset"
   [ "$status" -eq 0 ]
   [ "$output" = "set -e ASDF_DUMMY_VERSION" ]
+}
+
+@test "export-shell-version should use unset-env when --unset flag is passed and shell is elvish" {
+  run asdf export-shell-version elvish "dummy" "--unset"
+  [ "$status" -eq 0 ]
+  [ "$output" = $'unset-env\nASDF_DUMMY_VERSION' ]
+}
+
+@test "[shell - dummy_plugin] wrapper function should support latest" {
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "dummy" "latest"
+  [ $(echo $ASDF_DUMMY_VERSION) = "2.0.0" ]
+  unset ASDF_DUMMY_VERSION
+}
+
+@test "[shell - dummy_legacy_plugin] wrapper function should support latest" {
+  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  asdf shell "legacy-dummy" "latest"
+  [ $(echo $ASDF_LEGACY_DUMMY_VERSION) = "5.1.0" ]
+  unset ASDF_LEGACY_DUMMY_VERSION
+}
+
+@test "[global - dummy_plugin] should support latest" {
+  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  run asdf global "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
+}
+
+@test "[global - dummy_legcay_plugin] should support latest" {
+  echo 'legacy-dummy 1.0.0' >> $HOME/.tool-versions
+  run asdf global "legacy-dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
+}
+
+@test "[local - dummy_plugin] should support latest" {
+  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run asdf local "dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
+}
+
+@test "[local - dummy_legacy_plugin] should support latest" {
+  echo 'legacy-dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  run asdf local "legacy-dummy" "1.0.0" "latest"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
 }
