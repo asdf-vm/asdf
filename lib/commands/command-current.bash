@@ -49,14 +49,15 @@ current_command() {
   local verbose
   local tsv
   local all_plugins
+  # shellcheck disable=SC2119
   all_plugins=$(plugin_list_command)
   local plugin
   declare -A collected_currents
   declare -A max_widths
   declare -A widths
 
-  for flag in "$*"; do
-    case "$1" in
+  for flag in "$@"; do
+    case "$flag" in
     "--verbose")
       verbose=true
       shift
@@ -66,15 +67,14 @@ current_command() {
       verbose=true
       shift
       ;;
-    *)
-      ;;
+    *) ;;
     esac
   done
 
   # Set initial column widths to max the terminal can support
   local terminal_width
   terminal_width=$(stty size | cut -d ' ' -f 2)
-  
+
   # reset if less than 80 cols, likely reading the wrong device
   if [ "$terminal_width" -lt 80 ]; then
     terminal_width=80
@@ -95,7 +95,7 @@ current_command() {
   # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG"
 
   if [ $# -eq 0 ]; then
-    # shellcheck disable=SC2119
+    # shellcheck disable=SC2068
     for plugin in ${all_plugins[@]}; do
       collected_currents[$plugin]=$(plugin_current_command "$plugin" "$terminal_format")
     done
@@ -107,6 +107,7 @@ current_command() {
 
   # Set column widths/precision
   # This ensures names/versions are aligned and take up minimal space
+  # shellcheck disable=SC2068
   for plugin in ${all_plugins[@]}; do
     local plugin_name
     plugin_name=$(cut -f 1 <<<"${collected_currents[$plugin]}")
@@ -137,7 +138,6 @@ current_command() {
     max_widths[version]=${widths[version]}
   fi
 
-  
   # If verbose flag was passed, skip calculating widths so we always print everything
   if [ -n "$verbose" ]; then
     max_widths[name]=${widths[name]}
@@ -152,6 +152,7 @@ current_command() {
   fi
 
   # If we're still exceeding the max width for a column, truncate it with three dots
+  # shellcheck disable=SC2068
   for plugin in ${all_plugins[@]}; do
     if [[ -n ${collected_currents[$plugin]} ]]; then
       local plugin_name
