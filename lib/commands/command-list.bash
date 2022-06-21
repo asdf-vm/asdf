@@ -27,6 +27,7 @@ display_installed_versions() {
   local plugin_name=$1
   local query=$2
   local versions
+  local current_version
   local flag
 
   versions=$(list_installed_versions "$plugin_name")
