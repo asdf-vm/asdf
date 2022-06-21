@@ -13,7 +13,7 @@ teardown() {
 }
 
 @test "plugin_list_all should sync repo when check_duration set to 0" {
-  echo 'plugin_repository_last_check_duration = 0' > $HOME/.asdfrc
+  echo 'plugin_repository_last_check_duration = 0' >$HOME/.asdfrc
   run asdf plugin-list-all
   local expected_plugin_repo_sync="updating plugin repository..."
   local expected_plugins_list="\
@@ -27,7 +27,7 @@ foo                           http://example.com/foo"
 }
 
 @test "plugin_list_all no immediate repo sync expected because check_duration is greater than 0" {
-  echo 'plugin_repository_last_check_duration = 10' > $HOME/.asdfrc
+  echo 'plugin_repository_last_check_duration = 10' >$HOME/.asdfrc
   run asdf plugin-list-all
   local expected="\
 bar                           http://example.com/bar
@@ -39,7 +39,7 @@ foo                           http://example.com/foo"
 }
 
 @test "plugin_list_all skips repo sync because check_duration is set to never" {
-  echo 'plugin_repository_last_check_duration = never' > $HOME/.asdfrc
+  echo 'plugin_repository_last_check_duration = never' >$HOME/.asdfrc
   run asdf plugin-list-all
   local expected="\
 bar                           http://example.com/bar

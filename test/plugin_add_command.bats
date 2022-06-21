@@ -93,7 +93,7 @@ teardown() {
 @test "plugin_add command executes configured pre hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 pre_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -107,7 +107,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured pre hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 pre_asdf_plugin_add_dummy = echo ADD
 EOM
 
@@ -121,7 +121,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured post hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 post_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -135,7 +135,7 @@ ADD dummy"
 @test "plugin_add command executes configured post hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 post_asdf_plugin_add_dummy = echo ADD
 EOM
 

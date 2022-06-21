@@ -25,18 +25,18 @@ cleaned_path() {
 }
 
 @test "adds asdf dirs to PATH" {
- result=$(fish -c "
-   set -e asdf
-   set -e ASDF_DIR
-   set -e ASDF_DATA_DIR
-   set PATH $(cleaned_path)
+  result=$(fish -c "
+    set -e asdf
+    set -e ASDF_DIR
+    set -e ASDF_DATA_DIR
+    set PATH $(cleaned_path)
 
-   . (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
-   echo \$PATH
+    . (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
+    echo \$PATH
  ")
- [ "$?" -eq 0 ]
- output=$(echo "$result" | grep "asdf")
- [ "$output" != "" ]
+  [ "$?" -eq 0 ]
+  output=$(echo "$result" | grep "asdf")
+  [ "$output" != "" ]
 }
 
 @test "does not add paths to PATH more than once" {
@@ -81,4 +81,3 @@ cleaned_path() {
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
   [ "$output" != "" ]
 }
-
