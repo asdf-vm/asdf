@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  BATS_VERSION: v1.3.0
+  BATS_VERSION: v1.7.0
 
 jobs:
   nix:
