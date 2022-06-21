@@ -27,6 +27,9 @@ display_installed_versions() {
   local plugin_name=$1
   local query=$2
   local versions
+  local current_version
+  local flag
+
   versions=$(list_installed_versions "$plugin_name")
 
   if [[ $query ]]; then
@@ -39,8 +42,14 @@ display_installed_versions() {
   fi
 
   if [ -n "${versions}" ]; then
+    current_version=$(cut -d '|' -f 1 <<<"$(find_versions "$plugin_name" "$(pwd)")")
+
     for version in $versions; do
-      printf "  %s\\n" "$version"
+      flag="  "
+      if [[ "$version" == "$current_version" ]]; then
+        flag=" *"
+      fi
+      printf "%s%s\\n" "$flag" "$version"
     done
   else
     display_error '  No versions installed'
