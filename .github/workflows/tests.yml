@@ -33,9 +33,9 @@ jobs:
       - name: Install test dependencies
         if: runner.os == 'linux'
         run: |
-          sudo add-apt-repository -y ppa:fish-shell/nightly-master
-          sudo apt-get update
-          sudo apt-get -y install fish curl
+          sudo add-apt-repository ppa:fish-shell/release-3
+          sudo apt update
+          sudo apt -y install fish curl
 
           # Download elvish binary and add to path
           curl https://dl.elv.sh/linux-amd64/elvish-v0.18.0.tar.gz -o elvish-v0.18.0.tar.gz
