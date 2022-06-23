@@ -11,10 +11,10 @@ const en = {
         "/manage/commands.md",
         {
           text: "Changelog",
-          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md",
+        },
+      ],
+    },
   ],
   "/plugins/": [
     {
@@ -23,49 +23,49 @@ const en = {
         "/plugins/create.md",
         {
           text: "GitHub Plugin Template",
-          link: "https://github.com/asdf-vm/asdf-plugin-template"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-plugin-template",
+        },
+      ],
     },
     {
       text: "First Party Plugins",
       children: [
         {
           text: "Elixir",
-          link: "https://github.com/asdf-vm/asdf-elixir"
+          link: "https://github.com/asdf-vm/asdf-elixir",
         },
         {
           text: "Erlang",
-          link: "https://github.com/asdf-vm/asdf-erlang"
+          link: "https://github.com/asdf-vm/asdf-erlang",
         },
         {
           text: "Node.js",
-          link: "https://github.com/asdf-vm/asdf-nodejs"
+          link: "https://github.com/asdf-vm/asdf-nodejs",
         },
         {
           text: "Ruby",
-          link: "https://github.com/asdf-vm/asdf-ruby"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-ruby",
+        },
+      ],
     },
     {
       text: "Community Plugins",
       children: [
         {
           text: "asdf-community",
-          link: "https://github.com/asdf-community/"
-        }
-      ]
+          link: "https://github.com/asdf-community/",
+        },
+      ],
     },
     {
       text: "Reference",
       children: [
         {
           text: "Plugin Shortname Index",
-          link: "https://github.com/asdf-vm/asdf-plugins"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf-plugins",
+        },
+      ],
+    },
   ],
   "/contribute/": [
     {
@@ -74,9 +74,9 @@ const en = {
         "/contribute/core.md",
         "/contribute/documentation.md",
         "/contribute/first-party-plugins.md",
-        "/contribute/github-actions.md"
-      ]
-    }
+        "/contribute/github-actions.md",
+      ],
+    },
   ],
   "/learn-more/": [
     {
@@ -86,25 +86,25 @@ const en = {
 
         {
           text: "GitHub Issues",
-          link: "https://github.com/asdf-vm/asdf/issues"
+          link: "https://github.com/asdf-vm/asdf/issues",
         },
         {
           text: "StackOverflow Tag",
-          link: "https://stackoverflow.com/questions/tagged/asdf-vm"
-        }
-      ]
+          link: "https://stackoverflow.com/questions/tagged/asdf-vm",
+        },
+      ],
     },
     {
       text: "Resources",
-      children: ["/learn-more/thanks.md"]
-    }
-  ]
+      children: ["/learn-more/thanks.md"],
+    },
+  ],
 };
 
 const pt_br = {
   "/pt-br/guide/": [
     "/pt-br/guide/introduction.md",
-    "/pt-br/guide/getting-started.md"
+    "/pt-br/guide/getting-started.md",
   ],
   "/pt-br/manage/": [
     {
@@ -117,10 +117,10 @@ const pt_br = {
         "/pt-br/manage/commands.md",
         {
           text: "Alterações",
-          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md",
+        },
+      ],
+    },
   ],
   "/pt-br/plugins/": [
     {
@@ -129,49 +129,49 @@ const pt_br = {
         "/pt-br/plugins/create.md",
         {
           text: "GitHub Plugin Template",
-          link: "https://github.com/asdf-vm/asdf-plugin-template"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-plugin-template",
+        },
+      ],
     },
     {
       text: "First Party Plugins",
       children: [
         {
           text: "Elixir",
-          link: "https://github.com/asdf-vm/asdf-elixir"
+          link: "https://github.com/asdf-vm/asdf-elixir",
         },
         {
           text: "Erlang",
-          link: "https://github.com/asdf-vm/asdf-erlang"
+          link: "https://github.com/asdf-vm/asdf-erlang",
         },
         {
           text: "Node.js",
-          link: "https://github.com/asdf-vm/asdf-nodejs"
+          link: "https://github.com/asdf-vm/asdf-nodejs",
         },
         {
           text: "Ruby",
-          link: "https://github.com/asdf-vm/asdf-ruby"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-ruby",
+        },
+      ],
     },
     {
       text: "Community Plugins",
       children: [
         {
           text: "asdf-community",
-          link: "https://github.com/asdf-community/"
-        }
-      ]
+          link: "https://github.com/asdf-community/",
+        },
+      ],
     },
     {
       text: "Reference",
       children: [
         {
           text: "Plugin Shortname Index",
-          link: "https://github.com/asdf-vm/asdf-plugins"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf-plugins",
+        },
+      ],
+    },
   ],
   "/pt-br/contribute/": [
     {
@@ -180,9 +180,9 @@ const pt_br = {
         "/pt-br/contribute/core.md",
         "/pt-br/contribute/documentation.md",
         "/pt-br/contribute/first-party-plugins.md",
-        "/pt-br/contribute/github-actions.md"
-      ]
-    }
+        "/pt-br/contribute/github-actions.md",
+      ],
+    },
   ],
   "/pt-br/learn-more/": [
     {
@@ -192,25 +192,25 @@ const pt_br = {
 
         {
           text: "GitHub Issues",
-          link: "https://github.com/asdf-vm/asdf/issues"
+          link: "https://github.com/asdf-vm/asdf/issues",
         },
         {
           text: "StackOverflow Tag",
-          link: "https://stackoverflow.com/questions/tagged/asdf-vm"
-        }
-      ]
+          link: "https://stackoverflow.com/questions/tagged/asdf-vm",
+        },
+      ],
     },
     {
       text: "Resources",
-      children: ["/pt-br/learn-more/thanks.md"]
-    }
-  ]
+      children: ["/pt-br/learn-more/thanks.md"],
+    },
+  ],
 };
 
 const zh_hans = {
   "/zh-hans/guide/": [
     "/zh-hans/guide/introduction.md",
-    "/zh-hans/guide/getting-started.md"
+    "/zh-hans/guide/getting-started.md",
   ],
   "/zh-hans/manage/": [
     {
@@ -223,10 +223,10 @@ const zh_hans = {
         "/zh-hans/manage/commands.md",
         {
           text: "更新日志",
-          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md",
+        },
+      ],
+    },
   ],
   "/zh-hans/plugins/": [
     {
@@ -235,53 +235,53 @@ const zh_hans = {
         "/zh-hans/plugins/create.md",
         {
           text: "GitHub Plugin 模板",
-          link: "https://github.com/asdf-vm/asdf-plugin-template"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-plugin-template",
+        },
+      ],
     },
     {
       text: "官方插件",
       children: [
         {
           text: "Elixir",
-          link: "https://github.com/asdf-vm/asdf-elixir"
+          link: "https://github.com/asdf-vm/asdf-elixir",
         },
         {
           text: "Erlang",
-          link: "https://github.com/asdf-vm/asdf-erlang"
+          link: "https://github.com/asdf-vm/asdf-erlang",
         },
         {
           text: "Node.js",
-          link: "https://github.com/asdf-vm/asdf-nodejs"
+          link: "https://github.com/asdf-vm/asdf-nodejs",
         },
         {
           text: "Ruby",
-          link: "https://github.com/asdf-vm/asdf-ruby"
-        }
-      ]
+          link: "https://github.com/asdf-vm/asdf-ruby",
+        },
+      ],
     },
     {
       text: "社区插件",
       children: [
         {
           text: "asdf-community",
-          link: "https://github.com/asdf-community/"
+          link: "https://github.com/asdf-community/",
         },
         {
           text: "GitHub 主题搜索",
-          link: "https://github.com/topics/asdf-plugin"
-        }
-      ]
+          link: "https://github.com/topics/asdf-plugin",
+        },
+      ],
     },
     {
       text: "参考",
       children: [
         {
           text: "插件缩写索引",
-          link: "https://github.com/asdf-vm/asdf-plugins"
-        }
-      ]
-    }
+          link: "https://github.com/asdf-vm/asdf-plugins",
+        },
+      ],
+    },
   ],
   "/zh-hans/contribute/": [
     {
@@ -290,9 +290,9 @@ const zh_hans = {
         "/zh-hans/contribute/core.md",
         "/zh-hans/contribute/documentation.md",
         "/zh-hans/contribute/first-party-plugins.md",
-        "/zh-hans/contribute/github-actions.md"
-      ]
-    }
+        "/zh-hans/contribute/github-actions.md",
+      ],
+    },
   ],
   "/zh-hans/learn-more/": [
     {
@@ -302,19 +302,19 @@ const zh_hans = {
 
         {
           text: "GitHub Issues",
-          link: "https://github.com/asdf-vm/asdf/issues"
+          link: "https://github.com/asdf-vm/asdf/issues",
         },
         {
           text: "StackOverflow Tag",
-          link: "https://stackoverflow.com/questions/tagged/asdf-vm"
-        }
-      ]
+          link: "https://stackoverflow.com/questions/tagged/asdf-vm",
+        },
+      ],
     },
     {
       text: "资源",
-      children: ["/zh-hans/learn-more/thanks.md"]
-    }
-  ]
+      children: ["/zh-hans/learn-more/thanks.md"],
+    },
+  ],
 };
 
 module.exports = { en, pt_br, zh_hans };
