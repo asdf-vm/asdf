@@ -7,6 +7,7 @@ updates:
       interval: "weekly"
     reviewers:
       - "jthegedus"
+      - "stratus3d"
   # Maintain dependencies for npm used in Documentation site
   - package-ecosystem: "npm"
     directory: "/docs"
