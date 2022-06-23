@@ -5,7 +5,7 @@
     "format": "npx -y prettier --write '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'"
   },
   "devDependencies": {
-    "@vue/component-compiler-utils": "^3.2.2",
+    "@vue/component-compiler-utils": "^3.3.0",
     "@vuepress/plugin-back-to-top": "^2.0.0-beta.22",
     "@vuepress/plugin-search": "^2.0.0-beta.22",
     "@vuepress/plugin-shiki": "^2.0.0-beta.22",
