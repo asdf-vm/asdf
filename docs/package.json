@@ -7,7 +7,7 @@
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.2.2",
     "@vuepress/plugin-back-to-top": "^2.0.0-beta.22",
-    "@vuepress/plugin-search": "^2.0.0-beta.22",
+    "@vuepress/plugin-search": "^2.0.0-beta.48",
     "@vuepress/plugin-shiki": "^2.0.0-beta.22",
     "vuepress-vite": "^2.0.0-beta.22"
   }
