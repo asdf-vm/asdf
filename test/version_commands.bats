@@ -111,7 +111,7 @@ teardown() {
 }
 
 @test "local should not create a duplicate .tool-versions file if such file exists" {
-  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >>$PROJECT_DIR/.tool-versions
 
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
@@ -119,7 +119,7 @@ teardown() {
 }
 
 @test "local should overwrite the existing version if it's set" {
-  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >>$PROJECT_DIR/.tool-versions
 
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
@@ -167,7 +167,7 @@ teardown() {
 
 @test "local -p/--parent should overwrite the existing version if it's set" {
   cd $CHILD_DIR
-  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >>$PROJECT_DIR/.tool-versions
   run asdf local -p "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
@@ -230,7 +230,7 @@ teardown() {
 }
 
 @test "global should overwrite the existing version if it's set" {
-  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  echo 'dummy 1.0.0' >>$HOME/.tool-versions
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
@@ -260,14 +260,13 @@ teardown() {
 
 @test "local should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
   export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
-  echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  echo 'dummy 1.0.0' >>"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
   [ "$(cat .tool-versions)" = "" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
-
 
 @test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
   export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
@@ -280,7 +279,7 @@ teardown() {
 
 @test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
   export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
-  echo 'dummy 1.0.0' >> "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  echo 'dummy 1.0.0' >>"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
@@ -434,28 +433,28 @@ false"
 }
 
 @test "[global - dummy_plugin] should support latest" {
-  echo 'dummy 1.0.0' >> $HOME/.tool-versions
+  echo 'dummy 1.0.0' >>$HOME/.tool-versions
   run asdf global "dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }
 
 @test "[global - dummy_legcay_plugin] should support latest" {
-  echo 'legacy-dummy 1.0.0' >> $HOME/.tool-versions
+  echo 'legacy-dummy 1.0.0' >>$HOME/.tool-versions
   run asdf global "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
 }
 
 @test "[local - dummy_plugin] should support latest" {
-  echo 'dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >>$PROJECT_DIR/.tool-versions
   run asdf local "dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }
 
 @test "[local - dummy_legacy_plugin] should support latest" {
-  echo 'legacy-dummy 1.0.0' >> $PROJECT_DIR/.tool-versions
+  echo 'legacy-dummy 1.0.0' >>$PROJECT_DIR/.tool-versions
   run asdf local "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "legacy-dummy 1.0.0 5.1.0" ]
