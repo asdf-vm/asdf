@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://www.github.com/asdf-vm/asdf/compare/v0.10.2...v0.11.0) (2022-06-24)
+
+
+### Features
+
+* mark current resolved versions in `asdf list` output ([#762](https://www.github.com/asdf-vm/asdf/issues/762)) ([5ea6795](https://www.github.com/asdf-vm/asdf/commit/5ea67953be74cb5fde11240dc40a541c69afc65c))
+
 ### [0.10.2](https://www.github.com/asdf-vm/asdf/compare/v0.10.1...v0.10.2) (2022-06-08)
 
 
