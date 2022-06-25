@@ -153,7 +153,7 @@ source /opt/asdf-vm/asdf.fish
 ```shell:no-line-numbers
 mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 补全功能将会自动配置。
@@ -167,7 +167,7 @@ echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.con
 ```shell:no-line-numbers
 mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 补全功能将会自动配置。
@@ -181,7 +181,7 @@ echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.con
 ```shell:no-line-numbers
 mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 补全功能将会自动配置。
