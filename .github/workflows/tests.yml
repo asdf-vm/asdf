@@ -8,6 +8,7 @@ on:
 
 env:
   BATS_VERSION: v1.7.0
+  ELVISH_VERSION: v0.18.0
 
 jobs:
   nix:
@@ -40,11 +41,11 @@ jobs:
           sudo apt-get -y install fish curl
 
           # Download elvish binary and add to path
-          curl https://dl.elv.sh/linux-amd64/elvish-v0.18.0.tar.gz -o elvish-v0.18.0.tar.gz
-          tar xzf elvish-v0.18.0.tar.gz
-          rm elvish-v0.18.0.tar.gz
+          curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          tar xzf elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          rm elvish-${{ env.ELVISH_VERSION }}.tar.gz
           mkdir -p "$HOME/bin"
-          mv elvish-v0.18.0 "$HOME/bin/elvish"
+          mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
           echo "$HOME/bin" >>"$GITHUB_PATH"
 
       - name: Install bats
