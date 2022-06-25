@@ -6,3 +6,4 @@ repository
 .vagrant
 keyrings
 /tmp
+.DS_Store
