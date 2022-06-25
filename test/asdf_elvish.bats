@@ -73,6 +73,20 @@ cleaned_path() {
   [[ "$output" =~ "<ns " ]]
 }
 
+@test "does not add paths to PATH more than once" {
+  result=$(elvish -norc -c "
+    unset-env ASDF_DIR
+    set paths = [$(cleaned_path)]
+
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
+    use asdftest _asdf; var asdf~ = \$_asdf:asdf~
+    echo \$E:PATH
+  ")
+  [ "$?" -eq 0 ]
+  output=$(echo $PATH | tr ':' '\n' | grep "asdf" | sort | uniq -d)
+  [ "$output" = "" ]
+}
+
 @test "defines the asdf function" {
   output=$(elvish -norc -c "
     unset-env ASDF_DIR
