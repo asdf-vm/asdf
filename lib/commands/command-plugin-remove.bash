@@ -17,7 +17,10 @@ plugin_remove_command() {
     )
   fi
 
-  rm -rf "$plugin_path"
+  local plugin_root
+  plugin_root=$(get_plugin_root "${plugin_name}")
+
+  rm -rf "$plugin_root"
   rm -rf "$(asdf_data_dir)/installs/${plugin_name}"
   rm -rf "$(asdf_data_dir)/downloads/${plugin_name}"
 

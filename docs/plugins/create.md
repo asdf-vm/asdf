@@ -299,3 +299,28 @@ cmd="$cmd $releases_path"
 To make it easier on your users, you can add your plugin to the official plugins repository to have your plugin listed and easily installable using a shorter command, e.g. `asdf plugin add my-plugin`.
 
 Follow the instruction at the plugins repository: [asdf-vm/asdf-plugins](https://github.com/asdf-vm/asdf-plugins).
+
+## Plugin configuration
+
+Add an `.asdf-plugin` file to your plugin root directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
+
+```:no-line-numbers
+plugin_directory =
+```
+
+To enable this, add the following to your `asdf` configuration file `$HOME/.asdfrc`:
+
+```
+use_asdf_plugin_configuration = yes
+```
+
+See the [configuration](/manage/configuration.md) reference page for more config options.
+
+### `plugin_directory`
+
+If you want to place plugin scripts (e.g. bin, lib) in a subdirectory, specify a path relative to the repository root.
+For example, to place asdf plugin scripts under `contrib/asdf`, adding the following to .asdf-plugin:
+
+```:no-line-numbers
+plugin_directory = contrib/asdf
+```
