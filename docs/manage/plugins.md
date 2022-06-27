@@ -21,7 +21,9 @@ asdf plugin add <name>
 ```
 
 ::: tip Recommendation
+
 Prefer the longer `git-url` method as it is independent of the short-name repo.
+
 :::
 
 ## List Installed
@@ -72,10 +74,13 @@ asdf plugin remove <name>
 
 Removing a plugin will remove all installations of the tool made with the plugin. This can be used as a shorthand for cleaning/pruning many unused versions of a tool.
 
-## Syncing the Short-name Repository
+## Syncing the asdf Short-name Repository
 
-The short-name repo is synced to your local machine and periodically refreshed. This period is determined by the following method:
+The short-name repo is synced to your local machine and periodically refreshed. This method to determine a sync is as follows:
 
-- commands `asdf plugin add <name>` or `asdf plugin list all` can trigger a sync
-- a sync occurs if there has not been one in the last `X` minutes
-- `X` defaults to `60`, but can be configured in your `.asdfrc` via the `plugin_repository_last_check_duration` option. See the [asdf config docs](/manage/configuration.md) for more.
+- sync events are triggered by commands:
+  - `asdf plugin add <name>`
+  - `asdf plugin list all`
+- if configuration option `disable_plugin_short_name_repository` is set to `yes`, then sync is aborted early. See the [asdf config docs](/manage/configuration.md) for more.
+- if there has not been a synchroniztion in the last `X` minutes then the sync will occur.
+  - `X` defaults to `60`, but can be configured in your `.asdfrc` via the `plugin_repository_last_check_duration` option. See the [asdf config docs](/manage/configuration.md) for more.

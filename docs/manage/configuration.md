@@ -7,7 +7,9 @@ Configuration of `asdf` encompasses both the sharable `.tool-versions` files as 
 Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
 
 ::: warning Note
+
 Global defaults can be set in the file `$HOME/.tool-versions`
+
 :::
 
 This is what a `.tool-versions` file looks like:
@@ -57,6 +59,7 @@ legacy_version_file = no
 use_release_candidates = no
 always_keep_download = no
 plugin_repository_last_check_duration = 60
+disable_plugin_short_name_repository = no
 ```
 
 ### `legacy_version_file`
@@ -88,13 +91,42 @@ Configure the `asdf install` command to keep or delete the source code or binary
 
 ### `plugin_repository_last_check_duration`
 
-Configure the duration since the last asdf plugin repository sync to the next. Commands `asdf plugin add <name>` or `asdf plugin list all` will trigger a check of the duration, if the duration has passed then a sync occurs.
+Configure the duration since the last asdf plugin repository sync to the next. Sync events will trigger a check of the duration, if the duration has passed then a sync occurs.
 
 | Options                                                                                                 | Description                                                  |
 | :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
 | integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
 | `0`                                                                                                     | Sync on each trigger event                                   |
 | `never`                                                                                                 | Never sync                                                   |
+
+Sync events occur when the following commands are executed:
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
+
+### `disable_plugin_short_name_repository`
+
+Disable synchronization of the asdf plugin short-name repository. Sync events will exit early if the short-name repository is disabled.
+
+| Options                                                    | Description                                               |
+| :--------------------------------------------------------- | :-------------------------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Clone or update the asdf plugin repository on sync events |
+| `yes`                                                      | Disable short-name plugin repository                      |
+
+Sync events occur when the following commands are executed:
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
+
+::: warning Note
+
+Disabling the plugin short-name repository does not remove plugins previously installed from this source. Plugins can be removed with `asdf plugin remove <name>`. Removing a plugin will remove all installed versions of the managed tool.
+
+:::
 
 ## Environment Variables
 

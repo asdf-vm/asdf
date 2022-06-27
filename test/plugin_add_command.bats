@@ -16,7 +16,7 @@ teardown() {
   run asdf plugin add "plugin_with-all-valid-CHARS-123" "${BASE_DIR}/repo-plugin_with-all-valid-CHARS-123"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
+  run asdf plugin list
   [ "$output" = "plugin_with-all-valid-CHARS-123" ]
 }
 
@@ -52,9 +52,30 @@ teardown() {
   run asdf plugin add "elixir"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
-  # whitespace between 'elixir' and url is from printf %-15s %s format
+  run asdf plugin list
   [ "$output" = "elixir" ]
+}
+
+@test "plugin_add command with no URL specified adds a plugin when short name repository is enabled" {
+  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
+  echo "disable_plugin_short_name_repository=no" >$ASDF_CONFIG_DEFAULT_FILE
+
+  run asdf plugin add "elixir"
+  [ "$status" -eq 0 ]
+
+  local expected="elixir"
+  run asdf plugin list
+  [ "$output" = "$expected" ]
+}
+
+@test "plugin_add command with no URL specified fails to add a plugin when disabled" {
+  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
+  echo "disable_plugin_short_name_repository=yes" >$ASDF_CONFIG_DEFAULT_FILE
+  local expected="Short-name plugin repository is disabled"
+
+  run asdf plugin add "elixir"
+  [ "$status" -eq 1 ]
+  [ "$output" = "$expected" ]
 }
 
 @test "plugin_add command with URL specified adds a plugin using repo" {
@@ -63,7 +84,7 @@ teardown() {
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
+  run asdf plugin list
   # whitespace between 'elixir' and url is from printf %-15s %s format
   [ "$output" = "dummy" ]
 }
