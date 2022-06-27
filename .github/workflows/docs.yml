@@ -49,7 +49,7 @@ jobs:
         run: cp CNAME .vuepress/dist
 
       - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: crazy-max/ghaction-github-pages@v3
         with:
           # deploy to gh-pages branch
           target_branch: gh-pages
