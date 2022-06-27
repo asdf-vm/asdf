@@ -6,6 +6,9 @@ setup() {
   setup_asdf_dir
   install_dummy_plugin
   install_dummy_broken_plugin
+
+  PROJECT_DIR=$HOME/project
+  mkdir $PROJECT_DIR
 }
 
 teardown() {
@@ -16,8 +19,20 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list
-  [[ "$output" == "$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")" ]]
+  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
+  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
+  [ "$status" -eq 0 ]
+}
+
+@test "list_command should list plugins with installed versions and any selected versions marked with asterisk" {
+  cd $PROJECT_DIR
+  echo 'dummy 1.1.0' >>$PROJECT_DIR/.tool-versions
+  run asdf install dummy 1.0.0
+  run asdf install dummy 1.1.0
+
+  run asdf list
+  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n *1.1.0")"* ]]
+  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
   [ "$status" -eq 0 ]
 }
 
@@ -28,10 +43,10 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install tummy 2.0.0
   run asdf list
-  [[ "$output" == "$(echo -e "dummy\n  1.0.0")"* ]]
+  [[ "$output" == *"$(echo -e "dummy\n  1.0.0")"* ]]
   [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
   [[ "$output" == *"$(echo -e "mummy\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")" ]]
+  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")"* ]]
   [ "$status" -eq 0 ]
 }
 

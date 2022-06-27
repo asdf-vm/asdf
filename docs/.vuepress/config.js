@@ -1,3 +1,10 @@
+const { defaultTheme } = require("vuepress");
+const { searchPlugin } = require("@vuepress/plugin-search");
+const { shikiPlugin } = require("@vuepress/plugin-shiki");
+const {
+  activeHeaderLinksPlugin,
+} = require("@vuepress/plugin-active-header-links");
+
 const navbar = require("./navbar");
 const sidebar = require("./sidebar");
 
@@ -8,21 +15,21 @@ module.exports = {
     "/": {
       lang: "en-US",
       title: "asdf",
-      description: "Manage multiple runtime versions with a single CLI tool"
+      description: "Manage multiple runtime versions with a single CLI tool",
     },
     "/pt-br/": {
       lang: "pt-br",
       title: "asdf",
-      description: "Gerencie múltiplas versões com um simples CLI"
+      description: "Gerencie múltiplas versões com um simples CLI",
     },
     "/zh-hans/": {
       lang: "zh-CN",
       title: "asdf",
-      description: "管理多个运行环境版本的简单命令行工具"
-    }
+      description: "管理多个运行环境版本的简单命令行工具",
+    },
   },
 
-  themeConfig: {
+  theme: defaultTheme({
     // logo: "https://vuejs.org/images/logo.png",
     repo: "asdf-vm/asdf",
     docsBranch: "master",
@@ -32,7 +39,7 @@ module.exports = {
         selectLanguageName: "English",
         sidebar: sidebar.en,
         navbar: navbar.en,
-        editLinkText: "Edit this page"
+        editLinkText: "Edit this page",
       },
       "/pt-br/": {
         selectLanguageName: "Brazilian Portuguese",
@@ -42,7 +49,7 @@ module.exports = {
 
         // 404 page
         notFound: ["Parece que estamos perdido!"],
-        backToHome: "Voltar para a página inicial"
+        backToHome: "Voltar para a página inicial",
       },
       "/zh-hans/": {
         selectLanguageName: "简体中文",
@@ -53,28 +60,28 @@ module.exports = {
 
         // 404 page
         notFound: ["抱歉，您访问的页面不存在！"],
-        backToHome: "返回首页"
-      }
-    }
-  },
+        backToHome: "返回首页",
+      },
+    },
+  }),
 
   plugins: [
-    [
-      "@vuepress/plugin-search",
-      {
-        locales: {
-          "/": {
-            placeholder: "Search"
-          },
-          "/pt-br/": {
-            placeholder: "Search"
-          },
-          "/zh-hans/": {
-            placeholder: "搜索"
-          }
-        }
-      }
-    ],
-    ["@vuepress/plugin-shiki", { theme: "monokai" }]
-  ]
+    activeHeaderLinksPlugin(),
+    searchPlugin({
+      locales: {
+        "/": {
+          placeholder: "Search",
+        },
+        "/pt-br/": {
+          placeholder: "Search",
+        },
+        "/zh-hans/": {
+          placeholder: "搜索",
+        },
+      },
+    }),
+    shikiPlugin({
+      theme: "monokai",
+    }),
+  ],
 };

@@ -23,7 +23,7 @@ plugin_list_command() {
 
   if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
     (
-      for plugin_path in "$plugins_path"/*; do
+      for plugin_path in "$plugins_path"/*/; do
         plugin_name=$(basename "$plugin_path")
         printf "%s" "$plugin_name"
 
@@ -56,8 +56,9 @@ plugin_add_command() {
 
   local plugin_name=$1
 
-  if ! printf "%s" "$plugin_name" | grep -q -E "^[a-zA-Z0-9_-]+$"; then
-    display_error "$plugin_name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$"
+  local regex="^[[:alpha:][:digit:]_-]+$"
+  if ! printf "%s" "$plugin_name" | grep -q -E "$regex"; then
+    display_error "$plugin_name is invalid. Name must match regex $regex"
     exit 1
   fi
 

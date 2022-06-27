@@ -41,8 +41,10 @@ asdf_data_dir() {
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  else
+  elif [ -n "$HOME" ]; then
     data_dir="$HOME/.asdf"
+  else
+    data_dir=$(asdf_dir)
   fi
 
   printf "%s\\n" "$data_dir"
@@ -156,10 +158,12 @@ get_version_in_dir() {
   local legacy_filenames=$3
 
   local asdf_version
-  asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" "$plugin_name")
+
+  file_name=$(version_file_name)
+  asdf_version=$(parse_asdf_version_file "$search_path/$file_name" "$plugin_name")
 
   if [ -n "$asdf_version" ]; then
-    printf "%s\\n" "$asdf_version|$search_path/.tool-versions"
+    printf "%s\\n" "$asdf_version|$search_path/$file_name"
     return 0
   fi
 
@@ -172,6 +176,10 @@ get_version_in_dir() {
       return 0
     fi
   done
+}
+
+version_file_name() {
+  printf "%s" "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
 find_versions() {
@@ -437,7 +445,7 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-  find_file_upwards ".tool-versions"
+  find_file_upwards "$(version_file_name)"
 }
 
 find_file_upwards() {

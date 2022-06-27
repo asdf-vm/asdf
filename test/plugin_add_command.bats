@@ -20,16 +20,32 @@ teardown() {
   [ "$output" = "plugin_with-all-valid-CHARS-123" ]
 }
 
+@test "plugin_add command with LANG=sv_SE.UTF-8 and plugin name matching all valid regex chars succeeds" {
+  ORIGINAL_LANG="$LANG"
+  LANG=sv_SE.UTF-8
+
+  install_mock_plugin_repo "plugin-with-w"
+
+  # https://stackoverflow.com/questions/52570103/regular-expression-a-za-z-seems-to-not-include-letter-w-and-wA
+  # https://github.com/asdf-vm/asdf/issues/1237
+  run asdf plugin add "plugin-with-w" "${BASE_DIR}/repo-plugin-with-w"
+  [ "$status" -eq 0 ]
+
+  run asdf plugin-list
+  [ "$output" = "plugin-with-w" ]
+
+  LANG="$ORIGINAL_LANG"
+}
 @test "plugin_add command with plugin name not matching valid regex fails" {
   run asdf plugin add "invalid\$plugin\$name"
   [ "$status" -eq 1 ]
-  [ "$output" = "invalid\$plugin\$name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$" ]
+  [ "$output" = "invalid\$plugin\$name is invalid. Name must match regex ^[[:alpha:][:digit:]_-]+$" ]
 }
 
 @test "plugin_add command with plugin name not matching valid regex fails again" {
   run asdf plugin add "#invalid#plugin#name"
   [ "$status" -eq 1 ]
-  [ "$output" = "#invalid#plugin#name is invalid. Name must match regex ^[a-zA-Z0-9_-]+$" ]
+  [ "$output" = "#invalid#plugin#name is invalid. Name must match regex ^[[:alpha:][:digit:]_-]+$" ]
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {
