@@ -16,7 +16,7 @@ teardown() {
   run asdf plugin add "plugin_with-all-valid-CHARS-123" "${BASE_DIR}/repo-plugin_with-all-valid-CHARS-123"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
+  run asdf plugin list
   [ "$output" = "plugin_with-all-valid-CHARS-123" ]
 }
 
@@ -36,41 +36,30 @@ teardown() {
   run asdf plugin add "elixir"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
-  # whitespace between 'elixir' and url is from printf %-15s %s format
+  run asdf plugin list
   [ "$output" = "elixir" ]
 }
 
 @test "plugin_add command with no URL specified adds a plugin when short name repository is enabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
-  echo "" > $ASDF_CONFIG_DEFAULT_FILE
-
-  export ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
-  cat > $ASDF_CONFIG_FILE <<-EOM
-disable_short_name_repository=no
-EOM
-
+  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
+  echo "disable_plugin_short_name_repository=no" >$ASDF_CONFIG_DEFAULT_FILE
 
   run asdf plugin add "elixir"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
-  # whitespace between 'elixir' and url is from printf %-15s %s format
-  [ "$output" = "elixir" ]
+  local expected="elixir"
+  run asdf plugin list
+  [ "$output" = "$expected" ]
 }
 
 @test "plugin_add command with no URL specified fails to add a plugin when disabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
-  echo "" > $ASDF_CONFIG_DEFAULT_FILE
-
-  export ASDF_CONFIG_FILE=$BATS_TMPDIR/asdfrc
-  cat > $ASDF_CONFIG_FILE <<-EOM
-disable_short_name_repository=yes
-EOM
+  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
+  echo "disable_plugin_short_name_repository=yes" >$ASDF_CONFIG_DEFAULT_FILE
+  local expected="Short-name plugin repository is disabled"
 
   run asdf plugin add "elixir"
   [ "$status" -eq 1 ]
-  [ "$output" = "Short-name plugin repository is disabled" ]
+  [ "$output" = "$expected" ]
 }
 
 @test "plugin_add command with URL specified adds a plugin using repo" {
@@ -79,7 +68,7 @@ EOM
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
+  run asdf plugin list
   # whitespace between 'elixir' and url is from printf %-15s %s format
   [ "$output" = "dummy" ]
 }
@@ -109,7 +98,7 @@ EOM
 @test "plugin_add command executes configured pre hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 pre_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -123,7 +112,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured pre hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 pre_asdf_plugin_add_dummy = echo ADD
 EOM
 
@@ -137,7 +126,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured post hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 post_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -151,7 +140,7 @@ ADD dummy"
 @test "plugin_add command executes configured post hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 post_asdf_plugin_add_dummy = echo ADD
 EOM
 

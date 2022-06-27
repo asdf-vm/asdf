@@ -75,7 +75,7 @@ Removing a plugin will remove all installations of the tool made with the plugin
 ## Syncing the Short-name Repository
 
 ::: tip Recommendation
-The short-name repo can be disabled using the flag `disable_short_name_repository`.
+The short-name repo can be disabled using the flag `disable_plugin_short_name_repository`.
 :::
 
 The short-name repo is synced to your local machine and periodically refreshed. This period is determined by the following method:

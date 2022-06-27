@@ -404,8 +404,8 @@ initialize_or_update_repository() {
   local repository_url
   local repository_path
 
-  disable_short_name_repo="$(get_asdf_config_value "disable_short_name_repository")"
-  if [ "yes" == "$disable_short_name_repo" ]; then
+  disable_plugin_short_name_repo="$(get_asdf_config_value "disable_plugin_short_name_repository")"
+  if [ "yes" == "$disable_plugin_short_name_repo" ]; then
     printf "Short-name plugin repository is disabled\\n" >&2
     exit 1
   fi
