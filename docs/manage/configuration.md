@@ -54,13 +54,7 @@ Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 Add an `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
 
-```:no-line-numbers
-legacy_version_file = no
-use_release_candidates = no
-always_keep_download = no
-plugin_repository_last_check_duration = 60
-disable_plugin_short_name_repository = no
-```
+@[code :no-line-numbers](../../defaults)
 
 ### `legacy_version_file`
 
