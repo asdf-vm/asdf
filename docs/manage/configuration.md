@@ -100,6 +100,12 @@ Sync events occur when the following commands are executed:
 
 `asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
 
+::: warning Note
+
+Setting the value to `never` does not stop the plugin repository from being initially synced, for that behaviour see `disable_plugin_short_name_repository`.
+
+:::
+
 ### `disable_plugin_short_name_repository`
 
 Disable synchronization of the asdf plugin short-name repository. Sync events will exit early if the short-name repository is disabled.
@@ -107,7 +113,7 @@ Disable synchronization of the asdf plugin short-name repository. Sync events wi
 | Options                                                    | Description                                               |
 | :--------------------------------------------------------- | :-------------------------------------------------------- |
 | `no` <Badge type="tip" text="default" vertical="middle" /> | Clone or update the asdf plugin repository on sync events |
-| `yes`                                                      | Disable short-name plugin repository                      |
+| `yes`                                                      | Disable the plugin short-name repository                  |
 
 Sync events occur when the following commands are executed:
 
@@ -117,6 +123,8 @@ Sync events occur when the following commands are executed:
 `asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
 
 ::: warning Note
+
+Disabling the plugin short-name repository does not remove the repository if it has already synced. Remove the plugin repo with `rm --recursive --trash $ASDF_DATA_DIR/repository`.
 
 Disabling the plugin short-name repository does not remove plugins previously installed from this source. Plugins can be removed with `asdf plugin remove <name>`. Removing a plugin will remove all installed versions of the managed tool.
 
