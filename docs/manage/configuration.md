@@ -54,13 +54,7 @@ Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 Add an `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
 
-```:no-line-numbers
-legacy_version_file = no
-use_release_candidates = no
-always_keep_download = no
-plugin_repository_last_check_duration = 60
-disable_plugin_short_name_repository = no
-```
+@[code :no-line-numbers](../../defaults)
 
 ### `legacy_version_file`
 
@@ -106,6 +100,12 @@ Sync events occur when the following commands are executed:
 
 `asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
 
+::: warning Note
+
+Setting the value to `never` does not stop the plugin repository from being initially synced, for that behaviour see `disable_plugin_short_name_repository`.
+
+:::
+
 ### `disable_plugin_short_name_repository`
 
 Disable synchronization of the asdf plugin short-name repository. Sync events will exit early if the short-name repository is disabled.
@@ -113,7 +113,7 @@ Disable synchronization of the asdf plugin short-name repository. Sync events wi
 | Options                                                    | Description                                               |
 | :--------------------------------------------------------- | :-------------------------------------------------------- |
 | `no` <Badge type="tip" text="default" vertical="middle" /> | Clone or update the asdf plugin repository on sync events |
-| `yes`                                                      | Disable short-name plugin repository                      |
+| `yes`                                                      | Disable the plugin short-name repository                  |
 
 Sync events occur when the following commands are executed:
 
@@ -123,6 +123,8 @@ Sync events occur when the following commands are executed:
 `asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
 
 ::: warning Note
+
+Disabling the plugin short-name repository does not remove the repository if it has already synced. Remove the plugin repo with `rm --recursive --trash $ASDF_DATA_DIR/repository`.
 
 Disabling the plugin short-name repository does not remove plugins previously installed from this source. Plugins can be removed with `asdf plugin remove <name>`. Removing a plugin will remove all installed versions of the managed tool.
 
