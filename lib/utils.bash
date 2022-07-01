@@ -50,6 +50,18 @@ asdf_data_dir() {
   printf "%s\\n" "$data_dir"
 }
 
+asdf_config_dir() {
+  local config_dir="${HOME}"
+
+  if [ -n "${ASDF_CONFIG_DIR}" ]; then
+    config_dir="${ASDF_CONFIG_DIR}"
+  elif [ -n "${XDG_CONFIG_HOME}" ]; then
+    config_dir="${XDG_CONFIG_HOME}/asdf"
+  fi
+
+  printf "%s\\n" "${config_dir}"
+}
+
 get_install_path() {
   local plugin=$1
   local install_type=$2

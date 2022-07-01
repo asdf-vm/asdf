@@ -3,6 +3,9 @@
 load test_helpers
 
 setup() {
+  # Unset XDG_CONFIG_HOME to ensure it uses HOME for determine location
+  unset XDG_CONFIG_HOME
+
   setup_asdf_dir
   install_dummy_plugin
   install_dummy_version "1.0.0"
@@ -185,6 +188,20 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should create a global .tool-versions in ASDF_CONFIG_DIR if it doesn't exist" {
+  export ASDF_CONFIG_DIR="/tmp/test"
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $ASDF_CONFIG_DIR/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should create a global .tool-versions in XDG_CONFIG_HOME if it doesn't exist" {
+  export XDG_CONFIG_HOME="/tmp/test"
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $XDG_CONFIG_HOME/asdf/.tool-versions)" = "dummy 1.1.0" ]
 }
 
 @test "[global - dummy_plugin] with latest should use the latest installed version" {

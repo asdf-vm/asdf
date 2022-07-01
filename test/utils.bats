@@ -446,3 +446,32 @@ EOF
   [ "$status" -eq 0 ]
   [ "$output" = "$message" ]
 }
+
+@test "asdf_config_dir should return user dir when ASDF_CONFIG_DIR is set and XDG_CONFIG_HOME is not set" {
+  export ASDF_CONFIG_DIR="/tmp/test1"
+  export XDG_CONFIG_HOME="/tmp/test2"
+
+  run asdf_config_dir
+
+  echo "${ASDF_CONFIG_DIR}:${XDG_CONFIG_HOME}:$(asdf_config_dir)"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$ASDF_CONFIG_DIR" ]
+}
+
+@test "asdf_config_dir should return user dir when XDG_CONFIG_HOME is set and ASDF_CONFIG_DIR is not set" {
+  unset ASDF_CONFIG_DIR
+  export XDG_CONFIG_HOME="/tmp/test2"
+
+  run asdf_config_dir
+  [ "$status" -eq 0 ]
+  [ "$output" = "$XDG_CONFIG_HOME/asdf" ]
+}
+
+@test "asdf_config_dir should return HOME when ASDF_CONFIG_DIR and XDG_CONFIG_HOME are not set" {
+  unset ASDF_CONFIG_DIR
+  unset XDG_CONFIG_HOME
+
+  run asdf_config_dir
+  [ "$status" -eq 0 ]
+  [ "$output" = "$HOME" ]
+}
