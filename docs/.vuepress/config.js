@@ -56,7 +56,7 @@ module.exports = {
         selectLanguageText: "选择语言",
         sidebar: sidebar.zh_hans,
         navbar: navbar.zh_hans,
-        editLinkText: "在 Github 编辑此页面",
+        editLinkText: "在 GitHub 编辑此页面",
 
         // 404 page
         notFound: ["抱歉，您访问的页面不存在！"],
