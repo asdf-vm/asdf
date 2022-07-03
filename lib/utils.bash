@@ -820,7 +820,7 @@ with_shim_executable() {
 }
 
 substitute() {
-  # Use Bash substituion rather than sed as it will handle escaping of all
+  # Use Bash substitution rather than sed as it will handle escaping of all
   # strings for us.
   local input=$1
   local find_str=$2
