@@ -100,7 +100,7 @@ Fixed Bugs
 
 * Fix plugin-update --all when there are no plugins (#805, #803)
 * Ban `echo` command from asdf codebase (#806, #781)
-* Add basic tests for for plugin-update command (#807)
+* Add basic tests for plugin-update command (#807)
 * Cleanup unused code in plugin update tests (#810)
 * Fix resolution of relative symlinks (#815, #625)
 * Fixes to GitHub workflow (#833)
