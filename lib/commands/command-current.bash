@@ -48,7 +48,7 @@ current_command() {
   local exit_status=0
   local plugin
 
-  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
+  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disable this until we release headings across the board
   if [ $# -eq 0 ]; then
     # shellcheck disable=SC2119
     for plugin in $(plugin_list_command); do
