@@ -310,7 +310,7 @@ Some OSs already have tools installed that are managed by the system and not `as
 
 ### Local
 
-Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git respository for a project. When in your desired directory execute:
+Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
 
 ```shell:no-line-numbers
 asdf local nodejs latest
