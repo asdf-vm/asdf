@@ -42,7 +42,7 @@ banned_commands_regex=(
   # https://github-wiki-see.page/m/koalaman/shellcheck/wiki/SC2012
   '\bls '
 
-  # Ban recusive asdf calls as they are inefficient and may introduce bugs.
+  # Ban recursive asdf calls as they are inefficient and may introduce bugs.
   # If you find yourself needing to invoke an `asdf` command from within
   # asdf code, please source the appropriate file and invoke the
   # corresponding function.

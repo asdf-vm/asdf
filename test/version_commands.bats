@@ -439,7 +439,7 @@ false"
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }
 
-@test "[global - dummy_legcay_plugin] should support latest" {
+@test "[global - dummy_legacy_plugin] should support latest" {
   echo 'legacy-dummy 1.0.0' >>$HOME/.tool-versions
   run asdf global "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]

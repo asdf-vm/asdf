@@ -25,7 +25,7 @@ teardown() {
   echo "$output" | grep "PLUGIN dummy" # should present plugin section
   listed_cmds=$(echo "$output" | grep "asdf dummy" | wc -l)
   [ "$listed_cmds" -eq 3 ]
-  echo "$output" | grep "asdf dummy foo bar" # should present commands without hipens
+  echo "$output" | grep "asdf dummy foo bar" # should present commands without hyphens
 }
 
 @test "asdf help shows extension commands for plugin with hyphens in the name" {

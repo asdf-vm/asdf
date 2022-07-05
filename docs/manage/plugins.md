@@ -82,5 +82,5 @@ The short-name repo is synced to your local machine and periodically refreshed. 
   - `asdf plugin add <name>`
   - `asdf plugin list all`
 - if configuration option `disable_plugin_short_name_repository` is set to `yes`, then sync is aborted early. See the [asdf config docs](/manage/configuration.md) for more.
-- if there has not been a synchroniztion in the last `X` minutes then the sync will occur.
+- if there has not been a synchronization in the last `X` minutes then the sync will occur.
   - `X` defaults to `60`, but can be configured in your `.asdfrc` via the `plugin_repository_last_check_duration` option. See the [asdf config docs](/manage/configuration.md) for more.

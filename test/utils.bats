@@ -172,7 +172,7 @@ teardown() {
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
-@test "find_versions should return the version set by envrionment variable" {
+@test "find_versions should return the version set by environment variable" {
   export ASDF_DUMMY_VERSION=0.2.0
 
   run find_versions "dummy" $PROJECT_DIR

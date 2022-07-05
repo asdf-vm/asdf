@@ -653,7 +653,7 @@ strip_tool_version_comments() {
   local tool_version_path="$1"
   # Use sed to strip comments from the tool version file
   # Breakdown of sed command:
-  # This command represents 3 steps, seperated by a semi-colon (;), that run on each line.
+  # This command represents 3 steps, separated by a semi-colon (;), that run on each line.
   # 1. Delete line if it starts with any blankspace and a #.
   # 2. Find a # and delete it and everything after the #.
   # 3. Remove any whitespace from the end of the line.
@@ -820,7 +820,7 @@ with_shim_executable() {
 }
 
 substitute() {
-  # Use Bash substituion rather than sed as it will handle escaping of all
+  # Use Bash substitution rather than sed as it will handle escaping of all
   # strings for us.
   local input=$1
   local find_str=$2
