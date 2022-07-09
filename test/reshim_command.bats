@@ -140,3 +140,19 @@ EOM
   run asdf reshim dummy 1.0
   [ "$output" == "RESHIM" ]
 }
+
+@test "reshim should allow local path versions" {
+  run asdf install dummy 1.0
+
+  mkdir -p $ASDF_DIR/installs/dummy/path/bin/
+  touch $ASDF_DIR/installs/dummy/path/bin/dummy
+  chmod +x $ASDF_DIR/installs/dummy/path/bin/dummy
+
+  run asdf reshim dummy path:$ASDF_DIR/installs/dummy/path
+
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin: dummy 1.0" "$ASDF_DIR/shims/dummy"
+  [ "$status" -eq 0 ]
+  run grep "asdf-plugin: dummy path:$ASDF_DIR/installs/dummy" "$ASDF_DIR/shims/dummy"
+  [ "$status" -eq 0 ]
+}
