@@ -110,8 +110,16 @@ list_all_command() {
 
   IFS=' ' read -r -a versions_list <<<"$output"
 
+  mapfile -t installed_versions < <(list_installed_versions "$plugin_name")
+
   for version in "${versions_list[@]}"; do
-    printf "%s\\n" "${version}"
+    # exact match version
+    # shellcheck disable=SC2076
+    if [[ " ${installed_versions[*]} " =~ " ${version} " ]]; then
+      printf "%s\tinstalled\\n" "${version}"
+    else
+      printf "%s\\n" "${version}"
+    fi
   done
 
   # Remove temp files if they still exist
@@ -145,16 +153,18 @@ latest_command() {
     fi
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-    versions=$(list_all_command "$plugin_name" "$query" |
+    versions=$(list_all_versions "$plugin_name" "$query" |
       grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
       sed 's/^[[:space:]]\+//' |
       tail -1)
+
     if [ -z "${versions}" ]; then
+      display_error "No compatible versions available ($plugin_name $query)"
       exit 1
     fi
   fi
 
-  printf "%s\\n" "$versions"
+  printf "%s\n" "$versions"
 }
 
 latest_all() {
@@ -176,7 +186,7 @@ latest_all() {
         fi
       else
         # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-        version=$(list_all_command "$plugin_name" |
+        version=$(list_all_versions "$plugin_name" |
           grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
           sed 's/^[[:space:]]\+//' |
           tail -1)
