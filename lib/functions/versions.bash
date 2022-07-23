@@ -165,13 +165,16 @@ latest_all() {
     for plugin_path in "$plugins_path"/*/; do
       plugin_name=$(basename "$plugin_path")
 
+      local all_versions
+      all_versions=$(list_all_command "$plugin_name")
+
       local installed_versions
       installed_versions=$(list_installed_versions "$plugin_name")
 
       # Get a distinct list of distributions/variants
       local installed_variants
-      installed_variants=$(echo "$installed_versions" |
-        sed -e "s/\(^.*\)\-.*/\1/" |        # extract variant prefix
+      installed_variants=$(printf "$installed_versions" |
+        sed -e "s/\(^.*\)\-[0-9].*/\1/" |   # extract variant prefix
         sort -u |                           # unique
         sed -e "s/^[[:space:]]*[0-9].*//" | # remove versions without variant prefix
         sed '/^[[:space:]]*$/d')            # remove empty lines
@@ -189,36 +192,34 @@ latest_all() {
         else
           versions+=("$version")
         fi
-      elif [ -n "$installed_variants" ]; then
+      else
+        # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
+        local version
+        version=$(printf "$all_versions" |
+          grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+          grep -iE "^\d+.*\$" | # filter out variants
+          sed 's/^[[:space:]]\+//' |
+          tail -1)
+
+        if [ -n "${version}" ]; then
+          versions+=("$version")
+        fi
+
         # get latest version for each variant
         for variant in $installed_variants; do
-          local version
-          version=$(list_all_command "$plugin_name" "$(echo "$variant" | tr -d '[:space:]')" |
-            grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-            # filter for exact match or with version suffix to deal with overlaps (e.g. zulu-18.28.13, zulu-jre-18.28.13)
-            grep -iE "^($variant|$variant(-\d+.*)?)\$" |
+          query=$(printf "$variant" | tr -d '[:space:]')
+          version=$(printf "$all_versions" | grep -E "^\\s*$query" |
+            grep -iE "^($variant|$variant(-\d+.*)?)\$" | # filter for exact match or with version suffix to deal with overlaps (e.g. zulu-18.28.13, zulu-jre-18.28.13)
             sed 's/^[[:space:]]\+//' |
             tail -1)
 
           if [ -z "$version" ]; then
-            versions+=("unknown")
+            versions+=("$variant") # fallback to the variant name
           else
             versions+=("$version")
           fi
         done
-      else
-        # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-        local version
-        version=$(list_all_command "$plugin_name" |
-          grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-          sed 's/^[[:space:]]\+//' |
-          tail -1)
 
-        if [ -z "${version}" ]; then
-          versions+=("unknown")
-        else
-          versions+=("$version")
-        fi
       fi
 
       for version in "${versions[@]}"; do

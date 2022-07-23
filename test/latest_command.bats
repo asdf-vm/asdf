@@ -115,15 +115,19 @@ teardown() {
 @test "[latest_command - all plugins] shows the latest stable version of all plugins" {
   run asdf install dummy 2.0.0
   run asdf install legacy-dummy 4.0.0
-  run asdf install distro-dummy acme-1.0.0
-  run asdf install distro-dummy distro-2.0.0
+  run asdf install distro-dummy 1.0
+  run asdf install distro-dummy dist-1.0.0
+  run asdf install distro-dummy other-dist-1.0
+  run asdf install distro-dummy rc1
   run asdf latest --all
 
   echo "status: $status"
   echo "output: $output"
 
-  [ "$(printf "%s\\t%s\\t%s\\n" "distro-dummy" "acme-1.1.0" "missing"
-       printf "%s\\t%s\\t%s\\n" "distro-dummy" "distro-2.0.0" "installed"
+  [ "$(printf "%s\\t%s\\t%s\\n" "distro-dummy" "2.0" "missing"
+       printf "%s\\t%s\\t%s\\n" "distro-dummy" "dist-1.1.0" "missing"
+       printf "%s\\t%s\\t%s\\n" "distro-dummy" "other-dist-2.0-src" "missing"
+       printf "%s\\t%s\\t%s\\n" "distro-dummy" "rc1" "installed"
        printf "%s\\t%s\\t%s\\n" "dummy" "2.0.0" "installed"
        printf "%s\\t%s\\t%s\\n" "legacy-dummy" "5.1.0" "missing")" == "$output" ]
   [ "$status" -eq 0 ]
@@ -135,7 +139,7 @@ teardown() {
   echo "status: $status"
   echo "output: $output"
 
-  [ "$(printf "%s\\t%s\\t%s\\n" "distro-dummy" "distro-2.0.0" "missing"
+  [ "$(printf "%s\\t%s\\t%s\\n" "distro-dummy" "2.0" "missing"
        printf "%s\\t%s\\t%s\\n" "dummy" "2.0.0" "missing"
        printf "%s\\t%s\\t%s\\n" "legacy-dummy" "5.1.0" "missing")" == "$output" ]
   [ "$status" -eq 0 ]
