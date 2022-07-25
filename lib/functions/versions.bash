@@ -150,7 +150,7 @@ latest_command() {
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
     versions=$(list_all_command "$plugin_name" "$query" |
-      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
       sed 's/^[[:space:]]\+//' |
       tail -1)
     if [ -z "${versions}" ]; then
