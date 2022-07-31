@@ -96,19 +96,15 @@ EOF
 
   if [ -f "$shim_path" ]; then
     grep '^#\sasdf-plugin:\s' < "$shim_path" >> "$temp_versions_path"
-    rm "$shim_path"
   fi
 
   cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
-EOF
-
-  cat "$temp_versions_path" | sort -u >> "$shim_path"
-  rm "$temp_versions_path"
-
-  cat <<EOF >>"$shim_path"
+`cat "$temp_versions_path" | sort -u`
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
+
+  rm "$temp_versions_path"
 
   chmod +x "$shim_path"
 }
