@@ -140,3 +140,19 @@ EOM
   run asdf reshim dummy 1.0
   [ "$output" == "RESHIM" ]
 }
+
+# Fixes https://github.com/asdf-vm/asdf/issues/1115
+# (Issue with executable_name changing after homebre updates)
+@test "reshim should rewrite the shim file except the version list" {
+  run asdf install dummy 1.0
+  local dummy_shim
+  dummy_shim="$ASDF_DIR/shims/dummy"
+
+  sed -i.bak -e 's/exec /exec \/borked_path_due_to_homebrew_update/' "$dummy_shim"
+  run grep 'borked_path_due_to_homebrew_update' "$dummy_shim" # Sanity check
+  [ "$status" -eq 0 ]
+
+  run asdf reshim dummy "path:$ASDF_DIR/installs/dummy/path"
+  run grep -v 'borked_path_due_to_homebrew_update' "$dummy_shim"
+  [ "$status" -eq 0 ]
+}
