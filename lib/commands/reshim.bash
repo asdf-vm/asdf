@@ -100,7 +100,7 @@ EOF
 
   cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
-`cat "$temp_versions_path" | sort -u`
+`sort -u < "$temp_versions_path"`
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
 
