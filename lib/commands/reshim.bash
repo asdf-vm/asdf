@@ -90,7 +90,9 @@ write_shim_script() {
 
   local temp_versions_path
   temp_versions_path=`mktemp`
-  echo "# asdf-plugin: ${plugin_name} ${version}" > "$temp_versions_path"
+  cat <<EOF >"$temp_versions_path"
+# asdf-plugin: ${plugin_name} ${version}
+EOF
 
   if [ -f "$shim_path" ]; then
     grep '^#\sasdf-plugin:\s' < "$shim_path" >> "$temp_versions_path"
