@@ -1,3 +1,7 @@
+function log() {
+    echo "$*" >> /Users/Dylan/Desktop/log
+}
+
 remove_shim_for_version() {
   local plugin_name=$1
   local version=$2
@@ -46,6 +50,7 @@ reshim_command() {
 
   if [ "$full_version" != "" ]; then
     # generate for the whole package version
+    log "    - reshim_command no loop"
     asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version"
     generate_shims_for_version "$plugin_name" "$full_version"
     asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version"
@@ -54,10 +59,16 @@ reshim_command() {
     local plugin_installs_path
     plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
 
+    rm `full_shim_path "$"`
+
     for install in "${plugin_installs_path}"/*/; do
       local full_version_name
       full_version_name=$(basename "$install" | sed 's/ref\-/ref\:/')
       asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version_name"
+      log "    - reshim_command for install"
+      log "      install=$install"
+      log "      full_version_name=$full_version_name"
+      log "      all_executable_paths=$all_executable_paths"
       generate_shims_for_version "$plugin_name" "$full_version_name"
       remove_obsolete_shims "$plugin_name" "$full_version_name"
       asdf_run_hook "post_asdf_reshim_$plugin_name" "$full_version_name"
@@ -88,17 +99,51 @@ write_shim_script() {
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
-  rm -f "$shim_path"
+  log "      - write_shim_script"
+  log "        plugin_name=$1"
+  log "        version=$2"
+  log "        executable_path=$3"
+  log "        executable_name=$executable_name"
+  log "        shim_path=$shim_path"
+  log
+
+  log
+  log '        - shim_path contents BEFORE <<<<<<<<<'
+  cat "$shim_path" >> /Users/Dylan/Desktop/log
+  log '        - shim_path contents BEFORE >>>>>>>>>'
+
+  local temp_versions_path
+  temp_versions_path=`mktemp`
+  cat <<EOF >"$temp_versions_path"
+# asdf-plugin: ${plugin_name} ${version}
+EOF
+
+  if [ -f "$shim_path" ]; then
+    grep '^#\sasdf-plugin:\s' < "$shim_path" >> "$temp_versions_path"
+    rm "$shim_path" -f
+  fi
 
   cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
-# asdf-plugin: ${plugin_name} ${version}
+EOF
+
+  cat "$temp_versions_path" | sort -u >> "$shim_path"
+  rm "$temp_versions_path"
+
+  cat <<EOF >>"$shim_path"
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
+
+  log
+  log '        - shim_path contents AFTER <<<<<<<<<'
+  cat "$shim_path" >> /Users/Dylan/Desktop/log
+  log '        - shim_path contents AFTER >>>>>>>>>'
+  log
 
   chmod +x "$shim_path"
 }
 
+# TODO this function doesn't seem to be used
 generate_shim_for_executable() {
   local plugin_name=$1
   local executable=$2
@@ -158,3 +203,4 @@ remove_obsolete_shims() {
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"
   done
 }
+
