@@ -5,12 +5,10 @@ end
 # Add asdf to PATH
 # fish_add_path was added in fish 3.2, so we need a fallback for older version
 if type -q fish_add_path
-  fish_add_path --global --move $ASDF_DIR/bin
-
   if test -n "$ASDF_DATA_DIR"
-    fish_add_path --global --move "$ASDF_DATA_DIR/shims"
+    fish_add_path --global --move "$ASDF_DATA_DIR/shims" "$ASDF_DIR/bin"
   else
-    fish_add_path --global --move "$HOME/.asdf/shims"
+    fish_add_path --global --move "$HOME/.asdf/shims" "$ASDF_DIR/bin"
   end
 else
   set -l asdf_user_shims (
