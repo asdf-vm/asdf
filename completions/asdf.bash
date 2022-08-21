@@ -67,6 +67,10 @@ _asdf() {
       COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
     fi
     ;;
+  latest)
+    # shellcheck disable=SC2207
+    COMPREPLY=($(compgen -W "--all" -- "$cur"))
+    ;;
   *)
     local cmds='current global help install list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim shell uninstall update where which info'
     # shellcheck disable=SC2207
