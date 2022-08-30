@@ -1,14 +1,14 @@
-const { defaultTheme } = require("vuepress");
-const { searchPlugin } = require("@vuepress/plugin-search");
-const { shikiPlugin } = require("@vuepress/plugin-shiki");
-const {
+import { defaultTheme, defineUserConfig } from "vuepress";
+import { searchPlugin } from "@vuepress/plugin-search";
+import { shikiPlugin } from "@vuepress/plugin-shiki";
+import {
   activeHeaderLinksPlugin,
-} = require("@vuepress/plugin-active-header-links");
+} from "@vuepress/plugin-active-header-links";
 
-const navbar = require("./navbar");
-const sidebar = require("./sidebar");
+import navbar from "./navbar";
+import sidebar from "./sidebar";
 
-module.exports = {
+export default defineUserConfig({
   base: "/",
   head: [],
   locales: {
@@ -84,4 +84,4 @@ module.exports = {
       theme: "monokai",
     }),
   ],
-};
+});
