@@ -29,7 +29,7 @@ _asdf() {
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
     ;;
-  install | list | list-all)
+  install | list | list-all | help)
     if [[ "$plugins" == *"$prev"* ]]; then
       local versions
       versions=$(asdf list-all "$prev" 2>/dev/null)
