@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck source=lib/utils.bash
-. "$(dirname "$(dirname "$0")")/lib/utils.bash"
+. "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/lib/utils.bash"
 
 find_cmd() {
   local cmd_dir="$1"

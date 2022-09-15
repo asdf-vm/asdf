@@ -3,7 +3,7 @@
 # remove this asdf-exec file when releasing >=0.6.5
 printf "asdf is self upgrading shims to new asdf exec ...\\n"
 
-asdf_dir="$(dirname "$(dirname "$(dirname "$0")")")"
+asdf_dir="$(dirname "$(dirname "$(dirname "${BASH_SOURCE[0]}")")")"
 # shellcheck source=lib/utils.bash
 . "$asdf_dir/lib/utils.bash"
 rm "$(asdf_data_dir)"/shims/*

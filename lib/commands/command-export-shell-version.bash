@@ -1,6 +1,6 @@
 # -*- sh -*-
 # shellcheck source=lib/functions/versions.bash
-. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
+. "$(dirname "$(dirname "$(dirname "${BASH_SOURCE[0]}")")")/lib/functions/versions.bash"
 
 # Output from this command must be executable shell code
 shell_command() {
