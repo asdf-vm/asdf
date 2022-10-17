@@ -23,7 +23,7 @@ cleaned_path() {
 
   output=$(echo "$result" | grep "asdf")
   [ "$?" -eq 0 ]
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "does not error if nounset is enabled" {
@@ -39,7 +39,7 @@ cleaned_path() {
 
   output=$(echo "$result" | grep "asdf")
   [ "$?" -eq 0 ]
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "adds asdf dirs to PATH" {
@@ -54,7 +54,7 @@ cleaned_path() {
 
   output=$(echo "$result" | grep "asdf")
   [ "$?" -eq 0 ]
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "does not add paths to PATH more than once" {
@@ -70,7 +70,7 @@ cleaned_path() {
 
   output=$(echo $result | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$?" -eq 0 ]
-  [ "$output" = "" ]
+  [ -z "$output" ]
 }
 
 @test "defines the asdf function" {
@@ -97,5 +97,5 @@ cleaned_path() {
   )
   [ "$?" -eq 0 ]
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }

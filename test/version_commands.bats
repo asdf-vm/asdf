@@ -286,7 +286,7 @@ teardown() {
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
-  [ "$(cat .tool-versions)" = "" ]
+  [ -z "$(cat .tool-versions)" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
@@ -296,7 +296,7 @@ teardown() {
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
-  [ "$(cat .tool-versions)" = "" ]
+  [ -z "$(cat .tool-versions)" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
@@ -305,7 +305,7 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
-  [ "$(cat $HOME/.tool-versions)" = "" ]
+  [ -z "$(cat $HOME/.tool-versions)" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 
@@ -315,7 +315,7 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME)" = "dummy 1.1.0" ]
-  [ "$(cat $HOME/.tool-versions)" = "" ]
+  [ -z "$(cat $HOME/.tool-versions)" ]
   unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 }
 

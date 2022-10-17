@@ -226,7 +226,7 @@ EOM
   cd $PROJECT_DIR
   run asdf install
   [ "$status" -eq 0 ]
-  [ "$output" == "" ]
+  [ -z "$output" ]
   [ -f $ASDF_DIR/installs/dummy/1.2.0/version ]
 }
 
@@ -239,7 +239,7 @@ EOM
 
   run asdf install
   [ "$status" -eq 0 ]
-  [ "$output" == "" ]
+  [ -z "$output" ]
   [ -f $ASDF_DIR/installs/dummy/1.2.0/version ]
 }
 

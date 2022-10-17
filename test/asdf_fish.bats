@@ -21,7 +21,7 @@ cleaned_path() {
     echo \$ASDF_DIR
   ")
   [ "$?" -eq 0 ]
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "adds asdf dirs to PATH" {
@@ -36,7 +36,7 @@ cleaned_path() {
  ")
   [ "$?" -eq 0 ]
   output=$(echo "$result" | grep "asdf")
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "does not add paths to PATH more than once" {
@@ -52,7 +52,7 @@ cleaned_path() {
   ")
   [ "$?" -eq 0 ]
   output=$(echo $result | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
-  [ "$output" = "" ]
+  [ -z "$output" ]
 }
 
 @test "defines the asdf function" {
@@ -79,5 +79,5 @@ cleaned_path() {
   ")
   [ "$?" -eq 0 ]
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }

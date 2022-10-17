@@ -58,7 +58,7 @@ teardown() {
   [ "$status" -eq 0 ]
 
   run grep 'FOO=bar' <(echo $output)
-  [ "$output" == "" ]
+  [ -z "$output" ]
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
@@ -75,9 +75,9 @@ teardown() {
 
   # Should set path
   path_line=$(echo "$output" | grep '^PATH=')
-  [ "$path_line" != "" ]
+  [ -n "$path_line" ]
 
   # Should not contain duplicate colon
   run grep '::' <(echo "$path_line")
-  [ "$duplicate_colon" == "" ]
+  [ -z "$duplicate_colon" ]
 }

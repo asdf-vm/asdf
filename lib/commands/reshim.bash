@@ -44,7 +44,7 @@ reshim_command() {
   check_if_plugin_exists "$plugin_name"
   ensure_shims_dir
 
-  if [ "$full_version" != "" ]; then
+  if [ -n "$full_version" ]; then
     # generate for the whole package version
     asdf_run_hook "pre_asdf_reshim_$plugin_name" "$full_version"
     generate_shims_for_version "$plugin_name" "$full_version"

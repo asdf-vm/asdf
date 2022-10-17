@@ -77,7 +77,7 @@ teardown() {
     fi
 
     [ "$status" -eq 1 ]
-    [ "" == "$output" ]
+    [ -z "$output" ]
   done
 
   for cmd in "${banned_commands_regex[@]}"; do
@@ -94,6 +94,6 @@ teardown() {
     fi
 
     [ "$status" -eq 1 ]
-    [ "" == "$output" ]
+    [ -z "$output" ]
   done
 }

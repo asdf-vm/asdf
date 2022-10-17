@@ -15,7 +15,7 @@ install_command() {
   local full_version=$2
   local extra_args="${*:3}"
 
-  if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
+  if [ -z "$plugin_name" ] && [ -z "$full_version" ]; then
     install_local_tool_versions "$extra_args"
   elif [[ $# -eq 1 ]]; then
     install_one_local_tool "$plugin_name"

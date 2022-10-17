@@ -59,7 +59,7 @@ cleaned_path() {
   [ "$?" -eq 0 ]
   echo "$result"
   output=$(echo "$result" | grep "asdf")
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
 
 @test "defines the _asdf namespace" {
@@ -84,7 +84,7 @@ cleaned_path() {
   ")
   [ "$?" -eq 0 ]
   output=$(echo $result | tr ':' '\n' | grep "asdf" | sort | uniq -d)
-  [ "$output" = "" ]
+  [ -z "$output" ]
 }
 
 @test "defines the asdf function" {
@@ -108,5 +108,5 @@ cleaned_path() {
   ")
   [ "$?" -eq 0 ]
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
-  [ "$output" != "" ]
+  [ -n "$output" ]
 }
