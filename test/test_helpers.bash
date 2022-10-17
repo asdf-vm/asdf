@@ -22,7 +22,7 @@ setup_asdf_dir() {
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # shellcheck disable=SC2031
-  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
+  PATH="$ASDF_BIN:"$ASDF_DIR/shims":$PATH"
 }
 
 install_mock_plugin() {

@@ -11,7 +11,7 @@ setup() {
   cd $PROJECT_DIR
 
   # asdf lib needed to run generated shims
-  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
+  cp -rf $BATS_TEST_DIRNAME/../{bin,lib} "$ASDF_DIR/"
 }
 
 teardown() {
@@ -37,8 +37,8 @@ teardown() {
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "export FOO=bar" >$ASDF_DIR/plugins/dummy/bin/exec-env
-  chmod +x $ASDF_DIR/plugins/dummy/bin/exec-env
+  echo "export FOO=bar" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
 
   run asdf env dummy
   [ "$status" -eq 0 ]
@@ -49,8 +49,8 @@ teardown() {
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "export FOO=bar" >$ASDF_DIR/plugins/dummy/bin/exec-env
-  chmod +x $ASDF_DIR/plugins/dummy/bin/exec-env
+  echo "export FOO=bar" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
 
   echo "dummy system" >$PROJECT_DIR/.tool-versions
 
@@ -58,7 +58,7 @@ teardown() {
   [ "$status" -eq 0 ]
 
   run grep 'FOO=bar' <(echo $output)
-  [ -z "$output" ]
+  [ "$output" == "" ]
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
@@ -75,9 +75,9 @@ teardown() {
 
   # Should set path
   path_line=$(echo "$output" | grep '^PATH=')
-  [ -n "$path_line" ]
+  [ "$path_line" != "" ]
 
   # Should not contain duplicate colon
   run grep '::' <(echo "$path_line")
-  [ -z "$duplicate_colon" ]
+  [ "$duplicate_colon" == "" ]
 }

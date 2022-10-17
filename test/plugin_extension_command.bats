@@ -29,7 +29,7 @@ teardown() {
 }
 
 @test "asdf help shows extension commands for plugin with hyphens in the name" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   plugin_name=dummy-hyphenated
   install_mock_plugin $plugin_name

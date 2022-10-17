@@ -8,7 +8,7 @@ setup() {
   install_dummy_broken_plugin
 
   PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {
@@ -25,8 +25,8 @@ teardown() {
 }
 
 @test "list_command should list plugins with installed versions and any selected versions marked with asterisk" {
-  cd $PROJECT_DIR
-  echo 'dummy 1.1.0' >>$PROJECT_DIR/.tool-versions
+  cd "$PROJECT_DIR"
+  echo 'dummy 1.1.0' >>"$PROJECT_DIR/.tool-versions"
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
 

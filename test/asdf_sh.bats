@@ -18,7 +18,7 @@ cleaned_path() {
     PATH=$(cleaned_path)
 
     source_asdf_sh
-    echo $ASDF_DIR
+    echo "$ASDF_DIR"
   )
 
   output=$(echo "$result" | grep "asdf")
@@ -34,7 +34,7 @@ cleaned_path() {
     set -o nounset
 
     source_asdf_sh
-    echo $ASDF_DIR
+    echo "$ASDF_DIR"
   )
 
   output=$(echo "$result" | grep "asdf")
