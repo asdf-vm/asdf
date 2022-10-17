@@ -57,7 +57,7 @@ EOF
 
   run asdf help "sunny"
   [ "$status" -eq 1 ]
-  [ "$output" == "No plugin named sunny" ]
+  [ "$output" = "No plugin named sunny" ]
 }
 
 @test "help should fail when plugin doesn't have documentation callback" {
@@ -65,7 +65,7 @@ EOF
 
   run asdf help "legacy-dummy"
   [ "$status" -eq 1 ]
-  [ "$output" == "No documentation for plugin legacy-dummy" ]
+  [ "$output" = "No documentation for plugin legacy-dummy" ]
 }
 
 @test "help should show asdf help when no plugin name is provided" {

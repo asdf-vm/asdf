@@ -42,12 +42,12 @@ teardown() {
 
   run asdf help
   [ "$status" -eq 0 ]
-  [[ "$output" == *"PLUGIN $plugin_name"* ]]
+  [[ "$output" = *"PLUGIN $plugin_name"* ]]
   # shellcheck disable=SC2154
   listed_cmds=$(grep -c "asdf $plugin_name" <<<"${output}")
   [[ $listed_cmds -eq 3 ]]
-  [[ "$output" == *"asdf $plugin_name foo"* ]]
-  [[ "$output" == *"asdf $plugin_name foo bar"* ]]
+  [[ "$output" = *"asdf $plugin_name foo"* ]]
+  [[ "$output" = *"asdf $plugin_name foo bar"* ]]
 }
 
 @test "asdf can execute plugin bin commands" {

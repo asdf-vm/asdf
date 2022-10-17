@@ -30,7 +30,7 @@ teardown() {
 
   run asdf env dummy which dummy
   [ "$status" -eq 0 ]
-  [ "$output" == "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
+  [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
 
 @test "asdf env should execute under plugin custom environment used for a shim" {
@@ -58,11 +58,11 @@ teardown() {
   [ "$status" -eq 0 ]
 
   run grep 'FOO=bar' <(echo $output)
-  [ "$output" == "" ]
+  [ "$output" = "" ]
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
-  [ "$output" == "$ASDF_DIR/shims/dummy" ]
+  [ "$output" = "$ASDF_DIR/shims/dummy" ]
   [ "$status" -eq 0 ]
 }
 
@@ -79,5 +79,5 @@ teardown() {
 
   # Should not contain duplicate colon
   run grep '::' <(echo "$path_line")
-  [ "$duplicate_colon" == "" ]
+  [ "$duplicate_colon" = "" ]
 }
