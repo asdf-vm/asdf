@@ -42,7 +42,7 @@ display_installed_versions() {
   fi
 
   if [ -n "${versions}" ]; then
-    current_version=$(cut -d '|' -f 1 <<<"$(find_versions "$plugin_name" "$(pwd)")")
+    current_version=$(cut -d '|' -f 1 <<<"$(find_versions "$plugin_name" "$PWD")")
 
     for version in $versions; do
       flag="  "
