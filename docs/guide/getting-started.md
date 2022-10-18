@@ -239,10 +239,6 @@ Add the following to `~/.zshrc`:
 Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
-`asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
-
-Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
-
 ::: details Nushell & Git
 
 Add the following to `~/.config/nushell/config.nu`:
@@ -275,6 +271,10 @@ source /opt/asdf-vm/asdf.nu
 
 Completions are automatically configured.
 :::
+
+`asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
+
+Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
 ## Core Installation Complete!
 
