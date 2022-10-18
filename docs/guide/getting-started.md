@@ -243,6 +243,39 @@ Completions are placed in a ZSH friendly location, but [ZSH must be configured t
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
+::: details Nushell & Git
+
+Add the following to `~/.config/nushell/config.nu`:
+
+```shell
+source ~/.asdf/asdf.nu
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Homebrew
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell:no-line-numbers
+"\nsource " +  (brew --prefix asdf | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Pacman
+
+Add the following to `~/.config/nushell/config.nu`:
+
+```shell
+source /opt/asdf-vm/asdf.nu
+```
+
+Completions are automatically configured.
+:::
+
 ## Core Installation Complete!
 
 This completes the installation of the `asdf` core :tada:
