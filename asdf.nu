@@ -1,18 +1,26 @@
 let possible_dirs = [ 
-                        (env | where name == 'ASDF_DIR' | default '') , 
+                        ($env | get --ignore-errors ASDF_DIR | default '' | first) , 
                         '/opt/asdf-vm/asdf.nu', 
                         ($env.HOME | path join '.asdf/asdf.nu') 
                     ] 
+
+let is_brew_installed = (which 'brew' | get --ignore-errors path | default '' | str trim | str length | into bool | first )
+
+let possible_dirs = ( $possible_dirs | append (if $is_brew_installed { (brew --prefix asdf | into string | path join 'libexec/asdf.nu') } else { '' }) )
+
 let filtered_dirs = ( $possible_dirs | 
                         where { |it| not ($it | is-empty) } )
 
-let asdf_dir = ( $filtered_dirs | 
-                    where { |it| $it |path exists } | 
-                    first |
-                    path dirname )
+let asdf_dir = ( $filtered_dirs                         | 
+                    where {|it| $it | path exists  }    | 
+                    first                               |
+                    path dirname                        | 
+                    path join 'bin' )
 
-let-env PATH = ( $env.PATH | append ($asdf_dir | path join 'bin') )
-let-env PATH = ( $env.PATH | append ($asdf_dir | path join 'shims') )
+let shims_dir = ( if ($asdf_dir | path join 'shims' | path exists) { $asdf_dir | path join 'shims' } else { $env.HOME | path join '.asdf/shims' } )
+
+let-env PATH = ( $env.PATH | append $asdf_dir )
+let-env PATH = ( $env.PATH | append $shims_dir)
 
 ## Completions
 
