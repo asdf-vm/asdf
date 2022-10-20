@@ -241,10 +241,10 @@ Completions are placed in a ZSH friendly location, but [ZSH must be configured t
 
 ::: details Nushell & Git
 
-Add the following to `~/.config/nushell/config.nu`:
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-source ~/.asdf/asdf.nu
+"\nsource " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
 ```
 
 Completions are automatically configured
@@ -263,10 +263,10 @@ Completions are automatically configured
 
 ::: details Nushell & Pacman
 
-Add the following to `~/.config/nushell/config.nu`:
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-source /opt/asdf-vm/asdf.nu
+"\nsource /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
 ```
 
 Completions are automatically configured.
