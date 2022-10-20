@@ -255,7 +255,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell:no-line-numbers
-"\nsource " +  (brew --prefix asdf | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+"\nsource " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
 ```
 
 Completions are automatically configured
