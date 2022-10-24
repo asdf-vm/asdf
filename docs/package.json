@@ -5,7 +5,7 @@
     "format": "npx -y prettier --write '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'"
   },
   "devDependencies": {
-    "@vuepress/plugin-active-header-links": "^2.0.0-beta.51",
+    "@vuepress/plugin-active-header-links": "^2.0.0-beta.52",
     "@vuepress/plugin-search": "^2.0.0-beta.51",
     "@vuepress/plugin-shiki": "^2.0.0-beta.51",
     "vuepress": "^2.0.0-beta.51"
