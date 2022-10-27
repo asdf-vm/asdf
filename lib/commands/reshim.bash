@@ -33,7 +33,7 @@ reshim_command() {
     plugins_path=$(get_plugin_path)
 
     if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
-      for plugin_path in "$plugins_path"/*; do
+      for plugin_path in "$plugins_path"/*/; do
         plugin_name=$(basename "$plugin_path")
         reshim_command "$plugin_name"
       done
@@ -145,12 +145,15 @@ remove_obsolete_shims() {
   local formatted_shims
   local formatted_exec_names
 
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
+
   # comm only takes to files, so we write this data to temp files so we can
   # pass it to comm.
-  formatted_shims=$(mktemp /tmp/asdf-command-reshim-formatted-shims.XXXXXX)
+  formatted_shims="$(mktemp "$temp_dir/asdf-command-reshim-formatted-shims.XXXXXX")"
   printf "%s\\n" "$shims" >"$formatted_shims"
 
-  formatted_exec_names=$(mktemp /tmp/asdf-command-reshim-formatted-exec-names.XXXXXX)
+  formatted_exec_names="$(mktemp "$temp_dir/asdf-command-reshim-formatted-exec-names.XXXXXX")"
   printf "%s\\n" "$exec_names" >"$formatted_exec_names"
 
   obsolete_shims=$(comm -23 "$formatted_shims" "$formatted_exec_names")

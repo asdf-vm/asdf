@@ -14,7 +14,9 @@
 **Linux**:
 
 ::: tip Note
+
 `sudo` may be required depending on your system configuration.
+
 :::
 
 | Package Manager | Command                   |
@@ -37,7 +39,7 @@ We recommend using Git, though there are other platform specific methods:
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                             |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
@@ -310,7 +312,7 @@ Some OSs already have tools installed that are managed by the system and not `as
 
 ### Local
 
-Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git respository for a project. When in your desired directory execute:
+Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
 
 ```shell:no-line-numbers
 asdf local nodejs latest

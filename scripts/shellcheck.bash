@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 exec shellcheck -s bash -x \
   asdf.sh \
   completions/*.bash \

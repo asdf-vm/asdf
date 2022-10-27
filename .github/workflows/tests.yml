@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  BATS_VERSION: v1.3.0
+  ELVISH_VERSION: v0.18.0
 
 jobs:
   nix:
@@ -16,13 +16,15 @@ jobs:
       matrix:
         os:
           - macos-10.15
-          # - macos-11 - enable once out of private preview: https://github.com/actions/virtual-environments#available-environments
+          - macos-11
+          - macos-12
           - ubuntu-18.04
           - ubuntu-20.04
+          - ubuntu-22.04
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -38,16 +40,16 @@ jobs:
           sudo apt-get -y install fish curl
 
           # Download elvish binary and add to path
-          curl https://dl.elv.sh/linux-amd64/elvish-v0.18.0.tar.gz -o elvish-v0.18.0.tar.gz
-          tar xzf elvish-v0.18.0.tar.gz
-          rm elvish-v0.18.0.tar.gz
+          curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          tar xzf elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          rm elvish-${{ env.ELVISH_VERSION }}.tar.gz
           mkdir -p "$HOME/bin"
-          mv elvish-v0.18.0 "$HOME/bin/elvish"
+          mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
           echo "$HOME/bin" >>"$GITHUB_PATH"
 
       - name: Install bats
         run: |
-          git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git $HOME/bats-core
           echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests

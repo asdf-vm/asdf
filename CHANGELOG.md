@@ -1,5 +1,29 @@
 # Changelog
 
+### [0.10.2](https://www.github.com/asdf-vm/asdf/compare/v0.10.1...v0.10.2) (2022-06-08)
+
+
+### Bug Fixes
+
+* always use ASDF_DEFAULT_TOOL_VERSIONS_FILENAME for filename when present ([#1238](https://www.github.com/asdf-vm/asdf/issues/1238)) ([711ad99](https://www.github.com/asdf-vm/asdf/commit/711ad991043a1980fa264098f29e78f2ecafd610)), closes [#1082](https://www.github.com/asdf-vm/asdf/issues/1082)
+* get invalid ASDF_DATA_DIR when exec asdf shims by non-shell ([#1154](https://www.github.com/asdf-vm/asdf/issues/1154)) ([b9962f7](https://www.github.com/asdf-vm/asdf/commit/b9962f71564ce77cf97772cc100b80f9d77019b1))
+* update event trigger for doc-version workflow ([#1232](https://www.github.com/asdf-vm/asdf/issues/1232)) ([0bc8c3a](https://www.github.com/asdf-vm/asdf/commit/0bc8c3ab6895b88c96bff86f5f79575ee80cc718))
+* update plugin-add regex to support other languages ([#1241](https://www.github.com/asdf-vm/asdf/issues/1241)) ([92d005d](https://www.github.com/asdf-vm/asdf/commit/92d005dacd2ec434a9d912ab9938b59ab1b7c51f)), closes [#1237](https://www.github.com/asdf-vm/asdf/issues/1237)
+* updating references to legacy github.io site ([#1240](https://www.github.com/asdf-vm/asdf/issues/1240)) ([738306b](https://www.github.com/asdf-vm/asdf/commit/738306bc5d1c53a22c06e4d6d3ddb6d511dc5d50))
+
+### [0.10.1](https://www.github.com/asdf-vm/asdf/compare/v0.10.0...v0.10.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* add asdf to list of banned commands ([#1224](https://www.github.com/asdf-vm/asdf/issues/1224)) ([39909e0](https://www.github.com/asdf-vm/asdf/commit/39909e01af2bbf23fc821de5cec6c5c9661c59bb))
+* don't invoke asdf inside asdf commands ([#1208](https://www.github.com/asdf-vm/asdf/issues/1208)) ([27f7ef7](https://www.github.com/asdf-vm/asdf/commit/27f7ef78529649534b8383daa58e4b370b3cbd7f))
+* fixing bats ([#1215](https://www.github.com/asdf-vm/asdf/issues/1215)) ([a9caa5b](https://www.github.com/asdf-vm/asdf/commit/a9caa5bdffca5401798fb37e6f34af933b6ce0d2))
+* instead /tmp, use TMPDIR if defined ([9113623](https://www.github.com/asdf-vm/asdf/commit/91136234e90b5fe8718338f513fa770c99151d3e))
+* make fish shell setup match other shells ([#1209](https://www.github.com/asdf-vm/asdf/issues/1209)) ([6fc4bb8](https://www.github.com/asdf-vm/asdf/commit/6fc4bb8fc650e73152ce326267f89df6865cdd24))
+* only iterate over directories in the plugins/ directory ([#1228](https://www.github.com/asdf-vm/asdf/issues/1228)) ([788ccab](https://www.github.com/asdf-vm/asdf/commit/788ccab5971cb828cf25364b0df5ed6f5e9e713d))
+* update elvish to 0.18.0 ([5a89563](https://www.github.com/asdf-vm/asdf/commit/5a89563c0a37f244fa3daa46c5100b7711edde1d))
+
 ## [0.10.0](https://www.github.com/asdf-vm/asdf/compare/v0.9.0...v0.10.0) (2022-04-14)
 
 
@@ -76,7 +100,7 @@ Fixed Bugs
 
 * Fix plugin-update --all when there are no plugins (#805, #803)
 * Ban `echo` command from asdf codebase (#806, #781)
-* Add basic tests for for plugin-update command (#807)
+* Add basic tests for plugin-update command (#807)
 * Cleanup unused code in plugin update tests (#810)
 * Fix resolution of relative symlinks (#815, #625)
 * Fixes to GitHub workflow (#833)
@@ -161,7 +185,7 @@ Fixed Bugs
   Extension commands are now expected to be inside plugins's `lib/commands/command-*.bash` instead of `bin/command*`.
 
   This change was made for two reasons: Keep the convention that all files to be sourced by bash should end with
-  the `.bash` extension. And the `lib/commands/` directoy mirrors the location of asdf own core commands.
+  the `.bash` extension. And the `lib/commands/` directory mirrors the location of asdf own core commands.
 
   Added tests to make sure `asdf help` properly displays available extension commands.
 

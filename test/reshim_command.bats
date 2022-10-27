@@ -14,7 +14,6 @@ teardown() {
   clean_asdf_dir
 }
 
-
 @test "reshim should allow prefixes of other versions" {
   run asdf install dummy 1.0.1
   run asdf install dummy 1.0
@@ -123,7 +122,7 @@ teardown() {
 @test "reshim command executes configured pre hook" {
   run asdf install dummy 1.0
 
-  cat > "$HOME/.asdfrc" <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_reshim_dummy = echo RESHIM
 EOM
 
@@ -134,7 +133,7 @@ EOM
 @test "reshim command executes configured post hook" {
   run asdf install dummy 1.0
 
-  cat > "$HOME/.asdfrc" <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_reshim_dummy = echo RESHIM
 EOM
 

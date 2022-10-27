@@ -30,7 +30,7 @@ teardown() {
 
 @test "install_command without arguments installs even if the user is terrible and does not use newlines" {
   cd $PROJECT_DIR
-  echo -n 'dummy 1.2.0' > ".tool-versions"
+  echo -n 'dummy 1.2.0' >".tool-versions"
   run asdf install
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2.0/version) = "1.2.0" ]
@@ -38,7 +38,7 @@ teardown() {
 
 @test "install_command with only name installs the version in .tool-versions" {
   cd $PROJECT_DIR
-  echo -n 'dummy 1.2.0' > ".tool-versions"
+  echo -n 'dummy 1.2.0' >".tool-versions"
   run asdf install dummy
   [ "$status" -eq 0 ]
   [ $(cat $ASDF_DIR/installs/dummy/1.2.0/version) = "1.2.0" ]
@@ -56,7 +56,7 @@ teardown() {
   WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
   mkdir -p "$WHITESPACE_DIR"
   cd "$WHITESPACE_DIR"
-  echo 'dummy 1.2.0' >> "$WHITESPACE_DIR/.tool-versions"
+  echo 'dummy 1.2.0' >>"$WHITESPACE_DIR/.tool-versions"
 
   run asdf install
 
@@ -104,7 +104,7 @@ teardown() {
 
 @test "install_command without arguments should not generate shim for subdir" {
   cd $PROJECT_DIR
-  echo 'dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >$PROJECT_DIR/.tool-versions
 
   run asdf install
   [ "$status" -eq 0 ]
@@ -117,7 +117,7 @@ teardown() {
   cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 
   cd $PROJECT_DIR
-  echo 'dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >$PROJECT_DIR/.tool-versions
   run asdf install
 
   # execute the generated shim
@@ -135,24 +135,24 @@ teardown() {
 
 @test "install_command fails if the plugin is not installed" {
   cd $PROJECT_DIR
-  echo 'other_dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+  echo 'other_dummy 1.0.0' >$PROJECT_DIR/.tool-versions
 
   run asdf install
   [ "$status" -eq 1 ]
-  [ "$output" =  "other_dummy plugin is not installed" ]
+  [ "$output" = "other_dummy plugin is not installed" ]
 }
 
 @test "install_command fails if the plugin is not installed without collisions" {
   cd $PROJECT_DIR
-  printf "dummy 1.0.0\ndum 1.0.0" > $PROJECT_DIR/.tool-versions
+  printf "dummy 1.0.0\ndum 1.0.0" >$PROJECT_DIR/.tool-versions
 
   run asdf install
   [ "$status" -eq 1 ]
-  [ "$output" =  "dum plugin is not installed" ]
+  [ "$output" = "dum plugin is not installed" ]
 }
 
 @test "install_command fails when tool is specified but no version of the tool is configured in config file" {
-  echo 'dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >$PROJECT_DIR/.tool-versions
   run asdf install other-dummy
   [ "$status" -eq 1 ]
   [ "$output" = "No versions specified for other-dummy in config files or environment" ]
@@ -160,7 +160,7 @@ teardown() {
 }
 
 @test "install_command fails when two tools are specified with no versions" {
-  printf 'dummy 1.0.0\nother-dummy 2.0.0' > $PROJECT_DIR/.tool-versions
+  printf 'dummy 1.0.0\nother-dummy 2.0.0' >$PROJECT_DIR/.tool-versions
   run asdf install dummy other-dummy
   [ "$status" -eq 1 ]
   [ "$output" = "Dummy couldn't install version: other-dummy (on purpose)" ]
@@ -172,7 +172,7 @@ teardown() {
   # asdf lib needed to run generated shims
   cp -rf $BATS_TEST_DIRNAME/../{bin,lib} $ASDF_DIR/
 
-  echo 'dummy 1.0.0' > $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0' >$PROJECT_DIR/.tool-versions
   mkdir -p $PROJECT_DIR/child
 
   cd $PROJECT_DIR/child
@@ -185,7 +185,7 @@ teardown() {
 }
 
 @test "install_command installs multiple tool versions when they are specified in a .tool-versions file" {
-  echo 'dummy 1.0.0 1.2.0' > $PROJECT_DIR/.tool-versions
+  echo 'dummy 1.0.0 1.2.0' >$PROJECT_DIR/.tool-versions
   cd $PROJECT_DIR
 
   run asdf install
@@ -203,7 +203,7 @@ teardown() {
 }
 
 @test "install command executes configured pre plugin install hook" {
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 pre_asdf_install_dummy = echo will install dummy $1
 EOM
 
@@ -212,7 +212,7 @@ EOM
 }
 
 @test "install command executes configured post plugin install hook" {
-  cat > $HOME/.asdfrc <<-'EOM'
+  cat >$HOME/.asdfrc <<-'EOM'
 post_asdf_install_dummy = echo HEY $version FROM $plugin_name
 EOM
 
@@ -221,8 +221,8 @@ EOM
 }
 
 @test "install command without arguments installs versions from legacy files" {
-  echo 'legacy_version_file = yes' > $HOME/.asdfrc
-  echo '1.2.0' >> $PROJECT_DIR/.dummy-version
+  echo 'legacy_version_file = yes' >$HOME/.asdfrc
+  echo '1.2.0' >>$PROJECT_DIR/.dummy-version
   cd $PROJECT_DIR
   run asdf install
   [ "$status" -eq 0 ]
@@ -231,8 +231,8 @@ EOM
 }
 
 @test "install command without arguments installs versions from legacy files in parent directories" {
-  echo 'legacy_version_file = yes' > $HOME/.asdfrc
-  echo '1.2.0' >> $PROJECT_DIR/.dummy-version
+  echo 'legacy_version_file = yes' >$HOME/.asdfrc
+  echo '1.2.0' >>$PROJECT_DIR/.dummy-version
 
   mkdir -p $PROJECT_DIR/child
   cd $PROJECT_DIR/child
@@ -270,7 +270,7 @@ EOM
 }
 
 @test "install_command keeps the download directory when always_keep_download setting is true" {
-  echo 'always_keep_download = yes' > $HOME/.asdfrc
+  echo 'always_keep_download = yes' >$HOME/.asdfrc
   run asdf install dummy 1.1.0
   echo $output
   [ "$status" -eq 0 ]

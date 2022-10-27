@@ -16,7 +16,6 @@ teardown() {
   [ "$status" -eq 0 ]
   [ -d "$ASDF_DIR/downloads/dummy" ]
 
-
   run asdf plugin-remove "dummy"
   [ "$status" -eq 0 ]
   [ ! -d "$ASDF_DIR/downloads/dummy" ]

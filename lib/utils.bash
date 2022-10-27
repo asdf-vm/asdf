@@ -41,8 +41,10 @@ asdf_data_dir() {
 
   if [ -n "${ASDF_DATA_DIR}" ]; then
     data_dir="${ASDF_DATA_DIR}"
-  else
+  elif [ -n "$HOME" ]; then
     data_dir="$HOME/.asdf"
+  else
+    data_dir=$(asdf_dir)
   fi
 
   printf "%s\\n" "$data_dir"
@@ -156,10 +158,12 @@ get_version_in_dir() {
   local legacy_filenames=$3
 
   local asdf_version
-  asdf_version=$(parse_asdf_version_file "$search_path/.tool-versions" "$plugin_name")
+
+  file_name=$(version_file_name)
+  asdf_version=$(parse_asdf_version_file "$search_path/$file_name" "$plugin_name")
 
   if [ -n "$asdf_version" ]; then
-    printf "%s\\n" "$asdf_version|$search_path/.tool-versions"
+    printf "%s\\n" "$asdf_version|$search_path/$file_name"
     return 0
   fi
 
@@ -172,6 +176,10 @@ get_version_in_dir() {
       return 0
     fi
   done
+}
+
+version_file_name() {
+  printf "%s" "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
 find_versions() {
@@ -404,6 +412,12 @@ initialize_or_update_repository() {
   local repository_url
   local repository_path
 
+  disable_plugin_short_name_repo="$(get_asdf_config_value "disable_plugin_short_name_repository")"
+  if [ "yes" == "$disable_plugin_short_name_repo" ]; then
+    printf "Short-name plugin repository is disabled\\n" >&2
+    exit 1
+  fi
+
   repository_url=$(asdf_repository_url)
   repository_path=$(asdf_data_dir)/repository
 
@@ -431,7 +445,7 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-  find_file_upwards ".tool-versions"
+  find_file_upwards "$(version_file_name)"
 }
 
 find_file_upwards() {
@@ -639,7 +653,7 @@ strip_tool_version_comments() {
   local tool_version_path="$1"
   # Use sed to strip comments from the tool version file
   # Breakdown of sed command:
-  # This command represents 3 steps, seperated by a semi-colon (;), that run on each line.
+  # This command represents 3 steps, separated by a semi-colon (;), that run on each line.
   # 1. Delete line if it starts with any blankspace and a #.
   # 2. Find a # and delete it and everything after the #.
   # 3. Remove any whitespace from the end of the line.
@@ -806,7 +820,7 @@ with_shim_executable() {
 }
 
 substitute() {
-  # Use Bash substituion rather than sed as it will handle escaping of all
+  # Use Bash substitution rather than sed as it will handle escaping of all
   # strings for us.
   local input=$1
   local find_str=$2

@@ -58,6 +58,12 @@ bats test/list_commands.bash
 
 :::
 
+### Gitignore
+
+The following is the `.gitignore` file in the `asdf-vm/asdf` repository. We ignore project-specific files. Files specific to your OS, tools or workflows should be ignored in your global `.gitignore` configuration, [see here](http://stratus3d.com/blog/2018/06/03/stop-excluding-editor-temp-files-in-gitignore/) for more details.
+
+@[code](../../.gitignore)
+
 ## Bats Testing
 
 It is **strongly encouraged** to examine the existing test suite and the [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html) before writing tests.

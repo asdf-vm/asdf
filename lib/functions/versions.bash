@@ -14,13 +14,17 @@ version_command() {
   shift 2
   local versions=("$@")
 
+  local file_name
   local file
+
+  file_name="$(version_file_name)"
+
   if [ "$cmd" = "global" ]; then
-    file=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-$HOME/.tool-versions}
+    file="$HOME/$file_name"
   elif [ "$cmd" = "local-tree" ]; then
     file=$(find_tool_versions)
   else # cmd = local
-    file="$(pwd)/.tool-versions"
+    file="$(pwd)/$file_name"
   fi
 
   if [ -L "$file" ]; then
@@ -60,6 +64,10 @@ version_command() {
     sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
     rm -f "$file".bak
   else
+    # Add a trailing newline at the end of the file if missing
+    [[ -n "$(tail -c1 "$file")" && -f "$file" ]] && printf '\n' >>"$file"
+
+    # Add a new version line to the end of the file
     printf "%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
   fi
 }
@@ -74,9 +82,12 @@ list_all_command() {
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
 
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
+
   # Capture return code to allow error handling
-  std_out_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
-  std_err_file="$(mktemp "/tmp/asdf-command-list-all-${plugin_name}.stderr.XXXXXX")"
+  std_out_file="$(mktemp "$temp_dir/asdf-command-list-all-${plugin_name}.stdout.XXXXXX")"
+  std_err_file="$(mktemp "$temp_dir/asdf-command-list-all-${plugin_name}.stderr.XXXXXX")"
   return_code=0 && "${plugin_path}/bin/list-all" >"$std_out_file" 2>"$std_err_file" || return_code=$?
 
   if [[ $return_code -ne 0 ]]; then
@@ -139,7 +150,7 @@ latest_command() {
   else
     # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
     versions=$(list_all_command "$plugin_name" "$query" |
-      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
+      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
       sed 's/^[[:space:]]\+//' |
       tail -1)
     if [ -z "${versions}" ]; then
@@ -155,7 +166,7 @@ latest_all() {
   plugins_path=$(get_plugin_path)
 
   if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
-    for plugin_path in "$plugins_path"/*; do
+    for plugin_path in "$plugins_path"/*/; do
       plugin_name=$(basename "$plugin_path")
 
       # Retrieve the version of the plugin

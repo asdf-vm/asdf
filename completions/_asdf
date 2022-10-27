@@ -170,7 +170,9 @@ case "$subcmd" in
   ;;
 (latest)
   if (( CURRENT == 3 + IntermediateCount )); then
-    _asdf__installed_plugins
+    _alternative  \
+      'all:all:(--all)' \
+      'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
   elif (( CURRENT == 4 + IntermediateCount )); then
     local pkg="${words[3+IntermediateCount]}"
     local query=${words[4+IntermediateCount]}
