@@ -42,20 +42,20 @@ See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CO
 > So people wrote a version manager for it<br/>
 > To switch between versions for projects<br/>
 > Different, old, new.
-
+> 
 > Then there came more programming languages<br/>
 > So there came more version managers<br/>
 > And many commands for them
-
+> 
 > I installed a lot of them<br/>
 > I learnt a lot of commands
-
+> 
 > Then I said, just one more version manager<br/>
 > Which I will write instead
-
+> 
 > So, there came another version manager<br/>
 > **asdf version manager** - <https://github.com/asdf-vm/asdf>
-
+> 
 > A version manager so extendable<br/>
 > for which anyone can create a plugin<br/>
 > To support their favourite language<br/>
