@@ -85,11 +85,11 @@ Configure the `asdf install` command to keep or delete the source code or binary
 
 ### `plugin_repository_last_check_duration`
 
-Configure the duration since the last asdf plugin repository sync to the next. Sync events will trigger a check of the duration, if the duration has passed then a sync occurs.
+Configure the duration (in minutes) between asdf plugin repository syncs. Trigger events result in a check of the duration. If more time has elapsed since the last sync than specified in the duration, a new sync occurs.
 
 | Options                                                                                                 | Description                                                  |
 | :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
-| integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
+| integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration (in minutes) since last sync has been exceeded |
 | `0`                                                                                                     | Sync on each trigger event                                   |
 | `never`                                                                                                 | Never sync                                                   |
 
