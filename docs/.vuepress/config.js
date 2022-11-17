@@ -1,9 +1,7 @@
 import { defaultTheme, defineUserConfig } from "vuepress";
 import { searchPlugin } from "@vuepress/plugin-search";
 import { shikiPlugin } from "@vuepress/plugin-shiki";
-import {
-  activeHeaderLinksPlugin,
-} from "@vuepress/plugin-active-header-links";
+import { activeHeaderLinksPlugin } from "@vuepress/plugin-active-header-links";
 
 import navbar from "./navbar";
 import sidebar from "./sidebar";
