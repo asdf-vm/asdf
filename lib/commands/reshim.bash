@@ -88,6 +88,9 @@ write_shim_script() {
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
+
   local temp_versions_path
   temp_versions_path=$(mktemp "$temp_dir/asdf-command-reshim-write-shims.XXXXXX")
   cat <<EOF >"$temp_versions_path"
