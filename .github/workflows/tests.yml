@@ -7,7 +7,6 @@ on:
   pull_request:
 
 env:
-  BATS_VERSION: v1.7.0
   ELVISH_VERSION: v0.18.0
 
 jobs:
@@ -50,7 +49,7 @@ jobs:
 
       - name: Install bats
         run: |
-          git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git $HOME/bats-core
           echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests

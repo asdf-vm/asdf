@@ -51,7 +51,7 @@ cleaned_path() {
     echo \$PATH
   ")
   [ "$?" -eq 0 ]
-  output=$(echo $PATH | tr ':' '\n' | grep "asdf" | sort | uniq -d)
+  output=$(echo $result | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
   [ "$output" = "" ]
 }
 

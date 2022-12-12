@@ -126,6 +126,22 @@ teardown() {
   [ "$(cat $PROJECT_DIR/.tool-versions)" = "dummy 1.1.0" ]
 }
 
+@test "local should append trailing newline before appending new version when missing" {
+  echo -n 'foobar 1.0.0' >>$PROJECT_DIR/.tool-versions
+
+  run asdf local "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = $'foobar 1.0.0\ndummy 1.1.0' ]
+}
+
+@test "local should not append trailing newline before appending new version when one present" {
+  echo 'foobar 1.0.0' >>$PROJECT_DIR/.tool-versions
+
+  run asdf local "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $PROJECT_DIR/.tool-versions)" = $'foobar 1.0.0\ndummy 1.1.0' ]
+}
+
 @test "local should fail to set a path:dir if dir does not exists " {
   run asdf local "dummy" "path:$PROJECT_DIR/local"
   [ "$output" = "version path:$PROJECT_DIR/local is not installed for dummy" ]
@@ -234,6 +250,22 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.1.0" ]
+}
+
+@test "global should append trailing newline before appending new version when missing" {
+  echo -n 'foobar 1.0.0' >>$HOME/.tool-versions
+
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = $'foobar 1.0.0\ndummy 1.1.0' ]
+}
+
+@test "global should not append trailing newline before appending new version when one present" {
+  echo 'foobar 1.0.0' >>$HOME/.tool-versions
+
+  run asdf global "dummy" "1.1.0"
+  [ "$status" -eq 0 ]
+  [ "$(cat $HOME/.tool-versions)" = $'foobar 1.0.0\ndummy 1.1.0' ]
 }
 
 @test "global should fail to set a path:dir if dir does not exists " {
@@ -439,7 +471,7 @@ false"
   [ "$(cat $HOME/.tool-versions)" = "dummy 1.0.0 2.0.0" ]
 }
 
-@test "[global - dummy_legcay_plugin] should support latest" {
+@test "[global - dummy_legacy_plugin] should support latest" {
   echo 'legacy-dummy 1.0.0' >>$HOME/.tool-versions
   run asdf global "legacy-dummy" "1.0.0" "latest"
   [ "$status" -eq 0 ]

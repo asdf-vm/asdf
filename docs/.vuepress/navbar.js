@@ -379,4 +379,4 @@ const zh_hans = [
   },
 ];
 
-module.exports = { en, pt_br, zh_hans };
+export default { en, pt_br, zh_hans };

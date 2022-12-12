@@ -100,7 +100,7 @@ Fixed Bugs
 
 * Fix plugin-update --all when there are no plugins (#805, #803)
 * Ban `echo` command from asdf codebase (#806, #781)
-* Add basic tests for for plugin-update command (#807)
+* Add basic tests for plugin-update command (#807)
 * Cleanup unused code in plugin update tests (#810)
 * Fix resolution of relative symlinks (#815, #625)
 * Fixes to GitHub workflow (#833)
@@ -185,7 +185,7 @@ Fixed Bugs
   Extension commands are now expected to be inside plugins's `lib/commands/command-*.bash` instead of `bin/command*`.
 
   This change was made for two reasons: Keep the convention that all files to be sourced by bash should end with
-  the `.bash` extension. And the `lib/commands/` directoy mirrors the location of asdf own core commands.
+  the `.bash` extension. And the `lib/commands/` directory mirrors the location of asdf own core commands.
 
   Added tests to make sure `asdf help` properly displays available extension commands.
 
