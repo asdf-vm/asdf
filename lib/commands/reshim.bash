@@ -172,4 +172,3 @@ remove_obsolete_shims() {
     remove_shim_for_version "$plugin_name" "$full_version" "$shim_name"
   done
 }
-
