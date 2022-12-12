@@ -89,7 +89,7 @@ write_shim_script() {
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
   local temp_versions_path
-  temp_versions_path=`mktemp`
+  temp_versions_path=$(mktemp "$temp_dir/asdf-command-reshim-write-shims.XXXXXX")
   cat <<EOF >"$temp_versions_path"
 # asdf-plugin: ${plugin_name} ${version}
 EOF
@@ -100,7 +100,7 @@ EOF
 
   cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
-`sort -u < "$temp_versions_path"`
+$(sort -u < "$temp_versions_path")
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
 
