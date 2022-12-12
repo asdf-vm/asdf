@@ -98,12 +98,12 @@ write_shim_script() {
 EOF
 
   if [ -f "$shim_path" ]; then
-    grep '^#\sasdf-plugin:\s' < "$shim_path" >> "$temp_versions_path"
+    grep '^#\sasdf-plugin:\s' <"$shim_path" >>"$temp_versions_path"
   fi
 
   cat <<EOF >"$shim_path"
 #!/usr/bin/env bash
-$(sort -u < "$temp_versions_path")
+$(sort -u <"$temp_versions_path")
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
 
