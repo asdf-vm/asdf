@@ -112,24 +112,6 @@ EOF
   chmod +x "$shim_path"
 }
 
-# TODO this function doesn't seem to be used
-generate_shim_for_executable() {
-  local plugin_name=$1
-  local executable=$2
-
-  check_if_plugin_exists "$plugin_name"
-
-  local version
-  IFS=':' read -r -a version_info <<<"$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    version="${version_info[1]}"
-  else
-    version="${version_info[0]}"
-  fi
-
-  write_shim_script "$plugin_name" "$version" "$executable"
-}
-
 generate_shims_for_version() {
   local plugin_name=$1
   local full_version=$2
