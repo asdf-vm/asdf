@@ -239,6 +239,39 @@ Add the following to `~/.zshrc`:
 Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
+::: details Nushell & Git
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell
+"\nsource " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Homebrew
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell:no-line-numbers
+"\nsource " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Pacman
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell
+"\nsource /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
+```
+
+Completions are automatically configured.
+:::
+
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
