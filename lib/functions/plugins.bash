@@ -28,7 +28,7 @@ plugin_list_command() {
         printf "%s" "$plugin_name"
 
         if [ -n "$show_repo" ]; then
-          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
+          printf "\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
         fi
 
         if [ -n "$show_ref" ]; then
@@ -36,10 +36,10 @@ plugin_list_command() {
           local gitref
           branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
           gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
-          printf "\\t%s\\t%s" "$branch" "$gitref"
+          printf "\t%s\\t%s" "$branch" "$gitref"
         fi
 
-        printf "\\n"
+        printf "\n"
       done
     ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
@@ -144,7 +144,7 @@ update_plugin() {
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 
-    printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
+    printf "Updating %s to %s\n" "$plugin_name" "$gitref"
 
     git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
     prev_ref=$(git "${common_git_options[@]}" rev-parse --short HEAD)
