@@ -141,7 +141,7 @@ version_not_installed_text() {
 }
 
 get_plugin_path() {
-  if test -n "$1"; then
+  if [ -n "$1" ]; then
     printf "%s\\n" "$(asdf_data_dir)/plugins/$1"
   else
     printf "%s\\n" "$(asdf_data_dir)/plugins"
