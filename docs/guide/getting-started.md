@@ -35,11 +35,17 @@
 
 ## 2. Download asdf
 
-We recommend using Git, though there are other platform specific methods:
+We recommend using Git:
+```sh
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.0
+```
+See latest release version here: https://github.com/asdf-vm/asdf/releases
+
+
+Platform specific alternatives:
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
