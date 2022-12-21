@@ -36,7 +36,7 @@ plugin_list_command() {
           local gitref
           branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
           gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
-          printf "\t%s\\t%s" "$branch" "$gitref"
+          printf "\t%s\t%s" "$branch" "$gitref"
         fi
 
         printf "\n"

@@ -4,9 +4,9 @@ version_command() {
 
   if [ "$#" -lt "3" ]; then
     if [ "$cmd" = "global" ]; then
-      printf "Usage: asdf global <name> <version>\\n"
+      printf "Usage: asdf global <name> <version>\n"
     else
-      printf "Usage: asdf local <name> <version>\\n"
+      printf "Usage: asdf local <name> <version>\n"
     fi
     exit 1
   fi
@@ -68,7 +68,7 @@ version_command() {
     [[ -n "$(tail -c1 "$file")" && -f "$file" ]] && printf '\n' >>"$file"
 
     # Add a new version line to the end of the file
-    printf "%s %s\\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
+    printf "%s %s\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
   fi
 }
 
@@ -92,9 +92,9 @@ list_all_command() {
 
   if [[ $return_code -ne 0 ]]; then
     # Printing all output to allow plugin to handle error formatting
-    printf "Plugin %s's list-all callback script failed with output:\\n" "${plugin_name}" >&2
-    printf "%s\\n" "$(cat "$std_err_file")" >&2
-    printf "%s\\n" "$(cat "$std_out_file")" >&2
+    printf "Plugin %s's list-all callback script failed with output:\n" "${plugin_name}" >&2
+    printf "%s\n" "$(cat "$std_err_file")" >&2
+    printf "%s\n" "$(cat "$std_out_file")" >&2
     rm "$std_out_file" "$std_err_file"
     exit 1
   fi
@@ -115,7 +115,7 @@ list_all_command() {
   IFS=' ' read -r -a versions_list <<<"$output"
 
   for version in "${versions_list[@]}"; do
-    printf "%s\\n" "${version}"
+    printf "%s\n" "${version}"
   done
 
   # Remove temp files if they still exist
@@ -144,7 +144,7 @@ latest_command() {
     versions=$("${plugin_path}"/bin/latest-stable "$query")
     if [ -z "${versions}" ]; then
       # this branch requires this print to mimic the error from the list-all branch
-      printf "No compatible versions available (%s %s)\\n" "$plugin_name" "$query" >&2
+      printf "No compatible versions available (%s %s)\n" "$plugin_name" "$query" >&2
       exit 1
     fi
   else
@@ -158,7 +158,7 @@ latest_command() {
     fi
   fi
 
-  printf "%s\\n" "$versions"
+  printf "%s\n" "$versions"
 }
 
 latest_all() {
@@ -198,10 +198,10 @@ latest_all() {
       if [ -n "$installed_versions" ] && printf '%s\n' "$installed_versions" | grep -q "^$version\$"; then
         installed_status="installed"
       fi
-      printf "%s\\t%s\\t%s\\n" "$plugin_name" "$version" "$installed_status"
+      printf "%s\t%s\t%s\n" "$plugin_name" "$version" "$installed_status"
     done
   else
-    printf "%s\\n" 'No plugins installed'
+    printf "%s\n" 'No plugins installed'
   fi
   exit 0
 }
