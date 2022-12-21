@@ -2,13 +2,24 @@
 
 set -euo pipefail
 
-exec shellcheck -s bash -x \
-  asdf.sh \
+# check .sh files
+shellcheck --shell sh --external-sources \
+  asdf.sh
+
+# check .bash files
+shellcheck --shell bash --external-sources \
   completions/*.bash \
   bin/asdf \
   bin/private/asdf-exec \
   lib/utils.bash \
   lib/commands/*.bash \
+  lib/functions/*.bash \
   scripts/*.bash \
   test/test_helpers.bash \
+  test/fixtures/dummy_broken_plugin/bin/* \
+  test/fixtures/dummy_legacy_plugin/bin/* \
   test/fixtures/dummy_plugin/bin/*
+
+# check .bats files
+shellcheck --shell bats --external-sources \
+  test/*.bats

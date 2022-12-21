@@ -2,4 +2,24 @@
 
 set -euo pipefail
 
-exec shfmt -d .
+# check .sh files
+shfmt --language-dialect posix --diff \
+  lib/*.sh
+
+# check .bash files
+shfmt --language-dialect bash --diff \
+  completions/*.bash \
+  bin/asdf \
+  bin/private/asdf-exec \
+  lib/utils.bash \
+  lib/commands/*.bash \
+  lib/functions/*.bash \
+  scripts/*.bash \
+  test/test_helpers.bash \
+  test/fixtures/dummy_broken_plugin/bin/* \
+  test/fixtures/dummy_legacy_plugin/bin/* \
+  test/fixtures/dummy_plugin/bin/*
+
+# check .bats files
+shfmt --language-dialect bats --diff \
+  test/*.bats
