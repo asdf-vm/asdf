@@ -6,6 +6,19 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Any # compat
 
+# This file checks Bash and Shell scripts for violations not found with
+# shellcheck or existing methods. You can use it in several ways:
+#
+# Lint all .bash, .sh, and .bats files and print out violations
+# $ ./scripts/checkstyle.py
+#
+# The former, but also fix all violations. This must be ran until there
+# are zero violations since any line can have more than one violation
+# $ ./scripts/checkstyle.py --fix
+#
+# Lint a particular file
+# $ ./scripts/checkstyle.py ./lib/functions/installs.bash
+
 class c:
     RED = '\033[91m'
     GREEN = '\033[92m'
