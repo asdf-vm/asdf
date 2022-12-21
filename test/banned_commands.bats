@@ -21,6 +21,8 @@ banned_commands=(
   # source isn't POSIX compliant. . behaves the same and is POSIX compliant
   # Except in fish, where . is deprecated, and will be removed in the future.
   source
+  # For consistency, [ should be used instead. There is a leading space so 'fail_test', etc. is not matched
+  ' test'
 )
 
 banned_commands_regex=(

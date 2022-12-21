@@ -141,7 +141,7 @@ version_not_installed_text() {
 }
 
 get_plugin_path() {
-  if test -n "$1"; then
+  if [ -n "$1" ]; then
     printf "%s\\n" "$(asdf_data_dir)/plugins/$1"
   else
     printf "%s\\n" "$(asdf_data_dir)/plugins"
@@ -365,7 +365,7 @@ get_asdf_config_value_from_file() {
   fi
 
   local result
-  result=$(grep -E "^\\s*$key\\s*=\\s*" "$config_path" | head | sed -e 's/^[^=]*= *//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  result=$(grep -E "^\s*$key\s*=\s*" "$config_path" | head | sed -e 's/^[^=]*= *//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
     printf "%s\\n" "$result"
     return 0
