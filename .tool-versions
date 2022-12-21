@@ -1,3 +1,4 @@
 bats 1.7.0
 shellcheck 0.8.0
 shfmt 3.5.1
+python 3.10.9

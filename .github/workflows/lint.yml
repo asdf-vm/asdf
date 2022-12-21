@@ -33,3 +33,15 @@ jobs:
 
       - name: Run shfmt
         run: scripts/shfmt.bash
+
+  checkstyle-py:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install asdf dependencies
+        uses: asdf-vm/actions/install@v1
+
+      - name: Run checkstyle.py
+        run: scripts/checkstyle.py

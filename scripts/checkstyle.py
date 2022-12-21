@@ -17,6 +17,8 @@ class c:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# Before: printf '%s\\n' '^w^'
+# After: printf '%s\n' '^w^'
 def noDoubleBackslashFixer(line: str, rule: Dict[str, str], m: re.Match[str]) -> str:
     prestr = line[0:m.start('match')]
     midstr = line[m.start('match'):m.end('match')]
@@ -54,13 +56,10 @@ def main():
     rules = [
         {
             'name': 'no-double-backslash',
-            'regex': '(?<=printf).*?(?P<match>(?P<remove>\\\\)\\\\[abeEfnrtv\'"?xuUc])',
-            'reason': 'Backslashes escape only if followed by a $, `, ", \\, or <newline>',
+            'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
+            'reason': 'Backslashes are only required if followed by a $, `, ", \\, or <newline>',
             'fixer_fn': noDoubleBackslashFixer,
             'found': 0
-            # To fix this:
-            # Before: printf '%s\\n' '^w^'
-            # After: printf '%s\n' '^w^'
         },
     ]
 
