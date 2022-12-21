@@ -4,6 +4,7 @@ set -euo pipefail
 
 # check .sh files
 shfmt --language-dialect posix --indent 2 --diff \
+  asdf.sh \
   lib/*.sh
 
 # check .bash files

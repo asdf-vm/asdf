@@ -4,7 +4,8 @@ set -euo pipefail
 
 # check .sh files
 shellcheck --shell sh --external-sources \
-  asdf.sh
+  asdf.sh \
+  lib/*.sh
 
 # check .bash files
 shellcheck --shell bash --external-sources \
