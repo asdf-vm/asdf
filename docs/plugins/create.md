@@ -16,7 +16,7 @@ All scripts except `bin/list-all` will have access to the following env vars to 
 
 - `ASDF_INSTALL_TYPE` - `version` or `ref`
 - `ASDF_INSTALL_VERSION` - if `ASDF_INSTALL_TYPE` is `version` then this will be the version number. Else it will be the git ref that is passed. Might point to a tag/commit/branch on the repo.
-- `ASDF_INSTALL_PATH` - the dir where the it _has been_ installed (or _should_ be installed in case of the `bin/install` script)
+- `ASDF_INSTALL_PATH` - the dir where it _has been_ installed (or _should_ be installed in case of the `bin/install` script)
 
 These additional environment variables will be available to the `bin/install` script:
 
@@ -35,7 +35,7 @@ Must print a string with a space-separated list of versions. Example output woul
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
-Note that the newest version should be listed last so it appears closer to the user's prompt. This is helpful since the `list-all` command prints each version on it's own line. If there are many versions it's possible the early versions will be off screen.
+Note that the newest version should be listed last so it appears closer to the user's prompt. This is helpful since the `list-all` command prints each version on its own line. If there are many versions it's possible the early versions will be off screen.
 
 If versions are being pulled from releases page on a website it's recommended to not sort the versions if at all possible. Often the versions are already in the correct order or, in reverse order, in which case something like `tac` should suffice. If you must sort versions manually you cannot rely on `sort -V` since it is not supported on OSX. An alternate sort function [like this is a better choice](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6).
 
@@ -78,7 +78,7 @@ The help callback script MUST NOT output any information that is already covered
 
 If this callback is implemented asdf will use it to determine the latest stable version of your tool instead of trying deduce it for you on its own. `asdf latest` deduces the latest version by looking at the last version printed by the `list-all` callback, after a few types of versions (like release candidate versions) are excluded from the output. This default behavior is undesirable when your plugin's `list-all` callback prints different variations of the same tool and the last version isn't the latest stable version of the variation you'd like to default to. For example with Ruby the latest stable version should be the regular implementation of Ruby (MRI), but truffleruby versions are printed last by the `list-all` callback.
 
-This callback is invoked with a single "filter" string as it's only argument. This should be used for filter all latest stable versions. For example with Ruby, the user may choose to pass in `jruby` to select the latest stable version of `jruby`.
+This callback is invoked with a single "filter" string as its only argument. This should be used for filter all latest stable versions. For example with Ruby, the user may choose to pass in `jruby` to select the latest stable version of `jruby`.
 
 #### bin/list-bin-paths
 
@@ -205,13 +205,13 @@ A good example of this feature is for plugins like [`haxe`](https://github.com/a
 which provides the `asdf haxe neko-dylibs-link` to fix an issue where haxe executables expect to find
 dynamic libraries relative to the executable directory.
 
-If your plugin provides an asdf extension command, be sure to mention about it on your plugin's README.
+If your plugin provides an asdf extension command, be sure to mention it in your plugin's README.
 
 ## Custom shim templates
 
 **PLEASE use this feature only if absolutely required**
 
-asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using it's standard shim template.
+asdf allows custom shim templates. For an executable called `foo`, if there's a `shims/foo` file in the plugin, then asdf will copy that file instead of using its standard shim template.
 
 This must be used wisely. For now AFAIK, it's only being used in the Elixir plugin, because an executable is also read as an Elixir file apart from just being an executable. Which makes it not possible to use the standard bash shim.
 
