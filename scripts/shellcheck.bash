@@ -3,9 +3,10 @@
 set -euo pipefail
 
 # check .sh files
-shellcheck --shell sh --external-sources \
-  asdf.sh \
-  lib/*.sh
+# TODO(jthegedus): unlock this check later
+# TODO  shellcheck --shell sh --external-sources \
+# TODO  asdf.sh \
+# TODO  lib/*.sh
 
 # check .bash files
 shellcheck --shell bash --external-sources \
@@ -22,5 +23,6 @@ shellcheck --shell bash --external-sources \
   test/fixtures/dummy_plugin/bin/*
 
 # check .bats files
-shellcheck --shell bats --external-sources \
-  test/*.bats
+# TODO(jthegedus): unlock this check later
+# TODO  shellcheck --shell bats --external-sources \
+# TODO  test/*.bats

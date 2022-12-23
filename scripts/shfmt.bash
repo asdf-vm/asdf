@@ -3,9 +3,10 @@
 set -euo pipefail
 
 # check .sh files
-shfmt --language-dialect posix --indent 2 --diff \
-  asdf.sh \
-  lib/*.sh
+# TODO(jthegedus): unlock this check later
+# TODO  shfmt --language-dialect posix --indent 2 --diff \
+# TODO  asdf.sh \
+# TODO  lib/*.sh
 
 # check .bash files
 shfmt --language-dialect bash --indent 2 --diff \
