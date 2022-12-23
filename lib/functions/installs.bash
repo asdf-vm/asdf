@@ -50,7 +50,6 @@ install_one_local_tool() {
 
   if [ -n "$plugin_version_and_path" ]; then
     local plugin_version
-    some_tools_installed='yes'
     plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
     for plugin_version in $plugin_versions; do
       install_tool_version "$plugin_name" "$plugin_version"

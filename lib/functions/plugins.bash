@@ -94,6 +94,7 @@ plugin_add_command() {
     if [ -f "${plugin_path}/bin/post-plugin-add" ]; then
       (
         export ASDF_PLUGIN_SOURCE_URL=$source_url
+        # shellcheck disable=SC2030
         export ASDF_PLUGIN_PATH=$plugin_path
         "${plugin_path}/bin/post-plugin-add"
       )
@@ -153,6 +154,7 @@ update_plugin() {
 
     if [ -f "${plugin_path}/bin/post-plugin-update" ]; then
       (
+        # shellcheck disable=SC2031
         export ASDF_PLUGIN_PATH=$plugin_path
         export ASDF_PLUGIN_PREV_REF=$prev_ref
         export ASDF_PLUGIN_POST_REF=$post_ref
