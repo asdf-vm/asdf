@@ -79,6 +79,22 @@ O auto completar deve ser configurado manualmente a partir da adição da seguin
 
 :::
 
+::: details Bash & Homebrew
+
+Adicione `asdf.sh` ao `~/.bashrc` através do comando:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bashrc
+```
+
+O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mudou para o **ZSH**. A não ser que você tenha voltado para o bash, siga as instruções de instalação para o ZSH.

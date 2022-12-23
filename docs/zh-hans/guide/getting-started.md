@@ -79,6 +79,22 @@
 
 :::
 
+::: details Bash & Homebrew
+
+使用以下命令将 `asdf.sh` 加入到 `~/.bashrc` 文件中：
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+```
+
+补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 如果你正在使用 **macOS Catalina 或者更新的版本**, 默认的 shell 已经被修改为 **ZSH**。除非修改回 Bash, 否则请遵循 ZSH 的说明。
