@@ -4,12 +4,12 @@ set -euo pipefail
 
 # check .sh files
 # TODO(jthegedus): unlock this check later
-# TODO  shellcheck --shell sh --external-sources \
+# TODO  shfmt --language-dialect posix --indent 2 --write \
 # TODO  asdf.sh \
 # TODO  lib/*.sh
 
 # check .bash files
-shellcheck --shell bash --external-sources \
+shfmt --language-dialect bash --indent 2 --write \
   completions/*.bash \
   bin/asdf \
   bin/private/asdf-exec \
@@ -23,6 +23,5 @@ shellcheck --shell bash --external-sources \
   test/fixtures/dummy_plugin/bin/*
 
 # check .bats files
-# TODO(jthegedus): unlock this check later
-# TODO  shellcheck --shell bats --external-sources \
-# TODO  test/*.bats
+shfmt --language-dialect bats --indent 2 --write \
+  test/*.bats
