@@ -44,7 +44,7 @@ plugin_current_command() {
 
 # shellcheck disable=SC2059
 current_command() {
-  local terminal_format="%-15s %-15s %-10s\\n"
+  local terminal_format="%-15s %-15s %-10s\n"
   local exit_status=0
   local plugin
 
@@ -75,8 +75,8 @@ check_for_deprecated_plugin() {
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
   if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\\n\\n" "$plugin_name"
-    printf "  asdf plugin-update %s\\n\\n" "$plugin_name"
+    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\n\n" "$plugin_name"
+    printf "  asdf plugin-update %s\n\n" "$plugin_name"
   fi
 }
 

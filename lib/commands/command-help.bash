@@ -3,7 +3,7 @@
 . "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 asdf_help() {
-  printf "version: %s\\n\\n" "$(asdf_version)"
+  printf "version: %s\n\n" "$(asdf_version)"
   cat "$(asdf_dir)/help.txt"
 }
 
@@ -23,7 +23,7 @@ asdf_extension_cmds() {
     ext_cmd_path="$plugin_path/lib/commands"
     ext_cmds="$(find "$ext_cmd_path" -name "command*.bash" 2>/dev/null)"
     if [[ -n $ext_cmds ]]; then
-      printf "\\nPLUGIN %s\\n" "$plugin"
+      printf "\nPLUGIN %s\n" "$plugin"
       for ext_cmd in $ext_cmds; do
         ext_cmd_name="$(basename "$ext_cmd")"
         sed "s/-/ /g;s/.bash//;s/command-*/  asdf $plugin/;" <<<"$ext_cmd_name"
@@ -78,11 +78,11 @@ help_command() {
           (print_plugin_help "$plugin_path")
         fi
       else
-        printf "No documentation for plugin %s\\n" "$plugin_name" >&2
+        printf "No documentation for plugin %s\n" "$plugin_name" >&2
         exit 1
       fi
     else
-      printf "No plugin named %s\\n" "$plugin_name" >&2
+      printf "No plugin named %s\n" "$plugin_name" >&2
       exit 1
     fi
   else
