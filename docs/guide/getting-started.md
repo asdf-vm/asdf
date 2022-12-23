@@ -11,7 +11,16 @@
 
 ## 1. Install Dependencies
 
-**Linux**:
+asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
+
+| OS    | Package Manager | Command                            |
+| ----- | --------------- | ---------------------------------- |
+| linux | Aptitude        | `apt install curl git`             |
+| linux | DNF             | `dnf install curl git`             |
+| linux | Pacman          | `pacman -S curl git`               |
+| linux | Zypper          | `zypper install curl git`          |
+| macOS | Homebrew        | `brew install coreutils curl git`  |
+| macOS | Spack           | `spack install coreutils curl git` |
 
 ::: tip Note
 
@@ -19,29 +28,23 @@
 
 :::
 
-| Package Manager | Command                   |
-| --------------- | ------------------------- |
-| Aptitude        | `apt install curl git`    |
-| DNF             | `dnf install curl git`    |
-| Pacman          | `pacman -S curl git`      |
-| Zypper          | `zypper install curl git` |
-
-**macOS**:
-
-| Package Manager | Command                                                   |
-| --------------- | --------------------------------------------------------- |
-| Homebrew        | Dependencies will be automatically installed by Homebrew. |
-| Spack           | `spack install coreutils curl git`                        |
-
 ## 2. Download asdf
 
-We recommend using Git, though there are other platform specific methods:
+### Official Download
+
+```shell:no-line-numbers
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+```
+
+### Community Supported Download Methods
+
+We highly recommend using the official `git` method.
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
+
 
 ## 3. Install asdf
 
