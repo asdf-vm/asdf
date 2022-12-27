@@ -133,6 +133,13 @@ teardown() {
   [ "$output" == "path:/some/dummy path" ]
 }
 
+@test "parse_asdf_version_file should output path version with tilda" {
+  echo "dummy path:~/some/dummy path" >$PROJECT_DIR/.tool-versions
+  run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
+  [ "$status" -eq 0 ]
+  [ "$output" == "path:$HOME/some/dummy path" ]
+}
+
 @test "find_versions should return .tool-versions if legacy is disabled" {
   echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
   echo "0.2.0" >$PROJECT_DIR/.dummy-version
@@ -270,6 +277,14 @@ teardown() {
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "path:/some/place with spaces" ]
+}
+
+@test "get_preset_version_for should return path version with tilda" {
+  cd $PROJECT_DIR
+  echo "dummy path:~/some/place with spaces" >$PROJECT_DIR/.tool-versions
+  run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "path:$HOME/some/place with spaces" ]
 }
 
 @test "get_executable_path for system version should return system path" {
