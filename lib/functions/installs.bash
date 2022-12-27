@@ -182,19 +182,42 @@ install_tool_version() {
   if [ -d "$install_path" ]; then
     printf "%s %s is already installed\n" "$plugin_name" "$full_version"
   else
+    local asdf_os=
+    case $OSTYPE in
+    solaris*) asdf_os='solaris' ;;
+    darwin*) asdf_os='macOS' ;;
+    linux*) asdf_os='linux' ;;
+    bsd*) asdf_os='bsd' ;;
+    msys*) asdf_os='windows' ;;
+    cygwin*) asdf_os='cygwin' ;;
+    *) asdf_os='unknown' ;;
+    esac
+
+    # machine
+    local asdf_arch=
+    case $(uname -m) in
+    x86) asdf_arch='x86' ;;
+    i?86) asdf_arch='x86' ;;
+    ia64) asdf_arch='ia64' ;;
+    amd64) asdf_arch='x86_64' ;;
+    x86_64) asdf_arch='x86_64' ;;
+    arm64) asdf_arch='arm64' ;;
+    sparc64) asdf_arch='sparc64' ;;
+    *) asdf_arch='unknown' ;;
+    esac
 
     if [ -f "${plugin_path}/bin/download" ]; then
       # Not a legacy plugin
       # Run the download script
       (
-        # shellcheck disable=SC2030
-        export ASDF_INSTALL_TYPE=$install_type
-        # shellcheck disable=SC2030
-        export ASDF_INSTALL_VERSION=$version
-        # shellcheck disable=SC2030
-        export ASDF_INSTALL_PATH=$install_path
-        # shellcheck disable=SC2030
-        export ASDF_DOWNLOAD_PATH=$download_path
+        # shellcheck disable=SC2030,SC2031
+        export ASDF_INSTALL_TYPE=$install_type \
+          ASDF_INSTALL_VERSION=$version \
+          ASDF_INSTALL_PATH=$install_path \
+          ASDF_DOWNLOAD_PATH=$download_path \
+          ASDF_OS=$asdf_os \
+          ASDF_ARCH=$asdf_arch
+
         mkdir "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
         "${plugin_path}"/bin/download
@@ -205,15 +228,15 @@ install_tool_version() {
     if [ $download_exit_code -eq 0 ]; then
       (
         # shellcheck disable=SC2031
-        export ASDF_INSTALL_TYPE=$install_type
-        # shellcheck disable=SC2031
-        export ASDF_INSTALL_VERSION=$version
-        # shellcheck disable=SC2031
-        export ASDF_INSTALL_PATH=$install_path
-        # shellcheck disable=SC2031
-        export ASDF_DOWNLOAD_PATH=$download_path
+        export ASDF_INSTALL_TYPE=$install_type \
+          ASDF_INSTALL_VERSION=$version \
+          ASDF_INSTALL_PATH=$install_path \
+          ASDF_DOWNLOAD_PATH=$download_path \
+          ASDF_OS=$asdf_os \
+          ASDF_ARCH=$asdf_arch
         # shellcheck disable=SC2031
         export ASDF_CONCURRENCY=$concurrency
+
         mkdir "$install_path"
         asdf_run_hook "pre_asdf_install_${plugin_name}" "$full_version"
         "${plugin_path}"/bin/install
