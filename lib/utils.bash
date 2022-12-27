@@ -347,7 +347,7 @@ parse_legacy_version_file() {
 get_preset_version_for() {
   local plugin_name=$1
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
   local version_and_path
   version_and_path=$(find_versions "$plugin_name" "$search_path")
   local version
@@ -451,7 +451,7 @@ find_tool_versions() {
 find_file_upwards() {
   local name="$1"
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
   while [ "$search_path" != "/" ]; do
     if [ -f "$search_path/$name" ]; then
       printf "%s\n" "${search_path}/$name"
@@ -706,7 +706,7 @@ select_version() {
   # These are separated by a space. e.g. python 3.7.2 2.7.15
   # For each plugin/version pair, we check if it is present in the shim
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
   local shim_versions
   IFS=$'\n' read -rd '' -a shim_versions <<<"$(get_shim_versions "$shim_name")"
 
