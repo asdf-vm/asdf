@@ -25,7 +25,7 @@ asdf_dir() {
     export ASDF_DIR
     ASDF_DIR=$(
       cd "$(dirname "$(dirname "$current_script_path")")" || exit
-      pwd
+      printf '%s\n' "$PWD"
     )
   fi
 
