@@ -72,6 +72,14 @@ def main():
             'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
             'reason': 'Backslashes are only required if followed by a $, `, ", \\, or <newline>',
             'fixer_fn': noDoubleBackslashFixer,
+            'testPositiveMatches': [
+                'printf "%s\\\\n" "Hai"',
+                'echo -n "Hello\\\\n"'
+            ],
+            'testNegativeMatches': [
+                'printf "%s\\n" "Hai"',
+                'echo -n "Hello\\n"'
+            ],
             'found': 0
         },
     ]
@@ -79,7 +87,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('files', metavar='FILES', nargs='*')
     parser.add_argument('--fix', action='store_true')
+    parser.add_argument('--internal-test-regex', action='store_true')
     args = parser.parse_args()
+
+    if args.internal_test_regex:
+        for rule in rules:
+            for positiveMatch in rule['testPositiveMatches']:
+                m = re.search(rule['regex'], positiveMatch)
+                if m is None or m.group('match') is None:
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.CYAN}positive{c.RESET} test:')
+                    print(f'=> {positiveMatch}')
+                    print()
+
+            for negativeMatch in rule['testNegativeMatches']:
+                m = re.search(rule['regex'], negativeMatch)
+                if m is not None and m.group('match') is not None:
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.YELLOW}negative{c.RESET} test:')
+                    print(f'=> {negativeMatch}')
+                    print()
+        return
 
     options = {
         'fix': args.fix
