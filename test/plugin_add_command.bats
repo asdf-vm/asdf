@@ -40,19 +40,19 @@ teardown() {
 @test "plugin_add command with plugin name not matching valid regex fails 1" {
   run asdf plugin add "invalid\$plugin\$name"
   [ "$status" -eq 1 ]
-  [ "$output" = "invalid\$plugin\$name is invalid. Name must include only lowercase letters, numbers, '_', and '-'" ]
+  [ "$output" = "invalid\$plugin\$name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
 }
 
 @test "plugin_add command with plugin name not matching valid regex fails 2" {
   run asdf plugin add "#invalid#plugin#name"
   [ "$status" -eq 1 ]
-  [ "$output" = "#invalid#plugin#name is invalid. Name must include only lowercase letters, numbers, '_', and '-'" ]
+  [ "$output" = "#invalid#plugin#name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
 }
 
 @test "plugin_add command with plugin name not matching valid regex fails 3" {
   run asdf plugin add "Ruby"
   [ "$status" -eq 1 ]
-  [ "$output" = "Ruby is invalid. Name must include only lowercase letters, numbers, '_', and '-'" ]
+  [ "$output" = "Ruby is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {
