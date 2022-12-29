@@ -124,6 +124,31 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 :::
 
+::: details Bash & Homebrew
+
+1. In your `~/.bashrc` remove the lines that source `asdf.sh` and the completions:
+
+```shell
+. $(brew --prefix asdf)/libexec/asdf.sh
+. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
+```
+
+Completions may have been [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) so follow their guide to find out what to remove.
+
+2. Uninstall with your package manager:
+
+```shell:no-line-numbers
+brew uninstall asdf --force
+```
+
+3. Run this command to remove all `asdf` config files:
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. If you can't find any config in your `~/.bash_profile` it may be in a `~/.zshrc` in which case please follow the ZSH instructions.
