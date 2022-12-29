@@ -10,7 +10,7 @@ Here are some community projects related to `asdf`:
 
 ::: warning Note
 
-asdf core do not own these projects or their code. asdf core are not responsible
+asdf core team do not own these projects or their code. asdf core are not responsible
 for the quality or security as they relate to those listed here.
 
 :::
