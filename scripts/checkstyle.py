@@ -32,7 +32,7 @@ class c:
 
 # Before: printf '%s\\n' '^w^'
 # After: printf '%s\n' '^w^'
-def noDoubleBackslashFixer(line: str, rule: Dict[str, str], m: re.Match[str]) -> str:
+def noDoubleBackslashFixer(line: str, rule: Dict[str, str], m) -> str:
     prestr = line[0:m.start('match')]
     midstr = line[m.start('match'):m.end('match')]
     poststr = line[m.end('match'):]
