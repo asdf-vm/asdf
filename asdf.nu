@@ -4,7 +4,7 @@ let possible_dirs = [
                         ($env.HOME | path join '.asdf/asdf.nu') 
                     ] 
 
-let is_brew_installed = (which 'brew' | get --ignore-errors path | default '' | str trim | str length | into bool  )
+let is_brew_installed = ( not (which 'brew' | get --ignore-errors path | is-empty) )
 
 let possible_dirs = ( $possible_dirs | append (if $is_brew_installed { (brew --prefix asdf | into string | path join 'libexec/asdf.nu') } else { '' }) )
 
