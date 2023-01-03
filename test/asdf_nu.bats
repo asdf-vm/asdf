@@ -84,10 +84,10 @@ cleaned_path() {
     let-env ASDF_NU_DIR = '$PWD'
 
     source asdf.nu 
-    help commands | where name == asdf  | get command_type | to text
+    which asdf | get path | to text
   ")
   [ "$?" -eq 0 ]
-  [[ "$output" =~ "external" ]]
+  [[ "$output" =~ "command" ]]
 }
 
 @test "function calls asdf command" {
