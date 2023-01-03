@@ -30,14 +30,14 @@ jobs:
 
       - name: Install test dependencies
         if: runner.os == 'macos'
-        run: brew install coreutils fish elvish
+        run: brew install coreutils fish elvish nushell
 
       - name: Install test dependencies
         if: runner.os == 'linux'
         run: |
           sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
-          sudo apt-get -y install fish curl
+          sudo apt-get -y install fish curl pkg-config libssl-dev
 
           # Download elvish binary and add to path
           curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
@@ -46,6 +46,16 @@ jobs:
           mkdir -p "$HOME/bin"
           mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
           echo "$HOME/bin" >>"$GITHUB_PATH"
+      
+      - name: Install rust [dependency for nushell]
+        if: runner.os == 'linux'
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          
+      - name: Install nushell
+        if: runner.os == 'linux'
+        run: cargo install nu
 
       - name: Install bats
         run: |
