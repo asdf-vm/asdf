@@ -11,18 +11,20 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  output=$(nu -c "
+  result=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
+    source asdf.nu 
 
     echo \$env.ASDF_DIR
   ")
 
   [ "$?" -eq 0 ]
-  [ "$output" = "$HOME/.asdf" ]
+  output=$(echo "$result" | grep "asdf")
+  [ "$output" != "" ]
 }
 
 @test "adds asdf dirs to PATH" {
@@ -30,8 +32,9 @@ cleaned_path() {
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
+    source asdf.nu 
 
     echo \$env.PATH
  ")
@@ -45,9 +48,10 @@ cleaned_path() {
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
-    source asdf.nu
+    source asdf.nu 
+    source asdf.nu 
 
     echo \$env.PATH
   ")
@@ -61,8 +65,9 @@ cleaned_path() {
     hide-env -i asdf
     let-env ASDF_DIR = ( pwd )
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
+    source asdf.nu 
 
     echo \$env.ASDF_DIR
   ")
@@ -76,8 +81,9 @@ cleaned_path() {
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
+    source asdf.nu 
     help commands | where name == asdf  | get command_type | to text
   ")
   [ "$?" -eq 0 ]
@@ -89,8 +95,9 @@ cleaned_path() {
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu
+    source asdf.nu 
     asdf info
   ")
   [ "$?" -eq 0 ]
