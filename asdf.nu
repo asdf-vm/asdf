@@ -1,29 +1,18 @@
-let-env ASDF_DIR = if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR }
+def-env configure-asdf [] {
 
-let possible_dirs = [                     
-                        ( $env.ASDF_DIR | path join 'asdf.nu' ) , 
-                        '/opt/asdf-vm/asdf.nu', 
-                        ($env.HOME | path join '.asdf/asdf.nu')             
-                    ] 
+    let-env ASDF_DIR = ( if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR } )
+        
+    let shims_dir = ( if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) { $env.HOME | path join '.asdf/shims' } else { $env.ASDF_DATA_DIR } | path join 'shims' )
 
-let is_brew_installed = ( not (which 'brew' | get --ignore-errors path | is-empty) )
+    let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
 
-let possible_dirs = ( $possible_dirs | append (if $is_brew_installed { (brew --prefix asdf | into string | path join 'libexec/asdf.nu') } else { '' }) )
 
-let filtered_dirs = ( $possible_dirs | 
-                        where { |it| not ($it | is-empty) } )
+    let-env PATH = ( $env.PATH | where { |p| $p != $shims_dir } | append $shims_dir )
+    let-env PATH = ( $env.PATH | where { |p| $p != $asdf_bin_dir } | append $asdf_bin_dir )
 
-let asdf_dir = ( $filtered_dirs                         | 
-                    where {|it| $it | path exists  }    | 
-                    first                               |
-                    path dirname                        | 
-                    path join 'bin' )
+}
 
-let shims_dir = ( if ($asdf_dir | path join 'shims' | path exists) { $asdf_dir | path join 'shims' } else { $env.HOME | path join '.asdf/shims' } )
-
-let-env PATH = ( $env.PATH | where { |p| $p != $asdf_dir } | append $asdf_dir )
-let-env PATH = ( $env.PATH | where { |p| $p != $shims_dir } | append $shims_dir)
-
+configure-asdf
 
 ## Completions
 
