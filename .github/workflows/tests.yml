@@ -26,18 +26,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  
+      - name: Setup nushell
+        uses: hustcer/setup-nu@main 
 
       - name: Install test dependencies
         if: runner.os == 'macos'
-        run: brew install coreutils fish elvish nushell
+        run: brew install coreutils fish elvish
 
       - name: Install test dependencies
         if: runner.os == 'linux'
         run: |
           sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
-          sudo apt-get -y install fish curl pkg-config libssl-dev
+          sudo apt-get -y install fish curl
 
           # Download elvish binary and add to path
           curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
@@ -46,16 +48,6 @@ jobs:
           mkdir -p "$HOME/bin"
           mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
           echo "$HOME/bin" >>"$GITHUB_PATH"
-      
-      - name: Install rust [dependency for nushell]
-        if: runner.os == 'linux'
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          
-      - name: Install nushell
-        if: runner.os == 'linux'
-        run: cargo install nu
 
       - name: Install bats
         run: |
