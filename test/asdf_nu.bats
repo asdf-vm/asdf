@@ -12,7 +12,7 @@ cleaned_path() {
 
 @test "exports ASDF_DIR" {
   if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-        skip "Skipping nushell test"
+    skip "Skipping nushell test"
   fi
   result=$(nu -c "
     hide-env -i asdf
@@ -32,7 +32,7 @@ cleaned_path() {
 
 @test "adds asdf dirs to PATH" {
   if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-        skip "Skipping nushell test"
+    skip "Skipping nushell test"
   fi  
   result=$(nu -c "
     hide-env -i asdf
@@ -54,7 +54,7 @@ cleaned_path() {
 
 @test "does not add paths to PATH more than once" {
   if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-        skip "Skipping nushell test"
+    skip "Skipping nushell test"
   fi  
   result=$(nu -c "
     hide-env -i asdf
@@ -110,7 +110,7 @@ cleaned_path() {
 
 @test "function calls asdf command" {
   if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-        skip "Skipping nushell test"
+    skip "Skipping nushell test"
   fi    
   result=$(nu -c "
     hide-env -i asdf
