@@ -1,10 +1,5 @@
 #!/usr/bin/env bats
 
-if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-  echo "skipping nushell tests"
-  exit 0
-fi
-
 load test_helpers
 
 setup() {
@@ -16,6 +11,9 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   result=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -33,6 +31,9 @@ cleaned_path() {
 }
 
 @test "adds asdf dirs to PATH" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   result=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -52,6 +53,9 @@ cleaned_path() {
 }
 
 @test "does not add paths to PATH more than once" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   result=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -69,6 +73,9 @@ cleaned_path() {
 }
 
 @test "retains ASDF_DIR" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   output=$(nu -c "
     hide-env -i asdf
     let-env ASDF_DIR = ( pwd )
@@ -85,6 +92,9 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   output=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -99,6 +109,9 @@ cleaned_path() {
 }
 
 @test "function calls asdf command" {
+  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
+    skip "Skipping nushell test"
+  fi
   result=$(nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
