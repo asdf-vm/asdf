@@ -30,20 +30,34 @@ class c:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def utilGetStrs(line, m):
+    return (
+        line[0:m.start('match')],
+        line[m.start('match'):m.end('match')],
+        line[m.end('match'):]
+    )
+
 # Before: printf '%s\\n' '^w^'
 # After: printf '%s\n' '^w^'
 def noDoubleBackslashFixer(line: str, rule: Dict[str, str], m) -> str:
-    prestr = line[0:m.start('match')]
-    midstr = line[m.start('match'):m.end('match')]
-    poststr = line[m.end('match'):]
+    prestr, midstr, poststr = utilGetStrs(line, m)
 
-    fixed_line = f'{prestr}{midstr[1:]}{poststr}'
-    return fixed_line
+    return f'{prestr}{midstr[1:]}{poststr}'
+
+# Before: $(pwd)
+# After: $PWD
+def noPwdCapture(line: str, rule: Dict[str, str], m) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}$PWD{poststr}'
 
 def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
     for line_i, line in enumerate(content_arr):
+        if 'checkstyle-ignore' in line:
+            continue
+
         for rule in rules:
             m = re.search(rule['regex'], line)
             if m is not None and m.group('match') is not None:
@@ -58,7 +72,7 @@ def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any
                 print()
 
                 if options['fix']:
-                    content_arr[line_i] = rule['fixer_fn'](line, rule, m)
+                    content_arr[line_i] = rule['fixerFn'](line, rule, m)
 
                 rule['found'] += 1
 
@@ -71,7 +85,28 @@ def main():
             'name': 'no-double-backslash',
             'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
             'reason': 'Backslashes are only required if followed by a $, `, ", \\, or <newline>',
-            'fixer_fn': noDoubleBackslashFixer,
+            'fixerFn': noDoubleBackslashFixer,
+            'testPositiveMatches': [
+                'printf "%s\\\\n" "Hai"',
+                'echo -n "Hello\\\\n"'
+            ],
+            'testNegativeMatches': [
+                'printf "%s\\n" "Hai"',
+                'echo -n "Hello\\n"'
+            ],
+            'found': 0
+        },
+        {
+            'name': 'no-pwd-capture',
+            'regex': '(?P<match>\\$\\(pwd\\))',
+            'reason': '$PWD is essentially equivalent to $(pwd) without the overhead of a subshell',
+            'fixerFn': noPwdCapture,
+            'testPositiveMatches': [
+                '$(pwd)'
+            ],
+            'testNegativeMatches': [
+                '$PWD'
+            ],
             'found': 0
         },
     ]
@@ -79,7 +114,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('files', metavar='FILES', nargs='*')
     parser.add_argument('--fix', action='store_true')
+    parser.add_argument('--internal-test-regex', action='store_true')
     args = parser.parse_args()
+
+    if args.internal_test_regex:
+        for rule in rules:
+            for positiveMatch in rule['testPositiveMatches']:
+                m = re.search(rule['regex'], positiveMatch)
+                if m is None or m.group('match') is None:
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.CYAN}positive{c.RESET} test:')
+                    print(f'=> {positiveMatch}')
+                    print()
+
+            for negativeMatch in rule['testNegativeMatches']:
+                m = re.search(rule['regex'], negativeMatch)
+                if m is not None and m.group('match') is not None:
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.YELLOW}negative{c.RESET} test:')
+                    print(f'=> {negativeMatch}')
+                    print()
+        return
 
     options = {
         'fix': args.fix

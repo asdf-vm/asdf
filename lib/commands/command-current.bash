@@ -10,7 +10,7 @@ plugin_current_command() {
   check_if_plugin_exists "$plugin_name"
 
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
   local version_and_path
   version_and_path=$(find_versions "$plugin_name" "$search_path")
   local full_version
