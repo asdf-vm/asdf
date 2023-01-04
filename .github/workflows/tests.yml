@@ -29,6 +29,9 @@ jobs:
           fetch-depth: 0  
       - name: Setup nushell
         uses: hustcer/setup-nu@main 
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          
 
       - name: Install test dependencies
         if: runner.os == 'macos'
