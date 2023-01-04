@@ -101,7 +101,7 @@ cleaned_path() {
 
 @test "function calls asdf command" {
   result=$(elvish -norc -c "
-    set-env ASDF_DIR $(pwd)
+    set-env ASDF_DIR $(pwd) # checkstyle-ignore
     set paths = [$(cleaned_path)]
     use asdftest _asdf; var asdf~ = \$_asdf:asdf~
     asdf info

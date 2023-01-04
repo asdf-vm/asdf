@@ -89,7 +89,7 @@ cleaned_path() {
 @test "function calls asdf command" {
   result=$(
     unset -f asdf
-    ASDF_DIR=$(pwd)
+    ASDF_DIR=$PWD
     PATH=$(cleaned_path)
 
     source_asdf_sh

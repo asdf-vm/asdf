@@ -24,7 +24,7 @@ version_command() {
   elif [ "$cmd" = "local-tree" ]; then
     file=$(find_tool_versions)
   else # cmd = local
-    file="$(pwd)/$file_name"
+    file="$PWD/$file_name"
   fi
 
   if [ -L "$file" ]; then

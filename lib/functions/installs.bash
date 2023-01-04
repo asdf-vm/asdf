@@ -39,7 +39,7 @@ get_concurrency() {
 install_one_local_tool() {
   local plugin_name=$1
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
 
   local plugin_versions
 
@@ -65,7 +65,7 @@ install_local_tool_versions() {
   plugins_path=$(get_plugin_path)
 
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
 
   local some_tools_installed
   local some_plugin_not_installed
