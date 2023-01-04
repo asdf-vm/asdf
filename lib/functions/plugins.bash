@@ -56,9 +56,9 @@ plugin_add_command() {
 
   local plugin_name=$1
 
-  local regex="^[[:alpha:][:digit:]_-]+$"
+  local regex="^[[:lower:][:digit:]_-]+$"
   if ! printf "%s" "$plugin_name" | grep -q -E "$regex"; then
-    display_error "$plugin_name is invalid. Name must match regex $regex"
+    display_error "$plugin_name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
     exit 1
   fi
 

@@ -126,6 +126,31 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 :::
 
+::: details Bash & Homebrew
+
+1. Em seu `~/.bashrc` remova as linhas do `asdf.sh` e remova seus complementos:
+
+```shell
+. $(brew --prefix asdf)/libexec/asdf.sh
+. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
+```
+
+?> Os complementos precisam [instruções de configuração do Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) e siga o guia de remoção.
+
+2. Desinstale usando seu gerenciador de pacotes:
+
+```shell
+brew uninstall asdf --force
+```
+
+3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
+
+```shell
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 Caso esteja usando **macOs Catalina ou mais recente**, por padrão o _shell_ é **ZSH**. Se não achar alguma configuração em seu `~/.bash_profile` talvez esteja em `~/.zshrc` em cada caso siga as intruções do ZSH.

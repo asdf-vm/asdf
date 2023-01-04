@@ -84,6 +84,22 @@ Completions must be configured manually with the following entry in your `.bash_
 
 :::
 
+::: details Bash & Homebrew
+
+Add `asdf.sh` to your `~/.bashrc` with:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+```
+
+Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.

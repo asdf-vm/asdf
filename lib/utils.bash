@@ -765,7 +765,9 @@ with_shim_executable() {
     IFS=' ' read -r plugin_name full_version <<<"$selected_version"
     plugin_path=$(get_plugin_path "$plugin_name")
 
-    run_within_env() {
+    # This function does get invoked, but shellcheck sees it as unused code
+    # shellcheck disable=SC2317
+    function run_within_env() {
       local path
       path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
 

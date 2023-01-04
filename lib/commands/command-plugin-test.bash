@@ -150,7 +150,7 @@ plugin_test_command() {
       "$@"
       exit_code=$?
       if [ $exit_code != 0 ]; then
-        fail_test "$* failed with exit code $?"
+        fail_test "$* failed with exit code $exit_code"
       fi
     fi
 
