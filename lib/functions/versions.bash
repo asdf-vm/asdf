@@ -64,8 +64,8 @@ version_command() {
     sed -i.bak -e "s|^$plugin_name .*$|$plugin_name ${resolved_versions[*]}|" "$file"
     rm -f "$file".bak
   else
-    # Add a trailing newline at the end of the file if missing
-    [[ -n "$(tail -c1 "$file")" && -f "$file" ]] && printf '\n' >>"$file"
+    # Add a trailing newline at the end of the file if missing and file present
+    [[ -f "$file" && -n "$(tail -c1 "$file")" ]] && printf '\n' >>"$file"
 
     # Add a new version line to the end of the file
     printf "%s %s\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
