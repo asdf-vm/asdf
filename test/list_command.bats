@@ -54,7 +54,7 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list dummy
-  [ "$(echo -e "  1.0.0\n  1.1.0")" == "$output" ]
+  [ "$(echo -e "  1.0.0\n  1.1.0")" = "$output" ]
   [ "$status" -eq 0 ]
 }
 
@@ -63,7 +63,7 @@ teardown() {
   run asdf install dummy 1.1
   run asdf install dummy 2.0
   run asdf list dummy 1
-  [ "$(echo -e "  1.0\n  1.1")" == "$output" ]
+  [ "$(echo -e "  1.0\n  1.1")" = "$output" ]
   [ "$status" -eq 0 ]
 }
 
@@ -71,25 +71,25 @@ teardown() {
   run asdf install dummy 1.0
   run asdf install dummy 1.1
   run asdf list dummy 2
-  [ "$(echo "No compatible versions installed (dummy 2)")" == "$output" ]
+  [ "$(echo "No compatible versions installed (dummy 2)")" = "$output" ]
   [ "$status" -eq 1 ]
 }
 
 @test "list_all_command lists available versions" {
   run asdf list-all dummy
-  [ "$(echo -e "1.0.0\n1.1.0\n2.0.0")" == "$output" ]
+  [ "$(echo -e "1.0.0\n1.1.0\n2.0.0")" = "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "list_all_command with version filters available versions" {
   run asdf list-all dummy 1
-  [ "$(echo -e "1.0.0\n1.1.0")" == "$output" ]
+  [ "$(echo -e "1.0.0\n1.1.0")" = "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "list_all_command with an invalid version should return an error" {
   run asdf list-all dummy 3
-  [ "$(echo "No compatible versions available (dummy 3)")" == "$output" ]
+  [ "$(echo "No compatible versions available (dummy 3)")" = "$output" ]
   [ "$status" -eq 1 ]
 }
 
