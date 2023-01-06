@@ -22,7 +22,7 @@ As versões podem estar no seguinte formato:
 - `10.15.0` - uma versão real. Os plugins que suportam o download de binários farão o download de binários.
 - `ref:v1.0.2-a` ou `ref:39cb398vb39` - _tag/commit/branch_ para download pelo github e compilação
   um path costumizado e compi
-- `path:/src/elixir` - um path para uma versão compilada e personalizada de uma ferramenta pronta para usar. Para uso por linguagens de desenvolvimento e outros.
+- `path:~/src/elixir` - um path para uma versão compilada e personalizada de uma ferramenta pronta para usar. Para uso por linguagens de desenvolvimento e outros.
 - `system` - faz com que asdf passe para a versão da ferramenta no sistema que não é gerenciada por asdf .
 
 Várias versões podem ser definidas, separando-as com um espaço. Por exemplo, para usar Python 3.7.2, e também Python 2.7.15, use a linha abaixo em seu arquivo `.tool-versions`.
