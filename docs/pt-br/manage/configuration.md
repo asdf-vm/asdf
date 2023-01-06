@@ -2,13 +2,13 @@
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-Configuration of `asdf` encompasses both the sharable `.tool-versions` files as well as user specific customisations with `.asdfrc` and Environment Variables.
+A configuração do `asdf` abrange tanto os arquivos `.tool-versions` compartilháveis quanto as personalizações específicas do usuário com `.asdfrc` e variáveis de ambiente.
 
 ## .tool-versions
 
 Sempre que o arquivo `.tool-versions` estiver presente em um diretório, as versões da ferramenta que ele declara serão usadas nesse diretório e em seus subdiretórios.
 
-?> Configurações globais podem ser modificadas no arquivo `$HOME/.tool-versions`
+Configurações globais podem ser modificadas no arquivo `$HOME/.tool-versions`
 
 O arquivo `.tool-versions` se parece assim:
 
@@ -22,7 +22,7 @@ As versões podem estar no seguinte formato:
 - `10.15.0` - uma versão real. Os plugins que suportam o download de binários farão o download de binários.
 - `ref:v1.0.2-a` ou `ref:39cb398vb39` - _tag/commit/branch_ para download pelo github e compilação
   um path costumizado e compi
-- `path:/src/elixir` - um path para uma versão compilada e personalizada de uma ferramenta pronta para usar. Para uso por linguagens de desenvolvimento e outros.
+- `path:~/src/elixir` - um path para uma versão compilada e personalizada de uma ferramenta pronta para usar. Para uso por linguagens de desenvolvimento e outros.
 - `system` - faz com que asdf passe para a versão da ferramenta no sistema que não é gerenciada por asdf .
 
 Várias versões podem ser definidas, separando-as com um espaço. Por exemplo, para usar Python 3.7.2, e também Python 2.7.15, use a linha abaixo em seu arquivo `.tool-versions`.
@@ -56,7 +56,7 @@ legacy_version_file = yes
 
 ## Variáveis de ambiente
 
-- `ASDF_CONFIG_FILE` - O padrão é `~ / .asdfrc` conforme descrito acima. Pode ser definido para qualquer local.
+- `ASDF_CONFIG_FILE` - O padrão é `~ /.asdfrc` conforme descrito acima. Pode ser definido para qualquer local.
 - `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - O nome do arquivo que armazena os nomes e versões das ferramentas. O padrão é `.tool-versions`. Pode ser qualquer nome de arquivo válido. Normalmente você não deve substituir o valor padrão, a menos que deseja que o asdf ignore os arquivos `.tool-versions`.
-- `ASDF_DIR` - O padrão é `~/.asdf` - Localização dos arquivos `asdf`. Se você instalar `asdf` em algum outro diretório, defina-o para esse diretório. Por exemplo, se você estiver instalando através do AUR, você deve definir isso para `/ opt / asdf-vm`.
+- `ASDF_DIR` - O padrão é `~/.asdf` - Localização dos arquivos `asdf`. Se você instalar `asdf` em algum outro diretório, defina-o para esse diretório. Por exemplo, se você estiver instalando através do AUR, você deve definir isso para `/opt/asdf-vm`.
 - `ASDF_DATA_DIR` - O padrão é `~/.asdf` - Local onde `asdf` instala plugins, correções e instalações. Pode ser definido para qualquer local antes de fornecer `asdf.sh` ou `asdf.fish` mencionado na seção acima. Para Elvish, isso pode ser definido acima de `use asdf`.

@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/plugins.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
 
 # shellcheck disable=SC2059
 plugin_current_command() {
@@ -8,7 +10,7 @@ plugin_current_command() {
   check_if_plugin_exists "$plugin_name"
 
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
   local version_and_path
   version_and_path=$(find_versions "$plugin_name" "$search_path")
   local full_version
@@ -42,16 +44,18 @@ plugin_current_command() {
 
 # shellcheck disable=SC2059
 current_command() {
-  local terminal_format="%-15s %-15s %-10s\\n"
+  local terminal_format="%-15s %-15s %-10s\n"
   local exit_status=0
+  local plugin
 
-  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disbale this until we release headings across the board
+  # printf "$terminal_format" "PLUGIN" "VERSION" "SET BY CONFIG" # disable this until we release headings across the board
   if [ $# -eq 0 ]; then
-    for plugin in $(asdf plugin list); do
+    # shellcheck disable=SC2119
+    for plugin in $(plugin_list_command); do
       plugin_current_command "$plugin" "$terminal_format"
     done
   else
-    local plugin=$1
+    plugin=$1
     plugin_current_command "$plugin" "$terminal_format"
     exit_status="$?"
   fi
@@ -71,8 +75,8 @@ check_for_deprecated_plugin() {
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
   if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\\n\\n" "$plugin_name"
-    printf "  asdf plugin-update %s\\n\\n" "$plugin_name"
+    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\n\n" "$plugin_name"
+    printf "  asdf plugin-update %s\n\n" "$plugin_name"
   fi
 }
 

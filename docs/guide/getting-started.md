@@ -11,35 +11,40 @@
 
 ## 1. Install Dependencies
 
-**Linux**:
+asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
+
+| OS    | Package Manager | Command                            |
+| ----- | --------------- | ---------------------------------- |
+| linux | Aptitude        | `apt install curl git`             |
+| linux | DNF             | `dnf install curl git`             |
+| linux | Pacman          | `pacman -S curl git`               |
+| linux | Zypper          | `zypper install curl git`          |
+| macOS | Homebrew        | `brew install coreutils curl git`  |
+| macOS | Spack           | `spack install coreutils curl git` |
 
 ::: tip Note
+
 `sudo` may be required depending on your system configuration.
+
 :::
-
-| Package Manager | Command                        |
-| --------------- | ------------------------------ |
-| Aptitude        | `apt install curl git`    |
-| DNF             | `dnf install curl git`    |
-| Pacman          | `pacman -S curl git`      |
-| Zypper          | `zypper install curl git` |
-
-**macOS**:
-
-| Package Manager | Command                                                   |
-| --------------- | --------------------------------------------------------- |
-| Homebrew        | Dependencies will be automatically installed by Homebrew. |
-| Spack           | `spack install coreutils curl git`                        |
 
 ## 2. Download asdf
 
-We recommend using Git, though there are other platform specific methods:
+### Official Download
+
+```shell:no-line-numbers
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+```
+
+### Community Supported Download Methods
+
+We highly recommend using the official `git` method.
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
+
 
 ## 3. Install asdf
 
@@ -75,6 +80,22 @@ Completions must be configured manually with the following entry in your `.bash_
 
 ```shell
 . $HOME/.asdf/completions/asdf.bash
+```
+
+:::
+
+::: details Bash & Homebrew
+
+Add `asdf.sh` to your `~/.bashrc` with:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+```
+
+Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
 ```
 
 :::
@@ -148,12 +169,12 @@ Completions are automatically configured on installation by the AUR package.
 
 ::: details Elvish & Git
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -162,12 +183,12 @@ Completions are automatically configured.
 
 ::: details Elvish & Homebrew
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -175,12 +196,12 @@ Completions are automatically configured.
 
 ::: details Elvish & Pacman
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
 Completions are automatically configured.
@@ -237,13 +258,46 @@ Add the following to `~/.zshrc`:
 Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
+::: details Nushell & Git
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Homebrew
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell:no-line-numbers
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+```
+
+Completions are automatically configured
+:::
+
+::: details Nushell & Pacman
+
+Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+
+```shell
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
+```
+
+Completions are automatically configured.
+:::
+
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
 ## Core Installation Complete!
 
-This completes the installation of the `asdf` core  :tada:
+This completes the installation of the `asdf` core :tada:
 
 `asdf` is only useful once you install a **plugin**, install a **tool** and manage its **versions**. Continue the guide below to learn how to do this.
 
@@ -310,7 +364,7 @@ Some OSs already have tools installed that are managed by the system and not `as
 
 ### Local
 
-Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git respository for a project. When in your desired directory execute:
+Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
 
 ```shell:no-line-numbers
 asdf local nodejs latest

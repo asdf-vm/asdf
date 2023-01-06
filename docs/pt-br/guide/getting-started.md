@@ -18,18 +18,18 @@ Você pode também acompanhar o passo a passo da instalação através [deste v�
 **Linux**:
 
 | Gerenciador de Pacotes | Comando                        |
-| --------------- | ------------------------------ |
-| Aptitude        | `sudo apt install curl git`    |
-| DNF             | `sudo dnf install curl git`    |
-| Pacman          | `sudo pacman -S curl git`      |
-| Zypper          | `sudo zypper install curl git` |
+| ---------------------- | ------------------------------ |
+| Aptitude               | `sudo apt install curl git`    |
+| DNF                    | `sudo dnf install curl git`    |
+| Pacman                 | `sudo pacman -S curl git`      |
+| Zypper                 | `sudo zypper install curl git` |
 
 **macOS**:
 
-| Gerenciador de Pacotes | Comando                                                   |
-| --------------- | --------------------------------------------------------- |
-| Homebrew        | As dependências serão automaticamente instaladas pelo Homebrew. |
-| Spack           | `spack install coreutils curl git`                        |
+| Gerenciador de Pacotes | Comando                                                         |
+| ---------------------- | --------------------------------------------------------------- |
+| Homebrew               | As dependências serão automaticamente instaladas pelo Homebrew. |
+| Spack                  | `spack install coreutils curl git`                              |
 
 ## 2. Instalando o asdf
 
@@ -37,7 +37,7 @@ Nós recomendamos a instalação através do Git, entretanto existem outros mét
 
 | Método   | Comando                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1`                                                                                             |
+| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
@@ -75,6 +75,22 @@ O auto completar deve ser configurado manualmente a partir da adição da seguin
 
 ```shell
 . $HOME/.asdf/completions/asdf.bash
+```
+
+:::
+
+::: details Bash & Homebrew
+
+Adicione `asdf.sh` ao `~/.bashrc` através do comando:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bashrc
+```
+
+O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
 ```
 
 :::
@@ -148,42 +164,42 @@ O auto completar é configurado automaticamente durante a instalação do pacote
 
 ::: details Elvish & Git
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s ~/.asdf/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
-Completions are automatically configured.
+Ao concluir atualizará automaticamente
 
 :::
 
 ::: details Elvish & Homebrew
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
-Completions are automatically configured.
+Ao concluir atualizará automaticamente
 :::
 
 ::: details Elvish & Pacman
 
-Add `asdf.elv` to your `~/.elvish/rc.elv` with:
+Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
 ```shell:no-line-numbers
-mkdir -p ~/.elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; fn asdf [@args]{_asdf:asdf $@args}' >> ~/.elvish/rc.elv
-echo "\n"'edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.elvish/rc.elv
+mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
+echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
+echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
 
-Completions are automatically configured.
+Ao concluir atualizará automaticamente
 :::
 
 ::: details ZSH & Git
@@ -194,7 +210,7 @@ Adicione a seguinte linha ao seu `~/.zshrc`:
 . $HOME/.asdf/asdf.sh
 ```
 
-**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
 
 O auto completar pode ser configurado ou pelo plugin do asdf para framework para ZSH, ou através da adição das seguintes linhas ao seu `.zshrc`:
 
@@ -221,7 +237,7 @@ Adicione `asdf.sh` ao seu `~/.zshrc` através do comando:
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 
-**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar. 
+**OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
 
 O auto completar pode ser configurado ou pelo framework para ZSH, ou de acordo com as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). Se você está usando um framework para ZSH, pode ser que seja necessário atualizar o plugin do asdf para que o novo auto completar funcione adequadamente através do `fpath`. O plugin do asdf para o Oh-My-ZSH ainda será atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
@@ -249,7 +265,7 @@ Para demonstração, vamos instalar e configurar o [Node.js](https://nodejs.org/
 
 Cada plugin possui algumas dependências, por isso precisamos checar no repositório onde elas estão listadas. Por exemplo, para o `asdf-nodejs` são:
 
-| SO             | Instalação de dependencia                 |
+| SO             | Instalação de dependencia               |
 | -------------- | --------------------------------------- |
 | Linux (Debian) | `apt-get install dirmngr gpg curl gawk` |
 | macOS          | `brew install gpg gawk`                 |

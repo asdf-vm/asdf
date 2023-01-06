@@ -2,11 +2,11 @@
 
 > Hi, we've recently migrated our docs and added some new pages. If you would like to help translate this page, see the "Edit this page" link at the bottom of the page.
 
-`asdf` core contribution guide.
+guia de contribuição principal `asdf`.
 
-## Initial Setup
+## Configuração inicial
 
-Fork `asdf` on GitHub and/or Git clone the default branch:
+Fork `asdf` no GitHub e/ou Git clone o branch padrão:
 
 ```shell:no-line-numbers
 # clone your fork
@@ -15,7 +15,7 @@ git clone https://github.com/<GITHUB_USER>/asdf.git
 git clone https://github.com/asdf-vm/asdf.git
 ```
 
-The tools for core development are in this repo's `.tool-versions`. If you wish to manage with `asdf` itself, add the plugins:
+As ferramentas para o desenvolvimento do núcleo estão em `.tool-versions` deste repositório.  Se você deseja gerenciar com o próprio `asdf`, adicione os plugins:
 
 ```shell:no-line-numbers
 asdf plugin add bats https://github.com/timgluz/asdf-bats.git
@@ -23,23 +23,23 @@ asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git
 asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
 ```
 
-Install the versions to develop `asdf` with:
+Instale as versões para desenvolver `asdf` com:
 
 ```shell:no-line-numbers
 asdf install
 ```
 
-It _may_ be useful to not use `asdf` to manage the tools during development on your local machine as you may need to break functionality which would then break your dev tooling. Here's the raw list of tools:
+_pode_ ser útil não usar `asdf` para gerenciar as ferramentas durante o desenvolvimento em sua máquina local, pois você pode precisar quebrar funcionalidades que, então, quebrariam suas ferramentas de desenvolvimento.  Aqui está a lista bruta de ferramentas:
 
-- [bats-core](https://github.com/bats-core/bats-core): Bash Automated Testing System, for unit testing Bash or POSIX compliant scripts.
-- [shellcheck](https://github.com/koalaman/shellcheck): Static analysis tool for shell scripts.
-- [shfmt](https://github.com/mvdan/sh): A shell parser, formatter, and interpreter with bash support; includes shfmt
+- [bats-core](https://github.com/bats-core/bats-core): Bash Automated Testing System, para testes unitários de scripts compatíveis com Bash ou POSIX.
+- [shellcheck](https://github.com/koalaman/shellcheck): Ferramenta de análise estática para scripts de shell.
+- [shfmt](https://github.com/mvdan/sh): Um analisador, formatador e interpretador de shell com suporte a bash; inclui shfmt
 
-## Development
+## Desenvolvimento
 
-If you want to try out your changes without making change to your installed `asdf`, you can set the `$ASDF_DIR` variable to the path where you cloned the repository, and temporarily prepend the `bin` and `shims` directory of the directory to your path.
+Se você quiser testar suas alterações sem fazer alterações em seu `asdf` instalado, você pode definir a variável `$ASDF_DIR` para o caminho onde você clonou o repositório e anexar temporariamente o diretório `bin` e `shims` do diretório para o seu caminho.
 
-It is best to format, lint and test your code locally before you commit or push to the remote. Use the following scripts/commands:
+É melhor formatar, lint e testar seu código localmente antes de confirmar ou enviar para o controle remoto. Use os seguintes scripts/comandos:
 
 ```shell:no-line-numbers
 # Shellcheck
@@ -56,15 +56,15 @@ bats test/list_commands.bash
 
 ::: tip
 
-**Add tests!** - Tests are **required** for new features and speed up review of bug fixes. Please cover new code paths before you create a Pull Request. See [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html)
+ **Adicione testes!** - Os testes são **necessários** para novos recursos e aceleram a revisão de correções de bugs.  Por favor, cubra novos caminhos de código antes de criar um Pull Request.  Consulte [documentação do bats-core](https://bats-core.readthedocs.io/en/stable/index.html)
 
 :::
 
-## Bats Testing
+## Teste de BATS
 
-It is **strongly encouraged** to examine the existing test suite and the [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html) before writing tests.
+É **fortemente recomendado** examinar o conjunto de testes existente e a [documentação do bats-core](https://bats-core.readthedocs.io/en/stable/index.html) antes de escrever os testes.
 
-Bats debugging can be difficult at times. Using the TAP output with `-t` flag will enable you to print outputs with the special file descriptor `>&3` during test execution, simplifying debugging. As an example:
+A depuração de BATs pode ser difícil às vezes. Usar a saída TAP com o sinalizador `-t` permitirá que você imprima saídas com o descritor de arquivo especial `>&3` durante a execução do teste, simplificando a depuração. Como um exemplo:
 
 ```shell
 # test/some_tests.bats
@@ -73,15 +73,15 @@ printf "%s\n" "Will not be printed during bats test/some_tests.bats"
 printf "%s\n" "Will be printed during bats -t test/some_tests.bats" >&3
 ```
 
-This is further documented in bats-core [Printing to the Terminal](https://bats-core.readthedocs.io/en/stable/writing-tests.html#printing-to-the-terminal).
+Isso está documentado em bats-core [Imprimindo no Terminal](https://bats-core.readthedocs.io/en/stable/writing-tests.html#printing-to-the-terminal).
 
-## Pull Requests, Releases & Conventional Commits
+## Pull Requests, Releases e Commits Convencionais
 
-`asdf` is using an automated release tool called [Release Please](https://github.com/googleapis/release-please) to automatically bump the [SemVer](https://semver.org/) version and generate the [Changelog](https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md). This information is determined by reading the commit history since the last release.
+O `asdf` está usando uma ferramenta de lançamento automatizada chamada [Release Please](https://github.com/googleapis/release-please) para aumentar automaticamente a versão [SemVer](https://semver.org/) e gerar a [Changelog](https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md).  Essas informações são determinadas lendo o histórico de confirmação desde a última versão.
 
-[Conventional Commit messages](https://www.conventionalcommits.org/) define the format of the Pull Request Title which becomes the commit message format on the default branch. This is enforced with GitHub Action [`amannn/action-semantic-pull-request`](https://github.com/amannn/action-semantic-pull-request).
+[Mensagens de confirmação convencionais](https://www.conventionalcommits.org/) definem o formato do título da solicitação pull que se torna o formato da mensagem de confirmação na ramificação padrão. Isso é aplicado com GitHub Action [`amannn/action-semantic-pull-request`](https://github.com/amannn/action-semantic-pull-request).
 
-Conventional Commit follows this format:
+O Commit Convencional segue este formato:
 
 ```:no-line-numbers
 <type>[optional scope][optional !]: <description>
@@ -94,22 +94,22 @@ docs(website): some change for the website
 feat!: feature with breaking change
 ```
 
-The full list of `<types>` are: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+A lista completa de `<types>` é: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
 
-The `!` indicates a breaking change.
+O `!` indica uma mudança de ruptura.
 
 `fix`: will create a new SemVer `patch`
 `feat`: will create a new SemVer `minor`
 `<type>!`: will create a new SemVer `major`
 
-The Pull Request Title must follow this format.
+O título da solicitação pull deve seguir este formato.
 
 ::: tip
 
-Use Conventional Commit message format for your Pull Request Title.
+Use o formato de mensagem de confirmação convencional para seu título de solicitação de pull.
 
 :::
 
-## Docker Images
+## Imagens Docker
 
-The [asdf-alpine](https://github.com/vic/asdf-alpine) and [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) projects are an ongoing effort to provide Dockerized images of some asdf tools. You can use these docker images as base for your development servers, or for running your production apps.
+Os projetos [asdf-alpine](https://github.com/vic/asdf-alpine) e [asdf-ubuntu](https://github.com/vic/asdf-ubuntu) são um esforço contínuo para fornecer imagens de algumas ferramentas asdf.  Você pode usar essas imagens docker como base para seus servidores de desenvolvimento ou para executar seus aplicativos de produção.

@@ -9,7 +9,7 @@ plugin_list_all_command() {
   local plugins_local_path
   plugins_local_path="$(get_plugin_path)"
 
-  if ls "$plugins_index_path" &>/dev/null; then
+  if find "$plugins_index_path" -mindepth 1 -type d &>/dev/null; then
     (
       for index_plugin in "$plugins_index_path"/*; do
         index_plugin_name=$(basename "$index_plugin")
@@ -18,11 +18,11 @@ plugin_list_all_command() {
 
         [[ -d "${plugins_local_path}/${index_plugin_name}" ]] && installed_flag='*'
 
-        printf "%s\\t%s\\n" "$index_plugin_name" "$installed_flag$source_url"
+        printf "%s\t%s\n" "$index_plugin_name" "$installed_flag$source_url"
       done
     ) | awk '{ printf("%-28s", $1); sub(/^[^*]/, " &", $2); $1=""; print $0 }'
   else
-    printf "%s%s\\n" "error: index of plugins not found at " "$plugins_index_path"
+    printf "%s%s\n" "error: index of plugins not found at " "$plugins_index_path"
   fi
 }
 

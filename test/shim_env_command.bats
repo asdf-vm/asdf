@@ -25,7 +25,7 @@ teardown() {
 }
 
 @test "asdf env should execute under the environment used for a shim" {
-  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
   run asdf env dummy which dummy
@@ -33,12 +33,11 @@ teardown() {
   [ "$output" == "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
 
-
 @test "asdf env should execute under plugin custom environment used for a shim" {
-  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "export FOO=bar" > $ASDF_DIR/plugins/dummy/bin/exec-env
+  echo "export FOO=bar" >$ASDF_DIR/plugins/dummy/bin/exec-env
   chmod +x $ASDF_DIR/plugins/dummy/bin/exec-env
 
   run asdf env dummy
@@ -47,13 +46,13 @@ teardown() {
 }
 
 @test "asdf env should ignore plugin custom environment on system version" {
-  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "export FOO=bar" > $ASDF_DIR/plugins/dummy/bin/exec-env
+  echo "export FOO=bar" >$ASDF_DIR/plugins/dummy/bin/exec-env
   chmod +x $ASDF_DIR/plugins/dummy/bin/exec-env
 
-  echo "dummy system" > $PROJECT_DIR/.tool-versions
+  echo "dummy system" >$PROJECT_DIR/.tool-versions
 
   run asdf env dummy
   [ "$status" -eq 0 ]
@@ -68,7 +67,7 @@ teardown() {
 }
 
 @test "asdf env should set PATH correctly" {
-  echo "dummy 1.0" > $PROJECT_DIR/.tool-versions
+  echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
   run asdf env dummy

@@ -101,6 +101,7 @@ complete -f -c asdf -n '__fish_asdf_using_command which; and __fish_asdf_arg_num
 # latest completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a latest -d "Show latest stable version of a package"
 complete -f -c asdf -n '__fish_asdf_using_command latest; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
+complete -f -c asdf -n '__fish_asdf_using_command latest; and __fish_asdf_arg_number 2' -a --all
 
 # list completion
 complete -f -c asdf -n '__fish_asdf_needs_command' -a list -d "List installed versions of a package"

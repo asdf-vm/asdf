@@ -7,7 +7,8 @@ on:
   pull_request:
 
 env:
-  BATS_VERSION: v1.3.0
+  ELVISH_VERSION: v0.18.0
+  NUSHELL_VERSION: 0.73.0
 
 jobs:
   nix:
@@ -16,19 +17,20 @@ jobs:
       matrix:
         os:
           - macos-10.15
-          # - macos-11 - enable once out of private preview: https://github.com/actions/virtual-environments#available-environments
-          - ubuntu-18.04
+          - macos-11
+          - macos-12
           - ubuntu-20.04
+          - ubuntu-22.04
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Install test dependencies
         if: runner.os == 'macos'
-        run: brew install coreutils fish elvish
+        run: brew install coreutils fish elvish nushell
 
       - name: Install test dependencies
         if: runner.os == 'linux'
@@ -37,17 +39,27 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install fish curl
 
-          # Download elvish binary and add to path
-          curl https://dl.elv.sh/linux-amd64/elvish-v0.16.3.tar.gz -o elvish-v0.16.3.tar.gz
-          tar xzf elvish-v0.16.3.tar.gz
-          rm elvish-v0.16.3.tar.gz
+          # Create $HOME/bin
           mkdir -p "$HOME/bin"
-          mv elvish-v0.16.3 "$HOME/bin/elvish"
+
+          # Download elvish binary and add to path
+          curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          tar xzf elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          rm elvish-${{ env.ELVISH_VERSION }}.tar.gz
+          mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
+
+          # Download nushell binary and add to path
+          curl -L https://github.com/nushell/nushell/releases/download/${{ env.NUSHELL_VERSION }}/nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz -o nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
+          tar xzf nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
+          rm nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
+          mv nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu/* "$HOME/bin"
+
+          # Add $HOME/bin to path
           echo "$HOME/bin" >>"$GITHUB_PATH"
 
       - name: Install bats
         run: |
-          git clone --depth 1 --branch "${{ env.BATS_VERSION }}" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git $HOME/bats-core
           echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests

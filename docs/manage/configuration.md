@@ -7,7 +7,9 @@ Configuration of `asdf` encompasses both the sharable `.tool-versions` files as 
 Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
 
 ::: warning Note
+
 Global defaults can be set in the file `$HOME/.tool-versions`
+
 :::
 
 This is what a `.tool-versions` file looks like:
@@ -29,7 +31,7 @@ The versions can be in the following format:
 
 - `10.15.0` - an actual version. Plugins that support downloading binaries, will download binaries.
 - `ref:v1.0.2-a` or `ref:39cb398vb39` - tag/commit/branch to download from github and compile
-- `path:/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
+- `path:~/src/elixir` - a path to custom compiled version of a tool to use. For use by language developers and such.
 - `system` - this keyword causes asdf to passthrough to the version of the tool on the system that is not managed by asdf.
 
 ::: tip
@@ -52,12 +54,7 @@ Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
 Add an `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
 
-```:no-line-numbers
-legacy_version_file = no
-use_release_candidates = no
-always_keep_download = no
-plugin_repository_last_check_duration = 60
-```
+@[code :no-line-numbers](../../defaults)
 
 ### `legacy_version_file`
 
@@ -88,20 +85,57 @@ Configure the `asdf install` command to keep or delete the source code or binary
 
 ### `plugin_repository_last_check_duration`
 
-Configure the duration since the last asdf plugin repository sync to the next. Commands `asdf plugin add <name>` or `asdf plugin list all` will trigger a check of the duration, if the duration has passed then a sync occurs.
+Configure the duration (in minutes) between asdf plugin repository syncs. Trigger events result in a check of the duration. If more time has elapsed since the last sync than specified in the duration, a new sync occurs.
 
 | Options                                                                                                 | Description                                                  |
 | :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
-| integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration since last sync has passed |
+| integer in range `1` to `999999999` <br/> `60` is <Badge type="tip" text="default" vertical="middle" /> | Sync on trigger event if duration (in minutes) since last sync has been exceeded |
 | `0`                                                                                                     | Sync on each trigger event                                   |
 | `never`                                                                                                 | Never sync                                                   |
+
+Sync events occur when the following commands are executed:
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
+
+::: warning Note
+
+Setting the value to `never` does not stop the plugin repository from being initially synced, for that behaviour see `disable_plugin_short_name_repository`.
+
+:::
+
+### `disable_plugin_short_name_repository`
+
+Disable synchronization of the asdf plugin short-name repository. Sync events will exit early if the short-name repository is disabled.
+
+| Options                                                    | Description                                               |
+| :--------------------------------------------------------- | :-------------------------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Clone or update the asdf plugin repository on sync events |
+| `yes`                                                      | Disable the plugin short-name repository                  |
+
+Sync events occur when the following commands are executed:
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` does NOT trigger a plugin sync.
+
+::: warning Note
+
+Disabling the plugin short-name repository does not remove the repository if it has already synced. Remove the plugin repo with `rm --recursive --trash $ASDF_DATA_DIR/repository`.
+
+Disabling the plugin short-name repository does not remove plugins previously installed from this source. Plugins can be removed with `asdf plugin remove <name>`. Removing a plugin will remove all installed versions of the managed tool.
+
+:::
 
 ## Environment Variables
 
 - `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
 - `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The filename of the file storing the tool names and versions. Defaults to `.tool-versions`. Can be any valid filename. Typically you should not override the default value unless you know you want asdf to ignore `.tool-versions` files.
-- `ASDF_DIR` - Defaults to `~/.asdf` - Location of the `asdf` scripts. If you install `asdf` to some other directory, set this to that directory. For example, if you are installing via the AUR, you should set this to `/opt/asdf-vm`.
-- `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install plugins, shims and installs. Can be set to any location before sourcing `asdf.sh` or `asdf.fish` mentioned in the section above. For Elvish, this can be set above `use asdf`.
+- `ASDF_DIR` - Defaults to `~/.asdf` - Location of the `asdf` scripts. If you install `asdf` to some other directory, set this to that directory. For example, if you are installing via the AUR, you should set this to `/opt/asdf-vm`. This must be set to an absolute path like `~/.asdf`, `${HOME}/.asdf`, `/home/my/working/dir/.asdf`.
+- `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install plugins, shims and installs. Can be set to any location before sourcing `asdf.sh` or `asdf.fish` mentioned in the section above. For Elvish, this can be set above `use asdf`. This must be set to an absolute path like `~/.asdf`, `${HOME}/.asdf`, `/home/my/working/dir/.asdf`.
 
 ## Internal Configuration
 

@@ -1,25 +1,24 @@
-
+use path
 use re
 use str
-use path
 
-var asdf_dir = $E:HOME'/.asdf'
+var asdf_dir = ~'/.asdf'
 if (and (has-env ASDF_DIR) (!=s $E:ASDF_DIR '')) {
-  asdf_dir = $E:ASDF_DIR
+  set asdf_dir = $E:ASDF_DIR
 } else {
   set-env ASDF_DIR $asdf_dir
 }
 
 var asdf_data_dir = $asdf_dir
 if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
-  asdf_data_dir = $E:ASDF_DATA_DIR
+  set asdf_data_dir = $E:ASDF_DATA_DIR
 }
 
 # Add function wrapper so we can export variables
-fn asdf [command @args]{
+fn asdf {|command @args|
   if (==s $command 'shell') {
     # set environment variables
-    parts = [($asdf_dir'/bin/asdf' export-shell-version elvish $@args)]
+    var parts = [($asdf_dir'/bin/asdf' export-shell-version elvish $@args)]
     if (==s $parts[0] 'set-env') {
       set-env $parts[1] $parts[2]
     } elif (==s $parts[0] 'unset-env') {
@@ -31,16 +30,16 @@ fn asdf [command @args]{
   }
 }
 
-fn match [argz @pats]{
-  var matched = $true;
+fn match {|argz @pats|
+  var matched = $true
   if (!= (count $argz) (count $pats)) {
-    matched = $false
+    set matched = $false
   } else {
     for i [(range (count $pats))] {
-      pat = '^'$pats[$i]'$'
-      arg = $argz[$i]
+      var pat = '^'$pats[$i]'$'
+      var arg = $argz[$i]
       if (not (re:match $pat $arg)) {
-        matched = $false
+        set matched = $false
         break
       }
     }
@@ -48,35 +47,35 @@ fn match [argz @pats]{
   put $matched
 }
 
-fn ls-shims []{
+fn ls-shims {
   ls $asdf_data_dir'/shims'
 }
 
-fn ls-executables []{
+fn ls-executables {
   # Print all executable files and links in path
   try {
-    find $@paths '(' -type f -o -type l ')' -print 2>/dev/null | each [p]{
+    find $@paths '(' -type f -o -type l ')' -print 2>/dev/null | each {|p|
       try {
         if (test -x $p) {
           path:base $p
         }
-      } except {
+      } catch {
         # don't fail if permission denied
       }
     }
-  } except {
+  } catch {
     # silence default non-zero exit status
   }
 }
 
-fn ls-installed-versions [plugin_name]{
-  asdf list $plugin_name | each [version]{
+fn ls-installed-versions {|plugin_name|
+  asdf list $plugin_name | each {|version|
     put (re:replace '\s*(.*)\s*' '${1}' $version)
   }
 }
 
-fn ls-all-versions [plugin_name]{
-  asdf list-all $plugin_name | each [version]{
+fn ls-all-versions {|plugin_name|
+  asdf list-all $plugin_name | each {|version|
     put (re:replace '\s*(.*)\s*' '${1}' $version)
   }
 }
@@ -87,20 +86,20 @@ for path [
   $asdf_data_dir'/shims'
 ] {
   if (not (has-value $paths $path)) {
-    paths = [
-      $@paths
+    set paths = [
       $path
+      $@paths
     ]
   }
 }
 
 # Setup argument completions
-fn arg-completer [@argz]{
-  argz = $argz[1:-1]  # strip 'asdf' and trailing empty string
+fn arg-completer {|@argz|
+  set argz = $argz[1..-1]  # strip 'asdf' and trailing empty string
   var num = (count $argz)
   if (== $num 0) {
     # list all subcommands
-    find $asdf_dir'/lib/commands' -name 'command-*' | each [cmd]{
+    find $asdf_dir'/lib/commands' -name 'command-*' | each {|cmd|
       put (re:replace '.*/command-(.*)\.bash' '${1}' $cmd)
     }
     put 'plugin'
@@ -176,7 +175,7 @@ fn arg-completer [@argz]{
       put '--parent'
     } elif (or (match $argz 'plugin-add') (match $argz 'plugin' 'add')) {
       # asdf plugin add <name>
-      asdf plugin-list-all | each [line]{
+      asdf plugin-list-all | each {|line|
         put (re:replace '([^\s]+)\s+.*' '${1}' $line)
       }
     } elif (or (match $argz 'plugin-list') (match $argz 'plugin' 'list')) {
@@ -190,13 +189,13 @@ fn arg-completer [@argz]{
     } elif (or (match $argz 'plugin-remove') (match $argz 'plugin' 'remove')) {
       # asdf plugin remove <name>
       asdf plugin-list
-    } elif (and (>= (count $argz) 3) (match $argz[:3] 'plugin-test' '.*' '.*')) {
+    } elif (and (>= (count $argz) 3) (match $argz[..3] 'plugin-test' '.*' '.*')) {
       # asdf plugin-test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
       put '--asdf-plugin-gitref'
       put '--asdf-tool-version'
       ls-executables
       ls-shims
-    } elif (and (>= (count $argz) 4) (match $argz[:4] 'plugin' 'test' '.*' '.*')) {
+    } elif (and (>= (count $argz) 4) (match $argz[..4] 'plugin' 'test' '.*' '.*')) {
       # asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
       put '--asdf-plugin-gitref'
       put '--asdf-tool-version'
@@ -208,7 +207,7 @@ fn arg-completer [@argz]{
       put '--all'
     } elif (match $argz 'plugin') {
       # list plugin-* subcommands
-      find $asdf_dir'/lib/commands' -name 'command-plugin-*' | each [cmd]{
+      find $asdf_dir'/lib/commands' -name 'command-plugin-*' | each {|cmd|
         put (re:replace '.*/command-plugin-(.*)\.bash' '${1}' $cmd)
       }
     } elif (match $argz 'reshim') {

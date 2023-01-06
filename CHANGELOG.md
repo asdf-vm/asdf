@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.11.0](https://github.com/asdf-vm/asdf/compare/v0.10.2...v0.11.0) (2022-12-12)
+
+
+### Features
+
+* **completions:** bash improvements ([#1329](https://github.com/asdf-vm/asdf/issues/1329)) ([7c802c3](https://github.com/asdf-vm/asdf/commit/7c802c3fc9b5dc556993a98e5aaf96650cbb0d5b))
+* Disable short-name repository with config value ([#1227](https://github.com/asdf-vm/asdf/issues/1227)) ([18caea3](https://github.com/asdf-vm/asdf/commit/18caea3eb7d989d195cf13b3c9ffc2058d906fc5))
+* mark current resolved versions in `asdf list` output ([#762](https://github.com/asdf-vm/asdf/issues/762)) ([5ea6795](https://github.com/asdf-vm/asdf/commit/5ea67953be74cb5fde11240dc40a541c69afc65c))
+* support nushell ([#1355](https://github.com/asdf-vm/asdf/issues/1355)) ([274a638](https://github.com/asdf-vm/asdf/commit/274a638e155c08cd0d6dbda1a0d4da02c3466c97))
+
+
+### Bug Fixes
+
+* add missing "does not add paths to PATH more than once" test for elvish ([#1275](https://github.com/asdf-vm/asdf/issues/1275)) ([3c55167](https://github.com/asdf-vm/asdf/commit/3c55167a6807b48cacaaed18df7bf0db2526ed59))
+* append trailing newline to .tool-versions files when missing ([#1310](https://github.com/asdf-vm/asdf/issues/1310)) ([eb7dac3](https://github.com/asdf-vm/asdf/commit/eb7dac3a2b15ad458f55a897d49a377508ea92fe)), closes [#1299](https://github.com/asdf-vm/asdf/issues/1299)
+* excludes "milestone" releases in "latest" command ([#1307](https://github.com/asdf-vm/asdf/issues/1307)) ([5334d1d](https://github.com/asdf-vm/asdf/commit/5334d1db3d390c46ed49101528f74483eb6b2987)), closes [#1306](https://github.com/asdf-vm/asdf/issues/1306)
+* improve formatting of ballad ([#1367](https://github.com/asdf-vm/asdf/issues/1367)) ([e0c2c31](https://github.com/asdf-vm/asdf/commit/e0c2c31fc3274387efdddebe1450f0662f91a726))
+* use ELVISH_VERSION to specify elvish test version ([#1276](https://github.com/asdf-vm/asdf/issues/1276)) ([72c3a23](https://github.com/asdf-vm/asdf/commit/72c3a2377a1afa3027c6f29cb9f3f1a7fbddaa8c))
+
+### [0.10.2](https://www.github.com/asdf-vm/asdf/compare/v0.10.1...v0.10.2) (2022-06-08)
+
+
+### Bug Fixes
+
+* always use ASDF_DEFAULT_TOOL_VERSIONS_FILENAME for filename when present ([#1238](https://www.github.com/asdf-vm/asdf/issues/1238)) ([711ad99](https://www.github.com/asdf-vm/asdf/commit/711ad991043a1980fa264098f29e78f2ecafd610)), closes [#1082](https://www.github.com/asdf-vm/asdf/issues/1082)
+* get invalid ASDF_DATA_DIR when exec asdf shims by non-shell ([#1154](https://www.github.com/asdf-vm/asdf/issues/1154)) ([b9962f7](https://www.github.com/asdf-vm/asdf/commit/b9962f71564ce77cf97772cc100b80f9d77019b1))
+* update event trigger for doc-version workflow ([#1232](https://www.github.com/asdf-vm/asdf/issues/1232)) ([0bc8c3a](https://www.github.com/asdf-vm/asdf/commit/0bc8c3ab6895b88c96bff86f5f79575ee80cc718))
+* update plugin-add regex to support other languages ([#1241](https://www.github.com/asdf-vm/asdf/issues/1241)) ([92d005d](https://www.github.com/asdf-vm/asdf/commit/92d005dacd2ec434a9d912ab9938b59ab1b7c51f)), closes [#1237](https://www.github.com/asdf-vm/asdf/issues/1237)
+* updating references to legacy github.io site ([#1240](https://www.github.com/asdf-vm/asdf/issues/1240)) ([738306b](https://www.github.com/asdf-vm/asdf/commit/738306bc5d1c53a22c06e4d6d3ddb6d511dc5d50))
+
+### [0.10.1](https://www.github.com/asdf-vm/asdf/compare/v0.10.0...v0.10.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* add asdf to list of banned commands ([#1224](https://www.github.com/asdf-vm/asdf/issues/1224)) ([39909e0](https://www.github.com/asdf-vm/asdf/commit/39909e01af2bbf23fc821de5cec6c5c9661c59bb))
+* don't invoke asdf inside asdf commands ([#1208](https://www.github.com/asdf-vm/asdf/issues/1208)) ([27f7ef7](https://www.github.com/asdf-vm/asdf/commit/27f7ef78529649534b8383daa58e4b370b3cbd7f))
+* fixing bats ([#1215](https://www.github.com/asdf-vm/asdf/issues/1215)) ([a9caa5b](https://www.github.com/asdf-vm/asdf/commit/a9caa5bdffca5401798fb37e6f34af933b6ce0d2))
+* instead /tmp, use TMPDIR if defined ([9113623](https://www.github.com/asdf-vm/asdf/commit/91136234e90b5fe8718338f513fa770c99151d3e))
+* make fish shell setup match other shells ([#1209](https://www.github.com/asdf-vm/asdf/issues/1209)) ([6fc4bb8](https://www.github.com/asdf-vm/asdf/commit/6fc4bb8fc650e73152ce326267f89df6865cdd24))
+* only iterate over directories in the plugins/ directory ([#1228](https://www.github.com/asdf-vm/asdf/issues/1228)) ([788ccab](https://www.github.com/asdf-vm/asdf/commit/788ccab5971cb828cf25364b0df5ed6f5e9e713d))
+* update elvish to 0.18.0 ([5a89563](https://www.github.com/asdf-vm/asdf/commit/5a89563c0a37f244fa3daa46c5100b7711edde1d))
+
+## [0.10.0](https://www.github.com/asdf-vm/asdf/compare/v0.9.0...v0.10.0) (2022-04-14)
+
+
+### Features
+
+* case-insensitive filtering of unstable versions in `latest` ([#1139](https://www.github.com/asdf-vm/asdf/issues/1139)) ([e61e3d9](https://www.github.com/asdf-vm/asdf/commit/e61e3d9ade0d7bdfb4413184284038c50ba1e09c))
+* **latest:** adds the flag --all to the latest command ([#1096](https://www.github.com/asdf-vm/asdf/issues/1096)) ([f85fef5](https://www.github.com/asdf-vm/asdf/commit/f85fef533f249df5a9f58307d288f2f069351e88))
+* upgrade elvish to 0.17.0 ([#1159](https://www.github.com/asdf-vm/asdf/issues/1159)) ([824550e](https://www.github.com/asdf-vm/asdf/commit/824550ed2009c7e8c4c84afd7a01197d451c47bf))
+
+
+### Bug Fixes
+
+* Ban `ls` command ([#1141](https://www.github.com/asdf-vm/asdf/issues/1141)) ([87137e4](https://www.github.com/asdf-vm/asdf/commit/87137e41031f17b30acf12ee35925e689c84e2d8))
+* ban grep long flags ([#1117](https://www.github.com/asdf-vm/asdf/issues/1117)) ([6e4c39c](https://www.github.com/asdf-vm/asdf/commit/6e4c39c244a289a54f235cf15a29874fb8885927))
+* do not print `find` errors ([#1102](https://www.github.com/asdf-vm/asdf/issues/1102)) ([5992abb](https://www.github.com/asdf-vm/asdf/commit/5992abb09e6f5e0af690bf0e99619386187949db))
+* don't generate on error if backup file doesn't exists ([#1057](https://www.github.com/asdf-vm/asdf/issues/1057)) ([288468f](https://www.github.com/asdf-vm/asdf/commit/288468f93f6c5cb4e7cca1173d4ad73154d0d564))
+* **elvish:** prepend asdf paths to `$PATH` ([#1174](https://www.github.com/asdf-vm/asdf/issues/1174)) ([682b7a1](https://www.github.com/asdf-vm/asdf/commit/682b7a1d6dc1a35f7f8b0ddbab977e0a3dae2c9c))
+* latest --all correctly report plugins as missing ([#1118](https://www.github.com/asdf-vm/asdf/issues/1118)) ([aafe1e5](https://www.github.com/asdf-vm/asdf/commit/aafe1e5304c2d2a026831976c18faa6fb48d25bc))
+* local plugin in then clause too ([#1203](https://www.github.com/asdf-vm/asdf/issues/1203)) ([448f750](https://www.github.com/asdf-vm/asdf/commit/448f750891a4366f45d905b112ad20d4be66c496))
+* newline after error msg for ASDF_DIR ([#1113](https://www.github.com/asdf-vm/asdf/issues/1113)) ([ac2791e](https://www.github.com/asdf-vm/asdf/commit/ac2791e49f7fcdbeb420415d8ddcb5f17bcf296e))
+* Prevent unbound variable error with nounset in asdf.sh ([#1158](https://www.github.com/asdf-vm/asdf/issues/1158)) ([b7dd291](https://www.github.com/asdf-vm/asdf/commit/b7dd291c983af321af20550fa89bf1cfbc888aec))
+* remove comments from whole file instead of line by line for performance ([#1198](https://www.github.com/asdf-vm/asdf/issues/1198)) ([de6e22f](https://www.github.com/asdf-vm/asdf/commit/de6e22f909946f7d17047f4aeab41e581546b674))
+* shorthand grep options for alpine support ([#1106](https://www.github.com/asdf-vm/asdf/issues/1106)) ([234778a](https://www.github.com/asdf-vm/asdf/commit/234778a397f19c398d2f76a0321fef3273c9a086))
+
 ## [0.9.0](https://www.github.com/asdf-vm/asdf/compare/v0.8.1...v0.9.0) (2021-11-18)
 
 
@@ -52,7 +119,7 @@ Fixed Bugs
 
 * Fix plugin-update --all when there are no plugins (#805, #803)
 * Ban `echo` command from asdf codebase (#806, #781)
-* Add basic tests for for plugin-update command (#807)
+* Add basic tests for plugin-update command (#807)
 * Cleanup unused code in plugin update tests (#810)
 * Fix resolution of relative symlinks (#815, #625)
 * Fixes to GitHub workflow (#833)
@@ -137,7 +204,7 @@ Fixed Bugs
   Extension commands are now expected to be inside plugins's `lib/commands/command-*.bash` instead of `bin/command*`.
 
   This change was made for two reasons: Keep the convention that all files to be sourced by bash should end with
-  the `.bash` extension. And the `lib/commands/` directoy mirrors the location of asdf own core commands.
+  the `.bash` extension. And the `lib/commands/` directory mirrors the location of asdf own core commands.
 
   Added tests to make sure `asdf help` properly displays available extension commands.
 

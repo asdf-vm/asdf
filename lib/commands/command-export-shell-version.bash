@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 # Output from this command must be executable shell code
 shell_command() {
@@ -6,8 +8,8 @@ shell_command() {
   shift
 
   if [ "$#" -lt "2" ]; then
-    printf "Usage: asdf shell <name> {<version>|--unset}\\n" >&2
-    printf "false\\n"
+    printf "Usage: asdf shell <name> {<version>|--unset}\n" >&2
+    printf "false\n"
     exit 1
   fi
 
@@ -21,7 +23,7 @@ shell_command() {
   if [ "$version" = "--unset" ]; then
     case "$asdf_shell" in
     fish)
-      printf "set -e %s\\n" "$version_env_var"
+      printf "set -e %s\n" "$version_env_var"
       ;;
     elvish)
       # Elvish doesn't have a `source` command, and eval is banned, so the
@@ -30,23 +32,23 @@ shell_command() {
       printf "unset-env\n%s" "$version_env_var"
       ;;
     *)
-      printf "unset %s\\n" "$version_env_var"
+      printf "unset %s\n" "$version_env_var"
       ;;
     esac
     exit 0
   fi
   if [ "$version" = "latest" ]; then
-    version=$(asdf latest "$plugin")
+    version=$(latest_command "$plugin")
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
     version_not_installed_text "$plugin" "$version" 1>&2
-    printf "false\\n"
+    printf "false\n"
     exit 1
   fi
 
   case "$asdf_shell" in
   fish)
-    printf "set -gx %s \"%s\"\\n" "$version_env_var" "$version"
+    printf "set -gx %s \"%s\"\n" "$version_env_var" "$version"
     ;;
   elvish)
     # Elvish doesn't have a `source` command, and eval is banned, so the
@@ -55,7 +57,7 @@ shell_command() {
     printf "set-env\n%s\n%s" "$version_env_var" "$version"
     ;;
   *)
-    printf "export %s=\"%s\"\\n" "$version_env_var" "$version"
+    printf "export %s=\"%s\"\n" "$version_env_var" "$version"
     ;;
   esac
 }
