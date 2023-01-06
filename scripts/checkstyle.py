@@ -50,6 +50,11 @@ def noPwdCaptureFixer(line: str, m) -> str:
 
     return f'{prestr}$PWD{poststr}'
 
+def noTestDoubleEqualsFixer(line: str, m) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}={poststr}'
+
 def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
@@ -108,6 +113,23 @@ def main():
             ],
             'found': 0
         },
+        {
+            'name': 'no-test-double-equals',
+            'regex': '(?<!\\[)\\[[^[]*?(?P<match>==).*?\\]',
+            'reason': 'Although it is valid Bash, it reduces consistency and copy-paste-ability',
+            'fixerFn': noTestDoubleEqualsFixer,
+            'testPositiveMatches': [
+                '[ a == b ]',
+            ],
+            'testNegativeMatches': [
+                '[ a = b ]',
+                '[[ a = b ]]',
+                '[[ a == b ]]',
+                '[ a = b ] || [[ a == b ]]',
+                '[[ a = b ]] || [[ a == b ]]'
+            ],
+            'found': 0
+        }
     ]
 
     parser = argparse.ArgumentParser()
