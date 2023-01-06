@@ -67,4 +67,3 @@ jobs:
         run: bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
-          SKIP_NUSHELL_TESTS:  "${{ matrix.os == 'ubuntu-18.04' && 'YES' }}"
