@@ -6,6 +6,16 @@ setup() {
   cd $(dirname "$BATS_TEST_DIRNAME")
   mkdir -p $HOME/.config/elvish/lib
   cp ./asdf.elv $HOME/.config/elvish/lib/asdftest.elv
+
+  local version=
+  version=$(elvish -version)
+
+  local ver_major= ver_minor= ver_patch=
+  IFS='.' read -r ver_major ver_minor ver_patch <<<"$version"
+
+  if ((ver_major == 0 && ver_minor <= 17)); then
+    skip "Elvish version is not at least 0.17"
+  fi
 }
 
 teardown() {
