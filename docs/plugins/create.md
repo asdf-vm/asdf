@@ -127,7 +127,7 @@ Note: This will only apply for users who have enabled the `legacy_version_file` 
 
 #### bin/parse-legacy-file
 
-This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument.
+This can be used to further parse the legacy file found by asdf. If `parse-legacy-file` isn't implemented, asdf will simply cat the file to determine the version. The script will be passed the file path as its first argument. Note that this script should be **deterministic** and always return the same exact version when parsing the same legacy file. The script should return the same version regardless of what is installed on the machine or whether the legacy version is valid or complete. Some legacy file formats may not be suitable.
 
 #### bin/post-plugin-add
 
