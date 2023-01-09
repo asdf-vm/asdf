@@ -263,7 +263,9 @@ find_install_path() {
     # And then use the binaries there
     local install_type="path"
     local version="path"
-    printf "%s\n" "${version_info[1]}"
+
+    util_resolve_user_path "${version_info[1]}"
+    printf "%s\n" "${util_resolve_user_path_reply}"
   else
     local install_type="version"
     local version="${version_info[0]}"
@@ -319,8 +321,15 @@ parse_asdf_version_file() {
   if [ -f "$file_path" ]; then
     local version
     version=$(strip_tool_version_comments "$file_path" | grep "^${plugin_name} " | sed -e "s/^${plugin_name} //")
+
     if [ -n "$version" ]; then
-      printf "%s\n" "$version"
+      if [[ "$version" == path:* ]]; then
+        util_resolve_user_path "${version#path:}"
+        printf "%s\n" "path:${util_resolve_user_path_reply}"
+      else
+        printf "%s\n" "$version"
+      fi
+
       return 0
     fi
   fi
@@ -836,4 +845,18 @@ remove_path_from_path() {
   local PATH=$1
   local path=$2
   substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
+}
+
+# @description Strings that began with a ~ are always paths. In
+# that case, then ensure ~ it handled like a shell
+util_resolve_user_path() {
+  util_resolve_user_path_reply=
+  local path="$1"
+
+  # shellcheck disable=SC2088
+  if [ "${path::2}" = '~/' ]; then
+    util_resolve_user_path_reply="${HOME}/${path:2}"
+  else
+    util_resolve_user_path_reply="$path"
+  fi
 }

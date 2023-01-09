@@ -3,10 +3,11 @@
 load test_helpers
 
 setup() {
-  if [ "${SKIP_NUSHELL_TESTS}" = 'YES' ]; then
-    skip "skipping nushell tests"
-  fi
   cd $(dirname "$BATS_TEST_DIRNAME")
+
+  if ! command -v nu; then
+    skip "Nu is not installed"
+  fi
 }
 
 cleaned_path() {
@@ -20,7 +21,7 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
+    source asdf.nu
 
     echo \$env.ASDF_DIR
   ")
@@ -37,9 +38,9 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
+    source asdf.nu
 
-    
+
     \$env.PATH | to text
  ")
   [ "$?" -eq 0 ]
@@ -56,8 +57,8 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
-    source asdf.nu 
+    source asdf.nu
+    source asdf.nu
 
     echo \$env.PATH
   ")
@@ -73,7 +74,7 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
+    source asdf.nu
 
     echo \$env.ASDF_DIR
   ")
@@ -89,7 +90,7 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
+    source asdf.nu
     which asdf | get path | to text
   ")
   [ "$?" -eq 0 ]
@@ -103,7 +104,7 @@ cleaned_path() {
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
-    source asdf.nu 
+    source asdf.nu
     asdf info
   ")
   [ "$?" -eq 0 ]
