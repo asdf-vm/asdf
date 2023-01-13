@@ -1,9 +1,9 @@
 name: On Release
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types:
+      - published
 
 jobs:
   bump-versions-in-docs:
