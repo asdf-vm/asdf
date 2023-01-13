@@ -33,7 +33,7 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 ### Official Download
 
 ```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
 ```
 
 ### Community Supported Download Methods
