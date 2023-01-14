@@ -61,14 +61,14 @@ teardown() {
   touch $ASDF_DIR/asdf_updates_disabled
   run asdf update
   [ "$status" -eq 42 ]
-  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" == "$output" ]
+  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" = "$output" ]
 }
 
 @test "asdf update is a noop for non-git repos" {
   rm -rf $ASDF_DIR/.git/
   run asdf update
   [ "$status" -eq 42 ]
-  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" == "$output" ]
+  [ "$(echo -e "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.")" = "$output" ]
 }
 
 @test "asdf update fails with exit code 1" {

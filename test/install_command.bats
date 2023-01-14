@@ -123,7 +123,7 @@ teardown() {
   # execute the generated shim
   run $ASDF_DIR/shims/dummy world hello
   [ "$status" -eq 0 ]
-  [ "$output" == "This is Dummy 1.0.0! hello world" ]
+  [ "$output" = "This is Dummy 1.0.0! hello world" ]
 }
 
 @test "install_command fails when tool is specified but no version of the tool is configured" {
@@ -180,7 +180,7 @@ teardown() {
   run asdf install
 
   # execute the generated shim
-  [ "$($ASDF_DIR/shims/dummy world hello)" == "This is Dummy 1.0.0! hello world" ]
+  [ "$($ASDF_DIR/shims/dummy world hello)" = "This is Dummy 1.0.0! hello world" ]
   [ "$status" -eq 0 ]
 }
 
@@ -208,7 +208,7 @@ pre_asdf_install_dummy = echo will install dummy $1
 EOM
 
   run asdf install dummy 1.0.0
-  [ "$output" == "will install dummy 1.0.0" ]
+  [ "$output" = "will install dummy 1.0.0" ]
 }
 
 @test "install command executes configured post plugin install hook" {
@@ -217,7 +217,7 @@ post_asdf_install_dummy = echo HEY $version FROM $plugin_name
 EOM
 
   run asdf install dummy 1.0.0
-  [ "$output" == "HEY 1.0.0 FROM dummy" ]
+  [ "$output" = "HEY 1.0.0 FROM dummy" ]
 }
 
 @test "install command without arguments installs versions from legacy files" {
@@ -226,7 +226,7 @@ EOM
   cd $PROJECT_DIR
   run asdf install
   [ "$status" -eq 0 ]
-  [ "$output" == "" ]
+  [ "$output" = "" ]
   [ -f $ASDF_DIR/installs/dummy/1.2.0/version ]
 }
 
@@ -239,7 +239,7 @@ EOM
 
   run asdf install
   [ "$status" -eq 0 ]
-  [ "$output" == "" ]
+  [ "$output" = "" ]
   [ -f $ASDF_DIR/installs/dummy/1.2.0/version ]
 }
 
@@ -284,5 +284,5 @@ EOM
   [ "$status" -eq 1 ]
   [ ! -d $ASDF_DIR/downloads/dummy-broken/1.1.0 ]
   [ ! -d $ASDF_DIR/installs/dummy-broken/1.1.0 ]
-  [ "$output" == "Download failed!" ]
+  [ "$output" = "Download failed!" ]
 }

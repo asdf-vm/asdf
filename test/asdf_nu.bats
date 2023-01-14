@@ -28,7 +28,7 @@ cleaned_path() {
 
   [ "$?" -eq 0 ]
   output=$(echo "$result" | grep "asdf")
-  [ "$output" == $PWD ]
+  [ "$output" = $PWD ]
 }
 
 @test "adds asdf dirs to PATH" {
@@ -45,9 +45,9 @@ cleaned_path() {
  ")
   [ "$?" -eq 0 ]
   output_bin=$(echo "$result" | grep "asdf/bin")
-  [ "$output_bin" == "$PWD/bin" ]
+  [ "$output_bin" = "$PWD/bin" ]
   output_shims=$(echo "$result" | grep "/shims")
-  [ "$output_shims" == "$HOME/.asdf/shims" ]
+  [ "$output_shims" = "$HOME/.asdf/shims" ]
 }
 
 @test "does not add paths to PATH more than once" {

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import re
-import sys
 import os
 import argparse
 from pathlib import Path
@@ -39,17 +38,22 @@ def utilGetStrs(line, m):
 
 # Before: printf '%s\\n' '^w^'
 # After: printf '%s\n' '^w^'
-def noDoubleBackslashFixer(line: str, rule: Dict[str, str], m) -> str:
+def noDoubleBackslashFixer(line: str, m) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     return f'{prestr}{midstr[1:]}{poststr}'
 
 # Before: $(pwd)
 # After: $PWD
-def noPwdCapture(line: str, rule: Dict[str, str], m) -> str:
+def noPwdCaptureFixer(line: str, m) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     return f'{prestr}$PWD{poststr}'
+
+def noTestDoubleEqualsFixer(line: str, m) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}={poststr}'
 
 def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
@@ -72,7 +76,7 @@ def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any
                 print()
 
                 if options['fix']:
-                    content_arr[line_i] = rule['fixerFn'](line, rule, m)
+                    content_arr[line_i] = rule['fixerFn'](line, m)
 
                 rule['found'] += 1
 
@@ -100,7 +104,7 @@ def main():
             'name': 'no-pwd-capture',
             'regex': '(?P<match>\\$\\(pwd\\))',
             'reason': '$PWD is essentially equivalent to $(pwd) without the overhead of a subshell',
-            'fixerFn': noPwdCapture,
+            'fixerFn': noPwdCaptureFixer,
             'testPositiveMatches': [
                 '$(pwd)'
             ],
@@ -109,6 +113,23 @@ def main():
             ],
             'found': 0
         },
+        {
+            'name': 'no-test-double-equals',
+            'regex': '(?<!\\[)\\[[^[]*?(?P<match>==).*?\\]',
+            'reason': 'Although it is valid Bash, it reduces consistency and copy-paste-ability',
+            'fixerFn': noTestDoubleEqualsFixer,
+            'testPositiveMatches': [
+                '[ a == b ]',
+            ],
+            'testNegativeMatches': [
+                '[ a = b ]',
+                '[[ a = b ]]',
+                '[[ a == b ]]',
+                '[ a = b ] || [[ a == b ]]',
+                '[[ a = b ]] || [[ a == b ]]'
+            ],
+            'found': 0
+        }
     ]
 
     parser = argparse.ArgumentParser()
@@ -132,6 +153,7 @@ def main():
                     print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.YELLOW}negative{c.RESET} test:')
                     print(f'=> {negativeMatch}')
                     print()
+        print('Done.')
         return
 
     options = {

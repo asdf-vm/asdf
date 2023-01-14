@@ -129,7 +129,7 @@ latest_command() {
   local query=$2
   local plugin_path
 
-  if [ "$plugin_name" == "--all" ]; then
+  if [ "$plugin_name" = "--all" ]; then
     latest_all
   fi
 
