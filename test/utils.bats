@@ -137,7 +137,7 @@ teardown() {
   echo "dummy path:~/some/dummy path" >$PROJECT_DIR/.tool-versions
   run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
   [ "$status" -eq 0 ]
-  [ "$output" == "path:$HOME/some/dummy path" ]
+  [ "$output" = "path:$HOME/some/dummy path" ]
 }
 
 @test "find_versions should return .tool-versions if legacy is disabled" {
