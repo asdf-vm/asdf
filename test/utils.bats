@@ -291,7 +291,7 @@ teardown() {
   mkdir -p $ASDF_DIR/plugins/foo
   run get_executable_path "foo" "system" "ls"
   [ "$status" -eq 0 ]
-  [ "$output" = $(which ls) ]
+  [ "$output" = "$(which ls)" ]
 }
 
 @test "get_executable_path for system version should not use asdf shims" {

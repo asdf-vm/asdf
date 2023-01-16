@@ -83,7 +83,7 @@ teardown() {
 @test "asdf plugin-update should not remove plugin versions" {
   run asdf install dummy 1.1
   [ "$status" -eq 0 ]
-  [ $(cat $ASDF_DIR/installs/dummy/1.1/version) = "1.1" ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.1/version")" = "1.1" ]
   run asdf plugin-update dummy
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.1/version ]
