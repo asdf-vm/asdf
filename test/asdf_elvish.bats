@@ -3,16 +3,17 @@
 load test_helpers
 
 setup() {
-  export XDG_CONFIG_HOME= XDG_DATA_HOME= XDG_DATA_DIRS=
+  export XDG_CONFIG_HOME=
+  export XDG_DATA_HOME=
+  export XDG_DATA_DIRS=
 
-  local version=
-  version=$(elvish -version)
+  local ver_major=
+  local ver_minor=
+  local ver_patch=
+  IFS='.' read -r ver_major ver_minor ver_patch <<<"$(elvish -version)"
 
-  local ver_major= ver_minor= ver_patch=
-  IFS='.' read -r ver_major ver_minor ver_patch <<<"$version"
-
-  if ((ver_major == 0 && ver_minor <= 17)); then
-    skip "Elvish version is not at least 0.17"
+  if ((ver_major == 0 && ver_minor < 18)); then
+    skip "Elvish version is not at least 0.18. Found ${ver_major}.${ver_minor}.${ver_patch}"
   fi
 }
 

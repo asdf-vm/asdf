@@ -394,8 +394,8 @@ teardown() {
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
 
-  echo 'echo $3 # always same path' >$exec_path
-  chmod +x $exec_path
+  echo 'echo $3 # always same path' >"$exec_path"
+  chmod +x "$exec_path"
 
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
 
