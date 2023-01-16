@@ -79,7 +79,7 @@ cleaned_path() {
     echo \$env.ASDF_DIR
   ")
 
-  [ "$?" -eq 0 ]
+  [ "$status" -eq 0 ]
   [ "$output" = "$PWD" ]
 }
 
@@ -91,9 +91,9 @@ cleaned_path() {
     let-env ASDF_NU_DIR = '$PWD'
 
     source asdf.nu
-    which asdf | get path | to text
-  ")
-  [ "$?" -eq 0 ]
+    which asdf | get path | to text"
+
+  [ "$status" -eq 0 ]
   [[ "$output" =~ "command" ]]
 }
 

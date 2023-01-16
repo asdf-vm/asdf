@@ -94,7 +94,7 @@ cleaned_path() {
     source_asdf_sh
     asdf info
   )
-  [ "$?" -eq 0 ]
+
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
   [ "$output" != "" ]
 }

@@ -18,9 +18,9 @@ cleaned_path() {
     set PATH $(cleaned_path)
 
     . asdf.fish
-    echo \$ASDF_DIR
-  ")
-  [ "$?" -eq 0 ]
+    echo \$ASDF_DIR"
+
+  [ "$status" -eq 0 ]
   [ "$output" != "" ]
 }
 
@@ -61,9 +61,8 @@ cleaned_path() {
     set PATH $(cleaned_path)
 
     . asdf.fish
-    type asdf
-  ")
-  [ "$?" -eq 0 ]
+    type asdf"
+  [ "$status" -eq 0 ]
   [[ "$output" =~ "is a function" ]]
 }
 

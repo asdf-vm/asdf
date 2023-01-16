@@ -86,31 +86,31 @@ teardown() {
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1/version")" = "1.1" ]
   run asdf plugin-update dummy
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/installs/dummy/1.1/version ]
+  [ -f "$ASDF_DIR/installs/dummy/1.1/version" ]
   run asdf plugin-update --all
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/installs/dummy/1.1/version ]
+  [ -f "$ASDF_DIR/installs/dummy/1.1/version" ]
 }
 
 @test "asdf plugin-update should not remove plugins" {
   # dummy plugin is already installed
   run asdf plugin-update dummy
   [ "$status" -eq 0 ]
-  [ -d $ASDF_DIR/plugins/dummy ]
+  [ -d "$ASDF_DIR/plugins/dummy" ]
   run asdf plugin-update --all
   [ "$status" -eq 0 ]
-  [ -d $ASDF_DIR/plugins/dummy ]
+  [ -d "$ASDF_DIR/plugins/dummy" ]
 }
 
 @test "asdf plugin-update should not remove shims" {
   run asdf install dummy 1.1
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf plugin-update dummy
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf plugin-update --all
   [ "$status" -eq 0 ]
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
 }
 
 @test "asdf plugin-update done for all plugins" {

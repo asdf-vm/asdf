@@ -28,9 +28,8 @@ cleaned_path() {
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    echo \$E:ASDF_DIR
-  ")
-  [ "$?" -eq 0 ]
+    echo \$E:ASDF_DIR"
+  [ "$status" -eq 0 ]
   [ "$output" = "$HOME/.asdf" ]
 }
 
@@ -39,9 +38,8 @@ cleaned_path() {
     set-env ASDF_DIR \"/path/to/asdf\"
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    echo \$E:ASDF_DIR
-  ")
-  [ "$?" -eq 0 ]
+    echo \$E:ASDF_DIR"
+  [ "$status" -eq 0 ]
   [ "$output" = "/path/to/asdf" ]
 }
 
@@ -50,9 +48,8 @@ cleaned_path() {
     set-env ASDF_DATA_DIR \"/path/to/asdf-data\"
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    echo \$E:ASDF_DATA_DIR
-  ")
-  [ "$?" -eq 0 ]
+    echo \$E:ASDF_DATA_DIR"
+  [ "$status" -eq 0 ]
   [ "$output" = "/path/to/asdf-data" ]
 }
 
@@ -61,9 +58,8 @@ cleaned_path() {
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    echo \$E:PATH
-  ")
-  [ "$?" -eq 0 ]
+    echo \$E:PATH"
+  [ "$status" -eq 0 ]
   echo "$result"
   run echo "$result" | grep "asdf")
   [ "$output" != "" ]
@@ -74,9 +70,8 @@ cleaned_path() {
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    pprint \$_asdf:
-  ")
-  [ "$?" -eq 0 ]
+    pprint \$_asdf:"
+  [ "$status" -eq 0 ]
   [[ "$output" =~ "<ns " ]]
 }
 
@@ -98,9 +93,8 @@ cleaned_path() {
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    pprint \$asdf~
-  ")
-  [ "$?" -eq 0 ]
+    pprint \$asdf~"
+  [ "$status" -eq 0 ]
   echo "$output"
   [[ "$output" =~ "<closure " ]]
 }
@@ -110,9 +104,8 @@ cleaned_path() {
     set-env ASDF_DIR $(pwd) # checkstyle-ignore
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    asdf info
-  ")
-  [ "$?" -eq 0 ]
+    asdf info"
+  [ "$status" -eq 0 ]
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
   [ "$output" != "" ]
 }

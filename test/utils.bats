@@ -235,7 +235,7 @@ teardown() {
 
   run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
+  [[ "$output" =~ 0.1.0|"$HOME"/.dummy-version ]]
 }
 
 @test "get_preset_version_for returns the current version" {
@@ -370,7 +370,7 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 
@@ -380,7 +380,7 @@ teardown() {
 
   run resolve_symlink baz/bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/baz/../foo ]
+  [ "$output" = "$PWD/baz/../foo" ]
   rm -f foo bar
 }
 
@@ -390,7 +390,7 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 
