@@ -38,11 +38,11 @@ teardown() {
   run asdf install
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-  run env PATH=$path which dummy
+  run env PATH="$path" which dummy
   [ "$output" = "" ]
   [ "$status" -eq 1 ]
 
-  run env PATH=$path asdf exec dummy world hello
+  run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
@@ -238,6 +238,7 @@ teardown() {
   run asdf install dummy 2.0.0
   echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
   mkdir "$ASDF_DIR/plugins/dummy/shims"
+  # shellcheck disable=SC2016
   echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
   chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
   run asdf reshim dummy 2.0.0
@@ -249,8 +250,10 @@ teardown() {
 
 @test "shim exec with custom exec-env using ASDF_INSTALL_PATH" {
   run asdf install dummy 2.0.0
+  # shellcheck disable=SC2016
   echo 'export FOO=$ASDF_INSTALL_PATH/foo' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
   mkdir "$ASDF_DIR/plugins/dummy/shims"
+  # shellcheck disable=SC2016
   echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
   chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
   run asdf reshim dummy 2.0.0
@@ -264,6 +267,7 @@ teardown() {
   run asdf install dummy 2.0.0
   echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
   mkdir "$ASDF_DIR/plugins/dummy/shims"
+  # shellcheck disable=SC2016
   echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
   chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
   run asdf reshim dummy 2.0.0
@@ -271,6 +275,7 @@ teardown() {
   echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
   mkdir "$PROJECT_DIR/sys/"
+  # shellcheck disable=SC2016
   echo 'echo x$FOO System' >"$PROJECT_DIR/sys/foo"
   chmod +x "$PROJECT_DIR/sys/foo"
 
@@ -393,7 +398,7 @@ teardown() {
   run asdf install dummy 1.0
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
-
+  # shellcheck disable=SC2016
   echo 'echo $3 # always same path' >"$exec_path"
   chmod +x "$exec_path"
 

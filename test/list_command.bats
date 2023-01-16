@@ -71,7 +71,7 @@ teardown() {
   run asdf install dummy 1.0
   run asdf install dummy 1.1
   run asdf list dummy 2
-  [ "$(echo "No compatible versions installed (dummy 2)")" = "$output" ]
+  [ "No compatible versions installed (dummy 2)" = "$output" ]
   [ "$status" -eq 1 ]
 }
 
@@ -89,20 +89,18 @@ teardown() {
 
 @test "list_all_command with an invalid version should return an error" {
   run asdf list-all dummy 3
-  [ "$(echo "No compatible versions available (dummy 3)")" = "$output" ]
+  [ "No compatible versions available (dummy 3)" = "$output" ]
   [ "$status" -eq 1 ]
 }
 
 @test "list_all_command fails when list-all script exits with non-zero code" {
   run asdf list-all dummy-broken
-  echo "$output"
   [ "$status" -eq 1 ]
   [[ "$output" == "Plugin dummy-broken's list-all callback script failed with output:"* ]]
 }
 
 @test "list_all_command displays stderr then stdout when failing" {
   run asdf list-all dummy-broken
-  echo "$output"
   [[ "$output" == *"List-all failed!"* ]]
   [[ "$output" == *"Attempting to list versions" ]]
 }

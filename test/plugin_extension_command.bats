@@ -23,7 +23,7 @@ teardown() {
   run asdf help
   [ "$status" -eq 0 ]
   echo "$output" | grep "PLUGIN dummy" # should present plugin section
-  listed_cmds=$(echo "$output" | grep "asdf dummy" | wc -l)
+  listed_cmds=$(echo "$output" | grep -c "asdf dummy")
   [ "$listed_cmds" -eq 3 ]
   echo "$output" | grep "asdf dummy foo bar" # should present commands without hyphens
 }
@@ -71,6 +71,7 @@ EOF
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy foo` command
+  # shellcheck disable=SC2016
   echo 'echo sourced script has asdf utils $(get_plugin_path dummy) $*' >"$plugin_path/lib/commands/command-foo.bash"
 
   expected="sourced script has asdf utils $plugin_path bar"

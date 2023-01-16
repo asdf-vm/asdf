@@ -21,14 +21,14 @@ teardown() {
 @test "get_install_path should output version path when version is provided" {
   run get_install_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/1.0.0" ]
 }
 
 @test "get_install_path should output custom path when custom install type is provided" {
   run get_install_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/custom-1.0.0" ]
 }
 
@@ -41,7 +41,7 @@ teardown() {
 @test "get_download_path should output version path when version is provided" {
   run get_download_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
+  download_path=${output#"$HOME/"}
   echo "$download_path"
   [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
 }
@@ -49,7 +49,7 @@ teardown() {
 @test "get_download_path should output custom path when custom download type is provided" {
   run get_download_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
+  download_path=${output#"$HOME/"}
   [ "$download_path" = ".asdf/downloads/foo/custom-1.0.0" ]
 }
 
@@ -184,7 +184,6 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  echo "$output"
   [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
 }
 

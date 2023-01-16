@@ -48,7 +48,6 @@ Details specific for version 1.2.3
 EOF
   )"
   [ "$status" -eq 0 ]
-  echo "$output"
   [ "$output" = "$expected_output" ]
 }
 
