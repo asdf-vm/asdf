@@ -4,7 +4,7 @@ load test_helpers
 
 # Helper function to handle sourcing of asdf.sh
 source_asdf_sh() {
-  . $(dirname "$BATS_TEST_DIRNAME")/asdf.sh
+  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
 }
 
 cleaned_path() {
@@ -21,8 +21,8 @@ cleaned_path() {
     echo $ASDF_DIR
   )
 
-  output=$(echo "$result" | grep "asdf")
-  [ "$?" -eq 0 ]
+  run grep 'asdf' <<<"$result"
+  [ "$status" -eq 0 ]
   [ "$output" != "" ]
 }
 
@@ -37,8 +37,8 @@ cleaned_path() {
     echo $ASDF_DIR
   )
 
-  output=$(echo "$result" | grep "asdf")
-  [ "$?" -eq 0 ]
+  run grep 'asdf' <<<"$result"
+  [ "$status" -eq 0 ]
   [ "$output" != "" ]
 }
 
@@ -52,8 +52,8 @@ cleaned_path() {
     echo $PATH
   )
 
-  output=$(echo "$result" | grep "asdf")
-  [ "$?" -eq 0 ]
+  run grep 'asdf' <<<"$result"
+  [ "$status" -eq 0 ]
   [ "$output" != "" ]
 }
 
@@ -68,8 +68,7 @@ cleaned_path() {
     echo $PATH
   )
 
-  output=$(echo $result | tr ':' '\n' | grep "asdf" | sort | uniq -d)
-  [ "$?" -eq 0 ]
+  output=$(echo "$result" | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$output" = "" ]
 }
 

@@ -3,11 +3,11 @@
 load test_helpers
 
 setup() {
-  cd $(dirname "$BATS_TEST_DIRNAME")
-
   if ! command -v nu; then
     skip "Nu is not installed"
   fi
+
+  cd "$(dirname "$BATS_TEST_DIRNAME")"
 }
 
 cleaned_path() {
@@ -15,7 +15,7 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  result=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -26,13 +26,13 @@ cleaned_path() {
     echo \$env.ASDF_DIR
   ")
 
-  [ "$?" -eq 0 ]
-  output=$(echo "$result" | grep "asdf")
-  [ "$output" = $PWD ]
+  [ "$status" -eq 0 ]
+  output=$(echo "$output" | grep "asdf")
+  [ "$output" = "$PWD" ]
 }
 
 @test "adds asdf dirs to PATH" {
-  result=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -41,17 +41,17 @@ cleaned_path() {
     source asdf.nu
 
 
-    \$env.PATH | to text
- ")
-  [ "$?" -eq 0 ]
-  output_bin=$(echo "$result" | grep "asdf/bin")
+    \$env.PATH | to text"
+
+  [ "$status" -eq 0 ]
+  output_bin=$(echo "$output" | grep "asdf/bin")
   [ "$output_bin" = "$PWD/bin" ]
-  output_shims=$(echo "$result" | grep "/shims")
+  output_shims=$(echo "$output" | grep "/shims")
   [ "$output_shims" = "$HOME/.asdf/shims" ]
 }
 
 @test "does not add paths to PATH more than once" {
-  result=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -60,15 +60,15 @@ cleaned_path() {
     source asdf.nu
     source asdf.nu
 
-    echo \$env.PATH
-  ")
-  [ "$?" -eq 0 ]
-  output=$(echo $result | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
+    echo \$env.PATH"
+
+  [ "$status" -eq 0 ]
+  output=$(echo "$output" | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
   [ "$output" = "" ]
 }
 
 @test "retains ASDF_DIR" {
-  output=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     let-env ASDF_DIR = ( pwd )
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -84,7 +84,7 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
-  output=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -98,16 +98,16 @@ cleaned_path() {
 }
 
 @test "function calls asdf command" {
-  result=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
     let-env ASDF_NU_DIR = '$PWD'
 
     source asdf.nu
-    asdf info
-  ")
-  [ "$?" -eq 0 ]
-  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
+    asdf info"
+
+  [ "$status" -eq 0 ]
+  output=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$output" != "" ]
 }

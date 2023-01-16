@@ -24,7 +24,7 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  output=$(elvish -norc -c "
+  run elvish -norc -c "
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
@@ -35,8 +35,8 @@ cleaned_path() {
 }
 
 @test "retains ASDF_DIR" {
-  output=$(elvish -norc -c "
-    set-env ASDF_DIR "/path/to/asdf"
+  run elvish -norc -c "
+    set-env ASDF_DIR \"/path/to/asdf\"
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR
@@ -46,8 +46,8 @@ cleaned_path() {
 }
 
 @test "retains ASDF_DATA_DIR" {
-  output=$(elvish -norc -c "
-    set-env ASDF_DATA_DIR "/path/to/asdf-data"
+  run elvish -norc -c "
+    set-env ASDF_DATA_DIR \"/path/to/asdf-data\"
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DATA_DIR
@@ -65,12 +65,12 @@ cleaned_path() {
   ")
   [ "$?" -eq 0 ]
   echo "$result"
-  output=$(echo "$result" | grep "asdf")
+  run echo "$result" | grep "asdf")
   [ "$output" != "" ]
 }
 
 @test "defines the _asdf namespace" {
-  output=$(elvish -norc -c "
+  run elvish -norc -c "
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
@@ -81,21 +81,20 @@ cleaned_path() {
 }
 
 @test "does not add paths to PATH more than once" {
-  result=$(elvish -norc -c "
+  run elvish -norc -c "
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
 
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
-    echo \$E:PATH
-  ")
-  [ "$?" -eq 0 ]
-  output=$(echo $result | tr ':' '\n' | grep "asdf" | sort | uniq -d)
+    echo \$E:PATH"
+  [ "$status" -eq 0 ]
+  output=$(echo "$result" | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$output" = "" ]
 }
 
 @test "defines the asdf function" {
-  output=$(elvish -norc -c "
+  run elvish -norc -c "
     unset-env ASDF_DIR
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
@@ -107,7 +106,7 @@ cleaned_path() {
 }
 
 @test "function calls asdf command" {
-  result=$(elvish -norc -c "
+ run elvish -norc -c "
     set-env ASDF_DIR $(pwd) # checkstyle-ignore
     set paths = [$(cleaned_path)]
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~

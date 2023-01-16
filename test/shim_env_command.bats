@@ -57,7 +57,7 @@ teardown() {
   run asdf env dummy
   [ "$status" -eq 0 ]
 
-  run grep 'FOO=bar' <(echo $output)
+  run grep 'FOO=bar' <(echo "$output")
   [ "$output" = "" ]
   [ "$status" -eq 1 ]
 

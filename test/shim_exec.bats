@@ -65,7 +65,7 @@ teardown() {
 
   run asdf reshim dummy 1.0
 
-  run echo $(echo hello | $ASDF_DIR/shims/upper)
+  run echo "$(echo hello | "$ASDF_DIR/shims/upper")"
   [ "$output" = "HELLO" ]
   [ "$status" -eq 0 ]
 }
@@ -379,9 +379,9 @@ teardown() {
   echo "echo custom/dummy" >$exec_path
   chmod +x $exec_path
 
-  mkdir $(dirname $custom_dummy)
-  echo "echo CUSTOM" >$custom_dummy
-  chmod +x $custom_dummy
+  mkdir "$(dirname "$custom_dummy")"
+  echo "echo CUSTOM" >"$custom_dummy"
+  chmod +x "$custom_dummy"
 
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
 

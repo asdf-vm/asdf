@@ -29,12 +29,13 @@ teardown() {
 @test "asdf update --head should checkout the master branch" {
   run asdf update --head
   [ "$status" -eq 0 ]
-  cd $ASDF_DIR
-  [ $(git rev-parse --abbrev-ref HEAD) = "master" ]
+  cd "$ASDF_DIR"
+  [ "$(git rev-parse --abbrev-ref HEAD)" = "master" ]
 }
 
 @test "asdf update should checkout the latest non-RC tag" {
-  local tag=$(git tag | grep -vi "rc" | tail -1)
+  local tag=
+  tag=$(git tag | grep -vi "rc" | tail -1)
   if [ -n "$tag" ]; then
     run asdf update
     [ "$status" -eq 0 ]
@@ -45,7 +46,8 @@ teardown() {
 }
 
 @test "asdf update should checkout the latest tag when configured with use_release_candidates = yes" {
-  local tag=$(git tag | tail -1)
+  local tag=
+  tag=$(git tag | tail -1)
   if [ -n "$tag" ]; then
     export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
     echo "use_release_candidates = yes" >$ASDF_CONFIG_DEFAULT_FILE
@@ -80,7 +82,7 @@ teardown() {
 @test "asdf update should not remove plugin versions" {
   run asdf install dummy 1.1.0
   [ "$status" -eq 0 ]
-  [ $(cat $ASDF_DIR/installs/dummy/1.1.0/version) = "1.1.0" ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
   run asdf update
   [ "$status" -eq 0 ]
   [ -f $ASDF_DIR/installs/dummy/1.1.0/version ]
