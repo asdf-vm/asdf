@@ -8,7 +8,7 @@ source_asdf_sh() {
 }
 
 cleaned_path() {
-  echo $PATH | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
+  echo "$PATH" | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
 }
 
 @test "exports ASDF_DIR" {

@@ -64,8 +64,8 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified adds a plugin when short name repository is enabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
-  echo "disable_plugin_short_name_repository=no" >$ASDF_CONFIG_DEFAULT_FILE
+  export ASDF_CONFIG_DEFAULT_FILE="$HOME/.asdfrc"
+  echo "disable_plugin_short_name_repository=no" >"$ASDF_CONFIG_DEFAULT_FILE"
 
   run asdf plugin add "elixir"
   [ "$status" -eq 0 ]
@@ -76,8 +76,8 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified fails to add a plugin when disabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
-  echo "disable_plugin_short_name_repository=yes" >$ASDF_CONFIG_DEFAULT_FILE
+  export ASDF_CONFIG_DEFAULT_FILE="$HOME/.asdfrc"
+  echo "disable_plugin_short_name_repository=yes" >"$ASDF_CONFIG_DEFAULT_FILE"
   local expected="Short-name plugin repository is disabled"
 
   run asdf plugin add "elixir"
