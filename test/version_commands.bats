@@ -15,11 +15,11 @@ setup() {
   install_dummy_legacy_version "2.0.0"
   install_dummy_legacy_version "5.1.0"
 
-  PROJECT_DIR=$HOME/project
-  mkdir -p $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 
-  CHILD_DIR=$PROJECT_DIR/child-dir
-  mkdir -p $CHILD_DIR
+  CHILD_DIR="$PROJECT_DIR/child-dir"
+  mkdir -p "$CHILD_DIR"
 
   cd $PROJECT_DIR
 

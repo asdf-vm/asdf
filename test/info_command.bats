@@ -9,8 +9,8 @@ setup() {
   run asdf install dummy 1.0
   run asdf install dummy 1.1
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {

@@ -8,8 +8,8 @@ setup() {
   install_dummy_plugin
   install_dummy_broken_plugin
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {
@@ -221,9 +221,9 @@ EOM
 }
 
 @test "install command without arguments installs versions from legacy files" {
-  echo 'legacy_version_file = yes' >$HOME/.asdfrc
-  echo '1.2.0' >>$PROJECT_DIR/.dummy-version
-  cd $PROJECT_DIR
+  echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
+  echo '1.2.0' >>"$PROJECT_DIR/.dummy-version"
+  cd "$PROJECT_DIR"
   run asdf install
   [ "$status" -eq 0 ]
   [ -z "$output" ]
@@ -231,8 +231,8 @@ EOM
 }
 
 @test "install command without arguments installs versions from legacy files in parent directories" {
-  echo 'legacy_version_file = yes' >$HOME/.asdfrc
-  echo '1.2.0' >>$PROJECT_DIR/.dummy-version
+  echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
+  echo '1.2.0' >>"$PROJECT_DIR/.dummy-version"
 
   mkdir -p $PROJECT_DIR/child
   cd $PROJECT_DIR/child
@@ -270,7 +270,7 @@ EOM
 }
 
 @test "install_command keeps the download directory when always_keep_download setting is true" {
-  echo 'always_keep_download = yes' >$HOME/.asdfrc
+  echo 'always_keep_download = yes' >"$HOME/.asdfrc"
   run asdf install dummy 1.1.0
   echo $output
   [ "$status" -eq 0 ]

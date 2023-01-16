@@ -8,8 +8,8 @@ setup() {
   install_dummy_version "0.1.0"
   install_dummy_version "0.2.0"
 
-  PROJECT_DIR=$HOME/project
-  mkdir -p $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 
   cd $HOME
 }
@@ -150,9 +150,9 @@ teardown() {
 }
 
 @test "find_versions should return the legacy file if supported" {
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
-  echo "dummy 0.1.0" >$HOME/.tool-versions
-  echo "0.2.0" >$PROJECT_DIR/.dummy-version
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
+  echo "0.2.0" >"$PROJECT_DIR/.dummy-version"
 
   run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
@@ -169,10 +169,10 @@ teardown() {
 }
 
 @test "find_versions should return .tool-versions if unsupported" {
-  echo "dummy 0.1.0" >$HOME/.tool-versions
-  echo "0.2.0" >$PROJECT_DIR/.dummy-version
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
-  rm $ASDF_DIR/plugins/dummy/bin/list-legacy-filenames
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
+  echo "0.2.0" >"$PROJECT_DIR/.dummy-version"
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
+  rm "$ASDF_DIR/plugins/dummy/bin/list-legacy-filenames"
 
   run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
@@ -229,9 +229,9 @@ teardown() {
 
 @test "find_versions should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  echo "dummy 0.2.0" >$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
-  echo "dummy 0.1.0" >$HOME/.dummy-version
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
+  echo "dummy 0.2.0" >"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  echo "dummy 0.1.0" >"$HOME/.dummy-version"
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
 
   run find_versions "dummy" $PROJECT_DIR
   [ "$status" -eq 0 ]
@@ -307,11 +307,11 @@ teardown() {
 }
 
 @test "get_executable_path for non system version should return relative path from plugin" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  mkdir -p $ASDF_DIR/installs/foo/1.0.0/bin
-  executable_path=$ASDF_DIR/installs/foo/1.0.0/bin/dummy
-  touch $executable_path
-  chmod +x $executable_path
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  mkdir -p "$ASDF_DIR/installs/foo/1.0.0/bin"
+  executable_path="$ASDF_DIR/installs/foo/1.0.0/bin/dummy"
+  touch "$executable_path"
+  chmod +x "$executable_path"
 
   run get_executable_path "foo" "1.0.0" "bin/dummy"
   [ "$status" -eq 0 ]
@@ -319,11 +319,11 @@ teardown() {
 }
 
 @test "get_executable_path for ref:version installed version should resolve to ref-version" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  mkdir -p $ASDF_DIR/installs/foo/ref-master/bin
-  executable_path=$ASDF_DIR/installs/foo/ref-master/bin/dummy
-  touch $executable_path
-  chmod +x $executable_path
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  mkdir -p "$ASDF_DIR/installs/foo/ref-master/bin"
+  executable_path="$ASDF_DIR/installs/foo/ref-master/bin/dummy"
+  touch "$executable_path"
+  chmod +x "$executable_path"
 
   run get_executable_path "foo" "ref:master" "bin/dummy"
   [ "$status" -eq 0 ]
