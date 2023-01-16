@@ -41,7 +41,6 @@ teardown() {
     [ "$status" -eq 0 ]
     cd "$ASDF_DIR"
     git tag | grep "$tag"
-    [ "$?" -eq 0 ]
   fi
 }
 
@@ -55,7 +54,6 @@ teardown() {
     [ "$status" -eq 0 ]
     cd "$ASDF_DIR"
     git tag | grep "$tag"
-    [ "$?" -eq 0 ]
   fi
 }
 

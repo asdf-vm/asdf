@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2012
 
 load test_helpers
 

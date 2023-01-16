@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck disable=SC2164
+# shellcheck disable=SC2012,SC2030,SC2031,SC2164
 
 load test_helpers
 
@@ -72,7 +72,7 @@ teardown() {
 @test "[local - dummy_plugin] with latest:version should return an error for invalid versions" {
   run asdf local "dummy" "latest:99"
   [ "$status" -eq 1 ]
-  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
+  [ "$output" = "No compatible versions available (dummy 99)" ]
 }
 
 @test "[local - dummy_legacy_plugin] with latest should use the latest installed version" {
@@ -90,7 +90,7 @@ teardown() {
 @test "[local - dummy_legacy_plugin] with latest:version should return an error for invalid versions" {
   run asdf local "legacy-dummy" "latest:99"
   [ "$status" -eq 1 ]
-  [ "$output" = "$(echo "No compatible versions available (legacy-dummy 99)")" ]
+  [ "$output" = "No compatible versions available (legacy-dummy 99)" ]
 }
 
 @test "local should allow multiple versions" {
@@ -219,7 +219,7 @@ teardown() {
 @test "[global - dummy_plugin] with latest:version should return an error for invalid versions" {
   run asdf global "dummy" "latest:99"
   [ "$status" -eq 1 ]
-  [ "$output" = "$(echo "No compatible versions available (dummy 99)")" ]
+  [ "$output" = "No compatible versions available (dummy 99)" ]
 }
 
 @test "[global - dummy_legacy_plugin] with latest should use the latest installed version" {
@@ -237,7 +237,7 @@ teardown() {
 @test "[global - dummy_legacy_plugin] with latest:version should return an error for invalid versions" {
   run asdf global "legacy-dummy" "latest:99"
   [ "$status" -eq 1 ]
-  [ "$output" = "$(echo "No compatible versions available (legacy-dummy 99)")" ]
+  [ "$output" = "No compatible versions available (legacy-dummy 99)" ]
 }
 
 @test "global should accept multiple versions" {
@@ -367,16 +367,16 @@ teardown() {
 @test "shell wrapper function should export ENV var" {
   . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
-  [ "$(echo "$ASDF_DUMMY_VERSION")" = "1.1.0" ]
+  [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "shell wrapper function with --unset should unset ENV var" {
   . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
-  [ "$(echo "$ASDF_DUMMY_VERSION")" = "1.1.0" ]
+  [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   asdf shell "dummy" --unset
-  [ -z "$(echo "$ASDF_DUMMY_VERSION")" ]
+  [ -z "$ASDF_DUMMY_VERSION" ]
   unset ASDF_DUMMY_VERSION
 }
 
@@ -454,14 +454,14 @@ false"
 @test "[shell - dummy_plugin] wrapper function should support latest" {
   . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "latest"
-  [ "$(echo "$ASDF_DUMMY_VERSION")" = "2.0.0" ]
+  [ "$ASDF_DUMMY_VERSION" = "2.0.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "[shell - dummy_legacy_plugin] wrapper function should support latest" {
   . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "legacy-dummy" "latest"
-  [ "$(echo "$ASDF_LEGACY_DUMMY_VERSION")" = "5.1.0" ]
+  [ "$ASDF_LEGACY_DUMMY_VERSION" = "5.1.0" ]
   unset ASDF_LEGACY_DUMMY_VERSION
 }
 
