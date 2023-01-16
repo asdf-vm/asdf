@@ -25,7 +25,7 @@ teardown() {
   [ "$status" -eq 0 ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
   run asdf uninstall dummy 1.1.0
-  [ ! -f $ASDF_DIR/installs/dummy/1.1.0/version ]
+  [ ! -f "$ASDF_DIR/installs/dummy/1.1.0/version" ]
 }
 
 @test "uninstall_command should invoke the plugin bin/uninstall if available" {
@@ -41,29 +41,29 @@ teardown() {
 
 @test "uninstall_command should remove the plugin shims if no other version is installed" {
   run asdf install dummy 1.1.0
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf uninstall dummy 1.1.0
-  [ ! -f $ASDF_DIR/shims/dummy ]
+  [ ! -f "$ASDF_DIR/shims/dummy" ]
 }
 
 @test "uninstall_command should leave the plugin shims if other version is installed" {
   run asdf install dummy 1.0.0
-  [ -f $ASDF_DIR/installs/dummy/1.0.0/bin/dummy ]
+  [ -f "$ASDF_DIR/installs/dummy/1.0.0/bin/dummy" ]
 
   run asdf install dummy 1.1.0
-  [ -f $ASDF_DIR/installs/dummy/1.1.0/bin/dummy ]
+  [ -f "$ASDF_DIR/installs/dummy/1.1.0/bin/dummy" ]
 
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf uninstall dummy 1.0.0
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
 }
 
 @test "uninstall_command should remove relevant asdf-plugin metadata" {
   run asdf install dummy 1.0.0
-  [ -f $ASDF_DIR/installs/dummy/1.0.0/bin/dummy ]
+  [ -f "$ASDF_DIR/installs/dummy/1.0.0/bin/dummy" ]
 
   run asdf install dummy 1.1.0
-  [ -f $ASDF_DIR/installs/dummy/1.1.0/bin/dummy ]
+  [ -f "$ASDF_DIR/installs/dummy/1.1.0/bin/dummy" ]
 
   run asdf uninstall dummy 1.0.0
   run grep "asdf-plugin: dummy 1.1.0" $ASDF_DIR/shims/dummy
@@ -74,13 +74,13 @@ teardown() {
 
 @test "uninstall_command should not remove other unrelated shims" {
   run asdf install dummy 1.0.0
-  [ -f $ASDF_DIR/shims/dummy ]
+  [ -f "$ASDF_DIR/shims/dummy" ]
 
-  touch $ASDF_DIR/shims/gummy
-  [ -f $ASDF_DIR/shims/gummy ]
+  touch "$ASDF_DIR/shims/gummy"
+  [ -f "$ASDF_DIR/shims/gummy" ]
 
   run asdf uninstall dummy 1.0.0
-  [ -f $ASDF_DIR/shims/gummy ]
+  [ -f "$ASDF_DIR/shims/gummy" ]
 }
 
 @test "uninstall command executes configured pre hook" {

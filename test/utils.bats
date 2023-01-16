@@ -370,7 +370,7 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 
@@ -380,7 +380,7 @@ teardown() {
 
   run resolve_symlink baz/bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/baz/../foo ]
+  [ "$output" = "$PWD/baz/../foo" ]
   rm -f foo bar
 }
 
@@ -390,7 +390,7 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $PWD/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 

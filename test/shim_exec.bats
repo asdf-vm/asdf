@@ -60,8 +60,8 @@ teardown() {
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "tr [:lower:] [:upper:]" >$ASDF_DIR/installs/dummy/1.0/bin/upper
-  chmod +x $ASDF_DIR/installs/dummy/1.0/bin/upper
+  echo "tr [:lower:] [:upper:]" >"$ASDF_DIR/installs/dummy/1.0/bin/upper"
+  chmod +x "$ASDF_DIR/installs/dummy/1.0/bin/upper"
 
   run asdf reshim dummy 1.0
 
