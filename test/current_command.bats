@@ -121,7 +121,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "y"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "2.1.0" ]]
+  [[ "$output" == *"2.1.0"* ]]
 }
 
 @test "with no plugins prints an error" {
@@ -134,8 +134,8 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 }
 
 @test "current should handle comments" {
-  cd $PROJECT_DIR
-  echo "dummy 1.2.0  # this is a comment" >>$PROJECT_DIR/.tool-versions
+  cd "$PROJECT_DIR"
+  echo "dummy 1.2.0  # this is a comment" >>"$PROJECT_DIR/.tool-versions"
   expected="dummy           1.2.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"

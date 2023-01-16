@@ -3,12 +3,15 @@
 load test_helpers
 
 setup() {
+  # shellcheck disable=SC1007
   export XDG_CONFIG_HOME= XDG_DATA_HOME= XDG_DATA_DIRS=
 
   local version=
   version=$(elvish -version)
 
+  # shellcheck disable=SC1007
   local ver_major= ver_minor= ver_patch=
+  # shellcheck disable=SC2034
   IFS='.' read -r ver_major ver_minor ver_patch <<<"$version"
 
   if ((ver_major == 0 && ver_minor <= 17)); then
