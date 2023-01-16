@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2164
 
 load test_helpers
 
@@ -235,7 +236,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
+  [[ "$output" == *"0.1.0|$HOME/.dummy-version"* ]]
 }
 
 @test "get_preset_version_for returns the current version" {
