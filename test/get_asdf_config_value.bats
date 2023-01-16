@@ -19,8 +19,8 @@ EOM
 }
 
 teardown() {
-  rm $ASDF_CONFIG_FILE
-  rm $ASDF_CONFIG_DEFAULT_FILE
+  rm "$ASDF_CONFIG_FILE"
+  rm "$ASDF_CONFIG_DEFAULT_FILE"
   unset ASDF_CONFIG_DEFAULT_FILE
   unset ASDF_CONFIG_FILE
 }
@@ -40,7 +40,7 @@ teardown() {
 }
 
 @test "get_config returns config file complete value including '=' symbols" {
-  cat >>$ASDF_CONFIG_FILE <<-'EOM'
+  cat >>"$ASDF_CONFIG_FILE" <<-'EOM'
 key3 = VAR=val
 EOM
 

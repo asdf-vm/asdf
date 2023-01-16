@@ -157,7 +157,7 @@ teardown() {
 }
 
 @test "asdf plugin-update executes configured pre hook (generic)" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_plugin_update = echo UPDATE ${@}
 EOM
 
@@ -173,7 +173,7 @@ EOM
 }
 
 @test "asdf plugin-update executes configured pre hook (specific)" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_plugin_update_dummy = echo UPDATE
 EOM
 
@@ -189,7 +189,7 @@ EOM
 }
 
 @test "asdf plugin-update executes configured post hook (generic)" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_plugin_update = echo UPDATE ${@}
 EOM
 
@@ -206,7 +206,7 @@ UPDATE dummy"
 }
 
 @test "asdf plugin-update executes configured post hook (specific)" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_plugin_update_dummy = echo UPDATE
 EOM
 

@@ -18,7 +18,7 @@ teardown() {
 }
 
 @test "info should show os, shell and asdf debug information" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf info
 

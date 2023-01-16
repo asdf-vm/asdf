@@ -18,7 +18,7 @@ cleaned_path() {
     PATH=$(cleaned_path)
 
     source_asdf_sh
-    echo $ASDF_DIR
+    echo "$ASDF_DIR"
   )
 
   run grep 'asdf' <<<"$result"
@@ -34,7 +34,7 @@ cleaned_path() {
     set -o nounset
 
     source_asdf_sh
-    echo $ASDF_DIR
+    echo "$ASDF_DIR"
   )
 
   run grep 'asdf' <<<"$result"
@@ -49,7 +49,7 @@ cleaned_path() {
     PATH=$(cleaned_path)
 
     source_asdf_sh
-    echo $PATH
+    echo "$PATH"
   )
 
   run grep 'asdf' <<<"$result"
@@ -65,7 +65,7 @@ cleaned_path() {
 
     source_asdf_sh
     source_asdf_sh
-    echo $PATH
+    echo "$PATH"
   )
 
   output=$(echo "$result" | tr ':' '\n' | grep "asdf" | sort | uniq -d)

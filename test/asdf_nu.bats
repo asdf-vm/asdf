@@ -23,8 +23,7 @@ cleaned_path() {
 
     source asdf.nu
 
-    echo \$env.ASDF_DIR
-  ")
+    echo \$env.ASDF_DIR"
 
   [ "$status" -eq 0 ]
   output=$(echo "$output" | grep "asdf")
@@ -76,8 +75,7 @@ cleaned_path() {
 
     source asdf.nu
 
-    echo \$env.ASDF_DIR
-  ")
+    echo \$env.ASDF_DIR"
 
   [ "$status" -eq 0 ]
   [ "$output" = "$PWD" ]
