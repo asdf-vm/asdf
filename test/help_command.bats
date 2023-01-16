@@ -18,7 +18,7 @@ teardown() {
 }
 
 @test "help should show dummy plugin help" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf help "dummy"
 
@@ -34,7 +34,7 @@ EOF
 }
 
 @test "help should show dummy plugin help specific to version when version is present" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf help "dummy" "1.2.3"
 
@@ -48,12 +48,12 @@ Details specific for version 1.2.3
 EOF
   )"
   [ "$status" -eq 0 ]
-  echo $output
+  echo "$output"
   [ "$output" = "$expected_output" ]
 }
 
 @test "help should fail for unknown plugins" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf help "sunny"
   [ "$status" -eq 1 ]
@@ -61,7 +61,7 @@ EOF
 }
 
 @test "help should fail when plugin doesn't have documentation callback" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf help "legacy-dummy"
   [ "$status" -eq 1 ]
@@ -69,7 +69,7 @@ EOF
 }
 
 @test "help should show asdf help when no plugin name is provided" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
 
   run asdf help
 
