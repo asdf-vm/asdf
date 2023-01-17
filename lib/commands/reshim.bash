@@ -88,37 +88,28 @@ write_shim_script() {
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
 
-  if [ -f "$shim_path" ]; then
-    if ! grep -x "# asdf-plugin: ${plugin_name} ${version}" "$shim_path" >/dev/null; then
-      sed -i.bak -e "s/exec /# asdf-plugin: ${plugin_name} ${version}\\"$'\n''exec /' "$shim_path"
-      rm -f "$shim_path".bak
-    fi
-  else
-    cat <<EOF >"$shim_path"
-#!/usr/bin/env bash
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
+
+  local temp_versions_path
+  temp_versions_path=$(mktemp "$temp_dir/asdf-command-reshim-write-shims.XXXXXX")
+  cat <<EOF >"$temp_versions_path"
 # asdf-plugin: ${plugin_name} ${version}
+EOF
+
+  if [ -f "$shim_path" ]; then
+    grep '^#\sasdf-plugin:\s' <"$shim_path" >>"$temp_versions_path"
+  fi
+
+  cat <<EOF >"$shim_path"
+#!/usr/bin/env bash
+$(sort -u <"$temp_versions_path")
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
-  fi
+
+  rm "$temp_versions_path"
 
   chmod +x "$shim_path"
-}
-
-generate_shim_for_executable() {
-  local plugin_name=$1
-  local executable=$2
-
-  check_if_plugin_exists "$plugin_name"
-
-  local version
-  IFS=':' read -r -a version_info <<<"$full_version"
-  if [ "${version_info[0]}" = "ref" ]; then
-    version="${version_info[1]}"
-  else
-    version="${version_info[0]}"
-  fi
-
-  write_shim_script "$plugin_name" "$version" "$executable"
 }
 
 generate_shims_for_version() {
@@ -151,10 +142,10 @@ remove_obsolete_shims() {
   # comm only takes to files, so we write this data to temp files so we can
   # pass it to comm.
   formatted_shims="$(mktemp "$temp_dir/asdf-command-reshim-formatted-shims.XXXXXX")"
-  printf "%s\\n" "$shims" >"$formatted_shims"
+  printf "%s\n" "$shims" >"$formatted_shims"
 
   formatted_exec_names="$(mktemp "$temp_dir/asdf-command-reshim-formatted-exec-names.XXXXXX")"
-  printf "%s\\n" "$exec_names" >"$formatted_exec_names"
+  printf "%s\n" "$exec_names" >"$formatted_exec_names"
 
   obsolete_shims=$(comm -23 "$formatted_shims" "$formatted_exec_names")
   rm -f "$formatted_exec_names" "$formatted_shims"

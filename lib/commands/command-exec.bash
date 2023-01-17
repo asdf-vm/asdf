@@ -6,7 +6,7 @@ shim_exec_command() {
   local shim_args=("${@:2}")
 
   if [ -z "$shim_name" ]; then
-    printf "usage: asdf exec <command>\\n"
+    printf "usage: asdf exec <command>\n"
     exit 1
   fi
 
@@ -16,7 +16,7 @@ shim_exec_command() {
     local executable_path="$3"
 
     if [ ! -x "$executable_path" ]; then
-      printf "No %s executable found for %s %s\\n" "$shim_name" "$plugin_name" "$version" >&2
+      printf "No %s executable found for %s %s\n" "$shim_name" "$plugin_name" "$version" >&2
       exit 2
     fi
 

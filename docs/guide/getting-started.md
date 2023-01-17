@@ -11,7 +11,16 @@
 
 ## 1. Install Dependencies
 
-**Linux**:
+asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
+
+| OS    | Package Manager | Command                            |
+| ----- | --------------- | ---------------------------------- |
+| linux | Aptitude        | `apt install curl git`             |
+| linux | DNF             | `dnf install curl git`             |
+| linux | Pacman          | `pacman -S curl git`               |
+| linux | Zypper          | `zypper install curl git`          |
+| macOS | Homebrew        | `brew install coreutils curl git`  |
+| macOS | Spack           | `spack install coreutils curl git` |
 
 ::: tip Note
 
@@ -19,29 +28,23 @@
 
 :::
 
-| Package Manager | Command                   |
-| --------------- | ------------------------- |
-| Aptitude        | `apt install curl git`    |
-| DNF             | `dnf install curl git`    |
-| Pacman          | `pacman -S curl git`      |
-| Zypper          | `zypper install curl git` |
-
-**macOS**:
-
-| Package Manager | Command                                                   |
-| --------------- | --------------------------------------------------------- |
-| Homebrew        | Dependencies will be automatically installed by Homebrew. |
-| Spack           | `spack install coreutils curl git`                        |
-
 ## 2. Download asdf
 
-We recommend using Git, though there are other platform specific methods:
+### Official Download
+
+```shell:no-line-numbers
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+```
+
+### Community Supported Download Methods
+
+We highly recommend using the official `git` method.
 
 | Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
+
 
 ## 3. Install asdf
 
@@ -77,6 +80,22 @@ Completions must be configured manually with the following entry in your `.bash_
 
 ```shell
 . $HOME/.asdf/completions/asdf.bash
+```
+
+:::
+
+::: details Bash & Homebrew
+
+Add `asdf.sh` to your `~/.bashrc` with:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+```
+
+Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
 ```
 
 :::
@@ -244,7 +263,7 @@ Completions are placed in a ZSH friendly location, but [ZSH must be configured t
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nsource " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
 ```
 
 Completions are automatically configured
@@ -255,7 +274,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell:no-line-numbers
-"\nsource " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
 ```
 
 Completions are automatically configured
@@ -266,7 +285,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nsource /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
 ```
 
 Completions are automatically configured.

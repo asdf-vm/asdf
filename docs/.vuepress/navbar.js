@@ -1,8 +1,13 @@
 const en = [
   {
+    text: "Introduction",
+    link: "/guide/introduction.html",
+    activeMatch: "/guide/introduction",
+  },
+  {
     text: "Getting Started",
     link: "/guide/getting-started.html",
-    activeMatch: "/guide/",
+    activeMatch: "/guide/getting-started",
   },
   {
     text: "Reference",
@@ -99,12 +104,12 @@ const en = [
     ],
   },
   {
-    text: "Learn More",
+    text: "More",
     children: [
       {
         text: "Questions",
         children: [
-          "/learn-more/faq.md",
+          "/more/faq.md",
           {
             text: "GitHub Issues",
             link: "https://github.com/asdf-vm/asdf/issues",
@@ -116,8 +121,18 @@ const en = [
         ],
       },
       {
+        text: "Community",
+        children: [
+          {
+            text: "asdf-community",
+            link: "https://github.com/asdf-community",
+          },
+          "/more/community-projects.md",
+        ],
+      },
+      {
         text: "Resources",
-        children: ["/learn-more/thanks.md"],
+        children: ["/more/thanks.md"],
       },
     ],
   },
@@ -227,12 +242,12 @@ const pt_br = [
     ],
   },
   {
-    text: "Learn More",
+    text: "More",
     children: [
       {
         text: "Questions",
         children: [
-          "/pt-br/learn-more/faq.md",
+          "/pt-br/more/faq.md",
           {
             text: "GitHub Issues",
             link: "https://github.com/asdf-vm/asdf/issues",
@@ -244,8 +259,18 @@ const pt_br = [
         ],
       },
       {
+        text: "Community",
+        children: [
+          {
+            text: "asdf-community",
+            link: "https://github.com/asdf-community",
+          },
+          "/pt-br/more/community-projects.md",
+        ],
+      },
+      {
         text: "Resources",
-        children: ["/pt-br/learn-more/thanks.md"],
+        children: ["/pt-br/more/thanks.md"],
       },
     ],
   },
@@ -355,12 +380,12 @@ const zh_hans = [
     ],
   },
   {
-    text: "了解更多",
+    text: "更多的",
     children: [
       {
         text: "提问",
         children: [
-          "/zh-hans/learn-more/faq.md",
+          "/zh-hans/more/faq.md",
           {
             text: "GitHub Issues",
             link: "https://github.com/asdf-vm/asdf/issues",
@@ -372,8 +397,18 @@ const zh_hans = [
         ],
       },
       {
-        text: "资源",
-        children: ["/zh-hans/learn-more/thanks.md"],
+        text: "Community",
+        children: [
+          {
+            text: "asdf-community",
+            link: "https://github.com/asdf-community",
+          },
+          "/zh-hans/more/community-projects.md",
+        ],
+      },
+      {
+        text: "Resources",
+        children: ["/zh-hans/more/thanks.md"],
       },
     ],
   },

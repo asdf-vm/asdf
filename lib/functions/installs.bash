@@ -6,7 +6,7 @@ handle_failure() {
 
 handle_cancel() {
   local install_path="$1"
-  printf "\\nreceived sigint, cleaning up"
+  printf "\nreceived sigint, cleaning up"
   handle_failure "$install_path"
 }
 
@@ -32,14 +32,14 @@ get_concurrency() {
   elif [ -f /proc/cpuinfo ]; then
     grep -c processor /proc/cpuinfo
   else
-    printf "1\\n"
+    printf "1\n"
   fi
 }
 
 install_one_local_tool() {
   local plugin_name=$1
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
 
   local plugin_versions
 
@@ -50,13 +50,12 @@ install_one_local_tool() {
 
   if [ -n "$plugin_version_and_path" ]; then
     local plugin_version
-    some_tools_installed='yes'
     plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
     for plugin_version in $plugin_versions; do
       install_tool_version "$plugin_name" "$plugin_version"
     done
   else
-    printf "No versions specified for %s in config files or environment\\n" "$plugin_name"
+    printf "No versions specified for %s in config files or environment\n" "$plugin_name"
     exit 1
   fi
 }
@@ -66,7 +65,7 @@ install_local_tool_versions() {
   plugins_path=$(get_plugin_path)
 
   local search_path
-  search_path=$(pwd)
+  search_path=$PWD
 
   local some_tools_installed
   local some_plugin_not_installed
@@ -86,7 +85,7 @@ install_local_tool_versions() {
   fi
 
   if [ -z "$plugins_installed" ]; then
-    printf "Install plugins first to be able to install tools\\n"
+    printf "Install plugins first to be able to install tools\n"
     exit 1
   fi
 
@@ -123,9 +122,9 @@ install_local_tool_versions() {
   fi
 
   if [ -z "$some_tools_installed" ]; then
-    printf "Either specify a tool & version in the command\\n"
-    printf "OR add .tool-versions file in this directory\\n"
-    printf "or in a parent directory\\n"
+    printf "Either specify a tool & version in the command\n"
+    printf "OR add .tool-versions file in this directory\n"
+    printf "or in a parent directory\n"
     exit 1
   fi
 }
@@ -181,7 +180,7 @@ install_tool_version() {
   trap 'handle_cancel $install_path' INT
 
   if [ -d "$install_path" ]; then
-    printf "%s %s is already installed\\n" "$plugin_name" "$full_version"
+    printf "%s %s is already installed\n" "$plugin_name" "$full_version"
   else
 
     if [ -f "${plugin_path}/bin/download" ]; then

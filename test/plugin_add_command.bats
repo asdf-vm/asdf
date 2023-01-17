@@ -11,13 +11,13 @@ teardown() {
 }
 
 @test "plugin_add command with plugin name matching all valid regex chars succeeds" {
-  install_mock_plugin_repo "plugin_with-all-valid-CHARS-123"
+  install_mock_plugin_repo "plugin_with-all-valid-chars-123"
 
-  run asdf plugin add "plugin_with-all-valid-CHARS-123" "${BASE_DIR}/repo-plugin_with-all-valid-CHARS-123"
+  run asdf plugin add "plugin_with-all-valid-chars-123" "${BASE_DIR}/repo-plugin_with-all-valid-chars-123"
   [ "$status" -eq 0 ]
 
   run asdf plugin list
-  [ "$output" = "plugin_with-all-valid-CHARS-123" ]
+  [ "$output" = "plugin_with-all-valid-chars-123" ]
 }
 
 @test "plugin_add command with LANG=sv_SE.UTF-8 and plugin name matching all valid regex chars succeeds" {
@@ -36,16 +36,23 @@ teardown() {
 
   LANG="$ORIGINAL_LANG"
 }
-@test "plugin_add command with plugin name not matching valid regex fails" {
+
+@test "plugin_add command with plugin name not matching valid regex fails 1" {
   run asdf plugin add "invalid\$plugin\$name"
   [ "$status" -eq 1 ]
-  [ "$output" = "invalid\$plugin\$name is invalid. Name must match regex ^[[:alpha:][:digit:]_-]+$" ]
+  [ "$output" = "invalid\$plugin\$name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
 }
 
-@test "plugin_add command with plugin name not matching valid regex fails again" {
+@test "plugin_add command with plugin name not matching valid regex fails 2" {
   run asdf plugin add "#invalid#plugin#name"
   [ "$status" -eq 1 ]
-  [ "$output" = "#invalid#plugin#name is invalid. Name must match regex ^[[:alpha:][:digit:]_-]+$" ]
+  [ "$output" = "#invalid#plugin#name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
+}
+
+@test "plugin_add command with plugin name not matching valid regex fails 3" {
+  run asdf plugin add "Ruby"
+  [ "$status" -eq 1 ]
+  [ "$output" = "Ruby is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {

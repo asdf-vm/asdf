@@ -124,6 +124,31 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 
 :::
 
+::: details Bash & Homebrew
+
+1. 在 `~/.bashrc` 配置文件中移除生效 `asdf.sh` 和补全功能的行：
+
+```shell
+. $(brew --prefix asdf)/libexec/asdf.sh
+. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
+```
+
+补全功能可能已经如 [Homebrew 的指南](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 那样配置了，因此请按照他们的指南找出要删除的内容。
+
+2. 用包管理器卸载：
+
+```shell:no-line-numbers
+brew uninstall asdf --force
+```
+
+3. 执行以下命令移除 `asdf` 所有配置文件：
+
+```shell:no-line-numbers
+rm -rf $HOME/.tool-versions $HOME/.asdfrc
+```
+
+:::
+
 ::: details Bash & Homebrew (macOS)
 
 如果你正在使用 **macOS Catalina 以及更新版本**，默认的 shell 已经变成了 **ZSH**。如果你在 `~/.bash_profile` 文件中找不到任何配置，则可能位于 `~/.zshrc` 中。在这种情况下，请按照 ZSH 指南进行操作。
