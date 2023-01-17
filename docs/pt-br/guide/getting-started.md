@@ -50,13 +50,13 @@ Existem diversas combinações de shells, sistemas operacionais e métodos de in
 Adicione esta linha ao seu `~/.bashrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bashrc`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -68,13 +68,13 @@ Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mu
 Adicione esta linha ao seu `~/.bash_profile`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bash_profile`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -90,7 +90,7 @@ echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bashrc
 O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
 :::
@@ -108,7 +108,7 @@ echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
 :::
@@ -207,7 +207,7 @@ Ao concluir atualizará automaticamente
 Adicione a seguinte linha ao seu `~/.zshrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 **OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.

@@ -50,13 +50,13 @@
 在 `~/.bashrc` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 补全功能必须在 `.bashrc` 文件中加入以下内容来配置完成：
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -68,13 +68,13 @@
 在 `~/.bash_profile` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 补全功能必须在 `.bash_profile` 文件中使用以下内容手动配置完成：
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -84,13 +84,13 @@
 使用以下命令将 `asdf.sh` 加入到 `~/.bashrc` 文件中：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
 :::
@@ -102,13 +102,13 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
 使用以下命令将 `asdf.sh` 加入到 `~/.bash_profile` 文件中：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
 :::
@@ -148,7 +148,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
-Fish shell 的补全功能可以交给 [ Homebrew 处理](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). 很友好！
+Fish shell 的补全功能可以交给 [Homebrew 处理](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). 很友好！
 :::
 
 ::: details Fish & Pacman
@@ -209,7 +209,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 在 `~/.zshrc` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 **或者** 使用 ZSH 框架插件，比如 [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) 将会使脚本生效并安装补全功能。
