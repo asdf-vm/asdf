@@ -16,10 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-11
-          - macos-12
-          - ubuntu-20.04
-          - ubuntu-22.04
+          - macos-latest
+          - ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
