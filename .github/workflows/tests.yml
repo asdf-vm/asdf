@@ -11,17 +11,8 @@ env:
   NUSHELL_VERSION: 0.73.0
 
 jobs:
-  nix:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - macos-10.15
-          - macos-11
-          - macos-12
-          - ubuntu-20.04
-          - ubuntu-22.04
-    runs-on: ${{ matrix.os }}
+  ubuntu:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,11 +20,6 @@ jobs:
           fetch-depth: 0
 
       - name: Install test dependencies
-        if: runner.os == 'macos'
-        run: brew install coreutils fish elvish nushell
-
-      - name: Install test dependencies
-        if: runner.os == 'linux'
         run: |
           sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
@@ -56,6 +42,27 @@ jobs:
 
           # Add $HOME/bin to path
           echo "$HOME/bin" >>"$GITHUB_PATH"
+
+      - name: Install bats
+        run: |
+          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git $HOME/bats-core
+          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
+
+      - name: Run tests
+        run: bats test
+        env:
+          GITHUB_API_TOKEN: ${{ github.token }}
+          
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install test dependencies
+        run: brew install coreutils fish elvish nushell
 
       - name: Install bats
         run: |
