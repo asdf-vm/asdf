@@ -32,9 +32,13 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 ### Official Download
 
+<!-- x-release-please-start-version -->
+
 ```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
 ```
+
+<!-- x-release-please-end -->
 
 ### Community Supported Download Methods
 
