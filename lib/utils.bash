@@ -7,13 +7,44 @@ GREP_COLORS=
 
 ASDF_DIR=${ASDF_DIR:-''}
 ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
+BASH_MAJOR_VERSION=${BASH_VERSION%%.*}
 
 fast_basename() {
   # if the path ends in a slash, remove it, then use parameter substitution
   # if it doesn't, use parameter substitution on the path as-is
   dirpath="$1"
   [[ "$dirpath" == */ ]] && dirpath="${dirpath%/}" && dirpath="${dirpath##*/}" || dirpath="${dirpath##*/}"
-  echo $dirpath
+  printf "$dirpath"
+}
+
+fast_tr() {
+  inputArr=("$@")
+  inputStr="${inputArr[0]}"
+  local outputStr
+  if [ ! ${#inputArr[@]} -eq 3 ] && [ ! ${#inputArr[@]} -eq 5 ]; then
+    printf "%s\n" "ERROR: fast_tr expects an array of 3 or 5 elements, got ${#inputArr[@]}"
+    return 1
+  fi
+  # if bash >= v4, use parameter modification to upper/lower the string
+  if [ ${BASH_MAJOR_VERSION} -gt 3 ]; then
+    case ${inputArr[1]} in
+      "[:lower:]")
+        outputStr="${inputStr@U}"
+        ;;
+      "[:upper:]")
+        outputStr="${inputStr@L}"
+        ;;
+      "*")
+        printf "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
+    esac
+    # and then use parameter substitution to replace characters in the string
+    # if the 4th or 5th elements are not set, the substitution has no effect
+    outputStr="${outputStr//${inputArr[3]-''}/${inputArr[4]-''}}"
+    printf "${outputStr}"
+  else
+    # else use tr with the input array elements as args
+    printf "${inputStr}" | tr "${inputArr[1]}${inputArr[3]-''}" "${inputArr[2]}${inputArr[4]-''}"
+  fi
 }
 
 asdf_version() {
@@ -198,7 +229,8 @@ find_versions() {
   version=$(get_version_from_env "$plugin_name")
   if [ -n "$version" ]; then
     local upcase_name
-    upcase_name=$(printf "%s\n" "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
+    tr_args=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
+    upcase_name=$(fast_tr ${tr_args[@]})
     local version_env_var="ASDF_${upcase_name}_VERSION"
 
     printf "%s\n" "$version|$version_env_var environment variable"
@@ -700,19 +732,18 @@ asdf_run_hook() {
 get_shim_versions() {
   shim_name=$1
   shim_plugin_versions "${shim_name}"
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
+  shim_plugin_versions "${shim_name%% [0-9]*} system}"
 }
 
 preset_versions() {
   shim_name=$1
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
+  shim_plugin_versions "${shim_name%% [0-9]*}" | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
 }
 
 select_from_preset_version() {
   local shim_name=$1
   local shim_versions
   local preset_versions
-
   shim_versions=$(get_shim_versions "$shim_name")
   if [ -n "$shim_versions" ]; then
     preset_versions=$(preset_versions "$shim_name")
@@ -735,7 +766,6 @@ select_version() {
 
   local plugins
   IFS=$'\n' read -rd '' -a plugins <<<"$(shim_plugins "$shim_name")"
-
   for plugin_name in "${plugins[@]}"; do
     local version_and_path
     local version_string
@@ -765,7 +795,7 @@ select_version() {
 
 with_shim_executable() {
   local shim_name
-  shim_name=$(basename "$1")
+  shim_name=$(fast_basename "$1")
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
@@ -775,7 +805,6 @@ with_shim_executable() {
 
   local selected_version
   selected_version="$(select_version "$shim_name")"
-
   if [ -z "$selected_version" ]; then
     selected_version="$(select_from_preset_version "$shim_name")"
   fi
