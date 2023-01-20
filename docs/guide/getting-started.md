@@ -32,9 +32,13 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 ### Official Download
 
+<!-- x-release-please-start-version -->
+
 ```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
 ```
+
+<!-- x-release-please-end -->
 
 ### Community Supported Download Methods
 
@@ -263,7 +267,7 @@ Completions are placed in a ZSH friendly location, but [ZSH must be configured t
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
 ```
 
 Completions are automatically configured
@@ -274,7 +278,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell:no-line-numbers
-"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
 Completions are automatically configured
@@ -285,7 +289,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path 
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
 ```
 
 Completions are automatically configured.

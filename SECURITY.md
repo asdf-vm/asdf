@@ -6,23 +6,19 @@ not covered under this security policy.**
 
 ## Supported Versions
 
-Typically only the latest version is maintained. Versions are released
-sequentially, with major, minor, and patch versions incremented as necessary. If
-a vulnerability is found in an old version of asdf, updating to the latest
-version of asdf will be required.
+<!-- x-release-please-start-version -->
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.10.x  | :white_check_mark: |
-| 0.9.x   | :x:                |
-| 0.8.x   | :x:                |
-| 0.7.x   | :x:                |
-| 0.6.x   | :x:                |
-| 0.5.x   | :x:                |
-| 0.4.x   | :x:                |
-| 0.3.x   | :x:                |
-| 0.2.x   | :x:                |
-| 0.1.x   | :x:                |
+```
+0.11.1
+```
+
+<!-- x-release-please-end -->
+
+Typically only the latest version is maintained. Versions are released
+sequentially, with major, minor, and patch versions incremented as necessary.
+
+If a vulnerability is found in an old version of asdf, updating to the latest
+version of asdf will be required.
 
 ## Reporting a Vulnerability
 
