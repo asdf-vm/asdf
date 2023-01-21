@@ -15,5 +15,7 @@ jobs:
           release-type: simple
           bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
           extra-files: |
-            docs/guide/getting-started.md
             SECURITY.md
+            docs/guide/getting-started.md
+            docs/pt-br/guide/getting-started.md
+            docs/zh-hans/guide/getting-started.md
