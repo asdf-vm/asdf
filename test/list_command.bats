@@ -7,8 +7,8 @@ setup() {
   install_dummy_plugin
   install_dummy_broken_plugin
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {

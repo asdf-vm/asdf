@@ -4,8 +4,8 @@ load test_helpers
 
 setup() {
   BASE_DIR=$(mktemp -dt asdf.XXXX)
-  HOME=$BASE_DIR/home
-  ASDF_DIR=$HOME/.asdf
+  HOME="$BASE_DIR/home"
+  ASDF_DIR="$HOME/.asdf"
   git clone -o local "$(dirname "$BATS_TEST_DIRNAME")" "$ASDF_DIR"
   git --git-dir "$ASDF_DIR/.git" remote add origin https://github.com/asdf-vm/asdf.git
   mkdir -p "$ASDF_DIR/plugins"
@@ -15,11 +15,11 @@ setup() {
   ASDF_BIN="$ASDF_DIR/bin"
 
   # shellcheck disable=SC2031
-  PATH=$ASDF_BIN:$ASDF_DIR/shims:$PATH
+  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
   install_dummy_plugin
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {
@@ -49,8 +49,8 @@ teardown() {
   local tag=
   tag=$(git tag | tail -1)
   if [ -n "$tag" ]; then
-    export ASDF_CONFIG_DEFAULT_FILE=$BATS_TMPDIR/asdfrc_defaults
-    echo "use_release_candidates = yes" >$ASDF_CONFIG_DEFAULT_FILE
+    export ASDF_CONFIG_DEFAULT_FILE="$BATS_TMPDIR/asdfrc_defaults"
+    echo "use_release_candidates = yes" >"$ASDF_CONFIG_DEFAULT_FILE"
     run asdf update
     [ "$status" -eq 0 ]
     cd "$ASDF_DIR"

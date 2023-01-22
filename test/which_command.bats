@@ -8,9 +8,9 @@ setup() {
   run asdf install dummy 1.0
   run asdf install dummy 1.1
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
-  echo 'dummy 1.0' >>$PROJECT_DIR/.tool-versions
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
+  echo 'dummy 1.0' >>"$PROJECT_DIR/.tool-versions"
 }
 
 teardown() {
@@ -53,7 +53,7 @@ teardown() {
   touch $PROJECT_DIR/sys/dummy
   chmod +x $PROJECT_DIR/sys/dummy
 
-  run env PATH=$PATH:$PROJECT_DIR/sys asdf which "dummy"
+  run env "PATH=$PATH:$PROJECT_DIR/sys" asdf which "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "$PROJECT_DIR/sys/dummy" ]
 }
@@ -87,10 +87,10 @@ teardown() {
 @test "which should return the path set by the legacy file" {
   cd $PROJECT_DIR
 
-  echo 'dummy 1.0' >>$HOME/.tool-versions
-  echo '1.1' >>$PROJECT_DIR/.dummy-version
-  rm $PROJECT_DIR/.tool-versions
-  echo 'legacy_version_file = yes' >$HOME/.asdfrc
+  echo 'dummy 1.0' >>"$HOME/.tool-versions"
+  echo '1.1' >>"$PROJECT_DIR/.dummy-version"
+  rm "$PROJECT_DIR/.tool-versions"
+  echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
 
   run asdf which "dummy"
   [ "$status" -eq 0 ]
@@ -102,7 +102,7 @@ teardown() {
   echo 'dummy 1.0' >$PROJECT_DIR/.tool-versions
   rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
 
-  run env PATH=$PATH:$ASDF_DIR/shims asdf which dummy
+  run env PATH="$PATH:$ASDF_DIR/shims" asdf which dummy
   [ "$status" -eq 1 ]
   [ "$output" = "No dummy executable found for dummy 1.0" ]
 }

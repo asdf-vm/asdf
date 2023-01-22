@@ -9,8 +9,8 @@ setup() {
   install_dummy_version "1.2.0"
   install_dummy_version "nightly-2000-01-01"
 
-  PROJECT_DIR=$HOME/project
-  mkdir $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 }
 
 teardown() {
@@ -48,9 +48,9 @@ teardown() {
 }
 
 @test "current should derive from the legacy file if enabled" {
-  cd $PROJECT_DIR
-  echo 'legacy_version_file = yes' >$HOME/.asdfrc
-  echo '1.2.0' >>$PROJECT_DIR/.dummy-version
+  cd "$PROJECT_DIR"
+  echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
+  echo '1.2.0' >>"$PROJECT_DIR/.dummy-version"
   expected="dummy           1.2.0           $PROJECT_DIR/.dummy-version"
 
   run asdf current "dummy"
