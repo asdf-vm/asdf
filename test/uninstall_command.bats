@@ -23,7 +23,7 @@ teardown() {
 @test "uninstall_command should remove the plugin with that version from asdf" {
   run asdf install dummy 1.1.0
   [ "$status" -eq 0 ]
-  [ $(cat $ASDF_DIR/installs/dummy/1.1.0/version) = "1.1.0" ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
   run asdf uninstall dummy 1.1.0
   [ ! -f $ASDF_DIR/installs/dummy/1.1.0/version ]
 }
