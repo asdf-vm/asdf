@@ -1,7 +1,7 @@
-name: Docs
+name: Documentation
 
 on:
-  # trigger deployment on every push to main branch
+  # trigger deployment on push to master branch when changes to docs/**
   push:
     paths:
       - "docs/**"
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docs:
+  deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Build VuePress site
         run: npm run build
-        
+
       - name: Bundle CNAME with site dist
         run: cp CNAME .vuepress/dist
 
