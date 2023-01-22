@@ -31,12 +31,12 @@ teardown() {
 }
 
 @test "get_config returns default value when the key does not exist" {
-  [ $(get_asdf_config_value "key2") = "value2" ]
+  [ "$(get_asdf_config_value "key2")" = "value2" ]
 }
 
 @test "get_config returns config file value when key exists" {
-  [ $(get_asdf_config_value "key1") = "value1" ]
-  [ $(get_asdf_config_value "legacy_version_file") = "yes" ]
+  [ "$(get_asdf_config_value "key1")" = "value1" ]
+  [ "$(get_asdf_config_value "legacy_version_file")" = "yes" ]
 }
 
 @test "get_config returns config file complete value including '=' symbols" {
@@ -44,5 +44,5 @@ teardown() {
 key3 = VAR=val
 EOM
 
-  [ $(get_asdf_config_value "key3") = "VAR=val" ]
+  [ "$(get_asdf_config_value "key3")" = "VAR=val" ]
 }

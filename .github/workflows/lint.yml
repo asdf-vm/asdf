@@ -40,8 +40,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.7.13"
 
       - name: Run checkstyle.py
         run: scripts/checkstyle.py
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check workflow files
+        uses: docker://rhysd/actionlint:1.6.23
+        with:
+          args: -color

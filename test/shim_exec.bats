@@ -60,12 +60,12 @@ teardown() {
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
   run asdf install
 
-  echo "tr [:lower:] [:upper:]" >$ASDF_DIR/installs/dummy/1.0/bin/upper
-  chmod +x $ASDF_DIR/installs/dummy/1.0/bin/upper
+  echo "tr [:lower:] [:upper:]" >"$ASDF_DIR/installs/dummy/1.0/bin/upper"
+  chmod +x "$ASDF_DIR/installs/dummy/1.0/bin/upper"
 
   run asdf reshim dummy 1.0
 
-  run echo $(echo hello | $ASDF_DIR/shims/upper)
+  run echo "$(echo hello | "$ASDF_DIR/shims/upper")"
   [ "$output" = "HELLO" ]
   [ "$status" -eq 0 ]
 }
@@ -379,9 +379,9 @@ teardown() {
   echo "echo custom/dummy" >$exec_path
   chmod +x $exec_path
 
-  mkdir $(dirname $custom_dummy)
-  echo "echo CUSTOM" >$custom_dummy
-  chmod +x $custom_dummy
+  mkdir "$(dirname "$custom_dummy")"
+  echo "echo CUSTOM" >"$custom_dummy"
+  chmod +x "$custom_dummy"
 
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
 
@@ -394,8 +394,8 @@ teardown() {
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
 
-  echo 'echo $3 # always same path' >$exec_path
-  chmod +x $exec_path
+  echo 'echo $3 # always same path' >"$exec_path"
+  chmod +x "$exec_path"
 
   echo "dummy 1.0" >$PROJECT_DIR/.tool-versions
 
