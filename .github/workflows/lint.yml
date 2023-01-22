@@ -45,3 +45,14 @@ jobs:
 
       - name: Run checkstyle.py
         run: scripts/checkstyle.py
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check workflow files
+        uses: docker://rhysd/actionlint:1.6.23
+        with:
+          args: -color
