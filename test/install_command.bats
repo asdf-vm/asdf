@@ -95,7 +95,7 @@ teardown() {
   run grep "asdf-plugin: dummy 1.0.0" $ASDF_DIR/shims/dummy
   [ "$status" -eq 0 ]
 
-  run grep "# asdf-plugin: dummy 1.0.0"$'\n'"# asdf-plugin: dummy 1.1.0" $ASDF_DIR/shims/dummy
+  run grep "# asdf-plugin: dummy 1.0.0"$'\n'"# asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 0 ]
 
   lines_count=$(grep "asdf-plugin: dummy 1.1.0" $ASDF_DIR/shims/dummy | wc -l)

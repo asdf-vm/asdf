@@ -115,7 +115,7 @@ teardown() {
 
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(ls $PROJECT_DIR/.tool-versions* | wc -l)" -eq 1 ]
+  [ "$(ls "$PROJECT_DIR/.tool-versions"* | wc -l)" -eq 1 ]
 }
 
 @test "local should overwrite the existing version if it's set" {

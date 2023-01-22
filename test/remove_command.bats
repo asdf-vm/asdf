@@ -57,7 +57,7 @@ teardown() {
   run asdf install dummy 1.0
 
   # make an unrelated shim
-  echo "# asdf-plugin: gummy" >$ASDF_DIR/shims/gummy
+  echo "# asdf-plugin: gummy" >"$ASDF_DIR/shims/gummy"
 
   run asdf plugin-remove dummy
   [ "$status" -eq 0 ]
