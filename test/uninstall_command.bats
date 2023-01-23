@@ -31,9 +31,9 @@ teardown() {
 @test "uninstall_command should invoke the plugin bin/uninstall if available" {
   run asdf install dummy 1.1.0
   [ "$status" -eq 0 ]
-  mkdir -p $ASDF_DIR/plugins/dummy/bin
-  echo "echo custom uninstall" >$ASDF_DIR/plugins/dummy/bin/uninstall
-  chmod 755 $ASDF_DIR/plugins/dummy/bin/uninstall
+  mkdir -p "$ASDF_DIR/plugins/dummy/bin"
+  echo "echo custom uninstall" >"$ASDF_DIR/plugins/dummy/bin/uninstall"
+  chmod 755 "$ASDF_DIR/plugins/dummy/bin/uninstall"
   run asdf uninstall dummy 1.1.0
   [ "$output" = "custom uninstall" ]
   [ "$status" -eq 0 ]
@@ -66,9 +66,9 @@ teardown() {
   [ -f "$ASDF_DIR/installs/dummy/1.1.0/bin/dummy" ]
 
   run asdf uninstall dummy 1.0.0
-  run grep "asdf-plugin: dummy 1.1.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 0 ]
-  run grep "asdf-plugin: dummy 1.0.0" $ASDF_DIR/shims/dummy
+  run grep "asdf-plugin: dummy 1.0.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 1 ]
 }
 
@@ -84,7 +84,7 @@ teardown() {
 }
 
 @test "uninstall command executes configured pre hook" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_uninstall_dummy = echo will uninstall dummy $1
 EOM
 
@@ -94,12 +94,12 @@ EOM
 }
 
 @test "uninstall command executes configured post hook" {
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_uninstall_dummy = echo removed dummy $1
 EOM
 
   run asdf install dummy 1.0.0
   run asdf uninstall dummy 1.0.0
-  echo $output
+  echo "$output"
   [ "$output" = "removed dummy 1.0.0" ]
 }

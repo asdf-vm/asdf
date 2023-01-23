@@ -16,7 +16,7 @@ teardown() {
 }
 
 @test "shim_versions_command should list plugins and versions where command is available" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
   run asdf install dummy 3.0
   run asdf install dummy 1.0
   run asdf reshim dummy
