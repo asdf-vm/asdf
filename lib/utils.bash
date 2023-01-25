@@ -16,10 +16,12 @@ fast_basename() {
   REPLY=$dirpath
 }
 
+# in order to make this able to call tr if bash v4 is unavailable,
+# it requires inputting a tr-like string, e.g. tr '[:lower:]' '[:upper:]'
 fast_tr() {
+  unset -v REPLY
   inputArr=("$@")
   inputStr="${inputArr[0]}"
-  local outputStr
   if [ ! ${#inputArr[@]} -eq 3 ] && [ ! ${#inputArr[@]} -eq 5 ]; then
     printf "%s\n" "ERROR: fast_tr expects an array of 3 or 5 elements, got ${#inputArr[@]}"
     return 1
@@ -28,18 +30,17 @@ fast_tr() {
   if [ ${BASH_VERSINFO[0]} -gt 3 ]; then
     case ${inputArr[1]} in
       "[:lower:]")
-        outputStr="${inputStr^^}"
+        REPLY="${inputStr^^}"
         ;;
       "[:upper:]")
-        outputStr="${inputStr,,}"
+        REPLY="${inputStr,,}"
         ;;
       "*")
         printf "%s\n" "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
     esac
     # and then use parameter substitution to replace characters in the string
     # if the 4th or 5th elements are not set, the substitution has no effect
-    outputStr="${outputStr//${inputArr[3]-''}/${inputArr[4]-''}}"
-    printf "%s\n" "${outputStr}"
+    REPLY="${REPLY//${inputArr[3]-''}/${inputArr[4]-''}}"
   else
     # else use tr with the input array elements as args
     printf "%s\n" "${inputStr}" | tr "${inputArr[1]}${inputArr[3]-''}" "${inputArr[2]}${inputArr[4]-''}"
@@ -228,8 +229,9 @@ find_versions() {
   version=$(get_version_from_env "$plugin_name")
   if [ -n "$version" ]; then
     local upcase_name
-    tr_args=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
-    upcase_name=$(fast_tr ${tr_args[@]})
+    local fast_tr_arr=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
+    fast_tr "${fast_tr_arr[@]}"
+    upcase_name="$REPLY"
     local version_env_var="ASDF_${upcase_name}_VERSION"
 
     printf "%s\n" "$version|$version_env_var environment variable"
@@ -276,7 +278,9 @@ display_no_version_set() {
 get_version_from_env() {
   local plugin_name=$1
   local upcase_name
-  upcase_name=$(printf "%s\n" "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
+  local fast_tr_arr=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
+  fast_tr "${fast_tr_arr[@]}"
+  upcase_name="$REPLY"
   local version_env_var="ASDF_${upcase_name}_VERSION"
   local version=${!version_env_var:-}
   printf "%s\n" "$version"
@@ -622,9 +626,7 @@ with_plugin_env() {
   local path exec_paths
   exec_paths="$(list_plugin_exec_paths "$plugin_name" "$full_version")"
 
-  # exec_paths contains a trailing newline which is converted to a colon, so no
-  # colon is needed between the subshell and the PATH variable in this string
-  path="$(tr '\n' ':' <<<"$exec_paths")$PATH"
+  path="${exec_paths}:$PATH"
 
   # If no custom exec-env transform, just execute callback
   if [ ! -f "${plugin_path}/bin/exec-env" ]; then
