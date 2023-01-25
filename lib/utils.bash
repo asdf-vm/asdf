@@ -365,8 +365,9 @@ parse_asdf_version_file() {
 
   if [ -f "$file_path" ]; then
     local version
-    # this is actually only about 5% faster than the original, despite losing a function call and two pipes
+    # this is causing multiple failures in tests/utils.bash, despite seeming to work identically
     version=$(awk -v plugin_name="$plugin_name" '!/^#/ { gsub(/#.*/,"",$0); gsub(/ +$/,"",$0)} $1 == plugin_name {print $NF}' "$file_path")
+    #version=$(strip_tool_version_comments "$file_path" | grep "^${plugin_name} " | sed -e "s/^${plugin_name} //")
     if [ -n "$version" ]; then
       if [[ "$version" == path:* ]]; then
         util_resolve_user_path "${version#path:}"
@@ -663,10 +664,8 @@ plugin_executables() {
 
 is_executable() {
   local executable_path=$1
-  if [[ (-f "$executable_path") && (-x "$executable_path") ]]; then
-    return 0
-  fi
-  return 1
+  [ -x "$executable_path" ]
+  return $?
 }
 
 plugin_shims() {
@@ -710,13 +709,10 @@ strip_tool_version_comments() {
   local tool_version_path="$1"
   # Use sed to strip comments from the tool version file
   # Breakdown of sed command:
-  # This command represents 3 steps, separated by a semi-colon (;), that run on each line.
+  # This command represents 2 steps, separated by a semi-colon (;), that run on each line.
   # 1. Delete line if it starts with any blankspace and a #.
-  # 2. Find a # and delete it and everything after the #.
-  # 3. Remove any whitespace from the end of the line.
+  # 2. Find a # and delete it and everything after the #, and remove trailing whitespace.
   # Finally, the command will print the lines that are not empty.
-  # this is ~2% faster than the original implementation
-  # by combining steps 2 and 3
   sed '/^[[:blank:]]*#/d; s/\s*#.*$//;' "$tool_version_path"
 }
 
@@ -892,7 +888,9 @@ remove_path_from_path() {
   # Output is a new string suitable for assignment to PATH
   local PATH=$1
   local path=$2
-  substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
+  PATH=${PATH//"$path"}
+  PATH=${PATH//"::"/":"}
+  printf "%s" $PATH
 }
 
 # @description Strings that began with a ~ are always paths. In
