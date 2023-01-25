@@ -3,6 +3,12 @@
 update_command() {
   local update_to_head=$1
 
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf update'
+    printf '%s\n' 'usage: asdf update --head'
+    exit 0
+  fi
+
   (
     cd "$(asdf_dir)" || exit 1
 

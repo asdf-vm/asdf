@@ -1,11 +1,17 @@
 # -*- sh -*-
 
 which_command() {
+  local help_text="usage: asdf which <command>"
+  if has_help_flag "$@"; then
+    printf '%s\n' "$help_text"
+    exit 0
+  fi
+
   local shim_name
   shim_name=$(basename "$1")
 
   if [ -z "$shim_name" ]; then
-    printf "usage: asdf which <command>\n"
+    display_error "$help_text"
     exit 1
   fi
 

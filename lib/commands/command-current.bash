@@ -4,6 +4,12 @@
 
 # shellcheck disable=SC2059
 plugin_current_command() {
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf current'
+    printf '%s\n' 'usage: asdf current <name>'
+    exit 0
+  fi
+
   local plugin_name=$1
   local terminal_format=$2
 

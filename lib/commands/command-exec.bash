@@ -1,12 +1,18 @@
 # -*- sh -*-
 
 shim_exec_command() {
+  local help_text="usage: asdf exec <command>"
+  if has_help_flag "$@"; then
+    printf '%s\n' "$help_text"
+    exit 0
+  fi
+
   local shim_name
   shim_name=$(basename "$1")
   local shim_args=("${@:2}")
 
   if [ -z "$shim_name" ]; then
-    printf "usage: asdf exec <command>\n"
+    display_error "$help_text"
     exit 1
   fi
 

@@ -3,6 +3,12 @@
 where_command() {
   local plugin_name=$1
   local full_version=$2
+
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf where <name> [<version>]'
+    exit 0
+  fi
+
   check_if_plugin_exists "$plugin_name"
 
   local version

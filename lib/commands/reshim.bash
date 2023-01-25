@@ -28,6 +28,11 @@ reshim_command() {
   local plugin_name=$1
   local full_version=$2
 
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf reshim <name> <version>'
+    exit 0
+  fi
+
   if [ -z "$plugin_name" ]; then
     local plugins_path
     plugins_path=$(get_plugin_path)

@@ -106,3 +106,9 @@ teardown() {
   [ "$status" -eq 1 ]
   [ "$output" = "No dummy executable found for dummy 1.0" ]
 }
+
+@test "which prints help if --help is passed" {
+  run asdf which --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

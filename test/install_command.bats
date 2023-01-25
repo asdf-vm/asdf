@@ -283,3 +283,9 @@ EOM
   [ ! -d "$ASDF_DIR/installs/dummy-broken/1.1.0" ]
   [ "$output" = "Download failed!" ]
 }
+
+@test "install_command prints help if --help is passed" {
+  run asdf install --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

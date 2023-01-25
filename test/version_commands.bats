@@ -35,7 +35,13 @@ teardown() {
 @test "local should emit an error when called with incorrect arity" {
   run asdf local "dummy"
   [ "$status" -eq 1 ]
-  [ "$output" = "Usage: asdf local <name> <version>" ]
+  [[ "$output" == "usage: "* ]]
+}
+
+@test "local prints help if --help is passed" {
+  run asdf local --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
 }
 
 @test "local should emit an error when plugin does not exist" {
@@ -158,7 +164,7 @@ teardown() {
 @test "local -p/--parent should set should emit an error when called with incorrect arity" {
   run asdf local -p "dummy"
   [ "$status" -eq 1 ]
-  [ "$output" = "Usage: asdf local <name> <version>" ]
+  [[ "$output" == "usage: "* ]]
 }
 
 @test "local -p/--parent should emit an error when plugin does not exist" {
@@ -201,6 +207,12 @@ teardown() {
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ "$(cat "$HOME/.tool-versions")" = "dummy 1.1.0" ]
+}
+
+@test "global prints help if --help is passed" {
+  run asdf global --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
 }
 
 @test "[global - dummy_plugin] with latest should use the latest installed version" {

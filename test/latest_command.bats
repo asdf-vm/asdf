@@ -12,6 +12,12 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "[laetst_command] prints help if --help is passed" {
+  run asdf latest --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}
+
 ####################################################
 ####       plugin with bin/latest-stable        ####
 ####################################################

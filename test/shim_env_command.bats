@@ -81,3 +81,9 @@ teardown() {
   run grep '::' <(echo "$path_line")
   [ "$duplicate_colon" = "" ]
 }
+
+@test "asdf env prints help if --help is passed" {
+  run asdf env --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

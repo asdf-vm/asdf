@@ -860,3 +860,15 @@ util_resolve_user_path() {
     util_resolve_user_path_reply="$path"
   fi
 }
+
+# @description Returns true if any arguments is '-h' or '--help'
+has_help_flag() {
+  local arg=
+  for arg in "$@"; do
+    case $arg in
+    -h | --help) return 0 ;;
+    esac
+  done
+
+  return 1
+}

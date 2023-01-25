@@ -156,3 +156,9 @@ EOM
   run grep -v 'borked_path_due_to_homebrew_update' "$dummy_shim"
   [ "$status" -eq 0 ]
 }
+
+@test "reshim prints help if --help is passed" {
+  run asdf reshim --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

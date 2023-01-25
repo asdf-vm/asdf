@@ -7,6 +7,12 @@ uninstall_command() {
   local plugin_name=$1
   local full_version=$2
   local plugin_path
+
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf uninstall <name> <version>'
+    exit 0
+  fi
+
   plugin_path=$(get_plugin_path "$plugin_name")
 
   check_if_plugin_exists "$plugin_name"

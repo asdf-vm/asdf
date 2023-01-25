@@ -5,8 +5,13 @@ shim_env_command() {
   local env_cmd="${2}"
   local env_args=("${@:3}")
 
+  local help_text="usage: asdf env <command>"
+  if has_help_flag "$@"; then
+    printf '%s\n' "$help_text"
+    exit 0
+  fi
   if [ -z "$shim_name" ]; then
-    printf "usage: asdf env <command>\n"
+    display_error "$help_text"
     exit 1
   fi
 

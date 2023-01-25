@@ -75,3 +75,9 @@ EOF
   [ "$status" -eq 0 ]
   # TODO: Assert asdf help output is printed
 }
+
+@test "help prints help if --help is passed" {
+  run asdf help --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

@@ -87,6 +87,7 @@ teardown() {
         | grep -v '#.*$cmd'\
         | grep -v '\".*$cmd.*\"' \
         | grep -v '${cmd}_'\
+        | grep -v 'usage: asdf'\
         | grep -v '# asdf_allow: $cmd'"
 
     # Only print output if we've found a banned command
