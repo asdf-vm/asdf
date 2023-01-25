@@ -7,7 +7,6 @@ GREP_COLORS=
 
 ASDF_DIR=${ASDF_DIR:-''}
 ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
-BASH_MAJOR_VERSION=${BASH_VERSION%%.*}
 
 fast_basename() {
   # if the path ends in a slash, remove it, then use parameter substitution
@@ -26,13 +25,13 @@ fast_tr() {
     return 1
   fi
   # if bash >= v4, use parameter modification to upper/lower the string
-  if [ ${BASH_MAJOR_VERSION} -gt 3 ]; then
+  if [ ${BASH_VERSINFO[0]} -gt 3 ]; then
     case ${inputArr[1]} in
       "[:lower:]")
-        outputStr="${inputStr@U}"
+        outputStr="${inputStr^^}"
         ;;
       "[:upper:]")
-        outputStr="${inputStr@L}"
+        outputStr="${inputStr,,}"
         ;;
       "*")
         printf "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
