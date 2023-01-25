@@ -10,23 +10,6 @@ env:
   ELVISH_VERSION: v0.18.0
   NUSHELL_VERSION: 0.73.0
 
-# run ubuntu/macos tests if changes in
-#
-# .github/workflows/**
-# bin/**
-# lib/**
-# scripts/**
-# test/**
-# asdf.elv
-# asdf.fish
-# asdf.nu
-# asdf.sh
-
-# run docs tests if changes in
-#
-# .github/workflows/**
-# docs/**
-
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -146,13 +129,6 @@ jobs:
           # fetch all commits to get git log info for Vuepress
           fetch-depth: 0
 
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            docs:
-              - 'docs/**'
-
       # only run steps past here if changes to docs/** directory
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -174,6 +150,6 @@ jobs:
         working-directory: docs/
         run: npm install
 
-      - name: Check errors by biulding VuePress site
+      - name: Check errors by biulding Documentation site
         working-directory: docs/
         run: npm run build
