@@ -9,11 +9,11 @@ ASDF_DIR=${ASDF_DIR:-''}
 ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
 
 fast_basename() {
-  # if the path ends in a slash, remove it, then use parameter substitution
-  # if it doesn't, use parameter substitution on the path as-is
-  dirpath="$1"
-  [[ "$dirpath" == */ ]] && dirpath="${dirpath%/}" && dirpath="${dirpath##*/}" || dirpath="${dirpath##*/}"
-  printf "$dirpath"
+  unset -v REPLY
+  local dirpath="$1"
+  dirpath=${dirpath%/}
+  dirpath=${dirpath##*/}
+  REPLY=$dirpath
 }
 
 fast_tr() {
@@ -34,15 +34,15 @@ fast_tr() {
         outputStr="${inputStr,,}"
         ;;
       "*")
-        printf "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
+        printf "%s\n" "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
     esac
     # and then use parameter substitution to replace characters in the string
     # if the 4th or 5th elements are not set, the substitution has no effect
     outputStr="${outputStr//${inputArr[3]-''}/${inputArr[4]-''}}"
-    printf "${outputStr}"
+    printf "%s\n" "${outputStr}"
   else
     # else use tr with the input array elements as args
-    printf "${inputStr}" | tr "${inputArr[1]}${inputArr[3]-''}" "${inputArr[2]}${inputArr[4]-''}"
+    printf "%s\n" "${inputStr}" | tr "${inputArr[1]}${inputArr[3]-''}" "${inputArr[2]}${inputArr[4]-''}"
   fi
 }
 
@@ -137,7 +137,7 @@ list_installed_versions() {
   if [ -d "$plugin_installs_path" ]; then
     for install in "${plugin_installs_path}"/*/; do
       [[ -e "$install" ]] || break
-      fast_basename "$install"
+      fast_basename "$install" && printf "%s\n" "$REPLY"
     done
   fi
 }
@@ -319,7 +319,8 @@ get_custom_executable_path() {
 
   # custom plugin hook for executable path
   if [ -x "${plugin_path}/bin/exec-path" ]; then
-    cmd=$(fast_basename "$executable_path")
+    fast_basename "$executable_path"
+    local cmd="$REPLY"
     local relative_path
     # shellcheck disable=SC2001
     relative_path=$(printf "%s\n" "$executable_path" | sed -e "s|${install_path}/||")
@@ -339,7 +340,8 @@ get_executable_path() {
 
   if [ "$version" = "system" ]; then
     path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
-    cmd=$(fast_basename "$executable_path")
+    fast_basename "$executable_path"
+    local cmd="$REPLY"
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
     if [ $? -ne 0 ]; then
@@ -673,8 +675,8 @@ plugin_shims() {
 
 shim_plugin_versions() {
   local executable_name
-  # not sure why this needs a basename
-  executable_name=$(fast_basename "$1")
+  fast_basename "$1"
+  executable_name="$REPLY"
   local shim_path
   shim_path="$(asdf_data_dir)/shims/${executable_name}"
   if [ -x "$shim_path" ]; then
@@ -690,7 +692,8 @@ shim_plugin_versions() {
 
 shim_plugins() {
   local executable_name
-  executable_name=$(fast_basename "$1")
+  fast_basename "$1"
+  executable_name="$REPLY"
   local shim_path
   shim_path="$(asdf_data_dir)/shims/${executable_name}"
   if [ -x "$shim_path" ]; then
@@ -794,7 +797,8 @@ select_version() {
 
 with_shim_executable() {
   local shim_name
-  shim_name=$(fast_basename "$1")
+  fast_basename "$1"
+  shim_name="$REPLY"
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
