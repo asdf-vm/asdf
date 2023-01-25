@@ -121,7 +121,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "y"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "2.1.0" ]]
+  [[ "$output" == *'2.1.0'* ]]
 }
 
 @test "with no plugins prints an error" {
