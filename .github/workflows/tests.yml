@@ -11,7 +11,7 @@ env:
   NUSHELL_VERSION: 0.73.0
 
 jobs:
-  changes:
+  detect-changes:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
@@ -46,10 +46,10 @@ jobs:
               - 'asdf.sh'
 
   ubuntu:
-    needs: changes
+    needs: detect-changes
     # only run if
     # - changes to cli
-    if: ${{ needs.changes.outputs.cli == 'true' }}
+    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -92,10 +92,10 @@ jobs:
           GITHUB_API_TOKEN: ${{ github.token }}
 
   macos:
-    needs: changes
+    needs: detect-changes
     # only run if
     # - changes to cli
-    if: ${{ needs.changes.outputs.cli == 'true' }}
+    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -117,11 +117,11 @@ jobs:
           GITHUB_API_TOKEN: ${{ github.token }}
 
   documentation-site:
-    needs: changes
+    needs: detect-changes
     # only run if
     # - changes to documentation
     # - pull_request (workflows/docs.yml deploys on main branch)
-    if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.documentation == 'true' }}
+    if: ${{ github.event_name == 'pull_request' && needs.detect-changes.outputs.documentation == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
