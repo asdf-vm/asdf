@@ -100,6 +100,5 @@ EOM
 
   run asdf install dummy 1.0.0
   run asdf uninstall dummy 1.0.0
-  echo "$output"
   [ "$output" = "removed dummy 1.0.0" ]
 }
