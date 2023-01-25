@@ -443,7 +443,6 @@ EOM
   run asdf install
 
   run asdf exec dummy world hello
-  echo "$output"
   [ "$output" = "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }

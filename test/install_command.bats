@@ -189,7 +189,6 @@ teardown() {
   cd "$PROJECT_DIR"
 
   run asdf install
-  echo "$output"
   [ "$status" -eq 0 ]
 
   [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
@@ -272,7 +271,6 @@ EOM
 @test "install_command keeps the download directory when always_keep_download setting is true" {
   echo 'always_keep_download = yes' >"$HOME/.asdfrc"
   run asdf install dummy 1.1.0
-  echo "$output"
   [ "$status" -eq 0 ]
   [ -d "$ASDF_DIR/downloads/dummy/1.1.0" ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
@@ -280,7 +278,6 @@ EOM
 
 @test "install_command fails when download script exits with non-zero code" {
   run asdf install dummy-broken 1.0.0
-  echo "$output"
   [ "$status" -eq 1 ]
   [ ! -d "$ASDF_DIR/downloads/dummy-broken/1.1.0" ]
   [ ! -d "$ASDF_DIR/installs/dummy-broken/1.1.0" ]

@@ -184,7 +184,6 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  echo "$output"
   [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
 }
 
