@@ -62,6 +62,23 @@ def noTestDoubleEqualsFixer(line: str, m) -> str:
 
     return f'{prestr}={poststr}'
 
+# Before: function fn() { ...
+# After: fn() { ...
+# ---
+# Before: function fn { ...
+# After fn() { ...
+def noFunctionKeywordFixer(line: str, m) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    midstr = midstr.strip()
+    midstr = midstr[len('function'):]
+    midstr = midstr.strip()
+
+    parenIdx = midstr.find('(')
+    if parenIdx != -1: midstr = midstr[:parenIdx]
+
+    return f'{prestr}{midstr}() {poststr}'
+
 def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
@@ -137,6 +154,20 @@ def main():
                 '[[ a = b ]] || [[ a == b ]]',
                 '[[ "${lines[0]}" == \'usage: \'* ]]',
                 '[ "${lines[0]}" = blah ]',
+            ],
+            'found': 0
+        },
+        {
+            'name': 'no-function-keyword',
+            'regex': '^[ \\t]*(?P<match>function .*?(?:\\([ \\t]*\\))?[ \\t]*){',
+            'reason': 'Only allow functions declared like `fn_name() { :; }` for consistency',
+            'fixerFn': noFunctionKeywordFixer,
+            'testPositiveMatches': [
+                'function fn() { :; }',
+                'function fn { :; }',
+            ],
+            'testNegativeMatches': [
+                'fn() { :; }',
             ],
             'found': 0
         },
