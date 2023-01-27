@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2016
 
 load test_helpers
 
@@ -23,7 +24,7 @@ teardown() {
   run asdf help
   [ "$status" -eq 0 ]
   echo "$output" | grep "PLUGIN dummy" # should present plugin section
-  listed_cmds=$(echo "$output" | grep "asdf dummy" | wc -l)
+  listed_cmds=$(echo "$output" | grep -c "asdf dummy")
   [ "$listed_cmds" -eq 3 ]
   echo "$output" | grep "asdf dummy foo bar" # should present commands without hyphens
 }
@@ -43,7 +44,6 @@ teardown() {
   run asdf help
   [ "$status" -eq 0 ]
   [[ "$output" == *"PLUGIN $plugin_name"* ]]
-  # shellcheck disable=SC2154
   listed_cmds=$(grep -c "asdf $plugin_name" <<<"${output}")
   [[ $listed_cmds -eq 3 ]]
   [[ "$output" == *"asdf $plugin_name foo"* ]]

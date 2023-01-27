@@ -22,7 +22,5 @@ shellcheck --shell bash --external-sources \
   test/fixtures/dummy_legacy_plugin/bin/* \
   test/fixtures/dummy_plugin/bin/*
 
-# check .bats files
-# TODO(jthegedus): unlock this check later
-# TODO  shellcheck --shell bats --external-sources \
-# TODO  test/*.bats
+shellcheck --shell bats --external-source \
+  test/*.bats

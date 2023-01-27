@@ -1,4 +1,4 @@
-name: Tests
+name: Test
 
 on:
   push:
@@ -11,7 +11,45 @@ env:
   NUSHELL_VERSION: 0.73.0
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      documentation: ${{ steps.filter.outputs.documentation }}
+      cli: ${{ steps.filter.outputs.cli }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            documentation:
+              - '.github/workflows/**'
+              - 'docs/**'
+              - '.tool-versions'
+            cli:
+              - '.github/workflows/**'
+              - 'bin/**'
+              - 'lib/**'
+              - 'scripts/**'
+              - 'test/**'
+              - '.tool-versions'
+              - 'asdf.elv'
+              - 'asdf.fish'
+              - 'asdf.nu'
+              - 'asdf.sh'
+
   ubuntu:
+    needs: detect-changes
+    # only run if
+    # - changes to cli
+    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -52,8 +90,12 @@ jobs:
         run: bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
-          
+
   macos:
+    needs: detect-changes
+    # only run if
+    # - changes to cli
+    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: macos-latest
     steps:
       - name: Checkout code
@@ -73,3 +115,41 @@ jobs:
         run: bats test
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
+
+  documentation-site:
+    needs: detect-changes
+    # only run if
+    # - changes to documentation
+    # - pull_request (workflows/docs.yml deploys on main branch)
+    if: ${{ github.event_name == 'pull_request' && needs.detect-changes.outputs.documentation == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # fetch all commits to get git log info for Vuepress
+          fetch-depth: 0
+
+      # only run steps past here if changes to docs/** directory
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: |
+            docs/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('docs/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        working-directory: docs/
+        run: npm install
+
+      - name: Check errors by biulding Documentation site
+        working-directory: docs/
+        run: npm run build

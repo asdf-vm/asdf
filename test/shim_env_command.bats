@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2164
 
 load test_helpers
 
@@ -57,7 +58,7 @@ teardown() {
   run asdf env dummy
   [ "$status" -eq 0 ]
 
-  run grep 'FOO=bar' <(echo "$output")
+  run grep 'FOO=bar' <<<"$output"
   [ "$output" = "" ]
   [ "$status" -eq 1 ]
 
@@ -78,6 +79,6 @@ teardown() {
   [ "$path_line" != "" ]
 
   # Should not contain duplicate colon
-  run grep '::' <(echo "$path_line")
-  [ "$duplicate_colon" = "" ]
+  run grep -q '::' <<<"$path_line"
+  [ "$status" -ne 0 ]
 }
