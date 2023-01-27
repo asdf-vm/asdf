@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+bats_require_minimum_version 1.7.0
+
 # shellcheck source=lib/utils.bash
 . "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
 
