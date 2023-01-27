@@ -23,4 +23,4 @@ shellcheck --shell bash --external-sources \
   test/fixtures/dummy_plugin/bin/*
 
 shellcheck --shell bats --external-source \
-  --severity warning test/*.bats
+  test/*.bats

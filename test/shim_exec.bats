@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# shellcheck disable=SC2164
+# shellcheck disable=SC2016,SC2164
 
 load test_helpers
 
@@ -39,11 +39,11 @@ teardown() {
   run asdf install
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-  run env PATH=$path which dummy
+  run env PATH="$path" which dummy
   [ "$output" = "" ]
   [ "$status" -eq 1 ]
 
-  run env PATH=$path asdf exec dummy world hello
+  run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
@@ -394,7 +394,6 @@ teardown() {
   run asdf install dummy 1.0
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
-
   echo 'echo $3 # always same path' >"$exec_path"
   chmod +x "$exec_path"
 
