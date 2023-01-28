@@ -123,7 +123,7 @@ def main():
         {
             'name': 'no-test-double-equals',
             'regex': '(?<!\\[)\\[ (?:[^]]|](?=}))*?(?P<match>==).*?]',
-            'reason': 'Although it is valid Bash, it reduces consistency and copy-paste-ability',
+            'reason': 'Disallow double equals in places where they are not necessary for consistency',
             'fixerFn': noTestDoubleEqualsFixer,
             'testPositiveMatches': [
                 '[ a == b ]',
