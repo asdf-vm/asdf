@@ -87,7 +87,7 @@ jobs:
           echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests
-        run: bats test
+        run: scripts/test.bash
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
@@ -112,7 +112,7 @@ jobs:
           echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
 
       - name: Run tests
-        run: bats test
+        run: scripts/test.bash
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
