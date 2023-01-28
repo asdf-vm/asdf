@@ -17,6 +17,11 @@ from typing import List, Dict, Any # compat
 #
 # Lint a particular file
 # $ ./scripts/checkstyle.py ./lib/functions/installs.bash
+#
+# Check to ensure all regexes are working as intended
+# $ ./scripts/checkstyle.py --internal-test-regex
+
+Rule = Dict[str, Any]
 
 class c:
     RED = '\033[91m'
@@ -50,12 +55,14 @@ def noPwdCaptureFixer(line: str, m) -> str:
 
     return f'{prestr}$PWD{poststr}'
 
+# Before: [ a == b ]
+# After: [ a = b ]
 def noTestDoubleEqualsFixer(line: str, m) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     return f'{prestr}={poststr}'
 
-def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any]):
+def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
     for line_i, line in enumerate(content_arr):
@@ -84,7 +91,7 @@ def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any
         filepath.write_text('\n'.join(content_arr))
 
 def main():
-    rules = [
+    rules: List[Rule] = [
         {
             'name': 'no-double-backslash',
             'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
@@ -115,21 +122,24 @@ def main():
         },
         {
             'name': 'no-test-double-equals',
-            'regex': '(?<!\\[)\\[[^[]*?(?P<match>==).*?\\]',
-            'reason': 'Although it is valid Bash, it reduces consistency and copy-paste-ability',
+            'regex': '(?<!\\[)\\[ (?:[^]]|](?=}))*?(?P<match>==).*?]',
+            'reason': 'Disallow double equals in places where they are not necessary for consistency',
             'fixerFn': noTestDoubleEqualsFixer,
             'testPositiveMatches': [
                 '[ a == b ]',
+                '[ "${lines[0]}" == blah ]',
             ],
             'testNegativeMatches': [
                 '[ a = b ]',
                 '[[ a = b ]]',
                 '[[ a == b ]]',
                 '[ a = b ] || [[ a == b ]]',
-                '[[ a = b ]] || [[ a == b ]]'
+                '[[ a = b ]] || [[ a == b ]]',
+                '[[ "${lines[0]}" == \'usage: \'* ]]',
+                '[ "${lines[0]}" = blah ]',
             ],
             'found': 0
-        }
+        },
     ]
 
     parser = argparse.ArgumentParser()
