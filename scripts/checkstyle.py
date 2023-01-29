@@ -3,7 +3,7 @@ import re
 import os
 import argparse
 from pathlib import Path
-from typing import List, Dict, Any # compat
+from typing import Callable, List, Dict, Any # compat
 
 # This file checks Bash and Shell scripts for violations not found with
 # shellcheck or existing methods. You can use it in several ways:
@@ -33,6 +33,7 @@ class c:
     RESET = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    LINK: Callable[[str, str], str] = lambda href, text: f'\033]8;;{href}\a{text}\033]8;;\a'
 
 def utilGetStrs(line, m):
     return (
@@ -160,7 +161,7 @@ def main():
         {
             'name': 'no-function-keyword',
             'regex': '^[ \\t]*(?P<match>function .*?(?:\\([ \\t]*\\))?[ \\t]*){',
-            'reason': 'Only allow functions declared like `fn_name() { :; }` for consistency',
+            'reason': 'Only allow functions declared like `fn_name() {{ :; }}` for consistency (see ' + c.LINK('https://www.shellcheck.net/wiki/SC2113', 'ShellCheck SC2113') + ')',
             'fixerFn': noFunctionKeywordFixer,
             'testPositiveMatches': [
                 'function fn() { :; }',
