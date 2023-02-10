@@ -115,12 +115,12 @@ asdf local <name> system
 ```shell:no-line-numbers
 asdf current
 # asdf current
-# erlang 17.3 (set by /Users/kim/.tool-versions)
-# nodejs 6.11.5 (set by /Users/kim/cool-node-project/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
+# nodejs          6.11.5        /Users/kim/cool-node-project/.tool-versions
 
 asdf current <name>
 # asdf current erlang
-# 17.3 (set by /Users/kim/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
 ```
 
 ## Uninstall Version
@@ -147,7 +147,7 @@ Because this system uses `exec` calls, any scripts in the package that are meant
 source $(asdf which ${PLUGIN})/../script.sh
 
 # returns path to the package installation directory
-source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
+source $(asdf where ${PLUGIN})/bin/script.sh
 ```
 
 ### By-passing asdf shims

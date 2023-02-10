@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,SC2031
 
 load test_helpers
 
@@ -64,8 +65,8 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified adds a plugin when short name repository is enabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
-  echo "disable_plugin_short_name_repository=no" >$ASDF_CONFIG_DEFAULT_FILE
+  export ASDF_CONFIG_DEFAULT_FILE="$HOME/.asdfrc"
+  echo "disable_plugin_short_name_repository=no" >"$ASDF_CONFIG_DEFAULT_FILE"
 
   run asdf plugin add "elixir"
   [ "$status" -eq 0 ]
@@ -76,8 +77,8 @@ teardown() {
 }
 
 @test "plugin_add command with no URL specified fails to add a plugin when disabled" {
-  export ASDF_CONFIG_DEFAULT_FILE=$HOME/.asdfrc
-  echo "disable_plugin_short_name_repository=yes" >$ASDF_CONFIG_DEFAULT_FILE
+  export ASDF_CONFIG_DEFAULT_FILE="$HOME/.asdfrc"
+  echo "disable_plugin_short_name_repository=yes" >"$ASDF_CONFIG_DEFAULT_FILE"
   local expected="Short-name plugin repository is disabled"
 
   run asdf plugin add "elixir"
@@ -121,7 +122,7 @@ teardown() {
 @test "plugin_add command executes configured pre hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -135,7 +136,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured pre hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_plugin_add_dummy = echo ADD
 EOM
 
@@ -149,7 +150,7 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 @test "plugin_add command executes configured post hook (generic)" {
   install_mock_plugin_repo "dummy"
 
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_plugin_add = echo ADD ${@}
 EOM
 
@@ -163,7 +164,7 @@ ADD dummy"
 @test "plugin_add command executes configured post hook (specific)" {
   install_mock_plugin_repo "dummy"
 
-  cat >$HOME/.asdfrc <<-'EOM'
+  cat >"$HOME/.asdfrc" <<-'EOM'
 post_asdf_plugin_add_dummy = echo ADD
 EOM
 

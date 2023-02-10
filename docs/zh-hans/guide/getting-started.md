@@ -11,35 +11,43 @@
 
 ## 1. 安装依赖
 
-**Linux**：
+asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
 
-::: tip 注意
-根据你的系统配置可能会需要 `sudo` 权限。
+| OS    | Package Manager | Command                            |
+| ----- | --------------- | ---------------------------------- |
+| linux | Aptitude        | `apt install curl git`             |
+| linux | DNF             | `dnf install curl git`             |
+| linux | Pacman          | `pacman -S curl git`               |
+| linux | Zypper          | `zypper install curl git`          |
+| macOS | Homebrew        | `brew install coreutils curl git`  |
+| macOS | Spack           | `spack install coreutils curl git` |
+
+::: tip Note
+
+`sudo` may be required depending on your system configuration.
+
 :::
-
-| 包管理器 | 命令                      |
-| -------- | ------------------------- |
-| Aptitude | `apt install curl git`    |
-| DNF      | `dnf install curl git`    |
-| Pacman   | `pacman -S curl git`      |
-| Zypper   | `zypper install curl git` |
-
-**macOS**：
-
-| 包管理器 | 命令                                |
-| -------- | ----------------------------------- |
-| Homebrew | Homebrew 将会自动安装所需要的依赖。 |
-| Spack    | `spack install coreutils curl git`  |
 
 ## 2. 下载 asdf
 
-尽管还有其他特定于平台的方法，我们建议使用 Git：
+### Official Download
 
-| 方法     | 命令                                                                                                                                                             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                          |
-| Homebrew | `brew install asdf`                                                                                                                                              |
-| Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` 或者使用你更习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
+<!-- x-release-please-start-version -->
+
+```shell:no-line-numbers
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
+```
+
+<!-- x-release-please-end -->
+
+### Community Supported Download Methods
+
+We highly recommend using the official `git` method.
+
+| Method   | Command                                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homebrew | `brew install asdf`                                                                                                                                                 |
+| Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
 ## 3. 安装 asdf
 
@@ -50,13 +58,13 @@
 在 `~/.bashrc` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 补全功能必须在 `.bashrc` 文件中加入以下内容来配置完成：
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -68,13 +76,13 @@
 在 `~/.bash_profile` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 补全功能必须在 `.bash_profile` 文件中使用以下内容手动配置完成：
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -84,13 +92,13 @@
 使用以下命令将 `asdf.sh` 加入到 `~/.bashrc` 文件中：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bashrc
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
 :::
@@ -102,13 +110,13 @@ echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bashrc
 使用以下命令将 `asdf.sh` 加入到 `~/.bash_profile` 文件中：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
 :::
@@ -148,7 +156,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
-Fish shell 的补全功能可以交给 [ Homebrew 处理](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). 很友好！
+Fish shell 的补全功能可以交给 [Homebrew 处理](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). 很友好！
 :::
 
 ::: details Fish & Pacman
@@ -209,7 +217,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 在 `~/.zshrc` 文件中加入以下内容：
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 **或者** 使用 ZSH 框架插件，比如 [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) 将会使脚本生效并安装补全功能。

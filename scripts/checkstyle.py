@@ -3,7 +3,7 @@ import re
 import os
 import argparse
 from pathlib import Path
-from typing import List, Dict, Any # compat
+from typing import Callable, List, Dict, Any # compat
 
 # This file checks Bash and Shell scripts for violations not found with
 # shellcheck or existing methods. You can use it in several ways:
@@ -17,6 +17,11 @@ from typing import List, Dict, Any # compat
 #
 # Lint a particular file
 # $ ./scripts/checkstyle.py ./lib/functions/installs.bash
+#
+# Check to ensure all regexes are working as intended
+# $ ./scripts/checkstyle.py --internal-test-regex
+
+Rule = Dict[str, Any]
 
 class c:
     RED = '\033[91m'
@@ -28,6 +33,7 @@ class c:
     RESET = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    LINK: Callable[[str, str], str] = lambda href, text: f'\033]8;;{href}\a{text}\033]8;;\a'
 
 def utilGetStrs(line, m):
     return (
@@ -50,12 +56,31 @@ def noPwdCaptureFixer(line: str, m) -> str:
 
     return f'{prestr}$PWD{poststr}'
 
+# Before: [ a == b ]
+# After: [ a = b ]
 def noTestDoubleEqualsFixer(line: str, m) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     return f'{prestr}={poststr}'
 
-def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any]):
+# Before: function fn() { ...
+# After: fn() { ...
+# ---
+# Before: function fn { ...
+# After fn() { ...
+def noFunctionKeywordFixer(line: str, m) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    midstr = midstr.strip()
+    midstr = midstr[len('function'):]
+    midstr = midstr.strip()
+
+    parenIdx = midstr.find('(')
+    if parenIdx != -1: midstr = midstr[:parenIdx]
+
+    return f'{prestr}{midstr}() {poststr}'
+
+def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
     for line_i, line in enumerate(content_arr):
@@ -84,7 +109,7 @@ def lintfile(filepath: Path, rules: List[Dict[str, str]], options: Dict[str, Any
         filepath.write_text('\n'.join(content_arr))
 
 def main():
-    rules = [
+    rules: List[Rule] = [
         {
             'name': 'no-double-backslash',
             'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
@@ -115,21 +140,38 @@ def main():
         },
         {
             'name': 'no-test-double-equals',
-            'regex': '(?<!\\[)\\[[^[]*?(?P<match>==).*?\\]',
-            'reason': 'Although it is valid Bash, it reduces consistency and copy-paste-ability',
+            'regex': '(?<!\\[)\\[ (?:[^]]|](?=}))*?(?P<match>==).*?]',
+            'reason': 'Disallow double equals in places where they are not necessary for consistency',
             'fixerFn': noTestDoubleEqualsFixer,
             'testPositiveMatches': [
                 '[ a == b ]',
+                '[ "${lines[0]}" == blah ]',
             ],
             'testNegativeMatches': [
                 '[ a = b ]',
                 '[[ a = b ]]',
                 '[[ a == b ]]',
                 '[ a = b ] || [[ a == b ]]',
-                '[[ a = b ]] || [[ a == b ]]'
+                '[[ a = b ]] || [[ a == b ]]',
+                '[[ "${lines[0]}" == \'usage: \'* ]]',
+                '[ "${lines[0]}" = blah ]',
             ],
             'found': 0
-        }
+        },
+        {
+            'name': 'no-function-keyword',
+            'regex': '^[ \\t]*(?P<match>function .*?(?:\\([ \\t]*\\))?[ \\t]*){',
+            'reason': 'Only allow functions declared like `fn_name() {{ :; }}` for consistency (see ' + c.LINK('https://www.shellcheck.net/wiki/SC2113', 'ShellCheck SC2113') + ')',
+            'fixerFn': noFunctionKeywordFixer,
+            'testPositiveMatches': [
+                'function fn() { :; }',
+                'function fn { :; }',
+            ],
+            'testNegativeMatches': [
+                'fn() { :; }',
+            ],
+            'found': 0
+        },
     ]
 
     parser = argparse.ArgumentParser()

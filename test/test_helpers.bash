@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# Unset ASDF_DIR because it may already be set by the users shell, and some
-# tests fail when it is set to something other than the temp dir.
-unset ASDF_DIR
+bats_require_minimum_version 1.7.0
 
 # shellcheck source=lib/utils.bash
 . "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
