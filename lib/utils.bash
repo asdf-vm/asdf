@@ -27,16 +27,17 @@ fast_tr() {
     return 1
   fi
   # if bash >= v4, use parameter modification to upper/lower the string
-  if [ ${BASH_VERSINFO[0]} -gt 3 ]; then
+  if [ "${BASH_VERSINFO[0]}" -gt 3 ]; then
     case ${inputArr[1]} in
-      "[:lower:]")
-        REPLY="${inputStr^^}"
-        ;;
-      "[:upper:]")
-        REPLY="${inputStr,,}"
-        ;;
-      "*")
-        printf "%s\n" "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
+    "[:lower:]")
+      REPLY="${inputStr^^}"
+      ;;
+    "[:upper:]")
+      REPLY="${inputStr,,}"
+      ;;
+    "*")
+      printf "%s\n" "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
+      ;;
     esac
     # and then use parameter substitution to replace characters in the string
     # if the 4th or 5th elements are not set, the substitution has no effect
@@ -365,9 +366,7 @@ parse_asdf_version_file() {
 
   if [ -f "$file_path" ]; then
     local version
-    # this is causing multiple failures in tests/utils.bash, despite seeming to work identically
-    version=$(awk -v plugin_name="$plugin_name" '!/^#/ { gsub(/#.*/,"",$0); gsub(/ +$/,"",$0)} $1 == plugin_name {print $NF}' "$file_path")
-    #version=$(strip_tool_version_comments "$file_path" | grep "^${plugin_name} " | sed -e "s/^${plugin_name} //")
+    version=$(awk -v plugin_name="$plugin_name" '!/^#/ { gsub(/#.*/,"",$0); gsub(/ +$/,"",$0) } $1 == plugin_name {$1=""; gsub(/^ +/,"",$0); print $0}' "$file_path")
     if [ -n "$version" ]; then
       if [[ "$version" == path:* ]]; then
         util_resolve_user_path "${version#path:}"
@@ -888,9 +887,9 @@ remove_path_from_path() {
   # Output is a new string suitable for assignment to PATH
   local PATH=$1
   local path=$2
-  PATH=${PATH//"$path"}
+  PATH=${PATH//"$path"/}
   PATH=${PATH//"::"/":"}
-  printf "%s" $PATH
+  printf "%s" "$PATH"
 }
 
 # @description Strings that began with a ~ are always paths. In
