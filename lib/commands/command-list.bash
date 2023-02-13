@@ -41,6 +41,15 @@ display_installed_versions() {
     fi
   fi
 
+  # Add each system version checker and default system version if it exists
+  system_version=$(echo_system_version "$plugin_name")
+  if [[ $system_version ]]; then
+    # If show system version detilas then use $system_version.
+    versions="$(printf "%s\n" "system") $versions"
+  elif [ -f "/usr/bin/${plugin_name}" ]; then
+    versions="$(printf "%s\n" "system") $versions"
+  fi
+
   if [ -n "${versions}" ]; then
     current_version=$(cut -d '|' -f 1 <<<"$(find_versions "$plugin_name" "$PWD")")
 
@@ -53,6 +62,17 @@ display_installed_versions() {
     done
   else
     display_error '  No versions installed'
+  fi
+}
+
+echo_system_version() {
+  local plugin_name=$1
+
+  local plugins_path
+  plugin_path=$(get_plugin_path "$plugin_name")
+
+  if [ -f "${plugin_path}/bin/echo-system-version" ]; then
+    echo $("${plugin_path}/bin/echo-system-version")
   fi
 }
 
