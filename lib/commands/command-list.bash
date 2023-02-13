@@ -41,7 +41,7 @@ display_installed_versions() {
     fi
   fi
 
-  # Add each system version checker and default system version if it exists
+  # Add each system version checker and default system version if it exists.
   system_version=$(echo_system_version "$plugin_name")
   if [[ $system_version ]]; then
     # If show system version detilas then use $system_version.
