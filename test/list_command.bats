@@ -109,3 +109,21 @@ teardown() {
   run asdf list-all dummy
   [[ "$output" != *"ignore this error"* ]]
 }
+
+@test "list_command display system version and selected that with the already installed system version in the local machine" {
+  echo 'dummy system' >>"$PROJECT_DIR/.tool-versions"
+  run asdf install dummy 1.0.0
+
+  cd "$PROJECT_DIR"
+  mkdir "$PROJECT_DIR/sys"
+  touch "$PROJECT_DIR/sys/dummy"
+  chmod +x "$PROJECT_DIR/sys/dummy"
+
+  run env "PATH=$PATH:$PROJECT_DIR/sys" asdf which "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" == "$PROJECT_DIR/sys/dummy" ]
+
+  run asdf list dummy
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"$(echo -e " *system\n  1.0.0")"* ]]
+}

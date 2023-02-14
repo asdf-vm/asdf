@@ -1,5 +1,5 @@
 # -*- sh -*-
-# shellcheck source=lib/functions/system_version.bash
+# shellcheck source=lib/functions/system-version.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/system-version.bash"
 
 list_command() {
@@ -48,7 +48,7 @@ display_installed_versions() {
   if [[ $system_version ]]; then
     # If show system version detilas then use $system_version.
     versions="$(printf "%s\n" "system") $versions"
-  elif [ -f "/usr/bin/${plugin_name}" ]; then
+  elif [[ $(default_system_version_command "$plugin_name") ]]; then
     versions="$(printf "%s\n" "system") $versions"
   fi
 
