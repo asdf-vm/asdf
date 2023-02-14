@@ -59,7 +59,6 @@ display_installed_versions() {
       flag="  "
       if [[ "$version" == "$current_version" ]]; then
         flag=" *"
-        has_flag=1
       fi
       printf "%s%s\n" "$flag" "$version"
     done
