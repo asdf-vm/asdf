@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/system_version.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/system-version.bash"
 
 list_command() {
   local plugin_name=$1
@@ -42,7 +44,7 @@ display_installed_versions() {
   fi
 
   # Add each system version checker and default system version if it exists.
-  system_version=$(echo_system_version "$plugin_name")
+  system_version=$(system_version_command "$plugin_name")
   if [[ $system_version ]]; then
     # If show system version detilas then use $system_version.
     versions="$(printf "%s\n" "system") $versions"
@@ -62,17 +64,6 @@ display_installed_versions() {
     done
   else
     display_error '  No versions installed'
-  fi
-}
-
-echo_system_version() {
-  local plugin_name=$1
-
-  local plugins_path
-  plugin_path=$(get_plugin_path "$plugin_name")
-
-  if [ -f "${plugin_path}/bin/echo-system-version" ]; then
-    echo $("${plugin_path}/bin/echo-system-version")
   fi
 }
 
