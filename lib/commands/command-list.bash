@@ -45,10 +45,10 @@ display_installed_versions() {
 
   # Add each system version checker and default system version if it exists.
   system_version=$(system_version_command "$plugin_name")
-  if [[ $system_version ]]; then
+  if [[ -n $system_version ]]; then
     # If show system version detilas then use $system_version.
     versions="$(printf "%s\n" "system") $versions"
-  elif [[ $(default_system_version_command "$plugin_name") ]]; then
+  elif [[ $(default_system_version_command "$plugin_name" "$query") ]]; then
     versions="$(printf "%s\n" "system") $versions"
   fi
 
@@ -59,6 +59,7 @@ display_installed_versions() {
       flag="  "
       if [[ "$version" == "$current_version" ]]; then
         flag=" *"
+        has_flag=1
       fi
       printf "%s%s\n" "$flag" "$version"
     done

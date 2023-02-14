@@ -9,9 +9,9 @@ system_version_command() {
 
 default_system_version_command() {
   local plugin_name=$1
+  local query=$2
 
-  version_and_path=$(find_versions "$plugin_name" "$PWD")
-  if [[ "$version_and_path" == *"system"* ]]; then
+  if [ -f "/usr/bin/${plugin_name}${query}" ]; then
     printf "%s\n" "system"
   fi
 }
