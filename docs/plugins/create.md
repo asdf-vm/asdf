@@ -168,6 +168,11 @@ See also the related hooks:
 - `post_asdf_plugin_remove`
 - `post_asdf_plugin_remove_${plugin_name}`
 
+#### bin/system-version
+
+This can be got the version of the tool installed on the system by asdf.
+If the system-version file isn't implemented, asdf will only find the file with the plugin name in the '/usr/bin/' folder.
+
 ## Extension commands for asdf CLI.
 
 It's possible for plugins to define new asdf commands by providing `lib/commands/command*.bash` scripts or executables that
