@@ -15,7 +15,7 @@ list_command() {
         display_installed_versions "$plugin_name" "$query"
       done
     else
-      printf "%s\n" 'No plugins installed'
+      display "%s\n" 'No plugins installed'
     fi
   else
     check_if_plugin_exists "$plugin_name"

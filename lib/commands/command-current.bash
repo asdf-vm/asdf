@@ -30,15 +30,15 @@ plugin_current_command() {
 
   if [ -n "$version_not_installed" ]; then
     description="Not installed. Run \"asdf install $plugin $version\""
-    printf "$terminal_format" "$plugin" "$version" "$description" 1>&2
+    display "$terminal_format" "$plugin" "$version" "$description" 1>&2
     return 1
   elif [ -z "$full_version" ]; then
     description="No version is set. Run \"asdf <global|shell|local> $plugin <version>\""
-    printf "$terminal_format" "$plugin" "______" "$description" 1>&2
+    display "$terminal_format" "$plugin" "______" "$description" 1>&2
     return 126
   else
     description="$version_file_path"
-    printf "$terminal_format" "$plugin" "$full_version" "$description"
+    display "$terminal_format" "$plugin" "$full_version" "$description"
   fi
 }
 
@@ -75,8 +75,8 @@ check_for_deprecated_plugin() {
   local new_script="${plugin_path}/bin/list-legacy-filenames"
 
   if [ "$legacy_config" = "yes" ] && [ -f "$deprecated_script" ] && [ ! -f "$new_script" ]; then
-    printf "Heads up! It looks like your %s plugin is out of date. You can update it with:\n\n" "$plugin_name"
-    printf "  asdf plugin-update %s\n\n" "$plugin_name"
+    display "Heads up! It looks like your %s plugin is out of date. You can update it with:\n\n" "$plugin_name"
+    display "  asdf plugin-update %s\n\n" "$plugin_name"
   fi
 }
 

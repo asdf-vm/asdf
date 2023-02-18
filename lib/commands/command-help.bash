@@ -78,11 +78,11 @@ help_command() {
           (print_plugin_help "$plugin_path")
         fi
       else
-        printf "No documentation for plugin %s\n" "$plugin_name" >&2
+        display "No documentation for plugin %s\n" "$plugin_name" >&2
         exit 1
       fi
     else
-      printf "No plugin named %s\n" "$plugin_name" >&2
+      display "No plugin named %s\n" "$plugin_name" >&2
       exit 1
     fi
   else

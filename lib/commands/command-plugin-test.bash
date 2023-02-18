@@ -92,20 +92,21 @@ plugin_test_command() {
     local list_all="$plugin_path/bin/list-all"
     if grep api.github.com "$list_all" >/dev/null; then
       if ! grep Authorization "$list_all" >/dev/null; then
-        printf "\nLooks like %s/bin/list-all relies on GitHub releases\n" "$plugin_name"
-        printf "but it does not properly sets an Authorization header to prevent\n"
-        printf "GitHub API rate limiting.\n\n"
-        printf "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting\n"
+        printf '\n'
+        display "Looks like %s/bin/list-all relies on GitHub releases\n" "$plugin_name"
+        display "but it does not properly sets an Authorization header to prevent\n"
+        display "GitHub API rate limiting.\n\n"
+        display "See https://github.com/asdf-vm/asdf/blob/master/docs/creating-plugins.md#github-api-rate-limiting\n"
 
         fail_test "$plugin_name/bin/list-all does not set GitHub Authorization token"
       fi
 
       # test for most common token names we have on plugins. If both are empty show this warning
       if [ -z "$OAUTH_TOKEN" ] && [ -z "$GITHUB_API_TOKEN" ]; then
-        printf "%s/bin/list-all is using GitHub API, just be sure you provide an API Authorization token\n" "$plugin_name"
-        printf "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:\n\n"
+        display "%s/bin/list-all is using GitHub API, just be sure you provide an API Authorization token\n" "$plugin_name"
+        display "via your CI env GITHUB_API_TOKEN. This is the current rate_limit:\n\n"
         curl -s https://api.github.com/rate_limit
-        printf "\n"
+        display "\n"
       fi
     fi
 

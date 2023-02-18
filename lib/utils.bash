@@ -137,7 +137,7 @@ version_not_installed_text() {
   local plugin_name=$1
   local version=$2
 
-  printf "version %s is not installed for %s\n" "$version" "$plugin_name"
+  display "version %s is not installed for %s\n" "$version" "$plugin_name"
 }
 
 get_plugin_path() {
@@ -150,6 +150,13 @@ get_plugin_path() {
 
 display_error() {
   printf "%s\n" "$1" >&2
+}
+
+display() {
+  printf 'asdf: '
+
+  # shellcheck disable=SC2059
+  printf "$@"
 }
 
 get_version_in_dir() {
@@ -231,7 +238,7 @@ find_versions() {
 
 display_no_version_set() {
   local plugin_name=$1
-  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\n" "$plugin_name" "$plugin_name"
+  display "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\n" "$plugin_name" "$plugin_name"
 }
 
 get_version_from_env() {
@@ -423,7 +430,7 @@ initialize_or_update_repository() {
 
   disable_plugin_short_name_repo="$(get_asdf_config_value "disable_plugin_short_name_repository")"
   if [ "yes" = "$disable_plugin_short_name_repo" ]; then
-    printf "Short-name plugin repository is disabled\n" >&2
+    display "Short-name plugin repository is disabled\n" >&2
     exit 1
   fi
 
@@ -431,10 +438,10 @@ initialize_or_update_repository() {
   repository_path=$(asdf_data_dir)/repository
 
   if [ ! -d "$repository_path" ]; then
-    printf "initializing plugin repository..."
+    display "initializing plugin repository..."
     git clone "$repository_url" "$repository_path"
   elif repository_needs_update; then
-    printf "updating plugin repository..."
+    display "updating plugin repository..."
     (cd "$repository_path" && git fetch && git reset --hard origin/master)
   fi
 
@@ -640,7 +647,7 @@ shim_plugin_versions() {
   if [ -x "$shim_path" ]; then
     grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
   else
-    printf "asdf: unknown shim %s\n" "$executable_name"
+    display "unknown shim %s\n" "$executable_name"
     return 1
   fi
 }
@@ -653,7 +660,7 @@ shim_plugins() {
   if [ -x "$shim_path" ]; then
     grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | cut -d' ' -f 1 | uniq
   else
-    printf "asdf: unknown shim %s\n" "$executable_name"
+    display "unknown shim %s\n" "$executable_name"
     return 1
   fi
 }
@@ -814,15 +821,16 @@ with_shim_executable() {
     done
 
     if [ -n "${preset_plugin_versions[*]}" ]; then
-      printf "%s %s\n" "No preset version installed for command" "$shim_name"
-      printf "%s\n\n" "Please install a version by running one of the following:"
+      display "%s %s\n" "No preset version installed for command" "$shim_name"
+      display "%s\n\n" "Please install a version by running one of the following:"
       for preset_plugin_version in "${preset_plugin_versions[@]}"; do
-        printf "%s %s\n" "asdf install" "$preset_plugin_version"
+        display "%s %s\n" "asdf install" "$preset_plugin_version"
       done
-      printf "\n%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
+      printf '\n'
+      display "%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
-      printf "%s %s\n" "No version is set for command" "$shim_name"
-      printf "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
+      display "%s %s\n" "No version is set for command" "$shim_name"
+      display "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
     shim_plugin_versions "${shim_name}"
   ) >&2

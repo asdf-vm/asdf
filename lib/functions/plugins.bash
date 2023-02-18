@@ -145,7 +145,7 @@ update_plugin() {
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 
-    printf "Updating %s to %s\n" "$plugin_name" "$gitref"
+    display "Updating %s to %s\n" "$plugin_name" "$gitref"
 
     git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
     prev_ref=$(git "${common_git_options[@]}" rev-parse --short HEAD)

@@ -10,6 +10,6 @@ rm "$(asdf_data_dir)"/shims/*
 "$asdf_dir"/bin/asdf reshim
 shim_name=$(basename "$2")
 
-printf "asdf: now running %s\\n" "$shim_name"
+display "now running %s\\n" "$shim_name"
 
 exec "$shim_name" "${@:3}"
