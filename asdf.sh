@@ -2,8 +2,8 @@
 # shellcheck disable=SC1007
 
 # This file is the entrypoint for all POSIX-compatible shells. If `ASDF_DIR` is
-# not already set, this script is able to calculate it, if the shell is either
-# Bash, Zsh, and the or Ksh. For other shells, `ASDF_DIR` must be manually set.
+# not already set, this script is able to calculate it, but only if the shell is
+# either Bash, Zsh, and Ksh. For other shells, `ASDF_DIR` must be manually set.
 
 export ASDF_DIR="${ASDF_DIR:-}"
 
