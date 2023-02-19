@@ -7,8 +7,8 @@ def-env configure-asdf [] {
     let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
 
 
-    let-env PATH = ( $env.PATH | where { |p| $p != $shims_dir } | append $shims_dir )
-    let-env PATH = ( $env.PATH | where { |p| $p != $asdf_bin_dir } | append $asdf_bin_dir )
+    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | append $shims_dir )
+    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $asdf_bin_dir } | append $asdf_bin_dir )
 
 }
 
