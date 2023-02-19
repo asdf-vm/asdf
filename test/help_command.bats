@@ -73,5 +73,9 @@ EOF
   run asdf help
 
   [ "$status" -eq 0 ]
-  # TODO: Assert asdf help output is printed
+  [[ $output == 'version: v'* ]]
+  [[ $output == *$'MANAGE PLUGINS\n'* ]]
+  [[ $output == *$'MANAGE PACKAGES\n'* ]]
+  [[ $output == *$'UTILS\n'* ]]
+  [[ $output == *$'"Late but latest"\n-- Rajinikanth' ]]
 }

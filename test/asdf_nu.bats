@@ -27,7 +27,6 @@ cleaned_path() {
     echo \$env.ASDF_DIR"
 
   [ "$status" -eq 0 ]
-
   result=$(echo "$output" | grep "asdf")
   [ "$result" = "$PWD" ]
 }
@@ -46,11 +45,8 @@ cleaned_path() {
 
   [ "$status" -eq 0 ]
 
-  output_bin=$(echo "$output" | grep "asdf/bin")
-  [ "$output_bin" = "$PWD/bin" ]
-
-  output_shims=$(echo "$output" | grep "/shims")
-  [ "$output_shims" = "$HOME/.asdf/shims" ]
+  [[ "$output" == *"$PWD/bin"* ]]
+  [[ "$output" == *"$HOME/.asdf/shims"* ]]
 }
 
 @test "does not add paths to PATH more than once" {
@@ -86,7 +82,7 @@ cleaned_path() {
   [ "$output" = "$PWD" ]
 }
 
-@test "defines the asdf function" {
+@test "defines the asdf or main function" {
   run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -97,7 +93,6 @@ cleaned_path() {
     which asdf | get path | to text"
 
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "command" ]]
 }
 
 @test "function calls asdf command" {

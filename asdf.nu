@@ -17,19 +17,19 @@ configure-asdf
 ## Completions
 
 module asdf {
-    
+
     def "complete asdf sub-commands" [] {
         [
-            "plugin", 
-            "list", 
-            "install", 
-            "uninstall", 
-            "current", 
-            "where", 
-            "which", 
-            "local", 
-            "global", 
-            "shell", 
+            "plugin",
+            "list",
+            "install",
+            "uninstall",
+            "current",
+            "where",
+            "which",
+            "local",
+            "global",
+            "shell",
             "latest",
             "help",
             "exec",
@@ -63,7 +63,7 @@ module asdf {
     }
 
     # ASDF version manager
-    export extern "asdf" [
+    export extern main [
         subcommand?: string@"complete asdf sub-commands"
     ]
 
@@ -82,19 +82,19 @@ module asdf {
             {name: 'urls', enabled: $urls, template: '\s+?(?P<repository>git@.+\.git)', flag: '--urls'}
             {name: 'refs', enabled: $refs, template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)', flag: '--refs'}
         ]
-        
+
         let template = '(?P<name>.+)' + (
-                            $params | 
+                            $params |
                             where enabled |
                             get --ignore-errors template |
-                            str join '' | 
+                            str join '' |
                             str trim
                         )
 
         let parsed_urls_flag = ($params | where enabled and name == 'urls'  | get --ignore-errors flag | default '' )
         let parsed_refs_flag = ($params | where enabled and name == 'refs'  | get --ignore-errors flag | default '' )
-        
-        ^asdf plugin list $parsed_urls_flag $parsed_refs_flag | lines | parse -r $template | str trim        
+
+        ^asdf plugin list $parsed_urls_flag $parsed_refs_flag | lines | parse -r $template | str trim
     }
 
     # list all available plugins
@@ -102,17 +102,17 @@ module asdf {
         let template = '(?P<name>.+)\s+?(?P<installed>[*]?)(?P<repository>(?:git|http).+\.git)'
         let is_installed = { |it| $it.installed == '*' }
 
-        ^asdf plugin list all | 
-            lines | 
-            parse -r $template | 
-            str trim | 
+        ^asdf plugin list all |
+            lines |
+            parse -r $template |
+            str trim |
             update installed $is_installed |
             sort-by name
     }
 
     # Add a plugin
     export extern  "asdf plugin add" [
-        name: string # Name of the plugin 
+        name: string # Name of the plugin
         git_url?: string # Git url of the plugin
     ]
 
@@ -120,7 +120,7 @@ module asdf {
     export extern "asdf plugin remove" [
         name: string@"complete asdf installed plugins" # Name of the plugin
     ]
-    
+
     # Update a plugin
     export extern "asdf plugin update" [
         name: string@"complete asdf installed plugins" # Name of the plugin
@@ -175,13 +175,13 @@ module asdf {
     export extern "asdf shell" [
         name: string@"complete asdf installed" # Name of the package
         version?: string # Version of the package or latest
-    ]    
+    ]
 
     # Show latest stable version of a package
     export extern "asdf latest" [
         name: string # Name of the package
         version?: string # Filter latest stable version from this version
-    ]       
+    ]
 
     # Show latest stable version for all installed packages
     export extern "asdf latest --all" []
