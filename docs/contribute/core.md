@@ -93,7 +93,19 @@ It is possible to configure IDEs to use this file. For example, when using VSCod
 
 ## Bats Testing
 
-It is **strongly encouraged** to examine the existing test suite and the [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html) before writing tests.
+Execute tests locally with:
+
+```shell
+./scripts/test.bash
+```
+
+Before writing tests **please read**:
+
+- existing tests in `test/`
+- [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html)
+- existing Bats settings used in `scripts/test.bash`
+
+### Bats Tips
 
 Bats debugging can be difficult at times. Using the TAP output with `-t` flag will enable you to print outputs with the special file descriptor `>&3` during test execution, simplifying debugging. As an example:
 
