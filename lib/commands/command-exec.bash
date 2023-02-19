@@ -10,6 +10,9 @@ shim_exec_command() {
     exit 1
   fi
 
+  # shellcheck disable=SC2034
+  ASDF_INTERNAL_PREFIX_PRINTS=yes
+
   exec_shim() {
     local plugin_name="$1"
     local version="$2"

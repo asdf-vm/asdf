@@ -153,7 +153,9 @@ display_error() {
 }
 
 display() {
-  printf 'asdf: '
+  if [ "$ASDF_INTERNAL_PREFIX_PRINTS" = 'yes' ]; then
+    printf 'asdf: '
+  fi
 
   # shellcheck disable=SC2059
   printf "$@"
