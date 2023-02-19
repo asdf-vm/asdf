@@ -453,7 +453,7 @@ EOF
 
   message="callback invoked"
 
-  function callback() {
+  callback() {
     echo "$message"
   }
 

@@ -776,7 +776,7 @@ with_shim_executable() {
 
     # This function does get invoked, but shellcheck sees it as unused code
     # shellcheck disable=SC2317
-    function run_within_env() {
+    run_within_env() {
       local path
       path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
 
