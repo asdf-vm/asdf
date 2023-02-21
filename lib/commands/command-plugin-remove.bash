@@ -21,7 +21,7 @@ plugin_remove_command() {
   rm -rf "$(asdf_data_dir)/installs/${plugin_name}"
   rm -rf "$(asdf_data_dir)/downloads/${plugin_name}"
 
-  grep -l "asdf-plugin: ${plugin_name}" "$(asdf_data_dir)"/shims/* 2>/dev/null | xargs rm -f
+  grep -l --null "asdf-plugin: ${plugin_name}" "$(asdf_data_dir)"/shims/* 2>/dev/null | xargs -0 rm -f
 
   asdf_run_hook "post_asdf_plugin_remove" "$plugin_name"
   asdf_run_hook "post_asdf_plugin_remove_${plugin_name}"
