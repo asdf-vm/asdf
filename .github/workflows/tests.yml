@@ -7,8 +7,8 @@ on:
   pull_request:
 
 env:
-  ELVISH_VERSION: v0.18.0
-  NUSHELL_VERSION: 0.73.0
+  ELVISH_VERSION: v0.19.2
+  NUSHELL_VERSION: 0.77.0
 
 jobs:
   detect-changes:
