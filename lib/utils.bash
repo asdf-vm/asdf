@@ -860,3 +860,24 @@ util_resolve_user_path() {
     util_resolve_user_path_reply="$path"
   fi
 }
+
+get_plugin_remote_url() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null
+}
+
+get_plugin_remote_branch() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null
+}
+
+get_plugin_remote_gitref() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null
+}
