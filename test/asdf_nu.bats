@@ -9,6 +9,14 @@ setup() {
   if ! command -v nu; then
     skip "Nu is not installed"
   fi
+
+  setup_asdf_dir
+  setup_repo
+  install_dummy_plugin
+}
+
+teardown() {
+  clean_asdf_dir
 }
 
 cleaned_path() {
@@ -109,4 +117,21 @@ cleaned_path() {
 
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]
+}
+
+@test "parses the output of asdf plugin list all" {
+  run nu -c "
+    hide-env -i asdf
+    hide-env -i ASDF_DIR
+    let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
+
+    source asdf.nu
+    asdf plugin list all | to csv -n"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "\
+bar,false,http://example.com/bar
+dummy,true,http://example.com/dummy
+foo,false,http://example.com/foo" ]
 }

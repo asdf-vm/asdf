@@ -99,7 +99,7 @@ module asdf {
 
     # list all available plugins
     export def "asdf plugin list all" [] {
-        let template = '(?P<name>.+)\s+?(?P<installed>[*]?)(?P<repository>(?:git|http).+\.git)'
+        let template = '(?P<name>.+)\s+?(?P<installed>[*]?)(?P<repository>(?:git|http|https).+)'
         let is_installed = { |it| $it.installed == '*' }
 
         ^asdf plugin list all |
