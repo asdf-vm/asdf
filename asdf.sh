@@ -1,37 +1,77 @@
-# For Korn shells (ksh, mksh, etc.), capture $_ (the final parameter passed to
-# the last command) straightaway, as it will contain the path to this script.
-# For Bash, ${BASH_SOURCE[0]} will be used to obtain this script's path.
-# For Zsh and others, $0 (the path to the shell or script) will be used.
-_under="$_"
-if [ -z "${ASDF_DIR:-}" ]; then
-  if [ -n "${BASH_SOURCE[0]}" ]; then
-    current_script_path="${BASH_SOURCE[0]}"
-  elif [[ "$_under" == *".sh" ]]; then
-    current_script_path="$_under"
-  else
-    current_script_path="$0"
+# shellcheck shell=sh
+# shellcheck disable=SC1007
+
+# This file is the entrypoint for all POSIX-compatible shells. If `ASDF_DIR` is
+# not already set, this script is able to calculate it, but only if the shell is
+# either Bash, Zsh, and Ksh. For other shells, `ASDF_DIR` must be manually set.
+
+export ASDF_DIR="${ASDF_DIR:-}"
+
+if [ -z "$ASDF_DIR" ]; then
+  if [ -n "$BASH_VERSION" ]; then
+    # Use BASH_SOURCE[0] to obtain the relative path to this source'd file. Since it's
+    # a relative path, 'cd' to its dirname and use '$PWD" to obtain the fullpath.
+    # Use 'builtin cd' to ensure user-defined 'cd()' functions aren't called.
+    # Use variable '_asdf_old_dir' to avoid using subshells.
+
+    _asdf_old_dir=$PWD
+    # shellcheck disable=SC3028,SC3054
+    if ! CDPATH= builtin cd -- "${BASH_SOURCE[0]%/*}"; then
+      printf '%s\n' 'asdf: Error: Failed to cd' >&2
+      unset -v _asdf_old_dir
+      return 1
+    fi
+    ASDF_DIR=$PWD
+    if ! CDPATH= builtin cd -- "$_asdf_old_dir"; then
+      printf '%s\n' 'asdf: Error: Failed to cd' >&2
+      unset -v _asdf_old_dir
+      return 1
+    fi
+    unset -v _asdf_old_dir
+  elif [ -n "$ZSH_VERSION" ]; then
+    # Use '%x' to expand to path of current file. It must be prefixed
+    # with '(%):-', so it expands in non-prompt-string contexts.
+
+    # shellcheck disable=SC2296
+    ASDF_DIR=${(%):-%x}
+    ASDF_DIR=${ASDF_DIR%/*}
+  elif [ -n "$KSH_VERSION" ] && [ -z "$PATHSEP" ]; then
+    # Only the original KornShell (kornshell.com) has a '.sh.file' variable with the path
+    # of the current file. To prevent errors with other variations, such as the MirBSD
+    # Korn shell (mksh), test for 'PATHSEP' which is _not_ set on the original Korn Shell.
+
+    # shellcheck disable=SC2296
+    ASDF_DIR=${.sh.file}
+    ASDF_DIR=${ASDF_DIR%/*}
   fi
-
-  ASDF_DIR="$(dirname "$current_script_path")"
 fi
-export ASDF_DIR
-# shellcheck disable=SC2016
-[ -d "$ASDF_DIR" ] || printf "%s\n" "$ASDF_DIR is not a directory"
 
-# Add asdf to PATH
-#
-# if in $PATH, remove, regardless of if it is in the right place (at the front) or not.
-# replace all occurrences - ${parameter//pattern/string}
-ASDF_BIN="${ASDF_DIR}/bin"
-ASDF_USER_SHIMS="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
-[[ ":$PATH:" == *":${ASDF_BIN}:"* ]] && PATH="${PATH//$ASDF_BIN:/}"
-[[ ":$PATH:" == *":${ASDF_USER_SHIMS}:"* ]] && PATH="${PATH//$ASDF_USER_SHIMS:/}"
-# add to front of $PATH
-PATH="${ASDF_BIN}:$PATH"
-PATH="${ASDF_USER_SHIMS}:$PATH"
+if [ -z "$ASDF_DIR" ]; then
+  printf "%s\n" "asdf: Error: Source directory could not be calculated. Please set it manually before sourcing this file." >&2
+  return 1
+fi
+
+if [ ! -d "$ASDF_DIR" ]; then
+  printf "%s\n" "asdf: Error: Variable '\$ASDF_DIR' is not a directory: $ASDF_DIR" >&2
+  return 1
+fi
+
+_asdf_bin="${ASDF_DIR}/bin"
+_asdf_shims="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
+
+# shellcheck disable=SC3060
+if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
+  case ":$PATH:" in
+    *":${_asdf_bin}:"*) PATH="${PATH//$_asdf_bin:/}" ;;
+  esac
+  case ":$PATH:" in
+    *":${_asdf_shims}:"*) PATH="${PATH//$_asdf_shims:/}" ;;
+  esac
+fi
+
+PATH="${_asdf_bin}:${_asdf_shims}:$PATH"
+unset -v _asdf_bin _asdf_shims
 
 # shellcheck source=lib/asdf.sh
-# Load the asdf wrapper function
 . "${ASDF_DIR}/lib/asdf.sh"
 
-unset _under current_script_path ASDF_BIN ASDF_USER_SHIMS

@@ -263,6 +263,39 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 补全功能会被放在一个对 ZSH 很友好的位置，但是 [ZSH 必须使用自动补全完成配置](https://wiki.archlinux.org/index.php/zsh#Command_completion)。
 :::
 
+::: details POSIX Shell & Git
+
+在 `~/.profile` 文件中加入以下内容：
+
+```shell
+export ASDF_DIR="$HOME/.asdf"
+. "$HOME/.asdf/asdf.sh"
+```
+
+:::
+
+::: details POSIX Shell & Homebrew
+
+使用以下命令将 `asdf.sh` 加入到 `~/.profile` 文件中：
+
+```shell:no-line-numbers
+echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+```
+
+:::
+
+::: details POSIX Shell & Pacman
+
+在 `~/.profile` 文件中加入以下内容：
+
+```shell
+export ASDF_DIR="/opt/asdf-vm"
+. /opt/asdf-vm/asdf.sh
+```
+
+:::
+
 `asdf` 脚本需要在设置好的 `$PATH` **之后**和已经生效的框架（比如 oh-my-zsh 等等）**之后**的位置生效。
 
 通常打开一个新的终端标签页来重启你的 shell 让 `PATH` 更改即时生效。

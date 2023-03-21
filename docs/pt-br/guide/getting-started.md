@@ -262,6 +262,39 @@ Adicione a seguinte linha ao seu `~/.zshrc`:
 . /opt/asdf-vm/asdf.sh
 ```
 
+::: details POSIX Shell & Git
+
+Adicione a seguinte linha ao seu `~/.profile`:
+
+```shell
+export ASDF_DIR="$HOME/.asdf"
+. "$HOME/.asdf/asdf.sh"
+```
+
+:::
+
+::: details POSIX Shell & Homebrew
+
+Adicione `asdf.sh` ao `~/.profile` através do comando:
+
+```shell:no-line-numbers
+echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+```
+
+:::
+
+::: details POSIX Shell & Pacman
+
+Adicione a seguinte linha ao seu `~/.profile`:
+
+```shell
+export ASDF_DIR="/opt/asdf-vm"
+. /opt/asdf-vm/asdf.sh
+```
+
+:::
+
 O auto completar é colocado em um local familiar para o ZSH, [mas o ZSH deve ser configurado para conseguir utilizá-lo](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 

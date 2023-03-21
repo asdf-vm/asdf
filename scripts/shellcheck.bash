@@ -3,10 +3,9 @@
 set -euo pipefail
 
 # check .sh files
-# TODO(jthegedus): unlock this check later
-# TODO  shellcheck --shell sh --external-sources \
-# TODO  asdf.sh \
-# TODO  lib/*.sh
+shellcheck --shell sh --external-sources \
+  asdf.sh \
+  lib/*.sh
 
 # check .bash files
 shellcheck --shell bash --external-sources \
