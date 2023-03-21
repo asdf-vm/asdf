@@ -294,6 +294,39 @@ Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 Completions are automatically configured.
 :::
 
+::: details POSIX Shell & Git
+
+Add the following to `~/.profile`:
+
+```shell
+export ASDF_DIR="$HOME/.asdf"
+. "$HOME/.asdf/asdf.sh"
+```
+
+:::
+
+::: details POSIX Shell & Homebrew
+
+Add `asdf.sh` to your `~/.profile` with:
+
+```shell:no-line-numbers
+echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+```
+
+:::
+
+::: details POSIX Shell & Pacman
+
+Add the following to `~/.profile`:
+
+```shell
+export ASDF_DIR="/opt/asdf-vm"
+. /opt/asdf-vm/asdf.sh
+```
+
+:::
+
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
