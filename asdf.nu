@@ -79,8 +79,10 @@ module asdf {
     ] {
 
         let params = [
-            {name: 'urls', enabled: $urls, template: '\s+?(?P<repository>git@.+\.git)', flag: '--urls'}
-            {name: 'refs', enabled: $refs, template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)', flag: '--refs'}
+            {name: 'urls', enabled: $urls, flag: '--urls',
+             template: '\s+?(?P<repository>(?:http[s]?|git).+\.git|/.+)'}
+            {name: 'refs', enabled: $refs, flag: '--refs',
+             template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)'}
         ]
 
         let template = '(?P<name>.+)' + (
@@ -91,10 +93,9 @@ module asdf {
                             str trim
                         )
 
-        let parsed_urls_flag = ($params | where enabled and name == 'urls'  | get --ignore-errors flag | default '' )
-        let parsed_refs_flag = ($params | where enabled and name == 'refs'  | get --ignore-errors flag | default '' )
+        let flags = ($params | where enabled | get --ignore-errors flag | default '' )
 
-        ^asdf plugin list $parsed_urls_flag $parsed_refs_flag | lines | parse -r $template | str trim
+        ^asdf plugin list $flags | lines | parse -r $template | str trim
     }
 
     # list all available plugins
