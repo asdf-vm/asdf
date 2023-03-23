@@ -28,15 +28,13 @@ plugin_list_command() {
         printf "%s" "$plugin_name"
 
         if [ -n "$show_repo" ]; then
-          printf "\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
+          printf "\t%s" "$(get_plugin_remote_url "$plugin_name")"
         fi
 
         if [ -n "$show_ref" ]; then
-          local branch
-          local gitref
-          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
-          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
-          printf "\t%s\t%s" "$branch" "$gitref"
+          printf "\t%s\t%s" \
+            "$(get_plugin_remote_branch "$plugin_name")" \
+            "$(get_plugin_remote_gitref "$plugin_name")"
         fi
 
         printf "\n"
