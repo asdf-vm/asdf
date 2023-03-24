@@ -150,6 +150,6 @@ jobs:
         working-directory: docs/
         run: npm install
 
-      - name: Check errors by biulding Documentation site
+      - name: Check errors by building Documentation site
         working-directory: docs/
         run: npm run build
