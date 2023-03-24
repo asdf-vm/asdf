@@ -163,18 +163,18 @@ The filename of the file storing the tool names and versions. Can be any valid f
 
 The location of `asdf` core scripts. Can be set to any location. Must be an absolute path.
 
-- Default: `$HOME/.asdf` (the parent directory of the `bin/asdf` executable)
+- Default: `$HOME/.asdf` (always the parent directory of the `bin/asdf` executable)
 - Usage: `export ASDF_DIR=/home/john_doe/.config/asdf`
 
 ### `ASDF_DATA_DIR`
 
 The location where `asdf` will install plugins, shims and tool versions. Can be set to any location. Must be an absolute path.
 
-- Default: `$HOME/.asdf` (the parent directory of the `bin/asdf` executable)
+- Default: `$HOME/.asdf`
 - Usage: `export ASDF_DATA_DIR=/home/john_doe/.asdf`
 
 ## Internal Configuration
 
 Users should not worry about this section as it describes configuration internal to `asdf` useful for Package Managers and integrators.
 
-- `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by Package Managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.
+- `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by package managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.
