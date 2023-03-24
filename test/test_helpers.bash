@@ -6,11 +6,12 @@ bats_require_minimum_version 1.7.0
 . "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
 
 setup_asdf_dir() {
-  if [ -n "${ASDF_BATS_SPACE_IN_PATH:-}" ]; then
-    BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
+  if [ "$BATS_TEST_NAME" = 'test_shim_exec_should_use_path_executable_when_specified_version_path-3a-3cpath-3e' ]; then
+    BASE_DIR="$(mktemp -dt "asdf_with_no_spaces.XXXX")"
   else
-    BASE_DIR="$(mktemp -dt asdf.XXXX)"
+    BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
   fi
+
   HOME="$BASE_DIR/home"
   ASDF_DIR="$HOME/.asdf"
   mkdir -p "$ASDF_DIR/plugins"

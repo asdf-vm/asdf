@@ -4,7 +4,7 @@
 load test_helpers
 
 setup() {
-  ASDF_BATS_SPACE_IN_PATH=true setup_asdf_dir
+  setup_asdf_dir
   install_dummy_plugin
 
   PROJECT_DIR="$HOME/project"

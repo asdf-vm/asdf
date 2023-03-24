@@ -49,7 +49,10 @@ find_asdf_cmd() {
 find_plugin_cmd() {
   local ASDF_CMD_FILE args_offset
   if [ -d "$(get_plugin_path "$1")/bin" ]; then
-    IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_cmd "$(get_plugin_path "$1")/lib/commands" "${@:2}")"
+    local result=
+    result="$(find_cmd "$(get_plugin_path "$1")/lib/commands" "${@:2}")"
+    ASDF_CMD_FILE=${result% *}
+    args_offset=${result##* }
     if [ -n "$ASDF_CMD_FILE" ]; then
       args_offset=$((args_offset + 1)) # since the first argument is the plugin name
       printf "%s %s\\n" "$ASDF_CMD_FILE" "$args_offset"
@@ -65,9 +68,14 @@ asdf_cmd() {
     exit 1
   fi
 
-  IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_asdf_cmd "$@")"
+  local result=
+  result="$(find_asdf_cmd "$@")"
+  ASDF_CMD_FILE=${result% *}
+  args_offset=${result##* }
   if [ -z "$ASDF_CMD_FILE" ]; then
-    IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_plugin_cmd "$@")"
+    result="$(find_plugin_cmd "$@")"
+    ASDF_CMD_FILE=${result% *}
+    args_offset=${result##* }
   fi
 
   if [ -x "$ASDF_CMD_FILE" ]; then
