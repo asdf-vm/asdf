@@ -206,12 +206,9 @@ teardown() {
   [ "$output" = "System" ]
 }
 
+# NOTE: The name of this test is linked to a condition in `test_helpers.bash. See
+# the 'setup_asdf_dir' function for details.
 @test "shim exec should use path executable when specified version path:<path>" {
-  # Currently, the .tool_versions parser is not setup to handle specifying a path with spaces:
-  # `dummy path:/path/with space/bin path:/path2/with space/bin`
-  # So, make sure `BASE_DIR` has no spaces, so that the test can pass.
-  BASE_DIR="$(mktemp -dt "asdf_with_no_spaces.XXXX")"
-
   run asdf install dummy 1.0
 
   CUSTOM_DUMMY_PATH="$PROJECT_DIR/foo"
