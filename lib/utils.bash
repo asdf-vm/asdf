@@ -206,7 +206,7 @@ find_versions() {
   local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f "$legacy_list_filenames_script" ]; then
-    legacy_filenames=$($legacy_list_filenames_script)
+    legacy_filenames=$("$legacy_list_filenames_script")
   fi
 
   while [ "$search_path" != "/" ]; do
