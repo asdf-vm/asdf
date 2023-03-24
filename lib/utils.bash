@@ -21,21 +21,31 @@ asdf_tool_versions_filename() {
 }
 
 asdf_config_file() {
-  printf '%s\n' "${ASDF_CONFIG_FILE:-$HOME/.asdfrc}"
+  if [ -n "$ASDF_CONFIG_FILE" ]; then
+    printf '%s\n' "$ASDF_CONFIG_FILE"
+  elif [ -f "$HOME/.asdfrc" ]; then
+    printf '%s\n' "$HOME/.asdfrc"
+  elif [ "${XDG_CONFIG_HOME::1}" = '/' ]; then
+    printf '%s\n' "$XDG_CONFIG_HOME/asdf/asdfrc"
+  else
+    printf '%s\n' "$HOME/.config/asdf/asdfrc"
+  fi
 }
 
 asdf_data_dir() {
-  local data_dir
-
   if [ -n "${ASDF_DATA_DIR}" ]; then
-    data_dir="${ASDF_DATA_DIR}"
+    printf '%s\n' "${ASDF_DATA_DIR}"
   elif [ -n "$HOME" ]; then
-    data_dir="$HOME/.asdf"
+    if [ -d "$HOME/.asdf" ]; then
+      printf '%s\n' "$HOME/.asdf"
+    elif [ "${XDG_DATA_HOME::1}" = '/' ]; then
+      printf '%s\n' "$XDG_DATA_HOME/asdf"
+    else
+      printf '%s\n' "$HOME/.local/state/asdf"
+    fi
   else
     data_dir=$(asdf_dir)
   fi
-
-  printf "%s\n" "$data_dir"
 }
 
 asdf_dir() {

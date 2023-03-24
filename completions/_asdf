@@ -2,7 +2,8 @@
 #description tool to manage versions of multiple runtimes
 
 local curcontext="$curcontext" state state_descr line subcmd
-local asdf_dir="${ASDF_DATA_DIR:-$HOME/.asdf}"
+local asdf_dir=
+asdf_dir=$(asdf --internal-get-asdf-dir)
 
 local -a asdf_commands
 asdf_commands=( # 'asdf help' lists commands with help text

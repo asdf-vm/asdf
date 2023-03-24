@@ -80,6 +80,17 @@ asdf_cmd() {
   ASDF_DIR=$(asdf_dir)
   export ASDF_DIR
 
+  if [ "$1" = '--internal-get-asdf-config-file' ]; then
+    printf '%s\n' "$ASDF_CONFIG_FILE"
+    exit 0
+  elif [ "$1" = '--internal-get-asdf-data-dir' ]; then
+    printf '%s\n' "$ASDF_DATA_DIR"
+    exit 0
+  elif [ "$1" = '--internal-get-asdf-dir' ]; then
+    printf '%s\n' "$ASDF_DIR"
+    exit 0
+  fi
+
   local result=
   result="$(find_asdf_cmd "$@")"
   ASDF_CMD_FILE=${result% *}
