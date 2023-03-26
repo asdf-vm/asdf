@@ -16,9 +16,9 @@ find_cmd() {
   done
 
   if [ -f "$cmd_dir/$cmd_name" ]; then
-    printf "%s %s\\n" "$cmd_dir/$cmd_name" "$((args_offset + 1))"
+    printf "%s %s\n" "$cmd_dir/$cmd_name" "$((args_offset + 1))"
   elif [ -f "$cmd_dir/command.bash" ]; then
-    printf "%s %s\\n" "$cmd_dir/command.bash" 1
+    printf "%s %s\n" "$cmd_dir/command.bash" 1
   fi
 }
 
@@ -29,15 +29,15 @@ find_asdf_cmd() {
   'exec' | 'current' | 'env' | 'global' | 'install' | 'latest' | 'local' | \
     'reshim' | 'uninstall' | 'update' | 'where' | 'which' | \
     'export-shell-version')
-    printf "%s %s\\n" "$asdf_cmd_dir/command-$1.bash" 2
+    printf "%s %s\n" "$asdf_cmd_dir/command-$1.bash" 2
     ;;
 
   '' | '--help' | '-h' | 'help')
-    printf "%s %s\\n" "$asdf_cmd_dir/command-help.bash" 2
+    printf "%s %s\n" "$asdf_cmd_dir/command-help.bash" 2
     ;;
 
   '--version' | 'version')
-    printf "%s %s\\n" "$asdf_cmd_dir/command-version.bash" 2
+    printf "%s %s\n" "$asdf_cmd_dir/command-version.bash" 2
     ;;
 
   *)
@@ -52,7 +52,7 @@ find_plugin_cmd() {
     IFS=' ' read -r ASDF_CMD_FILE args_offset <<<"$(find_cmd "$(get_plugin_path "$1")/lib/commands" "${@:2}")"
     if [ -n "$ASDF_CMD_FILE" ]; then
       args_offset=$((args_offset + 1)) # since the first argument is the plugin name
-      printf "%s %s\\n" "$ASDF_CMD_FILE" "$args_offset"
+      printf "%s %s\n" "$ASDF_CMD_FILE" "$args_offset"
     fi
   fi
 }
@@ -60,7 +60,7 @@ find_plugin_cmd() {
 asdf_cmd() {
   local ASDF_CMD_FILE args_offset
 
-  if [ "shell" == "$1" ]; then
+  if [ "shell" = "$1" ]; then
     printf "Shell integration is not enabled. Please ensure you source asdf in your shell setup." >&2
     exit 1
   fi
@@ -78,7 +78,7 @@ asdf_cmd() {
   else
     local asdf_cmd_dir
     asdf_cmd_dir="$(asdf_dir)/lib/commands"
-    printf "%s\\n" "Unknown command: \`asdf ${*}\`" >&2
+    printf "%s\n" "Unknown command: \`asdf ${*}\`" >&2
     . "$asdf_cmd_dir/command-help.bash" >&2
     return 127
   fi
