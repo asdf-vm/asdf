@@ -50,9 +50,13 @@ To install a single tool defined in a `.tool-versions` file run `asdf install <n
 
 Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
 
-## `$HOME/.asdfrc`
+## `.asdfrc`
 
-Add an `.asdfrc` file to your home directory and asdf will use the settings specified in the file. The file below shows the required format with the default values to demonstrate:
+The `.asdfrc` file defines the user's machine specific configuration.
+
+`${HOME}/.asdfrc` is the default location used by asdf. This can be set with the [Environment Variable `ASDF_CONFIG_FILE`](#asdfconfigfile).
+
+The below file shows the required format with the default values:
 
 @[code :no-line-numbers](../../defaults)
 
@@ -132,13 +136,45 @@ Disabling the plugin short-name repository does not remove plugins previously in
 
 ## Environment Variables
 
-- `ASDF_CONFIG_FILE` - Defaults to `~/.asdfrc` as described above. Can be set to any location.
-- `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - The filename of the file storing the tool names and versions. Defaults to `.tool-versions`. Can be any valid filename. Typically you should not override the default value unless you know you want asdf to ignore `.tool-versions` files.
-- `ASDF_DIR` - Defaults to `~/.asdf` - Location of the `asdf` scripts. If you install `asdf` to some other directory, set this to that directory. For example, if you are installing via the AUR, you should set this to `/opt/asdf-vm`. This must be set to an absolute path like `~/.asdf`, `${HOME}/.asdf`, `/home/my/working/dir/.asdf`.
-- `ASDF_DATA_DIR` - Defaults to `~/.asdf` - Location where `asdf` install plugins, shims and installs. Can be set to any location before sourcing `asdf.sh` or `asdf.fish` mentioned in the section above. For Elvish, this can be set above `use asdf`. This must be set to an absolute path like `~/.asdf`, `${HOME}/.asdf`, `/home/my/working/dir/.asdf`.
+Setting environment variables varies depending on your system and Shell. Default locations depend upon your installation location and method (Git clone, Homebrew, AUR).
+
+Environment variables should generally be set before sourcing `asdf.sh`/`asdf.fish` etc. For Elvish set above `use asdf`.
+
+The following examples assume:
+
+- an installation to `$HOME/.asdf`
+- a Bash Shell
+
+### `ASDF_CONFIG_FILE`
+
+Path to the `.asdfrc` configuration file. Can be set to any location. Must be an absolute path.
+
+- Default: `$HOME/.asdfrc`
+- Usage: `export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
+
+### `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`
+
+The filename of the file storing the tool names and versions. Can be any valid filename. Typically, you should not set this value unless you want to ignore `.tool-versions` files.
+
+- Default: `.tool-versions`
+- Usage: `export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=tool_versions`
+
+### `ASDF_DIR`
+
+The location of `asdf` core scripts. Can be set to any location. Must be an absolute path.
+
+- Default: `$HOME/.asdf` (always the parent directory of the `bin/asdf` executable)
+- Usage: `export ASDF_DIR=/home/john_doe/.config/asdf`
+
+### `ASDF_DATA_DIR`
+
+The location where `asdf` will install plugins, shims and tool versions. Can be set to any location. Must be an absolute path.
+
+- Default: `$HOME/.asdf`
+- Usage: `export ASDF_DATA_DIR=/home/john_doe/.asdf`
 
 ## Internal Configuration
 
 Users should not worry about this section as it describes configuration internal to `asdf` useful for Package Managers and integrators.
 
-- `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by Package Managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.
+- `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by package managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.
