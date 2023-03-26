@@ -25,8 +25,9 @@ teardown() {
   [ "$status" -eq 0 ]
   [[ $output == *$'OS:\n'* ]]
   [[ $output == *$'SHELL:\n'* ]]
+  [[ $output == *$'BASH VERSION:\n'* ]]
   [[ $output == *$'ASDF VERSION:\n'* ]]
-  [[ $output == *$'ASDF ENVIRONMENT VARIABLES:\n'* ]]
+  [[ $output == *$'ASDF INTERNAL VARIABLES:\n'* ]]
   [[ $output == *$'ASDF INSTALLED PLUGINS:\n'* ]]
 
 }
