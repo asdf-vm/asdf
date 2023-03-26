@@ -8,12 +8,16 @@ setup() {
   export XDG_DATA_HOME=
   export XDG_DATA_DIRS=
 
+  if ! command -v elvish &>/dev/null && [ -z "$GITHUB_ACTIONS" ]; then
+    skip 'Elvish not installed'
+  fi
+
   local ver_major=
   local ver_minor=
   local ver_patch=
   IFS='.' read -r ver_major ver_minor ver_patch <<<"$(elvish -version)"
 
-  if ((ver_major == 0 && ver_minor < 18)); then
+  if ((ver_major == 0 && ver_minor < 18)) && [ -z "$GITHUB_ACTIONS" ]; then
     skip "Elvish version is not at least 0.18. Found ${ver_major}.${ver_minor}.${ver_patch}"
   fi
 }

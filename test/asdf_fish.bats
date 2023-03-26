@@ -6,7 +6,7 @@ load test_helpers
 setup() {
   cd "$(dirname "$BATS_TEST_DIRNAME")"
 
-  if ! command -v fish; then
+  if ! command -v fish &>/dev/null && [ -z "$GITHUB_ACTIONS" ]; then
     skip "Fish is not installed"
   fi
 }
