@@ -8,6 +8,46 @@ GREP_COLORS=
 ASDF_DIR=${ASDF_DIR:-''}
 ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
 
+fast_basename() {
+  unset -v REPLY
+  local dirpath="$1"
+  dirpath=${dirpath%/}
+  dirpath=${dirpath##*/}
+  REPLY=$dirpath
+}
+
+# in order to make this able to call tr if bash v4 is unavailable,
+# it requires inputting a tr-like string, e.g. tr '[:lower:]' '[:upper:]'
+fast_tr() {
+  unset -v REPLY
+  inputArr=("$@")
+  inputStr="${inputArr[0]}"
+  if [ ! ${#inputArr[@]} -eq 3 ] && [ ! ${#inputArr[@]} -eq 5 ]; then
+    printf "%s\n" "ERROR: fast_tr expects an array of 3 or 5 elements, got ${#inputArr[@]}"
+    return 1
+  fi
+  # if bash >= v4, use parameter modification to upper/lower the string
+  if [ "${BASH_VERSINFO[0]}" -gt 3 ]; then
+    case ${inputArr[1]} in
+    "[:lower:]")
+      REPLY="${inputStr^^}"
+      ;;
+    "[:upper:]")
+      REPLY="${inputStr,,}"
+      ;;
+    "*")
+      printf "%s\n" "ERROR: fast_tr() expects [:lower:] and [:upper:] as arguments"
+      ;;
+    esac
+    # and then use parameter substitution to replace characters in the string
+    # if the 4th or 5th elements are not set, the substitution has no effect
+    REPLY="${REPLY//${inputArr[3]-''}/${inputArr[4]-''}}"
+  else
+    # else use tr with the input array elements as args
+    printf "%s\n" "${inputStr}" | tr "${inputArr[1]}${inputArr[3]-''}" "${inputArr[2]}${inputArr[4]-''}"
+  fi
+}
+
 asdf_version() {
   local version git_rev
   version="v$(cat "$(asdf_dir)/version.txt")"
@@ -99,7 +139,7 @@ list_installed_versions() {
   if [ -d "$plugin_installs_path" ]; then
     for install in "${plugin_installs_path}"/*/; do
       [[ -e "$install" ]] || break
-      basename "$install" | sed 's/^ref-/ref:/'
+      fast_basename "$install" && printf "%s\n" "$REPLY"
     done
   fi
 }
@@ -190,7 +230,9 @@ find_versions() {
   version=$(get_version_from_env "$plugin_name")
   if [ -n "$version" ]; then
     local upcase_name
-    upcase_name=$(printf "%s\n" "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
+    local fast_tr_arr=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
+    fast_tr "${fast_tr_arr[@]}"
+    upcase_name="$REPLY"
     local version_env_var="ASDF_${upcase_name}_VERSION"
 
     printf "%s\n" "$version|$version_env_var environment variable"
@@ -237,7 +279,9 @@ display_no_version_set() {
 get_version_from_env() {
   local plugin_name=$1
   local upcase_name
-  upcase_name=$(printf "%s\n" "$plugin_name" | tr '[:lower:]-' '[:upper:]_')
+  local fast_tr_arr=("$plugin_name" "[:lower:]" "[:upper:]" "-" "_")
+  fast_tr "${fast_tr_arr[@]}"
+  upcase_name="$REPLY"
   local version_env_var="ASDF_${upcase_name}_VERSION"
   local version=${!version_env_var:-}
   printf "%s\n" "$version"
@@ -280,7 +324,8 @@ get_custom_executable_path() {
 
   # custom plugin hook for executable path
   if [ -x "${plugin_path}/bin/exec-path" ]; then
-    cmd=$(basename "$executable_path")
+    fast_basename "$executable_path"
+    local cmd="$REPLY"
     local relative_path
     # shellcheck disable=SC2001
     relative_path=$(printf "%s\n" "$executable_path" | sed -e "s|${install_path}/||")
@@ -300,7 +345,8 @@ get_executable_path() {
 
   if [ "$version" = "system" ]; then
     path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
-    cmd=$(basename "$executable_path")
+    fast_basename "$executable_path"
+    local cmd="$REPLY"
     cmd_path=$(PATH=$path command -v "$cmd" 2>&1)
     # shellcheck disable=SC2181
     if [ $? -ne 0 ]; then
@@ -320,8 +366,7 @@ parse_asdf_version_file() {
 
   if [ -f "$file_path" ]; then
     local version
-    version=$(strip_tool_version_comments "$file_path" | grep "^${plugin_name} " | sed -e "s/^${plugin_name} //")
-
+    version=$(awk -v plugin_name="$plugin_name" '!/^#/ { gsub(/#.*/,"",$0); gsub(/ +$/,"",$0) } $1 == plugin_name {$1=""; gsub(/^ +/,"",$0); print $0}' "$file_path")
     if [ -n "$version" ]; then
       if [[ "$version" == path:* ]]; then
         util_resolve_user_path "${version#path:}"
@@ -581,9 +626,7 @@ with_plugin_env() {
   local path exec_paths
   exec_paths="$(list_plugin_exec_paths "$plugin_name" "$full_version")"
 
-  # exec_paths contains a trailing newline which is converted to a colon, so no
-  # colon is needed between the subshell and the PATH variable in this string
-  path="$(tr '\n' ':' <<<"$exec_paths")$PATH"
+  path="${exec_paths}:$PATH"
 
   # If no custom exec-env transform, just execute callback
   if [ ! -f "${plugin_path}/bin/exec-env" ]; then
@@ -620,10 +663,8 @@ plugin_executables() {
 
 is_executable() {
   local executable_path=$1
-  if [[ (-f "$executable_path") && (-x "$executable_path") ]]; then
-    return 0
-  fi
-  return 1
+  [ -x "$executable_path" ]
+  return $?
 }
 
 plugin_shims() {
@@ -634,11 +675,15 @@ plugin_shims() {
 
 shim_plugin_versions() {
   local executable_name
-  executable_name=$(basename "$1")
+  fast_basename "$1"
+  executable_name="$REPLY"
   local shim_path
   shim_path="$(asdf_data_dir)/shims/${executable_name}"
   if [ -x "$shim_path" ]; then
-    grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
+    # not sure why uniq was needed here since asdf doesn't let you install the same plugin version twice - maybe for legacy?
+    # nevertheless, the awk command handles de-duping; if it isn't needed, the sed command is ~3% faster
+    #sed -n "/# asdf-plugin: /s/# asdf-plugin: //p 2>/dev/null" "$shim_path"
+    awk '/# asdf-plugin: / { l=$(NF-1) " " $NF; !seen[$0]++; if (seen[$0] < 2) { print l } }' "$shim_path" 2>/dev/null
   else
     printf "asdf: unknown shim %s\n" "$executable_name"
     return 1
@@ -647,11 +692,12 @@ shim_plugin_versions() {
 
 shim_plugins() {
   local executable_name
-  executable_name=$(basename "$1")
+  fast_basename "$1"
+  executable_name="$REPLY"
   local shim_path
   shim_path="$(asdf_data_dir)/shims/${executable_name}"
   if [ -x "$shim_path" ]; then
-    grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | cut -d' ' -f 1 | uniq
+    awk '/# asdf-plugin: / { l=$(NF-1) } END { print l} ' "$shim_path" 2>/dev/null
   else
     printf "asdf: unknown shim %s\n" "$executable_name"
     return 1
@@ -662,12 +708,11 @@ strip_tool_version_comments() {
   local tool_version_path="$1"
   # Use sed to strip comments from the tool version file
   # Breakdown of sed command:
-  # This command represents 3 steps, separated by a semi-colon (;), that run on each line.
+  # This command represents 2 steps, separated by a semi-colon (;), that run on each line.
   # 1. Delete line if it starts with any blankspace and a #.
-  # 2. Find a # and delete it and everything after the #.
-  # 3. Remove any whitespace from the end of the line.
+  # 2. Find a # and delete it and everything after the #, and remove trailing whitespace.
   # Finally, the command will print the lines that are not empty.
-  sed '/^[[:blank:]]*#/d;s/#.*//;s/[[:blank:]]*$//' "$tool_version_path"
+  sed '/^[[:blank:]]*#/d; s/\s*#.*$//;' "$tool_version_path"
 }
 
 asdf_run_hook() {
@@ -686,19 +731,18 @@ asdf_run_hook() {
 get_shim_versions() {
   shim_name=$1
   shim_plugin_versions "${shim_name}"
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | awk '{print$1" system"}'
+  shim_plugin_versions "${shim_name%% [0-9]*} system}"
 }
 
 preset_versions() {
   shim_name=$1
-  shim_plugin_versions "${shim_name}" | cut -d' ' -f 1 | uniq | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
+  shim_plugin_versions "${shim_name%% [0-9]*}" | xargs -IPLUGIN bash -c ". $(asdf_dir)/lib/utils.bash; printf \"%s %s\n\" PLUGIN \$(get_preset_version_for PLUGIN)"
 }
 
 select_from_preset_version() {
   local shim_name=$1
   local shim_versions
   local preset_versions
-
   shim_versions=$(get_shim_versions "$shim_name")
   if [ -n "$shim_versions" ]; then
     preset_versions=$(preset_versions "$shim_name")
@@ -721,7 +765,6 @@ select_version() {
 
   local plugins
   IFS=$'\n' read -rd '' -a plugins <<<"$(shim_plugins "$shim_name")"
-
   for plugin_name in "${plugins[@]}"; do
     local version_and_path
     local version_string
@@ -751,7 +794,8 @@ select_version() {
 
 with_shim_executable() {
   local shim_name
-  shim_name=$(basename "$1")
+  fast_basename "$1"
+  shim_name="$REPLY"
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
@@ -761,7 +805,6 @@ with_shim_executable() {
 
   local selected_version
   selected_version="$(select_version "$shim_name")"
-
   if [ -z "$selected_version" ]; then
     selected_version="$(select_from_preset_version "$shim_name")"
   fi
@@ -844,7 +887,9 @@ remove_path_from_path() {
   # Output is a new string suitable for assignment to PATH
   local PATH=$1
   local path=$2
-  substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
+  PATH=${PATH//"$path"/}
+  PATH=${PATH//"::"/":"}
+  printf "%s" "$PATH"
 }
 
 # @description Strings that began with a ~ are always paths. In
