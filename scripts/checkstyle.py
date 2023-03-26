@@ -8,17 +8,17 @@ from typing import Callable, List, Dict, Any # compat
 # This file checks Bash and Shell scripts for violations not found with
 # shellcheck or existing methods. You can use it in several ways:
 #
-# Lint all .bash, .sh, and .bats files and print out violations
+# Lint all .bash, .sh, .bats files along with 'bin/asdf' and print out violations:
 # $ ./scripts/checkstyle.py
 #
 # The former, but also fix all violations. This must be ran until there
-# are zero violations since any line can have more than one violation
+# are zero violations since any line can have more than one violation:
 # $ ./scripts/checkstyle.py --fix
 #
-# Lint a particular file
+# Lint a particular file:
 # $ ./scripts/checkstyle.py ./lib/functions/installs.bash
 #
-# Check to ensure all regexes are working as intended
+# Check to ensure all regular expressions are working as intended:
 # $ ./scripts/checkstyle.py --internal-test-regex
 
 Rule = Dict[str, Any]
@@ -35,7 +35,7 @@ class c:
     UNDERLINE = '\033[4m'
     LINK: Callable[[str, str], str] = lambda href, text: f'\033]8;;{href}\a{text}\033]8;;\a'
 
-def utilGetStrs(line, m):
+def utilGetStrs(line: Any, m: Any):
     return (
         line[0:m.start('match')],
         line[m.start('match'):m.end('match')],
@@ -44,22 +44,22 @@ def utilGetStrs(line, m):
 
 # Before: printf '%s\\n' '^w^'
 # After: printf '%s\n' '^w^'
-def noDoubleBackslashFixer(line: str, m) -> str:
+def noDoubleBackslashFixer(line: str, m: Any) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     return f'{prestr}{midstr[1:]}{poststr}'
 
 # Before: $(pwd)
 # After: $PWD
-def noPwdCaptureFixer(line: str, m) -> str:
-    prestr, midstr, poststr = utilGetStrs(line, m)
+def noPwdCaptureFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
 
     return f'{prestr}$PWD{poststr}'
 
 # Before: [ a == b ]
 # After: [ a = b ]
-def noTestDoubleEqualsFixer(line: str, m) -> str:
-    prestr, midstr, poststr = utilGetStrs(line, m)
+def noTestDoubleEqualsFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
 
     return f'{prestr}={poststr}'
 
@@ -68,7 +68,7 @@ def noTestDoubleEqualsFixer(line: str, m) -> str:
 # ---
 # Before: function fn { ...
 # After fn() { ...
-def noFunctionKeywordFixer(line: str, m) -> str:
+def noFunctionKeywordFixer(line: str, m: Any) -> str:
     prestr, midstr, poststr = utilGetStrs(line, m)
 
     midstr = midstr.strip()
@@ -183,14 +183,14 @@ def main():
     if args.internal_test_regex:
         for rule in rules:
             for positiveMatch in rule['testPositiveMatches']:
-                m = re.search(rule['regex'], positiveMatch)
+                m: Any = re.search(rule['regex'], positiveMatch)
                 if m is None or m.group('match') is None:
                     print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.CYAN}positive{c.RESET} test:')
                     print(f'=> {positiveMatch}')
                     print()
 
             for negativeMatch in rule['testNegativeMatches']:
-                m = re.search(rule['regex'], negativeMatch)
+                m: Any = re.search(rule['regex'], negativeMatch)
                 if m is not None and m.group('match') is not None:
                     print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.YELLOW}negative{c.RESET} test:')
                     print(f'=> {negativeMatch}')
@@ -210,7 +210,7 @@ def main():
                 lintfile(p, rules, options)
     else:
         for file in Path.cwd().glob('**/*'):
-            if file.name.endswith('.bash') or file.name.endswith('.sh') or file.name.endswith('.bats'):
+            if file.name.endswith('.bash') or file.name.endswith('.sh') or file.name.endswith('.bats') or str(file.absolute()).endswith('bin/asdf'):
                 if file.is_file():
                     lintfile(file, rules, options)
 
