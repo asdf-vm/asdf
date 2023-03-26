@@ -68,6 +68,19 @@ asdf_cmd() {
     exit 1
   fi
 
+  # Internal Variables
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=$(asdf_default_tool_versions_filename)
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+
+  ASDF_CONFIG_FILE=$(asdf_config_file)
+  export ASDF_CONFIG_FILE
+
+  ASDF_DATA_DIR=$(asdf_data_dir)
+  export ASDF_DATA_DIR
+
+  ASDF_DIR=$(asdf_dir)
+  export ASDF_DIR
+
   local result=
   result="$(find_asdf_cmd "$@")"
   ASDF_CMD_FILE=${result% *}
