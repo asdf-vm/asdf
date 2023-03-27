@@ -263,6 +263,39 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 补全功能会被放在一个对 ZSH 很友好的位置，但是 [ZSH 必须使用自动补全完成配置](https://wiki.archlinux.org/index.php/zsh#Command_completion)。
 :::
 
+::: details Nushell & Git
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中：
+
+```shell
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
+::: details Nushell & Homebrew
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
+
+```shell:no-line-numbers
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
+::: details Nushell & Pacman
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
+
+```shell
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
 ::: details POSIX Shell & Git
 
 在 `~/.profile` 文件中加入以下内容：
