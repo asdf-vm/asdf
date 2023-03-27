@@ -5,9 +5,6 @@ GREP_OPTIONS="--color=never"
 # shellcheck disable=SC2034
 GREP_COLORS=
 
-ASDF_DIR=${ASDF_DIR:-''}
-ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
-
 asdf_version() {
   local version git_rev
   version="v$(cat "$(asdf_dir)/version.txt")"
@@ -19,21 +16,12 @@ asdf_version() {
   fi
 }
 
-asdf_dir() {
-  if [ -z "$ASDF_DIR" ]; then
-    local current_script_path=${BASH_SOURCE[0]}
-    export ASDF_DIR
-    ASDF_DIR=$(
-      cd "$(dirname "$(dirname "$current_script_path")")" || exit
-      printf '%s\n' "$PWD"
-    )
-  fi
-
-  printf "%s\n" "$ASDF_DIR"
+asdf_default_tool_versions_filename() {
+  printf '%s\n' "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
-asdf_repository_url() {
-  printf "https://github.com/asdf-vm/asdf-plugins.git\n"
+asdf_config_file() {
+  printf '%s\n' "${ASDF_CONFIG_FILE:-$HOME/.asdfrc}"
 }
 
 asdf_data_dir() {
@@ -48,6 +36,22 @@ asdf_data_dir() {
   fi
 
   printf "%s\n" "$data_dir"
+}
+
+asdf_dir() {
+  if [ -z "$ASDF_DIR" ]; then
+    local current_script_path=${BASH_SOURCE[0]}
+    printf '%s\n' "$(
+      cd -- "$(dirname "$(dirname "$current_script_path")")" || exit
+      printf '%s\n' "$PWD"
+    )"
+  else
+    printf '%s\n' "$ASDF_DIR"
+  fi
+}
+
+asdf_repository_url() {
+  printf "https://github.com/asdf-vm/asdf-plugins.git\n"
 }
 
 get_install_path() {
@@ -159,7 +163,7 @@ get_version_in_dir() {
 
   local asdf_version
 
-  file_name=$(version_file_name)
+  file_name=$(asdf_default_tool_versions_filename)
   asdf_version=$(parse_asdf_version_file "$search_path/$file_name" "$plugin_name")
 
   if [ -n "$asdf_version" ]; then
@@ -176,10 +180,6 @@ get_version_in_dir() {
       return 0
     fi
   done
-}
-
-version_file_name() {
-  printf "%s" "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
 find_versions() {
@@ -385,7 +385,8 @@ get_asdf_config_value_from_file() {
 
 get_asdf_config_value() {
   local key=$1
-  local config_path=${ASDF_CONFIG_FILE:-"$HOME/.asdfrc"}
+  local config_path=
+  config_path=$(asdf_config_file)
   local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
 
   local local_config_path
@@ -454,7 +455,7 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-  find_file_upwards "$(version_file_name)"
+  find_file_upwards "$(asdf_default_tool_versions_filename)"
 }
 
 find_file_upwards() {
