@@ -523,7 +523,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: asdf_plugin_test
-        uses: asdf-vm/actions/plugin-test@v1
+        uses: asdf-vm/actions/plugin-test@v2
         with:
           command: "<MY_TOOL> --version"
 ```
