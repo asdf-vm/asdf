@@ -534,7 +534,7 @@ A sample `.travis.yml` file, customize it to your needs
 
 ```yaml
 language: c
-script: asdf plugin test nodejs $TRAVIS_BUILD_DIR 'node --version'
+script: asdf plugin test <MY_TOOL> $TRAVIS_BUILD_DIR '<MY_TOOL> --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git asdf
   - . asdf/asdf.sh
@@ -545,7 +545,7 @@ os:
 
 ::: tip NOTE
 
-When using another CI you may need to pass a relative path to to the plugin
+When using another CI you may need to pass a relative path to the plugin
 location:
 
 ```shell:no-line-numbers
