@@ -31,27 +31,25 @@ There are two options to get started with creating your own plugin:
 
 The full list of scripts callable from asdf.
 
-<!-- TODO(jthegedus): fill out the overview descriptions -->
-
-| Script                                                                                                | Description                                              |
-| :---------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
-| [bin/list-all](#bin-list-all) <Badge type="tip" text="required" vertical="middle" />                  | List all installable versions                            |
-| [bin/download](#bin-download) <Badge type="tip" text="required" vertical="middle" />                  | Download source code or binary for the specified version |
-| [bin/install](#bin-install) <Badge type="tip" text="required" vertical="middle" />                    | Installs the specified version                           |
-| [bin/latest-stable](#bin-latest-stable) <Badge type="warning" text="recommended" vertical="middle" /> | List the latest stable version of the specified tool     |
-| [bin/help.overview](#bin-help.overview)                                                               |                                                          |
-| [bin/help.deps](#bin-help.deps)                                                                       |                                                          |
-| [bin/help.config](#bin-help.config)                                                                   |                                                          |
-| [bin/help.links](#bin-help.links)                                                                     |                                                          |
-| [bin/list-bin-paths](#bin-list-bin-paths)                                                             |                                                          |
-| [bin/exec-env](#bin-exec-env)                                                                         |                                                          |
-| [bin/exec-path](#bin-exec-path)                                                                       |                                                          |
-| [bin/uninstall](#bin-uninstall)                                                                       |                                                          |
-| [bin/list-legacy-filenames](#bin-list-legacy-filenames)                                               |                                                          |
-| [bin/parse-legacy-file](#bin-parse-legacy-file)                                                       |                                                          |
-| [bin/post-plugin-add](#bin-post-plugin-add)                                                           |                                                          |
-| [bin/post-plugin-update](#bin-post-plugin-update)                                                     |                                                          |
-| [bin/pre-plugin-remove](#bin-pre-plugin-remove)                                                       |                                                          |
+| Script                                                                                                | Description                                                      |
+| :---------------------------------------------------------------------------------------------------- |:-----------------------------------------------------------------|
+| [bin/list-all](#bin-list-all) <Badge type="tip" text="required" vertical="middle" />                  | List all installable versions                                    |
+| [bin/download](#bin-download) <Badge type="tip" text="required" vertical="middle" />                  | Download source code or binary for the specified version         |
+| [bin/install](#bin-install) <Badge type="tip" text="required" vertical="middle" />                    | Installs the specified version                                   |
+| [bin/latest-stable](#bin-latest-stable) <Badge type="warning" text="recommended" vertical="middle" /> | List the latest stable version of the specified tool             |
+| [bin/help.overview](#bin-help.overview)                                                               | Output a general description about the plugin & tool             |
+| [bin/help.deps](#bin-help.deps)                                                                       | Output a list of dependencies per Operating System               |
+| [bin/help.config](#bin-help.config)                                                                   | Output plugin or tool configuration information                  |
+| [bin/help.links](#bin-help.links)                                                                     | Output a list of links for the plugin or tool                    |
+| [bin/list-bin-paths](#bin-list-bin-paths)                                                             | List relative paths to directories with binaries to create shims |
+| [bin/exec-env](#bin-exec-env)                                                                         | Prepare the environment for running the binaries                 |
+| [bin/exec-path](#bin-exec-path)                                                                       | Output the executable path for a version of a tool               |
+| [bin/uninstall](#bin-uninstall)                                                                       | Uninstall a specific version of a tool                           |
+| [bin/list-legacy-filenames](#bin-list-legacy-filenames)                                               | Output filenames of legacy version files: `.ruby-version`        |
+| [bin/parse-legacy-file](#bin-parse-legacy-file)                                                       | Custom parser for legacy version files                           |
+| [bin/post-plugin-add](#bin-post-plugin-add)                                                           | Hook to execute after a plugin has been added                    |
+| [bin/post-plugin-update](#bin-post-plugin-update)                                                     | Hook to execute after a plugin has been updated                  |
+| [bin/pre-plugin-remove](#bin-pre-plugin-remove)                                                       | Hook to execute before a plugin is removed                       |
 
 To see which commands invoke which scripts, see the detailed documentation for
 each script.
@@ -404,7 +402,6 @@ See also the related hooks:
 - `post_asdf_plugin_remove`
 - `post_asdf_plugin_remove_${plugin_name}`
 
-<!-- TODO(jthegedus): rework from bin/download to bin/pre-plugin-remove -->
 <!-- TODO(jthegedus): NOTE - below here has already been reworked -->
 
 ## Extension Commands for asdf CLI <Badge type="danger" text="advanced" vertical="middle" />
