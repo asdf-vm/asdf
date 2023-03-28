@@ -59,12 +59,12 @@ each script.
 The full list of Environment Variables used throughout all scripts.
 
 | Environment Variables    | Description                                                                             |
-| :----------------------- | :-------------------------------------------------------------------------------------- |
+| :----------------------- |:----------------------------------------------------------------------------------------|
 | `ASDF_INSTALL_TYPE`      | `version` or `ref`                                                                      |
 | `ASDF_INSTALL_VERSION`   | full version number or Git Ref depending on `ASDF_INSTALL_TYPE`                         |
 | `ASDF_INSTALL_PATH`      | the path to where the tool _should_, or _has been_ installed                            |
 | `ASDF_CONCURRENCY`       | the number of cores to use when compiling the source code. Useful for setting `make -j` |
-| `ASDF_DOWNLOAD_PATH`     | the path to where the source code or binary was downloaded to in `bin/download`         |
+| `ASDF_DOWNLOAD_PATH`     | the path to where the source code or binary was downloaded to by `bin/download`         |
 | `ASDF_PLUGIN_PATH`       | the path the plugin was installed                                                       |
 | `ASDF_PLUGIN_SOURCE_URL` | the source URL of the plugin                                                            |
 | `ASDF_PLUGIN_PREV_REF`   | prevous `git-ref` of the plugin repo                                                    |
@@ -127,7 +127,7 @@ No environment variables are provided to this script.
 
 **Call signature from asdf core**
 
-No parameteres provided.
+No parameters provided.
 
 ```bash:no-line-numbers
 "${plugin_path}/bin/list-all"
@@ -135,39 +135,55 @@ No parameteres provided.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/download to bin/pre-plugin-remove -->
-
 ### `bin/download` <Badge type="tip" text="required" vertical="middle" />
-
-This script must download the source or binary, in the path contained in the
-`ASDF_DOWNLOAD_PATH` environment variable. If the downloaded source or binary is
-compressed, only the uncompressed source code or binary may be placed in the
-`ASDF_DOWNLOAD_PATH` directory.
-
-The script must exit with a status of `0` when the download is successful. If
-the download fails the script must exit with any non-zero exit status.
-
-If possible the script should only place files in the `ASDF_DOWNLOAD_PATH`. If
-the download fails no files should be placed in the directory.
-
-If this script is not present asdf will assume that the `bin/install` script is
-present and will download and install the version. asdf only works without this
-script to support legacy plugins. All plugins must include this script, and
-eventually support for legacy plugins will be removed.
 
 **Description**
 
+Download the source code or binary for a specific version of a tool to a specified location.
+
+**Implementation Details**
+
+- The script must download the source or binary to the directory specified by `ASDF_DOWNLOAD_PATH`.
+- Only the decompressed source code or binary should be placed in the `ASDF_DOWNLOAD_PATH` directory.
+- On failure, no files should be placed in `ASDF_DOWNLOAD_PATH`.
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Legacy Plugins**
+
+Though this script is marked as _required_ for all plugins, it is _optional_ for "legacy" plugins which predate its introduction.
+
+If this script is absent, asdf will assume that the `bin/install` script is present and will download **and** install the version.
+
+All plugins must include this script and eventually support for legacy plugins will be removed.
+
 **Environment Variables available to script**
 
-- ``:
-- ``:
-- ``:
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+- `ASDF_DOWNLOAD_PATH`: The path to where the source code or binary was downloaded to.
 
 **Commands that invoke this script**
 
+- `asdf install <tool> [version]`
+- `asdf install <tool> latest[:version]`
+- `asdf install nodejs 18.0.0`: downloads the source code or binary for Node.js
+  version `18.0.0` and places it in the `ASDF_DOWNLOAD_PATH` directory. Then runs the `bin/install` script.
+
 **Call signature from asdf core**
 
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/download
+```
+
 ---
+
+<!-- TODO(jthegedus): rework from bin/install to bin/pre-plugin-remove -->
 
 ### `bin/install` <Badge type="tip" text="required" vertical="middle" />
 
