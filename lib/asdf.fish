@@ -5,7 +5,7 @@ function asdf
     set -e argv[1]
 
     switch "$command"
-        case "shell"
+        case shell
             # source commands that need to export variables
             command asdf export-shell-version fish $argv | source # asdf_allow: source
         case '*'
