@@ -261,6 +261,36 @@ Add the following to `~/.zshrc`:
 Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
+::: details PowerShell Core & Git
+
+Add the following to `~/.config/powershell/profile.ps1`:
+
+```shell
+. "$HOME/.asdf/asdf.ps1"
+```
+
+:::
+
+::: details PowerShell Core & Homebrew
+
+Add `asdf.sh` to your `~/.config/powershell/profile.ps1` with:
+
+```shell:no-line-numbers
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+```
+
+:::
+
+::: details PowerShell Core & Pacman
+
+Add the following to `~/.config/powershell/profile.ps1`:
+
+```shell
+. /opt/asdf-vm/asdf.ps1
+```
+
+:::
+
 ::: details Nushell & Git
 
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:

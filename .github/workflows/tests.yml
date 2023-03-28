@@ -59,9 +59,11 @@ jobs:
 
       - name: Install test dependencies
         run: |
+          curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee >/dev/null /etc/apt/trusted.gpg.d/microsoft.asc
+          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
           sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
-          sudo apt-get -y install fish curl parallel
+          sudo apt-get -y install fish curl parallel powershell
 
           # Create $HOME/bin
           mkdir -p "$HOME/bin"
