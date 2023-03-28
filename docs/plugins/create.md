@@ -155,7 +155,7 @@ Though this script is marked as _required_ for all plugins, it is _optional_ for
 
 If this script is absent, asdf will assume that the `bin/install` script is present and will download **and** install the version.
 
-All plugins must include this script and eventually support for legacy plugins will be removed.
+All plugins must include this script as support for legacy plugins will eventually be removed.
 
 **Environment Variables available to script**
 
