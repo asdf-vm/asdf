@@ -25,6 +25,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Fish (for fish_indent)
+        run: |
+          sudo add-apt-repository -y ppa:fish-shell/nightly-master
+          sudo apt-get update
+          sudo apt-get -y install fish
+
       - name: Install asdf dependencies
         uses: asdf-vm/actions/install@v2
 
