@@ -23,3 +23,6 @@ shfmt --language-dialect bash --indent 2 --write \
 # check .bats files
 shfmt --language-dialect bats --indent 2 --write \
   test/*.bats
+
+# check .fish files
+fish_indent --write ./**/*.fish
