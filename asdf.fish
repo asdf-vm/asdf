@@ -1,38 +1,24 @@
-if not set -q ASDF_DIR
-  set -x ASDF_DIR (dirname (status -f))
+if test -z $ASDF_DIR
+    set ASDF_DIR (realpath (dirname (status filename)))
 end
+set --export ASDF_DIR $ASDF_DIR
 
-# Add asdf to PATH
-# fish_add_path was added in fish 3.2, so we need a fallback for older version
-if type -q fish_add_path
-  if test -n "$ASDF_DATA_DIR"
-    fish_add_path --global --move "$ASDF_DATA_DIR/shims" "$ASDF_DIR/bin"
-  else
-    fish_add_path --global --move "$HOME/.asdf/shims" "$ASDF_DIR/bin"
-  end
+set -l _asdf_bin "$ASDF_DIR/bin"
+if test -z $ASDF_DATA_DIR
+    set _asdf_shims "$HOME/.asdf/shims"
 else
-  set -l asdf_user_shims (
-    if test -n "$ASDF_DATA_DIR"
-      printf "%s\n" "$ASDF_DATA_DIR/shims"
-    else
-      printf "%s\n" "$HOME/.asdf/shims"
-    end
-  )
-
-  set -l asdf_bin_dirs $ASDF_DIR/bin $asdf_user_shims
-
-  for x in $asdf_bin_dirs
-    if test -d $x
-      for i in (seq 1 (count $PATH))
-        if test $PATH[$i] = $x
-          set -e PATH[$i]
-          break
-        end
-      end
-    end
-    set PATH $x $PATH
-  end
+    set _asdf_shims "$ASDF_DATA_DIR/shims"
 end
+
+# Do not use fish_add_path (added in Fish 3.2) because it
+# potentially changes the order of items in fish_user_paths
+if not contains $_asdf_bin $fish_user_paths
+    set --global --prepend fish_user_paths $_asdf_bin
+end
+if not contains $_asdf_shims $fish_user_paths
+    set --global --prepend fish_user_paths $_asdf_shims
+end
+set --erase _asdf_bin _asdf_shims
 
 # Load the asdf wrapper function
 . $ASDF_DIR/lib/asdf.fish
