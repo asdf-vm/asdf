@@ -90,8 +90,8 @@ get_download_path() {
 
 list_installed_versions() {
   local plugin_name=$1
-  local plugin_path
-  plugin_path=$(get_plugin_path "$plugin_name")
+  # local plugin_path
+  # plugin_path=$(get_plugin_path "$plugin_name")
 
   local plugin_installs_path
   plugin_installs_path="$(asdf_data_dir)/installs/${plugin_name}"
