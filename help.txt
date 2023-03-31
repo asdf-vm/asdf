@@ -34,8 +34,8 @@ asdf install <name> latest[:<version>]  Install the latest stable version of a
 asdf latest <name> [<version>]          Show latest stable version of a package
 asdf latest --all                       Show latest stable version of all the
                                         packages and if they are installed
-asdf list <name> [version]              List installed versions of a package and
-                                        optionally filter the versions
+asdf list <name> [version] [-d|--delimited [delimiter]] List installed versions of a
+                                        package and optionally filter the versions. Optional delimiter (default a space) for script-friendly format.
 asdf list all <name> [<version>]        List all versions of a package and
                                         optionally filter the returned versions
 asdf local <name> <version>             Set the package local version
