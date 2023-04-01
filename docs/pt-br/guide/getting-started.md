@@ -262,6 +262,36 @@ Adicione a seguinte linha ao seu `~/.zshrc`:
 . /opt/asdf-vm/asdf.sh
 ```
 
+::: details PowerShell Core & Git
+
+Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
+
+```shell
+. "$HOME/.asdf/asdf.ps1"
+```
+
+:::
+
+::: details PowerShell Core & Homebrew
+
+Adicione `asdf.ps1` ao seu `~/.config/powershell/profile.ps1` através do comando:
+
+```shell:no-line-numbers
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+```
+
+:::
+
+::: details PowerShell Core & Pacman
+
+Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
+
+```shell
+. /opt/asdf-vm/asdf.ps1
+```
+
+:::
+
 ::: details Nushell & Git
 
 Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
