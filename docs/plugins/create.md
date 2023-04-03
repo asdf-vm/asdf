@@ -212,7 +212,7 @@ variable. If set, assume the `bin/download` script already downloaded the versio
   - Full version number if `ASDF_INSTALL_TYPE=version`.
   - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
 - `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
-- `ASDF_CONCURRENCY`: TODO
+- `ASDF_CONCURRENCY`: The number of cores to use when compiling source code. Useful for setting flags like `make -j`.
 - `ASDF_DOWNLOAD_PATH`: The path where the source code or binary was downloaded to.
 
 **Commands that invoke this script**
