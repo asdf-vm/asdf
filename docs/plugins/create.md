@@ -183,35 +183,58 @@ No parameters provided.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/install to bin/pre-plugin-remove -->
-
 ### `bin/install` <Badge type="tip" text="required" vertical="middle" />
 
-This script should install the version, in the path mentioned in
-`ASDF_INSTALL_PATH`. By default, asdf will create shims for any files in
-`$ASDF_INSTALL_PATH/bin` (this can be customized with the optional
-[bin/list-bin-paths](#binlist-bin-paths) script).
+**Description**
 
-The install script should exit with a status of `0` when the installation is
-successful. If the installation fails the script should exit with any non-zero
-exit status.
+Install a specific version of a tool to a specified location.
 
-If possible the script should only place files in the `ASDF_INSTALL_PATH`
-directory once the build and installation of the tool is deemed successful by
-the install script. asdf
-[checks for the existence](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44)
-of the `ASDF_INSTALL_PATH` directory in order to determine if that version of
-the tool is installed. If the `ASDF_INSTALL_PATH` directory is populated at the
-beginning of the installation process other asdf commands run in other terminals
-during the installation may consider that version of the tool installed, even
-when it is not fully installed.
+**Implementation Details**
 
-If you want your plugin to work with asdf version 0.7._ and earlier and version
-0.8._ and newer check for the presence of the `ASDF_DOWNLOAD_PATH` environment
-variable. If it is not set download the source code in the bin/install callback.
-If it is set assume the `bin/download` script already downloaded it.
+- The script should install the specified version in the path `ASDF_INSTALL_PATH`.
+- Shims will be created by default for any files in `$ASDF_INSTALL_PATH/bin`. This behaviour can be customised with the optional
+[bin/list-bin-paths](#binlist-bin-paths) script.
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+- To avoid TOCTOU (Time-of-Check-to-Time-of-Use) issues, ensure the script only places files in `ASDF_INSTALL_PATH` once the build and installation of the tool is deemed a success.
+
+**Legacy Plugins**
+
+If the `bin/download` script is absent, this script should download **and** install the specified version.
+
+For compatibility with versions of the asdf core earlier than `0.7._` and newer than `0.8._`, check for the presence of the `ASDF_DOWNLOAD_PATH` environment
+variable. If set, assume the `bin/download` script already downloaded the version, else download the source code in the `bin/install` script.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+- `ASDF_CONCURRENCY`: TODO
+- `ASDF_DOWNLOAD_PATH`: The path where the source code or binary was downloaded to.
+
+**Commands that invoke this script**
+
+- `asdf install`
+- `asdf install <tool>`
+- `asdf install <tool> [version]`
+- `asdf install <tool> latest[:version]`
+- `asdf install nodejs 18.0.0`: installs Node.js version `18.0.0` in the
+  `ASDF_INSTALL_PATH` directory.
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/install
+```
 
 ## Optional Scripts
+
+<!-- TODO(jthegedus): rework from bin/latest-stable to bin/pre-plugin-remove -->
 
 ### `bin/latest-stable` <Badge type="warning" text="recommended" vertical="middle" />
 
@@ -351,6 +374,7 @@ No environment variables are provided to this script.
 **Commands that invoke this script**
 
 - `asdf list all <name> <version>`
+- `asdf uninstall nodejs 18.15.0`: Uninstalls the version `18.15.0` of nodejs, removing all shims including those installed global with `npm i -g`
 
 **Call signature from asdf core**
 
