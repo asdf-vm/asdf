@@ -336,7 +336,29 @@ Output:
 
 ### `bin/uninstall`
 
-Uninstalls a specific version of a tool.
+**Description**
+
+Uninstall the provided version of a tool.
+
+**Output Format**
+
+Output should be sent to `stdout` or `stderr` as appropriate for the user. No output is read by subsequent execution in the core.
+
+**Environment Variables available to script**
+
+No environment variables are provided to this script.
+
+**Commands that invoke this script**
+
+- `asdf list all <name> <version>`
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/uninstall"
+```
 
 ---
 
