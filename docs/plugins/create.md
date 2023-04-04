@@ -477,11 +477,31 @@ This will instruct asdf to create shims for the files in:
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/exec-env to bin/pre-plugin-remove -->
-
 ### `bin/exec-env`
 
-Setup the env to run the binaries in the package.
+**Description**
+
+Prepare the environment before executing the shims for the binaries for the tool.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf which <command>`: Display the path to an executable
+- `asdf exec <command> [args...]`: Executes the command shim for current version
+- `asdf env <command> [util]`: Runs util (default: `env`) inside the environment used for command shim execution.
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}/bin/exec-env"
+```
 
 ---
 
@@ -492,6 +512,15 @@ string with the relative executable path. This allows the plugin to
 conditionally override the shim's specified executable path, otherwise return
 the default path specified by the shim.
 
+**Description**
+
+Get the executable path for the specified version of the tool.
+
+**Implementation Details**
+
+- Must print a string with the relative executable path.
+- Conditionally override the shim's specified executable path, otherwise return the default path specified by the shim.
+
 ```shell
 Usage:
   plugin/bin/exec-path <install-path> <command> <executable-path>
@@ -501,6 +530,26 @@ Example Call:
 
 Output:
   bin/foox
+```
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf which <command>`: Display the path to an executable
+- `asdf exec <command> [args...]`: Executes the command shim for current version
+- `asdf env <command> [util]`: Runs util (default: `env`) inside the environment used for command shim execution.
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$relative_path"
 ```
 
 ---
@@ -533,6 +582,8 @@ No parameters provided.
 ```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/list-legacy-filenames to bin/pre-plugin-remove -->
 
 ### `bin/list-legacy-filenames`
 
