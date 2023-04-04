@@ -334,7 +334,7 @@ sed
 
 **Implementation Details**
 
-- this script requires `bin/help.overview` for its output to be considered.
+- This script requires `bin/help.overview` for its output to be considered.
 - Should be tailored to the Operating System and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
 - Success should exit with `0`.
 - Failure should exit with a non-zero status.
@@ -359,16 +359,41 @@ sed
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/help.config to bin/pre-plugin-remove -->
-
 ### `bin/help.config`
 
-This script should print any required or optional configuration that may be
-available for the plugin and tool. Any environment variables or other flags
-needed to install or compile the tool (for the users operating system when
-possible). Output can be free-form text.
+**Description**
+
+Output any required or optional configuration for the plugin and tool. For example, describe any environment variables or other flags needed to install or compile the tool.
+
+**Implementation Details**
+
+- This script requires `bin/help.overview` for its output to be considered.
+- Output can be free-form text.
+- Should be tailored to the Operating System and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf help <name> [<version>]`: Output documentation for plugin and tool
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/help.config
+```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/help.links to bin/pre-plugin-remove -->
 
 ### `bin/help.links`
 
