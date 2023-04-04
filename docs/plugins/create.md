@@ -393,15 +393,49 @@ Output any required or optional configuration for the plugin and tool. For examp
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/help.links to bin/pre-plugin-remove -->
-
 ### `bin/help.links`
 
-This should be a list of links relevant to the plugin and tool (again, tailored
-to the current operating system when possible). One link per line. Lines may be
-in the format `<title>: <link>` or just `<link>`.
+**Description**
+
+Output a list of links relevant to the plugin and tool. One link per line.
+
+```bash:no-line-numbers
+Git Repository:	https://github.com/vlang/v
+Documentation:	https://vlang.io
+```
+
+**Implementation Details**
+
+- This script requires `bin/help.overview` for its output to be considered.
+- One link per line.
+- Format must be either:
+  - `<title>: <link>`
+  - or just `<link>`
+- Should be tailored to the Operating System and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf help <name> [<version>]`: Output documentation for plugin and tool
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/help.links
+```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/list-bin-paths to bin/pre-plugin-remove -->
 
 ### `bin/list-bin-paths`
 
