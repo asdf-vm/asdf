@@ -296,7 +296,7 @@ Output a general description about the plugin and the tool being managed.
 - No heading should be printed as asdf core will print headings.
 - Output may be free-form text but ideally only one short paragraph.
 - Must not output any information that is already covered in the core asdf-vm documentation.
-- Should be tailored to the OS and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
+- Should be tailored to the Operating System and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
 - Success should exit with `0`.
 - Failure should exit with a non-zero status.
 
@@ -320,20 +320,48 @@ Output a general description about the plugin and the tool being managed.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/help.deps to bin/pre-plugin-remove -->
-
 ### `bin/help.deps`
 
-<!-- TODO(jthegedus): note, this script requires bin/help.overview -->
+**Description**
 
-This script should output the list of dependencies tailored to the operating
-system. One dependency per line.
+Output the list of dependencies tailored to the operating system. One dependency per line.
+
+```bash:no-line-numbers
+git
+curl
+sed
+```
+
+**Implementation Details**
+
+- this script requires `bin/help.overview` for its output to be considered.
+- Should be tailored to the Operating System and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf help <name> [<version>]`: Output documentation for plugin and tool
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/help.deps
+```
 
 ---
 
-### `bin/help.config`
+<!-- TODO(jthegedus): rework from bin/help.config to bin/pre-plugin-remove -->
 
-<!-- TODO(jthegedus): note, this script requires bin/help.overview -->
+### `bin/help.config`
 
 This script should print any required or optional configuration that may be
 available for the plugin and tool. Any environment variables or other flags
@@ -343,8 +371,6 @@ possible). Output can be free-form text.
 ---
 
 ### `bin/help.links`
-
-<!-- TODO(jthegedus): note, this script requires bin/help.overview -->
 
 This should be a list of links relevant to the plugin and tool (again, tailored
 to the current operating system when possible). One link per line. Lines may be
