@@ -619,20 +619,42 @@ No parameters provided.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/parse-legacy-file to bin/pre-plugin-remove -->
-
 ### `bin/parse-legacy-file`
 
-This can be used to further parse the legacy file found by asdf. If
-`parse-legacy-file` isn't implemented, asdf will simply `cat` the file to
-determine the version. The script will be passed the file path as its first
-argument. Note that this script should be **deterministic** and always return
-the same exact version when parsing the same legacy file. The script should
-return the same version regardless of what is installed on the machine or
-whether the legacy version is valid or complete. Some legacy file formats may
-not be suitable.
+**Description**
+
+Parse the legacy file found by asdf to determine the version of the tool. Useful to extract version numbers from files like JavaScript's `package.json` or Golangs `go.mod`.
+
+**Implementation Details**
+
+- If not present, asdf will simply `cat` the legacy file to determine the version.
+- Should be **deterministic** and always return the same exact version:
+  - when parsing the same legacy file.
+  - regardless of what is installed on the machine or whether the legacy version is valid or complete. Some legacy file formats may not be suitable.
+- Output a single line with the version:
+  ```bash:no-line-numbers
+  1.2.3
+  ```
+
+**Environment Variables available to script**
+
+No environment variables specifically set before this script is called.
+
+**Commands that invoke this script**
+
+Any command which reads a tool version.
+
+**Call signature from asdf core**
+
+The script should accept a single argument, the path to the legacy file for reading its contents.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/parse-legacy-file" "$file_path"
+```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/post-plugin-add to bin/pre-plugin-remove -->
 
 ### `bin/post-plugin-add`
 
