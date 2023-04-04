@@ -583,21 +583,43 @@ No parameters provided.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/list-legacy-filenames to bin/pre-plugin-remove -->
-
 ### `bin/list-legacy-filenames`
 
-Register additional setter files for this plugin. Must print a string with a
-space-separated list of filenames.
+**Description**
 
-```shell
-.ruby-version .rvmrc
+List legacy configuration filenames for determining the specified version of the tool.
+
+**Implementation Details**
+
+- Output a space-separated list of filenames.
+  ```bash:no-line-numbers
+  .ruby-version .rvmrc
+  ```
+- Only applies for users who have enabled the `legacy_version_file` option in their `"${HOME}"/.asdfrc`.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+Any command which reads a tool version.
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/list-legacy-filenames"
 ```
 
-Note: This will only apply for users who have enabled the `legacy_version_file`
-option in their `~/.asdfrc`.
-
 ---
+
+<!-- TODO(jthegedus): rework from bin/parse-legacy-file to bin/pre-plugin-remove -->
 
 ### `bin/parse-legacy-file`
 
