@@ -435,25 +435,49 @@ Documentation:	https://vlang.io
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/list-bin-paths to bin/pre-plugin-remove -->
-
 ### `bin/list-bin-paths`
 
-List executables for the specified version of the tool. Must print a string with
-a space-separated list of dir paths that contain executables. The paths must be
-relative to the install path passed. Example output would be:
+**Description**
 
-```shell
+List directories containing executables for the specified version of the tool.
+
+**Implementation Details**
+
+- If this script is not present, asdf will look for binaries in the `"${ASDF_INSTALL_PATH}"/bin` directory & create shims for those.
+- Output a space-separated list of paths containing executables.
+- Paths must be relative to `ASDF_INSTALL_PATH`. Example output would be:
+
+```bash:no-line-numbers
 bin tools veggies
 ```
 
-This will instruct asdf to create shims for the files in `<install-path>/bin`,
-`<install-path>/tools` and `<install-path>/veggies`
+This will instruct asdf to create shims for the files in:
+- `"${ASDF_INSTALL_PATH}"/bin`
+- `"${ASDF_INSTALL_PATH}"/tools`
+- `"${ASDF_INSTALL_PATH}"/veggies`
 
-If this script is not specified, asdf will look for the `bin` dir in an
-installation and create shims for those.
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf install <tool> [version]`: initially create shims for binaries.
+- `asdf reshim <tool> <version>`: recreate shims for binaries.
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}/bin/list-bin-paths"
+```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/exec-env to bin/pre-plugin-remove -->
 
 ### `bin/exec-env`
 
