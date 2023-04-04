@@ -282,36 +282,45 @@ The script should accept a single argument, the filter query.
 "${plugin_path}"/bin/latest-stable "$query"
 ```
 
-<!-- TODO(jthegedus): removed information -->
-
-<!-- Each of these scripts should tailor their output to the current operating
-system. For example, when on Ubuntu the deps script could output the
-dependencies as apt-get packages that must be installed. The script should also
-tailor its output to the value of `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`
-when the variables are set. They are optional and will not always be set.
-
-The help callback script MUST NOT output any information that is already covered
-in the core asdf-vm documentation. General asdf usage information must not be
-present. -->
-
 ---
-
-<!-- TODO(jthegedus): rework from bin/help-overview to bin/pre-plugin-remove -->
 
 ### `bin/help.overview`
 
-`bin/help.overview` - This script should output a general description about the
-plugin and the tool being managed. No heading should be printed as asdf will
-print headings. Output may be free-form text but ideally only one short
-paragraph. This script must be present if you want asdf to provide help
-information for your plugin. All other help callback scripts are optional.
+**Description**
 
-This is not one callback script but rather a set of callback scripts that each
-print different documentation to STDOUT. The possible callback scripts are
-listed below. Note that `bin/help.overview` is a special case as it must be
-present for any help output to be displayed for the script.
+Output a general description about the plugin and the tool being managed.
+
+**Implementation Details**
+
+- This script is required for any help output to be displayed for the plugin.
+- No heading should be printed as asdf core will print headings.
+- Output may be free-form text but ideally only one short paragraph.
+- Must not output any information that is already covered in the core asdf-vm documentation.
+- Should be tailored to the OS and version of the tool being installed (using optionally set Environment Variables `ASDF_INSTALL_VERSION` and `ASDF_INSTALL_TYPE`).
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf help <name> [<version>]`: Output documentation for plugin and tool
+
+**Call signature from asdf core**
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/help.overview
+```
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/help.deps to bin/pre-plugin-remove -->
 
 ### `bin/help.deps`
 
