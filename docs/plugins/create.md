@@ -234,25 +234,53 @@ No parameters provided.
 
 ## Optional Scripts
 
-<!-- TODO(jthegedus): rework from bin/latest-stable to bin/pre-plugin-remove -->
-
 ### `bin/latest-stable` <Badge type="warning" text="recommended" vertical="middle" />
 
-If this callback is implemented asdf will use it to determine the latest stable
-version of your tool instead of trying deduce it for you on its own.
-`asdf latest` deduces the latest version by looking at the last version printed
-by the `list-all` callback, after a few types of versions (like release
-candidate versions) are excluded from the output. This default behavior is
-undesirable when your plugin's `list-all` callback prints different variations
-of the same tool and the last version isn't the latest stable version of the
-variation you'd like to default to. For example with Ruby the latest stable
-version should be the regular implementation of Ruby (MRI), but truffleruby
-versions are printed last by the `list-all` callback.
+**Description**
 
-This callback is invoked with a single "filter" string as its only argument.
-This should be used for filter all latest stable versions. For example with
-Ruby, the user may choose to pass in `jruby` to select the latest stable version
-of `jruby`.
+Determine the latest stable version of a tool. If absent, the asdf core will `tail` the `bin/list-all` output which may be undesirable.
+
+**Implementation Details**
+
+- The script should print the latest stable version of the tool to stdout.
+- Non-stable or release candidate versions should be omitted.
+- A filter query is provided as the first argument to the script. This should be used to filter the output by version number or tool provider.
+  - For instance, the output of `asdf list all ruby` from the [ruby plugin](https://github.com/asdf-vm/asdf-ruby) lists versions of Ruby from many providers: `jruby`, `rbx` & `truffleruby` amongst others. The user provided filter could be used by the plugin to filter the semver versions and/or provider.
+    ```
+    > asdf latest ruby
+    3.2.2
+    > asdf latest ruby 2
+    2.7.8
+    > asdf latest ruby truffleruby
+    truffleruby+graalvm-22.3.1
+    ```
+- Success should exit with `0`.
+- Failure should exit with a non-zero status.
+
+**Environment Variables available to script**
+
+- `ASDF_INSTALL_TYPE`: `version` or `ref`
+- `ASDF_INSTALL_VERSION`:
+  - Full version number if `ASDF_INSTALL_TYPE=version`.
+  - Git ref (tag/commit/branch) if `ASDF_INSTALL_TYPE=ref`.
+- `ASDF_INSTALL_PATH`: The path to where the tool _has been_, or _should be_ installed.
+
+**Commands that invoke this script**
+
+- `asdf global <tool> latest`: set the global version of a tool to the latest stable version for that tool.
+- `asdf local <name> latest`: set the local version of a tool to the latest stable version for that tool.
+- `asdf install <tool> latest`: installs the latest version of a tool.
+- `asdf latest <tool> [<version>]`: outputs the latest version of a tool based on the optional filter.
+- `asdf latest --all`: outputs the latest version of all tools managed by asdf and whether they are installed.
+
+**Call signature from asdf core**
+
+The script should accept a single argument, the filter query.
+
+```bash:no-line-numbers
+"${plugin_path}"/bin/latest-stable ""
+"${plugin_path}"/bin/latest-stable "$query"
+```
 
 <!-- TODO(jthegedus): removed information -->
 
@@ -267,6 +295,8 @@ in the core asdf-vm documentation. General asdf usage information must not be
 present. -->
 
 ---
+
+<!-- TODO(jthegedus): rework from bin/help-overview to bin/pre-plugin-remove -->
 
 ### `bin/help.overview`
 
