@@ -658,7 +658,7 @@ The script should accept a single argument, the path to the legacy file for read
 
 **Description**
 
-Execute this callback script after the plugin has been _added_ to asdf with `asdf plugin add <tool>`.
+Execute this callback script **after** the plugin has been _added_ to asdf with `asdf plugin add <tool>`.
 
 See also the related command hooks:
 
@@ -682,46 +682,62 @@ No parameters provided.
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/post-plugin-add to bin/pre-plugin-remove -->
-
 ### `bin/post-plugin-update`
 
-This can be used to run any post-plugin-update actions after asdf has downloaded
-the updated plugin
+**Description**
 
-The script has access to the path the plugin was installed
-(`${ASDF_PLUGIN_PATH}`), previous git-ref (`${ASDF_PLUGIN_PREV_REF}`), and
-updated git-ref (`${ASDF_PLUGIN_POST_REF}`).
+Execute this callback script **after** asdf has downloaded the _updated_ plugin with `asdf plugin update <tool> [<git-ref>]`.
 
-See also the related hooks:
+See also the related command hooks:
 
 - `pre_asdf_plugin_updated`
 - `pre_asdf_plugin_updated_${plugin_name}`
 - `post_asdf_plugin_updated`
 - `post_asdf_plugin_updated_${plugin_name}`
 
+**Environment Variables available to script**
+
+- `ASDF_PLUGIN_PATH`: path where the plugin was installed.
+- `ASDF_PLUGIN_PREV_REF`: the plugin's previous git-ref
+- `ASDF_PLUGIN_POST_REF`: the plugin's updated git-ref
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/post-plugin-update"
+```
+
 ---
 
 ### `bin/pre-plugin-remove`
 
-This can be used to run any pre-removal actions before the plugin will be
-removed from asdf.
+**Description**
 
-The script has access to the path the plugin was installed in
-(`${ASDF_PLUGIN_PATH}`).
+Execute this callback script **before** asdf has removed the plugin with `asdf plugin remove <tool>`.
 
-See also the related hooks:
+See also the related command hooks:
 
 - `pre_asdf_plugin_remove`
 - `pre_asdf_plugin_remove_${plugin_name}`
 - `post_asdf_plugin_remove`
 - `post_asdf_plugin_remove_${plugin_name}`
 
-<!-- TODO(jthegedus): NOTE - below here has already been reworked -->
+**Environment Variables available to script**
 
-<!-- TODO: document hooks
-## Optional Hooks
--->
+- `ASDF_PLUGIN_PATH`: path where the plugin was installed.
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/pre-plugin-remove"
+```
+
+<!-- TODO: document command hooks -->
+<!-- ## Command Hooks -->
 
 ## Extension Commands for asdf CLI <Badge type="danger" text="advanced" vertical="middle" />
 
