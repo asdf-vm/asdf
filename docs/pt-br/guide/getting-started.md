@@ -15,29 +15,41 @@ Você pode também acompanhar o passo a passo da instalação através [deste v�
 
 ## 1. Instalando as dependências
 
-**Linux**:
+asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
 
-| Gerenciador de Pacotes | Comando                        |
-| ---------------------- | ------------------------------ |
-| Aptitude               | `sudo apt install curl git`    |
-| DNF                    | `sudo dnf install curl git`    |
-| Pacman                 | `sudo pacman -S curl git`      |
-| Zypper                 | `sudo zypper install curl git` |
+| OS    | Package Manager | Command                            |
+| ----- | --------------- | ---------------------------------- |
+| linux | Aptitude        | `apt install curl git`             |
+| linux | DNF             | `dnf install curl git`             |
+| linux | Pacman          | `pacman -S curl git`               |
+| linux | Zypper          | `zypper install curl git`          |
+| macOS | Homebrew        | `brew install coreutils curl git`  |
+| macOS | Spack           | `spack install coreutils curl git` |
 
-**macOS**:
+::: tip Note
 
-| Gerenciador de Pacotes | Comando                                                         |
-| ---------------------- | --------------------------------------------------------------- |
-| Homebrew               | As dependências serão automaticamente instaladas pelo Homebrew. |
-| Spack                  | `spack install coreutils curl git`                              |
+`sudo` may be required depending on your system configuration.
 
-## 2. Instalando o asdf
+:::
 
-Nós recomendamos a instalação através do Git, entretanto existem outros métodos específicos para algumas plataformas:
+## 2. Download asdf
 
-| Método   | Comando                                                                                                                                                             |
+### Official Download
+
+<!-- x-release-please-start-version -->
+
+```shell:no-line-numbers
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
+```
+
+<!-- x-release-please-end -->
+
+### Community Supported Download Methods
+
+We highly recommend using the official `git` method.
+
+| Method   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Git      | `git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.0`                                                                                             |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
@@ -50,13 +62,13 @@ Existem diversas combinações de shells, sistemas operacionais e métodos de in
 Adicione esta linha ao seu `~/.bashrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bashrc`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 :::
@@ -68,13 +80,29 @@ Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mu
 Adicione esta linha ao seu `~/.bash_profile`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 O auto completar deve ser configurado manualmente a partir da adição da seguinte linha ao `.bash_profile`:
 
 ```shell
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/completions/asdf.bash"
+```
+
+:::
+
+::: details Bash & Homebrew
+
+Adicione `asdf.sh` ao `~/.bashrc` através do comando:
+
+```shell:no-line-numbers
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bashrc
+```
+
+O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
+
+```shell:no-line-numbers
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
 :::
@@ -92,7 +120,7 @@ echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
 ```shell:no-line-numbers
-echo -e "\n. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash" >> ~/.bash_profile
+echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
 :::
@@ -191,7 +219,7 @@ Ao concluir atualizará automaticamente
 Adicione a seguinte linha ao seu `~/.zshrc`:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 ```
 
 **OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
@@ -233,6 +261,102 @@ Adicione a seguinte linha ao seu `~/.zshrc`:
 ```shell
 . /opt/asdf-vm/asdf.sh
 ```
+
+::: details PowerShell Core & Git
+
+Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
+
+```shell
+. "$HOME/.asdf/asdf.ps1"
+```
+
+:::
+
+::: details PowerShell Core & Homebrew
+
+Adicione `asdf.ps1` ao seu `~/.config/powershell/profile.ps1` através do comando:
+
+```shell:no-line-numbers
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+```
+
+:::
+
+::: details PowerShell Core & Pacman
+
+Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
+
+```shell
+. /opt/asdf-vm/asdf.ps1
+```
+
+:::
+
+::: details Nushell & Git
+
+Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
+
+```shell
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+```
+
+Ao concluir atualizará automaticamente
+:::
+
+::: details Nushell & Homebrew
+
+Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
+
+```shell:no-line-numbers
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+```
+
+Ao concluir atualizará automaticamente
+:::
+
+::: details Nushell & Pacman
+
+Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
+
+```shell
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+```
+
+Ao concluir atualizará automaticamente
+:::
+
+::: details POSIX Shell & Git
+
+Adicione a seguinte linha ao seu `~/.profile`:
+
+```shell
+export ASDF_DIR="$HOME/.asdf"
+. "$HOME/.asdf/asdf.sh"
+```
+
+:::
+
+::: details POSIX Shell & Homebrew
+
+Adicione `asdf.sh` ao `~/.profile` através do comando:
+
+```shell:no-line-numbers
+echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+```
+
+:::
+
+::: details POSIX Shell & Pacman
+
+Adicione a seguinte linha ao seu `~/.profile`:
+
+```shell
+export ASDF_DIR="/opt/asdf-vm"
+. /opt/asdf-vm/asdf.sh
+```
+
+:::
 
 O auto completar é colocado em um local familiar para o ZSH, [mas o ZSH deve ser configurado para conseguir utilizá-lo](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::

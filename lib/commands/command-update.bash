@@ -7,7 +7,7 @@ update_command() {
     cd "$(asdf_dir)" || exit 1
 
     if [ -f asdf_updates_disabled ] || ! git rev-parse --is-inside-work-tree &>/dev/null; then
-      printf "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.\\n"
+      printf "Update command disabled. Please use the package manager that you used to install asdf to upgrade asdf.\n"
       exit 42
     else
       do_update "$update_to_head"
@@ -23,7 +23,7 @@ do_update() {
     git fetch origin master
     git checkout master
     git reset --hard origin/master
-    printf "Updated asdf to latest on the master branch\\n"
+    printf "Updated asdf to latest on the master branch\n"
   else
     # Update to latest release
     git fetch origin --tags || exit 1
@@ -38,7 +38,7 @@ do_update() {
 
     # Update
     git checkout "$tag" || exit 1
-    printf "Updated asdf to release %s\\n" "$tag"
+    printf "Updated asdf to release %s\n" "$tag"
   fi
 }
 

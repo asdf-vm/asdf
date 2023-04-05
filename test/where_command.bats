@@ -2,7 +2,7 @@
 
 load test_helpers
 
-function setup() {
+setup() {
   setup_asdf_dir
   install_dummy_plugin
   install_dummy_version 1.0
@@ -10,7 +10,7 @@ function setup() {
   install_dummy_version ref-master
 }
 
-function teardown() {
+teardown() {
   clean_asdf_dir
 }
 
@@ -27,7 +27,7 @@ function teardown() {
 }
 
 @test "where shows install location of current version if no version specified" {
-  echo 'dummy 2.1' >>$HOME/.tool-versions
+  echo 'dummy 2.1' >>"$HOME/.tool-versions"
 
   run asdf where 'dummy'
 
@@ -36,7 +36,7 @@ function teardown() {
 }
 
 @test "where shows install location of first current version if not version specified and multiple current versions" {
-  echo 'dummy 2.1 1.0' >>$HOME/.tool-versions
+  echo 'dummy 2.1 1.0' >>"$HOME/.tool-versions"
   run asdf where 'dummy'
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]

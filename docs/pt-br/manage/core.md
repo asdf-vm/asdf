@@ -4,7 +4,7 @@
 
 A lista de comandos do núcleo `asdf` é bastante pequena, mas pode facilitar muitos fluxos de trabalho.
 
- ## Instalação e configuração
+## Instalação e configuração
 
 Baseado no [Guia de Introdução](/pt-br/guide/getting-started.md).
 
@@ -85,20 +85,20 @@ Para desinstalar `asdf` siga os passos:
 1. Em seu `~/.bashrc` remova as linhas do `asdf.sh` e seus complementos:
 
 ```shell
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -108,20 +108,45 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.bash_profile` remova as linhas do `asdf.sh` e remova seus complementos:
 
 ```shell
-. $HOME/.asdf/asdf.sh
-. $HOME/.asdf/completions/asdf.bash
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
+```
+
+:::
+
+::: details Bash & Homebrew
+
+1. Em seu `~/.bashrc` remova as linhas do `asdf.sh` e remova seus complementos:
+
+```shell
+. $(brew --prefix asdf)/libexec/asdf.sh
+. $(brew --prefix asdf)/etc/bash_completion.d/asdf.bash
+```
+
+?> Os complementos precisam [instruções de configuração do Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) e siga o guia de remoção.
+
+2. Desinstale usando seu gerenciador de pacotes:
+
+```shell
+brew uninstall asdf --force
+```
+
+3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
+
+```shell
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -148,7 +173,7 @@ brew uninstall asdf --force
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -170,13 +195,13 @@ pacman -Rs asdf-vm
 3. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 4. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -198,13 +223,13 @@ rm -rf ~/.config/fish/completions/asdf.fish
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -226,7 +251,7 @@ brew uninstall asdf --force
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -248,13 +273,13 @@ pacman -Rs asdf-vm
 3. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 4. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -283,7 +308,7 @@ if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 3. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
 ```shell:no-line-numbers
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -312,7 +337,7 @@ brew uninstall asdf --force
 3. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
 ```shell:no-line-numbers
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -347,7 +372,7 @@ if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 4. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
 ```shell:no-line-numbers
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -357,7 +382,7 @@ rm -rf $HOME/.tool-versions $HOME/.asdfrc
 1. Em seu `~/.zshrc` remova as linhas do `asdf.sh` e seus complementos:
 
 ```shell
-. $HOME/.asdf/asdf.sh
+. "$HOME/.asdf/asdf.sh"
 # ...
 fpath=(${ASDF_DIR}/completions $fpath)
 autoload -Uz compinit
@@ -369,13 +394,13 @@ compinit
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -397,7 +422,7 @@ brew uninstall asdf --force
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::
@@ -419,13 +444,13 @@ pacman -Rs asdf-vm
 3. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf ${ASDF_DATA_DIR:-$HOME/.asdf}
+rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
 ```
 
 4. Execute o comando para remover todos os arquivos de configurações do `asdf`:
 
 ```shell
-rm -rf $HOME/.tool-versions $HOME/.asdfrc
+rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
 :::

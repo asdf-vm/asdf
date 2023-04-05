@@ -8,8 +8,8 @@ shell_command() {
   shift
 
   if [ "$#" -lt "2" ]; then
-    printf "Usage: asdf shell <name> {<version>|--unset}\\n" >&2
-    printf "false\\n"
+    printf "Usage: asdf shell <name> {<version>|--unset}\n" >&2
+    printf "false\n"
     exit 1
   fi
 
@@ -23,7 +23,7 @@ shell_command() {
   if [ "$version" = "--unset" ]; then
     case "$asdf_shell" in
     fish)
-      printf "set -e %s\\n" "$version_env_var"
+      printf "set -e %s\n" "$version_env_var"
       ;;
     elvish)
       # Elvish doesn't have a `source` command, and eval is banned, so the
@@ -31,8 +31,11 @@ shell_command() {
       # and pass to unset-env.
       printf "unset-env\n%s" "$version_env_var"
       ;;
+    pwsh)
+      printf '%s\n' "if (\$(Test-Path Env:$version_env_var) -eq 'True') { Remove-Item Env:$version_env_var }"
+      ;;
     *)
-      printf "unset %s\\n" "$version_env_var"
+      printf "unset %s\n" "$version_env_var"
       ;;
     esac
     exit 0
@@ -42,13 +45,13 @@ shell_command() {
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
     version_not_installed_text "$plugin" "$version" 1>&2
-    printf "false\\n"
+    printf "false\n"
     exit 1
   fi
 
   case "$asdf_shell" in
   fish)
-    printf "set -gx %s \"%s\"\\n" "$version_env_var" "$version"
+    printf "set -gx %s \"%s\"\n" "$version_env_var" "$version"
     ;;
   elvish)
     # Elvish doesn't have a `source` command, and eval is banned, so the
@@ -56,8 +59,11 @@ shell_command() {
     # and pass to set-env.
     printf "set-env\n%s\n%s" "$version_env_var" "$version"
     ;;
+  pwsh)
+    printf '%s\n' "\$Env:$version_env_var = '$version'"
+    ;;
   *)
-    printf "export %s=\"%s\"\\n" "$version_env_var" "$version"
+    printf "export %s=\"%s\"\n" "$version_env_var" "$version"
     ;;
   esac
 }

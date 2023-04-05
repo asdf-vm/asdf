@@ -28,18 +28,16 @@ plugin_list_command() {
         printf "%s" "$plugin_name"
 
         if [ -n "$show_repo" ]; then
-          printf "\\t%s" "$(git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null)"
+          printf "\t%s" "$(get_plugin_remote_url "$plugin_name")"
         fi
 
         if [ -n "$show_ref" ]; then
-          local branch
-          local gitref
-          branch=$(git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null)
-          gitref=$(git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null)
-          printf "\\t%s\\t%s" "$branch" "$gitref"
+          printf "\t%s\t%s" \
+            "$(get_plugin_remote_branch "$plugin_name")" \
+            "$(get_plugin_remote_gitref "$plugin_name")"
         fi
 
-        printf "\\n"
+        printf "\n"
       done
     ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
@@ -56,9 +54,9 @@ plugin_add_command() {
 
   local plugin_name=$1
 
-  local regex="^[[:alpha:][:digit:]_-]+$"
+  local regex="^[[:lower:][:digit:]_-]+$"
   if ! printf "%s" "$plugin_name" | grep -q -E "$regex"; then
-    display_error "$plugin_name is invalid. Name must match regex $regex"
+    display_error "$plugin_name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
     exit 1
   fi
 
@@ -94,6 +92,7 @@ plugin_add_command() {
     if [ -f "${plugin_path}/bin/post-plugin-add" ]; then
       (
         export ASDF_PLUGIN_SOURCE_URL=$source_url
+        # shellcheck disable=SC2030
         export ASDF_PLUGIN_PATH=$plugin_path
         "${plugin_path}/bin/post-plugin-add"
       )
@@ -144,7 +143,7 @@ update_plugin() {
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 
-    printf "Updating %s to %s\\n" "$plugin_name" "$gitref"
+    printf "Updating %s to %s\n" "$plugin_name" "$gitref"
 
     git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
     prev_ref=$(git "${common_git_options[@]}" rev-parse --short HEAD)
@@ -153,6 +152,7 @@ update_plugin() {
 
     if [ -f "${plugin_path}/bin/post-plugin-update" ]; then
       (
+        # shellcheck disable=SC2031
         export ASDF_PLUGIN_PATH=$plugin_path
         export ASDF_PLUGIN_PREV_REF=$prev_ref
         export ASDF_PLUGIN_POST_REF=$post_ref

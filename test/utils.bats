@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,SC2031,SC2164
 
 load test_helpers
 
@@ -8,10 +9,10 @@ setup() {
   install_dummy_version "0.1.0"
   install_dummy_version "0.2.0"
 
-  PROJECT_DIR=$HOME/project
-  mkdir -p $PROJECT_DIR
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
 
-  cd $HOME
+  cd "$HOME"
 }
 
 teardown() {
@@ -21,14 +22,14 @@ teardown() {
 @test "get_install_path should output version path when version is provided" {
   run get_install_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/1.0.0" ]
 }
 
 @test "get_install_path should output custom path when custom install type is provided" {
   run get_install_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/custom-1.0.0" ]
 }
 
@@ -41,15 +42,15 @@ teardown() {
 @test "get_download_path should output version path when version is provided" {
   run get_download_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
-  echo $download_path
+  download_path=${output#"$HOME/"}
+  echo "$download_path"
   [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
 }
 
 @test "get_download_path should output custom path when custom download type is provided" {
   run get_download_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
+  download_path=${output#"$HOME/"}
   [ "$download_path" = ".asdf/downloads/foo/custom-1.0.0" ]
 }
 
@@ -83,15 +84,15 @@ teardown() {
 }
 
 @test "check_if_version_exists should be noop if version is system" {
-  mkdir -p $ASDF_DIR/plugins/foo
+  mkdir -p "$ASDF_DIR/plugins/foo"
   run check_if_version_exists "foo" "system"
   [ "$status" -eq 0 ]
   [ "$output" = "" ]
 }
 
 @test "check_if_version_exists should be ok for ref:version install" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  mkdir -p $ASDF_DIR/installs/foo/ref-master
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  mkdir -p "$ASDF_DIR/installs/foo/ref-master"
   run check_if_version_exists "foo" "ref:master"
   [ "$status" -eq 0 ]
   [ "$output" = "" ]
@@ -110,64 +111,71 @@ teardown() {
 }
 
 @test "parse_asdf_version_file should output version" {
-  echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
-  run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
+  echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
+  run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
-  [ "$output" == "0.1.0" ]
+  [ "$output" = "0.1.0" ]
 }
 
 @test "parse_asdf_version_file should output path on project with spaces" {
   PROJECT_DIR="$PROJECT_DIR/outer space"
   mkdir -p "$PROJECT_DIR"
-  cd $outer
+
   echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
-  [ "$output" == "0.1.0" ]
+  [ "$output" = "0.1.0" ]
 }
 
 @test "parse_asdf_version_file should output path version with spaces" {
-  echo "dummy path:/some/dummy path" >$PROJECT_DIR/.tool-versions
-  run parse_asdf_version_file $PROJECT_DIR/.tool-versions dummy
+  echo "dummy path:/some/dummy path" >"$PROJECT_DIR/.tool-versions"
+  run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
-  [ "$output" == "path:/some/dummy path" ]
+  [ "$output" = "path:/some/dummy path" ]
+}
+
+@test "parse_asdf_version_file should output path version with tilda" {
+  echo "dummy path:~/some/dummy path" >"$PROJECT_DIR/.tool-versions"
+  run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
+  [ "$status" -eq 0 ]
+  [ "$output" = "path:$HOME/some/dummy path" ]
 }
 
 @test "find_versions should return .tool-versions if legacy is disabled" {
-  echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
-  echo "0.2.0" >$PROJECT_DIR/.dummy-version
+  echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
+  echo "0.2.0" >"$PROJECT_DIR/.dummy-version"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$PROJECT_DIR/.tool-versions" ]
 }
 
 @test "find_versions should return the legacy file if supported" {
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
-  echo "dummy 0.1.0" >$HOME/.tool-versions
-  echo "0.2.0" >$PROJECT_DIR/.dummy-version
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
+  echo "0.2.0" >"$PROJECT_DIR/.dummy-version"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
   [ "$output" = "0.2.0|$PROJECT_DIR/.dummy-version" ]
 }
 
 @test "find_versions skips .tool-version file that don't list the plugin" {
-  echo "dummy 0.1.0" >$HOME/.tool-versions
-  echo "another_plugin 0.3.0" >$PROJECT_DIR/.tool-versions
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
+  echo "another_plugin 0.3.0" >"$PROJECT_DIR/.tool-versions"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
 
 @test "find_versions should return .tool-versions if unsupported" {
-  echo "dummy 0.1.0" >$HOME/.tool-versions
-  echo "0.2.0" >$PROJECT_DIR/.dummy-version
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
-  rm $ASDF_DIR/plugins/dummy/bin/list-legacy-filenames
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
+  echo "0.2.0" >"$PROJECT_DIR/.dummy-version"
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
+  rm "$ASDF_DIR/plugins/dummy/bin/list-legacy-filenames"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$HOME/.tool-versions" ]
 }
@@ -175,9 +183,8 @@ teardown() {
 @test "find_versions should return the version set by environment variable" {
   export ASDF_DUMMY_VERSION=0.2.0
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  echo $output
   [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
 }
 
@@ -213,26 +220,26 @@ teardown() {
 
 @test "find_versions should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  echo "dummy 0.1.0" >$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  echo "dummy 0.1.0" >"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]
 }
 
 @test "find_versions should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
   ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  echo "dummy 0.2.0" >$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
-  echo "dummy 0.1.0" >$HOME/.dummy-version
-  echo "legacy_version_file = yes" >$HOME/.asdfrc
+  echo "dummy 0.2.0" >"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+  echo "dummy 0.1.0" >"$HOME/.dummy-version"
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
 
-  run find_versions "dummy" $PROJECT_DIR
+  run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
+  [[ "$output" == *"0.1.0|$HOME/.dummy-version"* ]]
 }
 
 @test "get_preset_version_for returns the current version" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
   echo "dummy 0.2.0" >.tool-versions
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
@@ -240,16 +247,16 @@ teardown() {
 }
 
 @test "get_preset_version_for returns the global version from home when project is outside of home" {
-  echo "dummy 0.1.0" >$HOME/.tool-versions
+  echo "dummy 0.1.0" >"$HOME/.tool-versions"
   PROJECT_DIR=$BASE_DIR/project
-  mkdir -p $PROJECT_DIR
+  mkdir -p "$PROJECT_DIR"
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "0.1.0" ]
 }
 
 @test "get_preset_version_for returns the tool version from env if ASDF_{TOOL}_VERSION is defined" {
-  cd $PROJECT_DIR
+  cd "$PROJECT_DIR"
   echo "dummy 0.2.0" >.tool-versions
   ASDF_DUMMY_VERSION=3.0.0 run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
@@ -257,32 +264,40 @@ teardown() {
 }
 
 @test "get_preset_version_for should return branch reference version" {
-  cd $PROJECT_DIR
-  echo "dummy ref:master" >$PROJECT_DIR/.tool-versions
+  cd "$PROJECT_DIR"
+  echo "dummy ref:master" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "ref:master" ]
 }
 
 @test "get_preset_version_for should return path version" {
-  cd $PROJECT_DIR
-  echo "dummy path:/some/place with spaces" >$PROJECT_DIR/.tool-versions
+  cd "$PROJECT_DIR"
+  echo "dummy path:/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "path:/some/place with spaces" ]
 }
 
+@test "get_preset_version_for should return path version with tilda" {
+  cd "$PROJECT_DIR"
+  echo "dummy path:~/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
+  run get_preset_version_for "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "path:$HOME/some/place with spaces" ]
+}
+
 @test "get_executable_path for system version should return system path" {
-  mkdir -p $ASDF_DIR/plugins/foo
+  mkdir -p "$ASDF_DIR/plugins/foo"
   run get_executable_path "foo" "system" "ls"
   [ "$status" -eq 0 ]
-  [ "$output" = $(which ls) ]
+  [ "$output" = "$(which ls)" ]
 }
 
 @test "get_executable_path for system version should not use asdf shims" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  touch $ASDF_DIR/shims/dummy_executable
-  chmod +x $ASDF_DIR/shims/dummy_executable
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  touch "$ASDF_DIR/shims/dummy_executable"
+  chmod +x "$ASDF_DIR/shims/dummy_executable"
 
   run which dummy_executable
   [ "$status" -eq 0 ]
@@ -292,11 +307,11 @@ teardown() {
 }
 
 @test "get_executable_path for non system version should return relative path from plugin" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  mkdir -p $ASDF_DIR/installs/foo/1.0.0/bin
-  executable_path=$ASDF_DIR/installs/foo/1.0.0/bin/dummy
-  touch $executable_path
-  chmod +x $executable_path
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  mkdir -p "$ASDF_DIR/installs/foo/1.0.0/bin"
+  executable_path="$ASDF_DIR/installs/foo/1.0.0/bin/dummy"
+  touch "$executable_path"
+  chmod +x "$executable_path"
 
   run get_executable_path "foo" "1.0.0" "bin/dummy"
   [ "$status" -eq 0 ]
@@ -304,11 +319,11 @@ teardown() {
 }
 
 @test "get_executable_path for ref:version installed version should resolve to ref-version" {
-  mkdir -p $ASDF_DIR/plugins/foo
-  mkdir -p $ASDF_DIR/installs/foo/ref-master/bin
-  executable_path=$ASDF_DIR/installs/foo/ref-master/bin/dummy
-  touch $executable_path
-  chmod +x $executable_path
+  mkdir -p "$ASDF_DIR/plugins/foo"
+  mkdir -p "$ASDF_DIR/installs/foo/ref-master/bin"
+  executable_path="$ASDF_DIR/installs/foo/ref-master/bin/dummy"
+  touch "$executable_path"
+  chmod +x "$executable_path"
 
   run get_executable_path "foo" "ref:master" "bin/dummy"
   [ "$status" -eq 0 ]
@@ -316,8 +331,8 @@ teardown() {
 }
 
 @test "find_tool_versions will find a .tool-versions path if it exists in current directory" {
-  echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
-  cd $PROJECT_DIR
+  echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
+  cd "$PROJECT_DIR"
 
   run find_tool_versions
   [ "$status" -eq 0 ]
@@ -325,9 +340,9 @@ teardown() {
 }
 
 @test "find_tool_versions will find a .tool-versions path if it exists in parent directory" {
-  echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
-  mkdir -p $PROJECT_DIR/child
-  cd $PROJECT_DIR/child
+  echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
+  mkdir -p "$PROJECT_DIR/child"
+  cd "$PROJECT_DIR"/child
 
   run find_tool_versions
   [ "$status" -eq 0 ]
@@ -351,11 +366,11 @@ teardown() {
 
 @test "resolve_symlink converts the symlink path to the real file path" {
   touch foo
-  ln -s $(pwd)/foo bar
+  ln -s "$PWD/foo" bar
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $(pwd)/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 
@@ -365,7 +380,7 @@ teardown() {
 
   run resolve_symlink baz/bar
   [ "$status" -eq 0 ]
-  [ "$output" = $(pwd)/baz/../foo ]
+  [ "$output" = "$PWD/baz/../foo" ]
   rm -f foo bar
 }
 
@@ -375,7 +390,7 @@ teardown() {
 
   run resolve_symlink bar
   [ "$status" -eq 0 ]
-  [ "$output" = $(pwd)/foo ]
+  [ "$output" = "$PWD/foo" ]
   rm -f foo bar
 }
 
@@ -429,17 +444,17 @@ EOF
 }
 
 @test "with_shim_executable doesn't crash when executable names contain dashes" {
-  cd $PROJECT_DIR
-  echo "dummy 0.1.0" >$PROJECT_DIR/.tool-versions
-  mkdir -p $ASDF_DIR/installs/dummy/0.1.0/bin
-  touch $ASDF_DIR/installs/dummy/0.1.0/bin/test-dash
-  chmod +x $ASDF_DIR/installs/dummy/0.1.0/bin/test-dash
+  cd "$PROJECT_DIR"
+  echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
+  mkdir -p "$ASDF_DIR/installs/dummy/0.1.0/bin"
+  touch "$ASDF_DIR/installs/dummy/0.1.0/bin/test-dash"
+  chmod +x "$ASDF_DIR/installs/dummy/0.1.0/bin/test-dash"
   run asdf reshim dummy 0.1.0
 
   message="callback invoked"
 
-  function callback() {
-    echo $message
+  callback() {
+    echo "$message"
   }
 
   run with_shim_executable test-dash callback
