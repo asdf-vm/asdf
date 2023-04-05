@@ -654,25 +654,35 @@ The script should accept a single argument, the path to the legacy file for read
 
 ---
 
-<!-- TODO(jthegedus): rework from bin/post-plugin-add to bin/pre-plugin-remove -->
-
 ### `bin/post-plugin-add`
 
-This can be used to run any post-installation actions after the plugin has been
-added to asdf.
+**Description**
 
-The script has access to the path the plugin was installed
-(`${ASDF_PLUGIN_PATH}`) and the source URL (`${ASDF_PLUGIN_SOURCE_URL}`), if any
-was used.
+Execute this callback script after the plugin has been _added_ to asdf with `asdf plugin add <tool>`.
 
-See also the related hooks:
+See also the related command hooks:
 
 - `pre_asdf_plugin_add`
 - `pre_asdf_plugin_add_${plugin_name}`
 - `post_asdf_plugin_add`
 - `post_asdf_plugin_add_${plugin_name}`
 
+**Environment Variables available to script**
+
+- `ASDF_PLUGIN_PATH`: path where the plugin was installed.
+- `ASDF_PLUGIN_SOURCE_URL`: URL of the plugin source. Can be a local directory path.
+
+**Call signature from asdf core**
+
+No parameters provided.
+
+```bash:no-line-numbers
+"${plugin_path}/bin/post-plugin-add"
+```
+
 ---
+
+<!-- TODO(jthegedus): rework from bin/post-plugin-add to bin/pre-plugin-remove -->
 
 ### `bin/post-plugin-update`
 
@@ -708,6 +718,10 @@ See also the related hooks:
 - `post_asdf_plugin_remove_${plugin_name}`
 
 <!-- TODO(jthegedus): NOTE - below here has already been reworked -->
+
+<!-- TODO: document hooks
+## Optional Hooks
+-->
 
 ## Extension Commands for asdf CLI <Badge type="danger" text="advanced" vertical="middle" />
 
