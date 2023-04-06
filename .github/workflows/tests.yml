@@ -8,9 +8,9 @@ on:
 
 env:
   ELVISH_VERSION: v0.19.2
-  FISH_VERSION: 3.5.1
+  FISH_VERSION: 3.6.1-1~jammy
   NUSHELL_VERSION: 0.78.0
-  POWERSHELL_VERSION: 7.3.3
+  POWERSHELL_VERSION: 7.3.3-1.deb
 
 jobs:
   detect-changes:
