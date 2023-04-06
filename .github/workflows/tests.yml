@@ -8,7 +8,9 @@ on:
 
 env:
   ELVISH_VERSION: v0.19.2
+  FISH_VERSION: 3.6.1
   NUSHELL_VERSION: 0.78.0
+  POWERSHELL_VERSION: 7.3.3
 
 jobs:
   detect-changes:
@@ -61,9 +63,11 @@ jobs:
         run: |
           curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee >/dev/null /etc/apt/trusted.gpg.d/microsoft.asc
           sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
-          sudo add-apt-repository -y ppa:fish-shell/nightly-master
+          sudo add-apt-repository -y ppa:fish-shell/release-3
           sudo apt-get update
-          sudo apt-get -y install fish curl parallel powershell
+          sudo apt-get -y install curl parallel \
+            fish="${{ env.FISH_VERSION }}-1~jammy" \
+            powershell="${{ env.POWERSHELL_VERSION }}-1.deb"
 
           # Create $HOME/bin
           mkdir -p "$HOME/bin"
@@ -106,7 +110,12 @@ jobs:
           fetch-depth: 0
 
       - name: Install test dependencies
-        run: brew install coreutils parallel fish elvish nushell
+        run: |
+          brew install coreutils parallel \
+            elvish \
+            fish \
+            nushell \
+            powershell
 
       - name: Install bats
         run: |
