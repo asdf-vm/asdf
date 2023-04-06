@@ -25,7 +25,17 @@ install_command() {
 }
 
 get_concurrency() {
-  if command -v nproc &>/dev/null; then
+  if [ -n "$ASDF_CONCURRENCY" ]; then
+    printf "%s\n" "$ASDF_CONCURRENCY"
+    return
+  fi
+
+  local asdf_concurrency=
+  asdf_concurrency=$(get_asdf_config_value 'concurrency')
+
+  if [ -n "$asdf_concurrency" ]; then
+    printf "%s\n" "$asdf_concurrency"
+  elif command -v nproc &>/dev/null; then
     nproc
   elif command -v sysctl &>/dev/null && sysctl hw.ncpu &>/dev/null; then
     sysctl -n hw.ncpu

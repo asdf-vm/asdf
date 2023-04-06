@@ -134,6 +134,16 @@ Disabling the plugin short-name repository does not remove plugins previously in
 
 :::
 
+### `concurrency`
+
+The default concurrency to use.
+
+| Options                                                                                                 | Description                                                  |
+| :------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------- |
+| integer | Number of cores to use when compiling the source code |
+
+Note that if the environment variable `ASDF_CONCURRENCY` is set, that takes precedence.
+
 ## Environment Variables
 
 Setting environment variables varies depending on your system and Shell. Default locations depend upon your installation location and method (Git clone, Homebrew, AUR).
@@ -172,6 +182,11 @@ The location where `asdf` will install plugins, shims and tool versions. Can be 
 
 - Default: `$HOME/.asdf`
 - Usage: `export ASDF_DATA_DIR=/home/john_doe/.asdf`
+
+### `ASDF_CONCURRENCY`
+
+- Default: Output of `nproc`
+- Usage: `export ASDF_CONCURRENCY=32`
 
 ## Internal Configuration
 

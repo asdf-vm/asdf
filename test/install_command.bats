@@ -52,6 +52,25 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "install_command set ASDF_CONCURRENCY via env var" {
+  ASDF_CONCURRENCY=-1 run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/installs/dummy/1.0.0/env" ]
+  run grep ASDF_CONCURRENCY=-1 "$ASDF_DIR/installs/dummy/1.0.0/env"
+  [ "$status" -eq 0 ]
+}
+
+@test "install_command set ASDF_CONCURRENCY via asdfrc" {
+  cat >"$HOME/.asdfrc" <<-'EOM'
+  concurrency = -2
+EOM
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [ -f "$ASDF_DIR/installs/dummy/1.0.0/env" ]
+  run grep ASDF_CONCURRENCY=-2 "$ASDF_DIR/installs/dummy/1.0.0/env"
+  [ "$status" -eq 0 ]
+}
+
 @test "install_command without arguments should work in directory containing whitespace" {
   WHITESPACE_DIR="$PROJECT_DIR/whitespace\ dir"
   mkdir -p "$WHITESPACE_DIR"
