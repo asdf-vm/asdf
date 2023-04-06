@@ -65,6 +65,8 @@ jobs:
           sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
           sudo add-apt-repository -y ppa:fish-shell/nightly-master
           sudo apt-get update
+          sudo apt-get versions fish
+          sudo apt-get versions powershell
           sudo apt-get -y install curl parallel \
             fish=${{ env.FISH_VERSION }} \
             powershell=${{ env.POWERSHELL_VERSION }}
