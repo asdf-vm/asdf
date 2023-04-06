@@ -76,7 +76,7 @@ cleaned_path() {
     \$(Get-Command -CommandType asdf).Name"
 
   assert_success
-  [[ "$output" =~ "asdf" ]]
+  assert_output -p "asdf"
 }
 
 @test "function calls asdf command" {

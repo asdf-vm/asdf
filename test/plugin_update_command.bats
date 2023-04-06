@@ -16,7 +16,7 @@ teardown() {
   run asdf plugin-update dummy
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
   assert_success
-  [[ "$output" =~ "Updating dummy to master"* ]]
+  assert_output -p "Updating dummy to master"
   [ "$repo_head" = "master" ]
 }
 
@@ -34,7 +34,7 @@ teardown() {
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
   assert_success
-  [[ "$output" =~ "Updating dummy to main"* ]]
+  assert_line "Updating dummy to main"
   [ "$repo_head" = "main" ]
 }
 
@@ -52,7 +52,7 @@ teardown() {
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
   assert_success
-  [[ "$output" =~ "Updating dummy to my/default"* ]]
+  assert_line "Updating dummy to my/default"
   [ "$repo_head" = "my/default" ]
 }
 
@@ -76,7 +76,7 @@ teardown() {
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
   assert_success
-  [[ "$output" =~ "Updating dummy to main"* ]]
+  assert_line "Updating dummy to main"
   [ "$repo_head" = "main" ]
 }
 

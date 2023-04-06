@@ -70,7 +70,7 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
-  output=$(
+  result=$(
     unset -f asdf
     unset ASDF_DIR
     PATH=$(cleaned_path)
@@ -79,7 +79,7 @@ cleaned_path() {
     type asdf
   )
 
-  [[ "$output" =~ "is a function" ]]
+  [[ "$result" == "asdf is a function"* ]]
 }
 
 @test "function calls asdf command" {

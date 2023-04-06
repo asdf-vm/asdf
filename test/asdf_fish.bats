@@ -72,7 +72,7 @@ cleaned_path() {
     type asdf"
 
   assert_success
-  [[ "$output" =~ "is a function" ]]
+  assert_line "asdf is a function with definition"
 }
 
 @test "function calls asdf command" {

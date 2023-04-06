@@ -80,7 +80,7 @@ cleaned_path() {
     pprint \$_asdf:"
 
   assert_success
-  [[ "$output" =~ "<ns " ]]
+  assert_output -p "<ns "
 }
 
 @test "does not add paths to PATH more than once" {
@@ -106,7 +106,7 @@ cleaned_path() {
     pprint \$asdf~"
 
   assert_success
-  [[ "$output" =~ "<closure " ]]
+  assert_output -p "<closure "
 }
 
 @test "function calls asdf command" {
