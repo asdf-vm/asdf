@@ -63,7 +63,7 @@ jobs:
         run: |
           curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee >/dev/null /etc/apt/trusted.gpg.d/microsoft.asc
           sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
-          sudo add-apt-repository -y ppa:fish-shell/nightly-master
+          sudo add-apt-repository -y ppa:fish-shell/release-3
           sudo apt-get update
           echo "FISH VERSIONS"
           sudo apt-cache show fish | grep Version
