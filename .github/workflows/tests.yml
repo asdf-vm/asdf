@@ -8,7 +8,7 @@ on:
 
 env:
   ELVISH_VERSION: v0.19.2
-  NUSHELL_VERSION: 0.77.0
+  NUSHELL_VERSION: 0.78.0
 
 jobs:
   detect-changes:
