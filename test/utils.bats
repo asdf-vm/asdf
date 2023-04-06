@@ -43,7 +43,6 @@ teardown() {
   run get_download_path foo version "1.0.0"
   [ "$status" -eq 0 ]
   download_path=${output#"$HOME/"}
-  echo "$download_path"
   [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
 }
 
