@@ -20,7 +20,7 @@ teardown() {
 
   run asdf plugin list all
   [ "$status" -eq 1 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "plugin_list_all should sync repo when check_duration set to 0" {
@@ -48,7 +48,7 @@ foo                           http://example.com/foo"
 
   run asdf plugin list all
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "plugin_list_all skips repo sync because check_duration is set to never" {
@@ -61,7 +61,7 @@ foo                           http://example.com/foo"
 
   run asdf plugin list all
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "plugin_list_all list all plugins in the repository" {
@@ -72,5 +72,5 @@ foo                           http://example.com/foo"
 
   run asdf plugin list all
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }

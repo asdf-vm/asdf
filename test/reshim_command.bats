@@ -128,7 +128,7 @@ pre_asdf_reshim_dummy = echo RESHIM
 EOM
 
   run asdf reshim dummy 1.0
-  [ "$output" = "RESHIM" ]
+  assert_output "RESHIM"
 }
 
 @test "reshim command executes configured post hook" {
@@ -139,7 +139,7 @@ post_asdf_reshim_dummy = echo RESHIM
 EOM
 
   run asdf reshim dummy 1.0
-  [ "$output" = "RESHIM" ]
+  assert_output "RESHIM"
 }
 
 # Fixes https://github.com/asdf-vm/asdf/issues/1115

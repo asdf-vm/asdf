@@ -16,7 +16,7 @@ teardown() {
 
 @test "uninstall_command should fail when no such version is installed" {
   run asdf uninstall dummy 3.14
-  [ "$output" = "No such version" ]
+  assert_output "No such version"
   [ "$status" -eq 1 ]
 }
 
@@ -35,7 +35,7 @@ teardown() {
   echo "echo custom uninstall" >"$ASDF_DIR/plugins/dummy/bin/uninstall"
   chmod 755 "$ASDF_DIR/plugins/dummy/bin/uninstall"
   run asdf uninstall dummy 1.1.0
-  [ "$output" = "custom uninstall" ]
+  assert_output "custom uninstall"
   assert_success
 }
 
@@ -90,7 +90,7 @@ EOM
 
   run asdf install dummy 1.0.0
   run asdf uninstall dummy 1.0.0
-  [ "$output" = "will uninstall dummy 1.0.0" ]
+  assert_output "will uninstall dummy 1.0.0"
 }
 
 @test "uninstall command executes configured post hook" {
@@ -100,5 +100,5 @@ EOM
 
   run asdf install dummy 1.0.0
   run asdf uninstall dummy 1.0.0
-  [ "$output" = "removed dummy 1.0.0" ]
+  assert_output "removed dummy 1.0.0"
 }

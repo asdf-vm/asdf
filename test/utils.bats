@@ -36,7 +36,7 @@ teardown() {
 @test "get_install_path should output path when path version is provided" {
   run get_install_path foo path "/some/path"
   assert_success
-  [ "$output" = "/some/path" ]
+  assert_output "/some/path"
 }
 
 @test "get_download_path should output version path when version is provided" {
@@ -57,13 +57,13 @@ teardown() {
 @test "get_download_path should output nothing when path version is provided" {
   run get_download_path foo path "/some/path"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
   run check_if_version_exists "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: inexistent" ]
+  assert_output "No such plugin: inexistent"
 }
 
 @test "check_if_version_exists should exit with 1 if version does not exist" {
@@ -74,20 +74,20 @@ teardown() {
 @test "version_not_installed_text is correct" {
   run version_not_installed_text "dummy" "1.0.0"
   assert_success
-  [ "$output" = "version 1.0.0 is not installed for dummy" ]
+  assert_output "version 1.0.0 is not installed for dummy"
 }
 
 @test "check_if_version_exists should be noop if version exists" {
   run check_if_version_exists "dummy" "0.1.0"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "check_if_version_exists should be noop if version is system" {
   mkdir -p "$ASDF_DIR/plugins/foo"
   run check_if_version_exists "foo" "system"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "check_if_version_exists should be ok for ref:version install" {
@@ -95,26 +95,26 @@ teardown() {
   mkdir -p "$ASDF_DIR/installs/foo/ref-master"
   run check_if_version_exists "foo" "ref:master"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "check_if_plugin_exists should exit with 1 when plugin is empty string" {
   run check_if_plugin_exists
   [ "$status" -eq 1 ]
-  [ "$output" = "No plugin given" ]
+  assert_output "No plugin given"
 }
 
 @test "check_if_plugin_exists should be noop if plugin exists" {
   run check_if_plugin_exists "dummy"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "parse_asdf_version_file should output version" {
   echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   assert_success
-  [ "$output" = "0.1.0" ]
+  assert_output "0.1.0"
 }
 
 @test "parse_asdf_version_file should output path on project with spaces" {
@@ -124,21 +124,21 @@ teardown() {
   echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   assert_success
-  [ "$output" = "0.1.0" ]
+  assert_output "0.1.0"
 }
 
 @test "parse_asdf_version_file should output path version with spaces" {
   echo "dummy path:/some/dummy path" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   assert_success
-  [ "$output" = "path:/some/dummy path" ]
+  assert_output "path:/some/dummy path"
 }
 
 @test "parse_asdf_version_file should output path version with tilda" {
   echo "dummy path:~/some/dummy path" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   assert_success
-  [ "$output" = "path:$HOME/some/dummy path" ]
+  assert_output "path:$HOME/some/dummy path"
 }
 
 @test "find_versions should return .tool-versions if legacy is disabled" {
@@ -147,7 +147,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.1.0|$PROJECT_DIR/.tool-versions" ]
+  assert_output "0.1.0|$PROJECT_DIR/.tool-versions"
 }
 
 @test "find_versions should return the legacy file if supported" {
@@ -157,7 +157,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.2.0|$PROJECT_DIR/.dummy-version" ]
+  assert_output "0.2.0|$PROJECT_DIR/.dummy-version"
 }
 
 @test "find_versions skips .tool-version file that don't list the plugin" {
@@ -166,7 +166,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.1.0|$HOME/.tool-versions" ]
+  assert_output "0.1.0|$HOME/.tool-versions"
 }
 
 @test "find_versions should return .tool-versions if unsupported" {
@@ -177,7 +177,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.1.0|$HOME/.tool-versions" ]
+  assert_output "0.1.0|$HOME/.tool-versions"
 }
 
 @test "find_versions should return the version set by environment variable" {
@@ -185,7 +185,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.2.0|ASDF_DUMMY_VERSION environment variable" ]
+  assert_output "0.2.0|ASDF_DUMMY_VERSION environment variable"
 }
 
 @test "asdf_data_dir should return user dir if configured" {
@@ -193,7 +193,7 @@ teardown() {
 
   run asdf_data_dir
   assert_success
-  [ "$output" = "$ASDF_DATA_DIR" ]
+  assert_output -- "$ASDF_DATA_DIR"
 }
 
 @test "asdf_data_dir should return ~/.asdf when ASDF_DATA_DIR is not set" {
@@ -201,7 +201,7 @@ teardown() {
 
   run asdf_data_dir
   assert_success
-  [ "$output" = "$HOME/.asdf" ]
+  assert_output -- "$HOME/.asdf"
 }
 
 @test "check_if_plugin_exists should work with a custom data directory" {
@@ -215,7 +215,7 @@ teardown() {
 
   run check_if_plugin_exists "dummy2"
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "find_versions should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
@@ -224,7 +224,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [ "$output" = "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]
+  assert_output "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
 }
 
 @test "find_versions should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
@@ -243,7 +243,7 @@ teardown() {
   echo "dummy 0.2.0" >.tool-versions
   run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "0.2.0" ]
+  assert_output "0.2.0"
 }
 
 @test "get_preset_version_for returns the global version from home when project is outside of home" {
@@ -252,7 +252,7 @@ teardown() {
   mkdir -p "$PROJECT_DIR"
   run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "0.1.0" ]
+  assert_output "0.1.0"
 }
 
 @test "get_preset_version_for returns the tool version from env if ASDF_{TOOL}_VERSION is defined" {
@@ -260,7 +260,7 @@ teardown() {
   echo "dummy 0.2.0" >.tool-versions
   ASDF_DUMMY_VERSION=3.0.0 run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "3.0.0" ]
+  assert_output "3.0.0"
 }
 
 @test "get_preset_version_for should return branch reference version" {
@@ -268,7 +268,7 @@ teardown() {
   echo "dummy ref:master" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "ref:master" ]
+  assert_output "ref:master"
 }
 
 @test "get_preset_version_for should return path version" {
@@ -276,7 +276,7 @@ teardown() {
   echo "dummy path:/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "path:/some/place with spaces" ]
+  assert_output "path:/some/place with spaces"
 }
 
 @test "get_preset_version_for should return path version with tilda" {
@@ -284,14 +284,14 @@ teardown() {
   echo "dummy path:~/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"
   assert_success
-  [ "$output" = "path:$HOME/some/place with spaces" ]
+  assert_output "path:$HOME/some/place with spaces"
 }
 
 @test "get_executable_path for system version should return system path" {
   mkdir -p "$ASDF_DIR/plugins/foo"
   run get_executable_path "foo" "system" "ls"
   assert_success
-  [ "$output" = "$(which ls)" ]
+  assert_output -- "$(which ls)"
 }
 
 @test "get_executable_path for system version should not use asdf shims" {
@@ -315,7 +315,7 @@ teardown() {
 
   run get_executable_path "foo" "1.0.0" "bin/dummy"
   assert_success
-  [ "$output" = "$executable_path" ]
+  assert_output -- "$executable_path"
 }
 
 @test "get_executable_path for ref:version installed version should resolve to ref-version" {
@@ -327,7 +327,7 @@ teardown() {
 
   run get_executable_path "foo" "ref:master" "bin/dummy"
   assert_success
-  [ "$output" = "$executable_path" ]
+  assert_output -- "$executable_path"
 }
 
 @test "find_tool_versions will find a .tool-versions path if it exists in current directory" {
@@ -336,7 +336,7 @@ teardown() {
 
   run find_tool_versions
   assert_success
-  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+  assert_output -- "$PROJECT_DIR/.tool-versions"
 }
 
 @test "find_tool_versions will find a .tool-versions path if it exists in parent directory" {
@@ -346,7 +346,7 @@ teardown() {
 
   run find_tool_versions
   assert_success
-  [ "$output" = "$PROJECT_DIR/.tool-versions" ]
+  assert_output -- "$PROJECT_DIR/.tool-versions"
 }
 
 @test "get_version_from_env returns the version set in the environment variable" {
@@ -354,14 +354,14 @@ teardown() {
   run get_version_from_env 'dummy'
 
   assert_success
-  [ "$output" = '0.1.0' ]
+  assert_output '0.1.0'
 }
 
 @test "get_version_from_env returns nothing when environment variable is not set" {
   run get_version_from_env 'dummy'
 
   assert_success
-  [ "$output" = '' ]
+  assert_output ''
 }
 
 @test "resolve_symlink converts the symlink path to the real file path" {
@@ -370,7 +370,7 @@ teardown() {
 
   run resolve_symlink bar
   assert_success
-  [ "$output" = "$PWD/foo" ]
+  assert_output -- "$PWD/foo"
   rm -f foo bar
 }
 
@@ -380,7 +380,7 @@ teardown() {
 
   run resolve_symlink baz/bar
   assert_success
-  [ "$output" = "$PWD/baz/../foo" ]
+  assert_output -- "$PWD/baz/../foo"
   rm -f foo bar
 }
 
@@ -390,7 +390,7 @@ teardown() {
 
   run resolve_symlink bar
   assert_success
-  [ "$output" = "$PWD/foo" ]
+  assert_output -- "$PWD/foo"
   rm -f foo bar
 }
 
@@ -401,13 +401,13 @@ ruby 2.0.0
 EOF
   run strip_tool_version_comments test_file
   assert_success
-  [ "$output" = "ruby 2.0.0" ]
+  assert_output "ruby 2.0.0"
 }
 @test "strip_tool_version_comments removes lines that only contain comments even with missing newline" {
   echo -n "# comment line" >test_file
   run strip_tool_version_comments test_file
   assert_success
-  [ "$output" = "" ]
+  assert_output ""
 }
 
 @test "strip_tool_version_comments removes trailing comments on lines containing version information" {
@@ -416,14 +416,14 @@ ruby 2.0.0 # inline comment
 EOF
   run strip_tool_version_comments test_file
   assert_success
-  [ "$output" = "ruby 2.0.0" ]
+  assert_output "ruby 2.0.0"
 }
 
 @test "strip_tool_version_comments removes trailing comments on lines containing version information even with missing newline" {
   echo -n "ruby 2.0.0 # inline comment" >test_file
   run strip_tool_version_comments test_file
   assert_success
-  [ "$output" = "ruby 2.0.0" ]
+  assert_output "ruby 2.0.0"
 }
 
 @test "strip_tool_version_comments removes all comments from the version file" {
@@ -440,7 +440,7 @@ EOF
   )"
   run strip_tool_version_comments test_file
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "with_shim_executable doesn't crash when executable names contain dashes" {
@@ -459,5 +459,5 @@ EOF
 
   run with_shim_executable test-dash callback
   assert_success
-  [ "$output" = "$message" ]
+  assert_output -- "$message"
 }

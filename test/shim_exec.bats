@@ -30,7 +30,7 @@ teardown() {
   run asdf install
 
   run asdf exec dummy world hello
-  [ "$output" = "This is Dummy 1.0! hello world" ]
+  assert_output "This is Dummy 1.0! hello world"
   assert_success
 }
 
@@ -40,11 +40,11 @@ teardown() {
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
   run env PATH="$path" which dummy
-  [ "$output" = "" ]
+  assert_output ""
   [ "$status" -eq 1 ]
 
   run env PATH="$path" asdf exec dummy world hello
-  [ "$output" = "This is Dummy 1.0! hello world" ]
+  assert_output "This is Dummy 1.0! hello world"
   assert_success
 }
 
@@ -53,7 +53,7 @@ teardown() {
   run asdf install
 
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Dummy 1.0! hello world" ]
+  assert_output "This is Dummy 1.0! hello world"
   assert_success
 }
 
@@ -67,7 +67,7 @@ teardown() {
   run asdf reshim dummy 1.0
 
   run echo "$(echo hello | "$ASDF_DIR/shims/upper")"
-  [ "$output" = "HELLO" ]
+  assert_output "HELLO"
   assert_success
 }
 
@@ -167,12 +167,12 @@ teardown() {
 
   cd "$PROJECT_DIR"/A
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Dummy 1.0! hello world" ]
+  assert_output "This is Dummy 1.0! hello world"
   assert_success
 
   cd "$PROJECT_DIR"/B
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Mummy 3.0! hello world" ]
+  assert_output "This is Mummy 3.0! hello world"
   assert_success
 }
 
@@ -189,7 +189,7 @@ teardown() {
   echo "dummy 1.0" >>"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Mummy 3.0! hello world" ]
+  assert_output "This is Mummy 3.0! hello world"
   assert_success
 }
 
@@ -203,7 +203,7 @@ teardown() {
   chmod +x "$PROJECT_DIR/foo/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/foo" "$ASDF_DIR/shims/dummy" hello
-  [ "$output" = "System" ]
+  assert_output "System"
 }
 
 # NOTE: The name of this test is linked to a condition in `test_helpers.bash. See
@@ -220,7 +220,7 @@ teardown() {
   echo "dummy path:$CUSTOM_DUMMY_PATH" >"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy" hello
-  [ "$output" = "System" ]
+  assert_output "System"
 }
 
 @test "shim exec should execute system if set first" {
@@ -234,7 +234,7 @@ teardown() {
   chmod +x "$PROJECT_DIR/foo/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/foo" "$ASDF_DIR/shims/dummy" hello
-  [ "$output" = "System" ]
+  assert_output "System"
 }
 
 @test "shim exec should use custom exec-env for tool" {
@@ -247,7 +247,7 @@ teardown() {
 
   echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
   run "$ASDF_DIR/shims/foo"
-  [ "$output" = "sourced custom" ]
+  assert_output "sourced custom"
 }
 
 @test "shim exec with custom exec-env using ASDF_INSTALL_PATH" {
@@ -260,7 +260,7 @@ teardown() {
 
   echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
   run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/foo custom" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/2.0.0/foo custom"
 }
 
 @test "shim exec doest not use custom exec-env for system version" {
@@ -278,7 +278,7 @@ teardown() {
   chmod +x "$PROJECT_DIR/sys/foo"
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/foo"
-  [ "$output" = "x System" ]
+  assert_output "x System"
 }
 
 @test "shim exec should prepend the plugin paths on execution" {
@@ -292,7 +292,7 @@ teardown() {
   echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy"
 }
 
 @test "shim exec should be able to find other shims in path" {
@@ -317,10 +317,10 @@ teardown() {
   run asdf reshim
 
   run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy"
 
   run "$ASDF_DIR/shims/bar"
-  [ "$output" = "$ASDF_DIR/shims/gummy" ]
+  assert_output -- "$ASDF_DIR/shims/gummy"
 }
 
 @test "shim exec should remove shim_path from path on system version execution" {
@@ -334,7 +334,7 @@ teardown() {
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/dummy"
   echo "$status $output"
-  [ "$output" = "$ASDF_DIR/shims/dummy" ]
+  assert_output -- "$ASDF_DIR/shims/dummy"
 }
 
 @test "shim exec can take version from legacy file if configured" {
@@ -344,13 +344,13 @@ teardown() {
   echo "2.0.0" >"$PROJECT_DIR/.dummy-version"
 
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Dummy 2.0.0! hello world" ]
+  assert_output "This is Dummy 2.0.0! hello world"
 }
 
 @test "shim exec can take version from environment variable" {
   run asdf install dummy 2.0.0
   run env ASDF_DUMMY_VERSION=2.0.0 "$ASDF_DIR/shims/dummy" world hello
-  [ "$output" = "This is Dummy 2.0.0! hello world" ]
+  assert_output "This is Dummy 2.0.0! hello world"
 }
 
 @test "shim exec uses plugin list-bin-paths" {
@@ -370,7 +370,7 @@ teardown() {
   run asdf reshim dummy 1.0
 
   run "$ASDF_DIR/shims/foo"
-  [ "$output" = "CUSTOM" ]
+  assert_output "CUSTOM"
 }
 
 @test "shim exec uses plugin custom exec-path hook" {
@@ -389,7 +389,7 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy"
-  [ "$output" = "CUSTOM" ]
+  assert_output "CUSTOM"
 }
 
 @test "shim exec uses plugin custom exec-path hook that defaults" {
@@ -402,7 +402,7 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy"
-  [ "$output" = "This is Dummy 1.0!" ]
+  assert_output "This is Dummy 1.0!"
 }
 
 @test "shim exec executes configured pre-hook" {
@@ -433,7 +433,7 @@ pre_dummy_dummy = pre $1 no $plugin_name $2
 EOM
 
   run env PATH="$PATH:$HOME/hook" "$ASDF_DIR/shims/dummy" hello world
-  [ "$output" = "hello no dummy world" ]
+  assert_output "hello no dummy world"
   [ "$status" -eq 1 ]
 }
 
@@ -445,6 +445,6 @@ EOM
   run asdf install
 
   run asdf exec dummy world hello
-  [ "$output" = "This is Dummy 1.0! hello world" ]
+  assert_output "This is Dummy 1.0! hello world"
   assert_success
 }

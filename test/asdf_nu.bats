@@ -72,7 +72,7 @@ run_nushell() {
     echo \$env.ASDF_DIR"
 
   assert_success
-  [ "$output" = "$PWD" ]
+  assert_output -- "$PWD"
 }
 
 @test "defines the asdf or main function" {
@@ -96,7 +96,7 @@ run_nushell() {
   run_nushell "asdf plugin list | to csv -n"
 
   assert_success
-  [ "$output" = "dummy" ]
+  assert_output "dummy"
 }
 
 @test "parses the output of asdf plugin list --urls" {
@@ -111,7 +111,7 @@ run_nushell() {
   local repo_url
   repo_url=$(get_plugin_remote_url "dummy")
 
-  [ "$output" = "dummy,$repo_url" ]
+  assert_output "dummy,$repo_url"
 }
 
 @test "parses the output of asdf plugin list --refs" {
@@ -127,7 +127,7 @@ run_nushell() {
   branch=$(get_plugin_remote_branch "dummy")
   gitref=$(get_plugin_remote_gitref "dummy")
 
-  [ "$output" = "dummy,$branch,$gitref" ]
+  assert_output "dummy,$branch,$gitref"
 }
 
 @test "parses the output of asdf plugin list --urls --refs" {
@@ -144,7 +144,7 @@ run_nushell() {
   branch=$(get_plugin_remote_branch "dummy")
   gitref=$(get_plugin_remote_gitref "dummy")
 
-  [ "$output" = "dummy,$repo_url,$branch,$gitref" ]
+  assert_output "dummy,$repo_url,$branch,$gitref"
 }
 
 @test "parses the output of asdf plugin list all" {

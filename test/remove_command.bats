@@ -15,19 +15,19 @@ teardown() {
 
   run asdf plugin-remove "dummy"
   assert_success
-  [ "$output" = "plugin-remove ${ASDF_DIR}/plugins/dummy" ]
+  assert_output "plugin-remove ${ASDF_DIR}/plugins/dummy"
 }
 
 @test "plugin_remove_command should exit with 1 when not passed any arguments" {
   run asdf plugin-remove
   [ "$status" -eq 1 ]
-  [ "$output" = "No plugin given" ]
+  assert_output "No plugin given"
 }
 
 @test "plugin_remove_command should exit with 1 when passed invalid plugin name" {
   run asdf plugin-remove "does-not-exist"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: does-not-exist" ]
+  assert_output "No such plugin: does-not-exist"
 }
 
 @test "plugin_remove_command should remove installed versions" {
@@ -71,7 +71,7 @@ teardown() {
 
   run asdf plugin-remove dummy
 
-  [ "$output" = "plugin-remove ${ASDF_DIR}/plugins/dummy" ]
+  assert_output "plugin-remove ${ASDF_DIR}/plugins/dummy"
 }
 
 @test "plugin_remove_command executes configured pre hook (generic)" {
@@ -85,7 +85,7 @@ EOM
 
   local expected_output="REMOVE dummy
 plugin-remove ${ASDF_DIR}/plugins/dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_remove_command executes configured pre hook (specific)" {
@@ -99,7 +99,7 @@ EOM
 
   local expected_output="REMOVE
 plugin-remove ${ASDF_DIR}/plugins/dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_remove_command executes configured post hook (generic)" {
@@ -113,7 +113,7 @@ EOM
 
   local expected_output="plugin-remove ${ASDF_DIR}/plugins/dummy
 REMOVE dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_remove_command executes configured post hook (specific)" {
@@ -127,5 +127,5 @@ EOM
 
   local expected_output="plugin-remove ${ASDF_DIR}/plugins/dummy
 REMOVE"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }

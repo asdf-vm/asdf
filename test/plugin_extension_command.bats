@@ -64,7 +64,7 @@ EOF
 
   run asdf dummy foo bar
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "asdf can source plugin bin scripts" {
@@ -77,7 +77,7 @@ EOF
 
   run asdf dummy foo bar
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "asdf can execute plugin default command without arguments" {
@@ -94,7 +94,7 @@ EOF
 
   run asdf dummy
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "asdf can execute plugin default command with arguments" {
@@ -111,5 +111,5 @@ EOF
 
   run asdf dummy world
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }

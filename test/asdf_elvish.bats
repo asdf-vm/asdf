@@ -34,7 +34,7 @@ cleaned_path() {
     echo \$E:ASDF_DIR"
 
   assert_success
-  [ "$output" = "$HOME/.asdf" ]
+  assert_output -- "$HOME/.asdf"
 }
 
 @test "retains ASDF_DIR" {
@@ -45,7 +45,7 @@ cleaned_path() {
     echo \$E:ASDF_DIR"
 
   assert_success
-  [ "$output" = "/path/to/asdf" ]
+  assert_output "/path/to/asdf"
 }
 
 @test "retains ASDF_DATA_DIR" {
@@ -56,7 +56,7 @@ cleaned_path() {
     echo \$E:ASDF_DATA_DIR"
 
   assert_success
-  [ "$output" = "/path/to/asdf-data" ]
+  assert_output "/path/to/asdf-data"
 }
 
 @test "adds asdf dirs to PATH" {

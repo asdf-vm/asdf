@@ -17,13 +17,13 @@ teardown() {
 @test "where shows install location of selected version" {
   run asdf where 'dummy' '1.0'
   assert_success
-  [ "$output" = "$ASDF_DIR/installs/dummy/1.0" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/1.0"
 }
 
 @test "where understands versions installed by ref" {
   run asdf where 'dummy' 'ref:master'
   assert_success
-  [ "$output" = "$ASDF_DIR/installs/dummy/ref-master" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/ref-master"
 }
 
 @test "where shows install location of current version if no version specified" {
@@ -32,32 +32,32 @@ teardown() {
   run asdf where 'dummy'
 
   assert_success
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/2.1"
 }
 
 @test "where shows install location of first current version if not version specified and multiple current versions" {
   echo 'dummy 2.1 1.0' >>"$HOME/.tool-versions"
   run asdf where 'dummy'
   assert_success
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/2.1"
 }
 
 @test "where should error when the plugin doesn't exist" {
   run asdf where "foobar"
   [ "$status" -eq 1 ]
-  [ "$output" = "No such plugin: foobar" ]
+  assert_output "No such plugin: foobar"
 }
 
 @test "where should error when version is not installed" {
   run asdf where 'dummy' '1.6'
   [ "$status" -eq 1 ]
-  [ "$output" = "Version not installed" ]
+  assert_output "Version not installed"
 }
 
 @test "where should error when system version is set" {
   run asdf where 'dummy' 'system'
   [ "$status" -eq 1 ]
-  [ "$output" = "System version is selected" ]
+  assert_output "System version is selected"
 }
 
 @test "where should error when no current version selected and version not specified" {
@@ -67,5 +67,5 @@ teardown() {
   expected="No version is set for dummy; please run \`asdf <global | shell | local> dummy <version>\`"
 
   [ "$status" -eq 1 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }

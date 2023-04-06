@@ -18,7 +18,7 @@ teardown() {
   assert_success
 
   run asdf plugin list
-  [ "$output" = "plugin_with-all-valid-chars-123" ]
+  assert_output "plugin_with-all-valid-chars-123"
 }
 
 @test "plugin_add command with LANG=sv_SE.UTF-8 and plugin name matching all valid regex chars succeeds" {
@@ -33,7 +33,7 @@ teardown() {
   assert_success
 
   run asdf plugin-list
-  [ "$output" = "plugin-with-w" ]
+  assert_output "plugin-with-w"
 
   LANG="$ORIGINAL_LANG"
 }
@@ -41,19 +41,19 @@ teardown() {
 @test "plugin_add command with plugin name not matching valid regex fails 1" {
   run asdf plugin add "invalid\$plugin\$name"
   [ "$status" -eq 1 ]
-  [ "$output" = "invalid\$plugin\$name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
+  assert_output "invalid\$plugin\$name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 }
 
 @test "plugin_add command with plugin name not matching valid regex fails 2" {
   run asdf plugin add "#invalid#plugin#name"
   [ "$status" -eq 1 ]
-  [ "$output" = "#invalid#plugin#name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
+  assert_output "#invalid#plugin#name is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 }
 
 @test "plugin_add command with plugin name not matching valid regex fails 3" {
   run asdf plugin add "Ruby"
   [ "$status" -eq 1 ]
-  [ "$output" = "Ruby is invalid. Name may only contain lowercase letters, numbers, '_', and '-'" ]
+  assert_output "Ruby is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 }
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {
@@ -61,7 +61,7 @@ teardown() {
   assert_success
 
   run asdf plugin list
-  [ "$output" = "elixir" ]
+  assert_output "elixir"
 }
 
 @test "plugin_add command with no URL specified adds a plugin when short name repository is enabled" {
@@ -73,7 +73,7 @@ teardown() {
 
   local expected="elixir"
   run asdf plugin list
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "plugin_add command with no URL specified fails to add a plugin when disabled" {
@@ -83,7 +83,7 @@ teardown() {
 
   run asdf plugin add "elixir"
   [ "$status" -eq 1 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "plugin_add command with URL specified adds a plugin using repo" {
@@ -94,7 +94,7 @@ teardown() {
 
   run asdf plugin list
   # whitespace between 'elixir' and url is from printf %-15s %s format
-  [ "$output" = "dummy" ]
+  assert_output "dummy"
 }
 
 @test "plugin_add command with URL specified run twice returns error second time" {
@@ -103,7 +103,7 @@ teardown() {
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
   [ "$status" -eq 2 ]
-  [ "$output" = "Plugin named dummy already added" ]
+  assert_output "Plugin named dummy already added"
 }
 
 @test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
@@ -116,7 +116,7 @@ teardown() {
   install_mock_plugin_repo "dummy"
 
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-  [ "$output" = "plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy" ]
+  assert_output "plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 }
 
 @test "plugin_add command executes configured pre hook (generic)" {
@@ -130,7 +130,7 @@ EOM
 
   local expected_output="ADD dummy
 plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_add command executes configured pre hook (specific)" {
@@ -144,7 +144,7 @@ EOM
 
   local expected_output="ADD
 plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_add command executes configured post hook (generic)" {
@@ -158,7 +158,7 @@ EOM
 
   local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy
 ADD dummy"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }
 
 @test "plugin_add command executes configured post hook (specific)" {
@@ -172,5 +172,5 @@ EOM
 
   local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy
 ADD"
-  [ "$output" = "${expected_output}" ]
+  assert_output -- "${expected_output}"
 }

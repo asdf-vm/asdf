@@ -24,7 +24,7 @@ teardown() {
 
   run asdf current "dummy"
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should handle long version name" {
@@ -34,7 +34,7 @@ teardown() {
 
   run asdf current "dummy"
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should handle multiple versions" {
@@ -44,7 +44,7 @@ teardown() {
 
   run asdf current "dummy"
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should derive from the legacy file if enabled" {
@@ -55,7 +55,7 @@ teardown() {
 
   run asdf current "dummy"
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 # TODO: Need to fix plugin error as well
@@ -64,7 +64,7 @@ teardown() {
 
   run asdf current "foobar"
   [ "$status" -eq 1 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should error when no version is set" {
@@ -73,7 +73,7 @@ teardown() {
 
   run asdf current "dummy"
   [ "$status" -eq 126 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should error when a version is set that isn't installed" {
@@ -83,7 +83,7 @@ teardown() {
 
   run asdf current "dummy"
   [ "$status" -eq 1 ]
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "should output all plugins when no plugin passed" {
@@ -130,7 +130,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }
 
 @test "current should handle comments" {
@@ -140,5 +140,5 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
   assert_success
-  [ "$output" = "$expected" ]
+  assert_output -- "$expected"
 }

@@ -30,7 +30,7 @@ Dummy plugin is a plugin only used for unit tests
 EOF
   )"
   assert_success
-  [ "$output" = "$expected_output" ]
+  assert_output -- "$expected_output"
 }
 
 @test "help should show dummy plugin help specific to version when version is present" {
@@ -48,7 +48,7 @@ Details specific for version 1.2.3
 EOF
   )"
   assert_success
-  [ "$output" = "$expected_output" ]
+  assert_output -- "$expected_output"
 }
 
 @test "help should fail for unknown plugins" {
@@ -56,7 +56,7 @@ EOF
 
   run asdf help "sunny"
   [ "$status" -eq 1 ]
-  [ "$output" = "No plugin named sunny" ]
+  assert_output "No plugin named sunny"
 }
 
 @test "help should fail when plugin doesn't have documentation callback" {
@@ -64,7 +64,7 @@ EOF
 
   run asdf help "legacy-dummy"
   [ "$status" -eq 1 ]
-  [ "$output" = "No documentation for plugin legacy-dummy" ]
+  assert_output "No documentation for plugin legacy-dummy"
 }
 
 @test "help should show asdf help when no plugin name is provided" {

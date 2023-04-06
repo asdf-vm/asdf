@@ -31,7 +31,7 @@ teardown() {
 
   run asdf env dummy which dummy
   assert_success
-  [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
+  assert_output -- "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
 }
 
 @test "asdf env should execute under plugin custom environment used for a shim" {
@@ -59,11 +59,11 @@ teardown() {
   assert_success
 
   run grep 'FOO=bar' <<<"$output"
-  [ "$output" = "" ]
+  assert_output ""
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
-  [ "$output" = "$ASDF_DIR/shims/dummy" ]
+  assert_output -- "$ASDF_DIR/shims/dummy"
   assert_success
 }
 
