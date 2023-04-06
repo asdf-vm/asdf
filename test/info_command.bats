@@ -23,11 +23,10 @@ teardown() {
   run asdf info
 
   assert_success
-  [[ $output == *$'OS:\n'* ]]
-  [[ $output == *$'SHELL:\n'* ]]
-  [[ $output == *$'BASH VERSION:\n'* ]]
-  [[ $output == *$'ASDF VERSION:\n'* ]]
-  [[ $output == *$'ASDF INTERNAL VARIABLES:\n'* ]]
-  [[ $output == *$'ASDF INSTALLED PLUGINS:\n'* ]]
-
+  assert_line -p $'OS:'
+  assert_line -p $'SHELL:'
+  assert_line -p $'BASH VERSION:'
+  assert_line -p $'ASDF VERSION:'
+  assert_line -p $'ASDF INTERNAL VARIABLES:'
+  assert_line -p $'ASDF INSTALLED PLUGINS:'
 }

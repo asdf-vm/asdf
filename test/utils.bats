@@ -57,7 +57,7 @@ teardown() {
 @test "get_download_path should output nothing when path version is provided" {
   run get_download_path foo path "/some/path"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "check_if_version_exists should exit with 1 if plugin does not exist" {
@@ -80,14 +80,14 @@ teardown() {
 @test "check_if_version_exists should be noop if version exists" {
   run check_if_version_exists "dummy" "0.1.0"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "check_if_version_exists should be noop if version is system" {
   mkdir -p "$ASDF_DIR/plugins/foo"
   run check_if_version_exists "foo" "system"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "check_if_version_exists should be ok for ref:version install" {
@@ -95,7 +95,7 @@ teardown() {
   mkdir -p "$ASDF_DIR/installs/foo/ref-master"
   run check_if_version_exists "foo" "ref:master"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "check_if_plugin_exists should exit with 1 when plugin is empty string" {
@@ -107,7 +107,7 @@ teardown() {
 @test "check_if_plugin_exists should be noop if plugin exists" {
   run check_if_plugin_exists "dummy"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "parse_asdf_version_file should output version" {
@@ -215,7 +215,7 @@ teardown() {
 
   run check_if_plugin_exists "dummy2"
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "find_versions should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
@@ -407,7 +407,7 @@ EOF
   echo -n "# comment line" >test_file
   run strip_tool_version_comments test_file
   assert_success
-  assert_output ""
+  assert_output ''
 }
 
 @test "strip_tool_version_comments removes trailing comments on lines containing version information" {

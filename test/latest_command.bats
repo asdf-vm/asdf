@@ -17,19 +17,19 @@ teardown() {
 ####################################################
 @test "[latest_command - dummy_plugin] shows latest stable version" {
   run asdf latest dummy
-  [ "2.0.0" = "$output" ]
+  assert_output "2.0.0"
   assert_success
 }
 
 @test "[latest_command - dummy_plugin] shows latest stable version that matches the given string" {
   run asdf latest dummy 1
-  [ "1.1.0" = "$output" ]
+  assert_output "1.1.0"
   assert_success
 }
 
 @test "[latest_command - dummy_plugin] an invalid version should return an error" {
   run asdf latest dummy 3
-  [ "No compatible versions available (dummy 3)" = "$output" ]
+  assert_output "No compatible versions available (dummy 3)"
   [ "$status" -eq 1 ]
 }
 
@@ -40,7 +40,7 @@ teardown() {
   run asdf latest legacy-dummy
   echo "status: $status"
   echo "output: $output"
-  [ "5.1.0" = "$output" ]
+  assert_output "5.1.0"
   assert_success
 }
 
@@ -48,7 +48,7 @@ teardown() {
   run asdf latest legacy-dummy 1
   echo "status: $status"
   echo "output: $output"
-  [ "1.1.0" = "$output" ]
+  assert_output "1.1.0"
   assert_success
 }
 
@@ -56,7 +56,7 @@ teardown() {
   run asdf latest legacy-dummy 3
   echo "status: $status"
   echo "output: $output"
-  [ -z "$output" ]
+  assert_output ''
   [ "$status" -eq 1 ]
 }
 
@@ -64,7 +64,7 @@ teardown() {
   run asdf latest legacy-dummy 4
   echo "status: $status"
   echo "output: $output"
-  [ "4.0.0" = "$output" ]
+  assert_output "4.0.0"
   assert_success
 }
 
@@ -72,7 +72,7 @@ teardown() {
   run asdf latest legacy-dummy 5
   echo "status: $status"
   echo "output: $output"
-  [ "5.1.0" = "$output" ]
+  assert_output "5.1.0"
   assert_success
 }
 
@@ -80,7 +80,7 @@ teardown() {
   run asdf latest legacy-dummy 6
   echo "status: $status"
   echo "output: $output"
-  [ "No compatible versions available (legacy-dummy 6)" = "$output" ]
+  assert_output "No compatible versions available (legacy-dummy 6)"
   [ "$status" -eq 1 ]
 }
 
@@ -92,12 +92,12 @@ teardown() {
   run asdf install legacy-dummy 4.0.0
   run asdf latest --all
   echo "output $output"
-  [ "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t5.1.0\tmissing\n")" = "$output" ]
+  [ "$output" = "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t5.1.0\tmissing\n")" ]
   assert_success
 }
 
 @test "[latest_command - all plugins] not installed plugin should return missing" {
   run asdf latest --all
-  [ "$(echo -e "dummy\t2.0.0\tmissing\nlegacy-dummy\t5.1.0\tmissing\n")" = "$output" ]
+  [ "$output" = "$(echo -e "dummy\t2.0.0\tmissing\nlegacy-dummy\t5.1.0\tmissing\n")" ]
   assert_success
 }

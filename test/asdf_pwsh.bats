@@ -27,7 +27,7 @@ cleaned_path() {
     Write-Output \"\$env:ASDF_DIR\""
 
   assert_success
-  [ "$output" != "" ]
+  refute_output ''
 }
 
 @test "adds asdf dirs to PATH" {

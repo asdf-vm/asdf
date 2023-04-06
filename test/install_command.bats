@@ -225,7 +225,7 @@ EOM
   cd "$PROJECT_DIR"
   run asdf install
   assert_success
-  [ -z "$output" ]
+  assert_output ''
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
 
@@ -238,7 +238,7 @@ EOM
 
   run asdf install
   assert_success
-  [ -z "$output" ]
+  assert_output ''
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
 

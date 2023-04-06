@@ -59,7 +59,7 @@ teardown() {
   assert_success
 
   run grep 'FOO=bar' <<<"$output"
-  assert_output ""
+  assert_output ''
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy

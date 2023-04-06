@@ -93,5 +93,5 @@ cleaned_path() {
   )
 
   output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
-  [ "$output" != "" ]
+  refute_output ''
 }
