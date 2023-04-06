@@ -1,0 +1,7 @@
+{
+  "name": "asdf",
+  "private": true,
+  "devDependencies": {
+    "@hyperupcall/bats-all": "^5.1.1"
+  }
+}

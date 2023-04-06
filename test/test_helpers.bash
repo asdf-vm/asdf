@@ -2,8 +2,8 @@
 
 bats_require_minimum_version 1.7.0
 
-# shellcheck source=lib/utils.bash
-. "$(dirname "$BATS_TEST_DIRNAME")"/lib/utils.bash
+. "${BATS_TEST_DIRNAME%/*}/node_modules/@hyperupcall/bats-all/load.bash"
+. "${BATS_TEST_DIRNAME%/*}/lib/utils.bash"
 
 setup_asdf_dir() {
   if [ "$BATS_TEST_NAME" = 'test_shim_exec_should_use_path_executable_when_specified_version_path-3a-3cpath-3e' ]; then
