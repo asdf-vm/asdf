@@ -105,7 +105,7 @@ teardown() {
 dummy           1.1.0           $PROJECT_DIR/.tool-versions
 foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 
-  assert_output "$expected"
+  assert_output -- "$expected"
 }
 
 @test "should always match the tool name exactly" {

@@ -109,7 +109,7 @@ teardown() {
 @test "plugin_add command with no URL specified fails if the plugin doesn't exist" {
   run asdf plugin add "does-not-exist"
   [ "$status" -eq 1 ]
-  echo "$output" | grep "plugin does-not-exist not found in repository"
+  assert_line -p "plugin does-not-exist not found in repository"
 }
 
 @test "plugin_add command executes post-plugin add script" {

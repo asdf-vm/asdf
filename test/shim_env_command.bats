@@ -22,7 +22,7 @@ teardown() {
 @test "asdf env without argument should display help" {
   run asdf env
   [ "$status" -eq 1 ]
-  echo "$output" | grep "usage: asdf env <command>"
+  assert_line -p "usage: asdf env <command>"
 }
 
 @test "asdf env should execute under the environment used for a shim" {

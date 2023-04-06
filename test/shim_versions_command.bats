@@ -25,6 +25,6 @@ teardown() {
   run asdf shim-versions dummy
   assert_success
 
-  echo "$output" | grep "dummy 3.0"
-  echo "$output" | grep "dummy 1.0"
+  assert_line -p "dummy 3.0"
+  assert_line -p "dummy 1.0"
 }

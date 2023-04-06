@@ -22,7 +22,7 @@ teardown() {
 @test "asdf exec without argument should display help" {
   run asdf exec
   [ "$status" -eq 1 ]
-  echo "$output" | grep "usage: asdf exec <command>"
+  assert_line -p "usage: asdf exec <command>"
 }
 
 @test "asdf exec should pass all arguments to executable" {
@@ -78,7 +78,7 @@ teardown() {
 
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
-  echo "$output" | grep -q "No version is set for command dummy" 2>/dev/null
+  assert_line -p "No version is set for command dummy"
 }
 
 @test "shim exec should suggest which plugin to use when no version is selected" {
@@ -90,10 +90,10 @@ teardown() {
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
 
-  echo "$output" | grep -q "No version is set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
-  echo "$output" | grep -q "dummy 2.0.0" 2>/dev/null
+  assert_line -p "No version is set for command dummy"
+  assert_line -p "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions"
+  assert_line -p "dummy 1.0"
+  assert_line -p "dummy 2.0.0"
 }
 
 @test "shim exec should suggest different plugins providing same tool when no version is selected" {
@@ -108,10 +108,10 @@ teardown() {
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
 
-  echo "$output" | grep -q "No version is set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
-  echo "$output" | grep -q "mummy 3.0" 2>/dev/null
+  assert_line -p "No version is set for command dummy"
+  assert_line -p "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions"
+  assert_line -p "dummy 1.0"
+  assert_line -p "mummy 3.0"
 }
 
 @test "shim exec should suggest to install missing version" {
@@ -121,12 +121,12 @@ teardown() {
 
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
-  echo "$output" | grep -q "No preset version installed for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Please install a version by running one of the following:" 2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 2.0.0" 2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 1.3" 2>/dev/null
-  echo "$output" | grep -q "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
+  assert_line -p "No preset version installed for command dummy"
+  assert_line -p "Please install a version by running one of the following:"
+  assert_line -p "asdf install dummy 2.0.0"
+  assert_line -p "asdf install dummy 1.3"
+  assert_line -p "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions"
+  assert_line -p "dummy 1.0"
 }
 
 @test "shim exec should execute first plugin that is installed and set" {
@@ -138,7 +138,7 @@ teardown() {
   run "$ASDF_DIR/shims/dummy" world hello
   assert_success
 
-  echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
+  assert_line -p "This is Dummy 3.0! hello world"
 }
 
 @test "shim exec should only use the first version found for a plugin" {
@@ -150,7 +150,7 @@ teardown() {
   run "$ASDF_DIR/shims/dummy" world hello
   assert_success
 
-  echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
+  assert_line -p "This is Dummy 3.0! hello world"
 }
 
 @test "shim exec should determine correct executable on two projects using different plugins that provide the same tool" {
@@ -415,8 +415,8 @@ EOM
 
   run "$ASDF_DIR/shims/dummy" hello world
   assert_success
-  echo "$output" | grep "PRE 1.0 hello world"
-  echo "$output" | grep "This is Dummy 1.0! world hello"
+  assert_line -p "PRE 1.0 hello world"
+  assert_line -p "This is Dummy 1.0! world hello"
 }
 
 @test "shim exec doesnt execute command if pre-hook failed" {

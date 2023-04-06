@@ -23,10 +23,10 @@ teardown() {
   touch "$plugin_path/lib/commands/command-foo-bar.bash"
   run asdf help
   assert_success
-  echo "$output" | grep "PLUGIN dummy" # should present plugin section
+  assert_line -p "PLUGIN dummy"
   listed_cmds=$(echo "$output" | grep -c "asdf dummy")
   [ "$listed_cmds" -eq 3 ]
-  echo "$output" | grep "asdf dummy foo bar" # should present commands without hyphens
+  assert_line -p "asdf dummy foo bar"
 }
 
 @test "asdf help shows extension commands for plugin with hyphens in the name" {
@@ -43,11 +43,11 @@ teardown() {
 
   run asdf help
   assert_success
-  [[ "$output" == *"PLUGIN $plugin_name"* ]]
+  assert_output -p "PLUGIN $plugin_name"
   listed_cmds=$(grep -c "asdf $plugin_name" <<<"${output}")
   [[ $listed_cmds -eq 3 ]]
-  [[ "$output" == *"asdf $plugin_name foo"* ]]
-  [[ "$output" == *"asdf $plugin_name foo bar"* ]]
+  assert_output -p "asdf $plugin_name foo"
+  assert_output -p "asdf $plugin_name foo bar"
 }
 
 @test "asdf can execute plugin bin commands" {

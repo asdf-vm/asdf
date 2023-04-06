@@ -235,7 +235,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   assert_success
-  [[ "$output" == *"0.1.0|$HOME/.dummy-version"* ]]
+  assert_output -p "0.1.0|$HOME/.dummy-version"
 }
 
 @test "get_preset_version_for returns the current version" {

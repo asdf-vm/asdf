@@ -24,5 +24,5 @@ teardown() {
 @test "plugin_remove command fails if the plugin doesn't exist" {
   run asdf plugin-remove "does-not-exist"
   [ "$status" -eq 1 ]
-  echo "$output" | grep "No such plugin: does-not-exist"
+  assert_line -p "No such plugin: does-not-exist"
 }

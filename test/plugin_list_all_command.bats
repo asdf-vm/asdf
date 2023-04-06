@@ -34,8 +34,8 @@ foo                           http://example.com/foo"
 
   run asdf plugin list all
   assert_success
-  [[ "$output" == *"$expected_plugin_repo_sync"* ]]
-  [[ "$output" == *"$expected_plugins_list"* ]]
+  assert_output -p "$expected_plugin_repo_sync"
+  assert_output -p "$expected_plugins_list"
 }
 
 @test "plugin_list_all no immediate repo sync expected because check_duration is greater than 0" {

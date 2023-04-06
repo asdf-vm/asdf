@@ -45,8 +45,8 @@ run_nushell() {
 
   assert_success
 
-  [[ "$output" == *"$PWD/bin"* ]]
-  [[ "$output" == *"$HOME/.asdf/shims"* ]]
+  assert_output -p "$PWD/bin"
+  assert_output -p "$HOME/.asdf/shims"
 }
 
 @test "does not add paths to PATH more than once" {

@@ -19,8 +19,8 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
+  assert_output -p "$(echo -e "dummy\n  1.0.0\n  1.1.0")"
+  assert_output -p "$(echo -e "dummy-broken\n  No versions installed")"
   assert_success
 }
 
@@ -31,8 +31,8 @@ teardown() {
   run asdf install dummy 1.1.0
 
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n *1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
+  assert_output -p "$(echo -e "dummy\n  1.0.0\n *1.1.0")"
+  assert_output -p "$(echo -e "dummy-broken\n  No versions installed")"
   assert_success
 }
 
@@ -43,10 +43,10 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install tummy 2.0.0
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "mummy\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")"* ]]
+  assert_output -p "$(echo -e "dummy\n  1.0.0")"
+  assert_output -p "$(echo -e "dummy-broken\n  No versions installed")"
+  assert_output -p "$(echo -e "mummy\n  No versions installed")"
+  assert_output -p "$(echo -e "tummy\n  2.0.0")"
   assert_success
 }
 
@@ -101,7 +101,7 @@ teardown() {
 
 @test "list_all_command displays stderr then stdout when failing" {
   run asdf list-all dummy-broken
-  [[ "$output" == *"List-all failed!"* ]]
+  assert_output -p "List-all failed!"
   [[ "$output" == *"Attempting to list versions" ]]
 }
 
