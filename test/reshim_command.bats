@@ -20,26 +20,26 @@ teardown() {
   run asdf install dummy 1.0
 
   run asdf reshim
-  [ "$status" -eq 0 ]
+  assert_success
 
   run grep "asdf-plugin: dummy 1.0.1" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   run grep "asdf-plugin: dummy 1.0\$" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "reshim command should remove shims of removed binaries" {
   run asdf install dummy 1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
 
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
 
   run rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -f "$ASDF_DIR/shims/dummy" ]
 }
 
@@ -49,12 +49,12 @@ teardown() {
 
   run rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
   run grep "asdf-plugin: dummy 1.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 1 ]
   run grep "asdf-plugin: dummy 1.1" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "reshim should not remove metadata of removed prefix versions" {
@@ -62,10 +62,10 @@ teardown() {
   run asdf install dummy 1.0.1
   run rm "$ASDF_DIR/installs/dummy/1.0/bin/dummy"
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
   run grep "asdf-plugin: dummy 1.0.1" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "reshim should not duplicate shims" {
@@ -73,19 +73,19 @@ teardown() {
 
   run asdf install dummy 1.0
   run asdf install dummy 1.1
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
 
   run rm "$ASDF_DIR/shims/"*
-  [ "$status" -eq 0 ]
+  assert_success
   [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 }
 
@@ -94,17 +94,17 @@ teardown() {
 
   run asdf install dummy 1.0
   run asdf install dummy 1.1
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
   [ ! -f "$ASDF_DIR/shims/subdir" ]
 
   run rm "$ASDF_DIR/shims/"*
-  [ "$status" -eq 0 ]
+  assert_success
   [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
   [ "0" -eq "$(ls "$ASDF_DIR/shims/"subdir* | wc -l)" ]
 
   run asdf reshim dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
   [ "0" -eq "$(ls "$ASDF_DIR/shims/"subdir* | wc -l)" ]
 
@@ -113,10 +113,10 @@ teardown() {
 @test "reshim without arguments reshims all installed plugins" {
   run asdf install dummy 1.0
   run rm "$ASDF_DIR/shims/"*
-  [ "$status" -eq 0 ]
+  assert_success
   [ "0" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
   run asdf reshim
-  [ "$status" -eq 0 ]
+  assert_success
   [ "1" -eq "$(ls "$ASDF_DIR/shims/"dummy* | wc -l)" ]
 }
 
@@ -151,11 +151,11 @@ EOM
 
   sed -i.bak -e 's/exec /exec \/borked_path_due_to_homebrew_update/' "$dummy_shim"
   run grep 'borked_path_due_to_homebrew_update' "$dummy_shim" # Sanity check
-  [ "$status" -eq 0 ]
+  assert_success
 
   run asdf reshim dummy "path:$ASDF_DIR/installs/dummy/path"
   run grep -v 'borked_path_due_to_homebrew_update' "$dummy_shim"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "reshim should allow local path versions" {
@@ -167,9 +167,9 @@ EOM
 
   run asdf reshim dummy "path:$ASDF_DIR/installs/dummy/path"
 
-  [ "$status" -eq 0 ]
+  assert_success
   run grep "asdf-plugin: dummy 1.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   run grep "asdf-plugin: dummy path:$ASDF_DIR/installs/dummy" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }

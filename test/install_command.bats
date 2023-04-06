@@ -18,13 +18,13 @@ teardown() {
 
 @test "install_command installs the correct version" {
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }
 
 @test "install_command installs the correct version for plugins without download script" {
   run asdf install legacy-dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/legacy-dummy/1.1.0/version")" = "1.1.0" ]
 }
 
@@ -32,7 +32,7 @@ teardown() {
   cd "$PROJECT_DIR"
   echo -n 'dummy 1.2.0' >".tool-versions"
   run asdf install
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
 }
 
@@ -40,16 +40,16 @@ teardown() {
   cd "$PROJECT_DIR"
   echo -n 'dummy 1.2.0' >".tool-versions"
   run asdf install dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
 }
 
 @test "install_command set ASDF_CONCURRENCY" {
   run asdf install dummy 1.0.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/installs/dummy/1.0.0/env" ]
   run grep ASDF_CONCURRENCY "$ASDF_DIR/installs/dummy/1.0.0/env"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "install_command without arguments should work in directory containing whitespace" {
@@ -60,43 +60,43 @@ teardown() {
 
   run asdf install
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
 }
 
 @test "install_command should create a shim with asdf-plugin metadata" {
   run asdf install dummy 1.0.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/installs/dummy/1.0.0/env" ]
   run grep "asdf-plugin: dummy 1.0.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "install_command should create a shim with asdf-plugin metadata for plugins without download script" {
   run asdf install legacy-dummy 1.0.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/installs/legacy-dummy/1.0.0/env" ]
   run grep "asdf-plugin: legacy-dummy 1.0.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "install_command on two versions should create a shim with asdf-plugin metadata" {
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
 
   run grep "asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run grep "asdf-plugin: dummy 1.0.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 1 ]
 
   run asdf install dummy 1.0.0
-  [ "$status" -eq 0 ]
+  assert_success
   run grep "asdf-plugin: dummy 1.0.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run grep "# asdf-plugin: dummy 1.0.0"$'\n'"# asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 
   lines_count=$(grep -c "asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy")
   [ "$lines_count" -eq "1" ]
@@ -107,7 +107,7 @@ teardown() {
   echo 'dummy 1.0.0' >"$PROJECT_DIR/.tool-versions"
 
   run asdf install
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
   [ ! -f "$ASDF_DIR/shims/subdir" ]
 }
@@ -122,7 +122,7 @@ teardown() {
 
   # execute the generated shim
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "This is Dummy 1.0.0! hello world" ]
 }
 
@@ -181,7 +181,7 @@ teardown() {
 
   # execute the generated shim
   [ "$("$ASDF_DIR/shims/dummy" world hello)" = "This is Dummy 1.0.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "install_command installs multiple tool versions when they are specified in a .tool-versions file" {
@@ -189,7 +189,7 @@ teardown() {
   cd "$PROJECT_DIR"
 
   run asdf install
-  [ "$status" -eq 0 ]
+  assert_success
 
   [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
@@ -197,7 +197,7 @@ teardown() {
 
 @test "install_command doesn't install system version" {
   run asdf install dummy system
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -f "$ASDF_DIR/installs/dummy/system/version" ]
 }
 
@@ -224,7 +224,7 @@ EOM
   echo '1.2.0' >>"$PROJECT_DIR/.dummy-version"
   cd "$PROJECT_DIR"
   run asdf install
-  [ "$status" -eq 0 ]
+  assert_success
   [ -z "$output" ]
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
@@ -237,33 +237,33 @@ EOM
   cd "$PROJECT_DIR/child"
 
   run asdf install
-  [ "$status" -eq 0 ]
+  assert_success
   [ -z "$output" ]
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
 
 @test "install_command latest installs latest stable version" {
   run asdf install dummy latest
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/2.0.0/version")" = "2.0.0" ]
 }
 
 @test "install_command latest:version installs latest stable version that matches the given string" {
   run asdf install dummy latest:1
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }
 
 @test "install_command deletes the download directory" {
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -d "$ASDF_DIR/downloads/dummy/1.1.0" ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }
 
 @test "install_command keeps the download directory when --keep-download flag is provided" {
   run asdf install dummy 1.1.0 --keep-download
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/downloads/dummy/1.1.0" ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }
@@ -271,7 +271,7 @@ EOM
 @test "install_command keeps the download directory when always_keep_download setting is true" {
   echo 'always_keep_download = yes' >"$HOME/.asdfrc"
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/downloads/dummy/1.1.0" ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }

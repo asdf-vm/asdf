@@ -15,7 +15,7 @@ teardown() {
   install_mock_plugin_repo "plugin_with-all-valid-chars-123"
 
   run asdf plugin add "plugin_with-all-valid-chars-123" "${BASE_DIR}/repo-plugin_with-all-valid-chars-123"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run asdf plugin list
   [ "$output" = "plugin_with-all-valid-chars-123" ]
@@ -30,7 +30,7 @@ teardown() {
   # https://stackoverflow.com/questions/52570103/regular-expression-a-za-z-seems-to-not-include-letter-w-and-wA
   # https://github.com/asdf-vm/asdf/issues/1237
   run asdf plugin add "plugin-with-w" "${BASE_DIR}/repo-plugin-with-w"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run asdf plugin-list
   [ "$output" = "plugin-with-w" ]
@@ -58,7 +58,7 @@ teardown() {
 
 @test "plugin_add command with no URL specified adds a plugin using repo" {
   run asdf plugin add "elixir"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run asdf plugin list
   [ "$output" = "elixir" ]
@@ -69,7 +69,7 @@ teardown() {
   echo "disable_plugin_short_name_repository=no" >"$ASDF_CONFIG_DEFAULT_FILE"
 
   run asdf plugin add "elixir"
-  [ "$status" -eq 0 ]
+  assert_success
 
   local expected="elixir"
   run asdf plugin list
@@ -90,7 +90,7 @@ teardown() {
   install_mock_plugin_repo "dummy"
 
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-  [ "$status" -eq 0 ]
+  assert_success
 
   run asdf plugin list
   # whitespace between 'elixir' and url is from printf %-15s %s format

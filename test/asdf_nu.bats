@@ -35,7 +35,7 @@ run_nushell() {
 @test "exports ASDF_DIR" {
   run_nushell "echo \$env.ASDF_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   result=$(echo "$output" | grep "asdf")
   [ "$result" = "$PWD" ]
 }
@@ -43,7 +43,7 @@ run_nushell() {
 @test "adds asdf dirs to PATH" {
   run_nushell "\$env.PATH | to text"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   [[ "$output" == *"$PWD/bin"* ]]
   [[ "$output" == *"$HOME/.asdf/shims"* ]]
@@ -54,7 +54,7 @@ run_nushell() {
     source asdf.nu
     echo \$env.PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
   [ "$result" = "" ]
@@ -71,20 +71,20 @@ run_nushell() {
 
     echo \$env.ASDF_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$PWD" ]
 }
 
 @test "defines the asdf or main function" {
   run_nushell "which asdf | get path | to text"
 
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "function calls asdf command" {
   run_nushell "asdf info"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]
@@ -95,7 +95,7 @@ run_nushell() {
   install_dummy_plugin
   run_nushell "asdf plugin list | to csv -n"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "dummy" ]
 }
 
@@ -106,7 +106,7 @@ run_nushell() {
 
   run_nushell "asdf plugin list --urls | to csv -n"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   local repo_url
   repo_url=$(get_plugin_remote_url "dummy")
@@ -121,7 +121,7 @@ run_nushell() {
 
   run_nushell "asdf plugin list --refs | to csv -n"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   local branch gitref
   branch=$(get_plugin_remote_branch "dummy")
@@ -137,7 +137,7 @@ run_nushell() {
 
   run_nushell "asdf plugin list --urls --refs | to csv -n"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   local repo_url branch gitref
   repo_url=$(get_plugin_remote_url "dummy")
@@ -152,7 +152,7 @@ run_nushell() {
   install_dummy_plugin
   run_nushell "asdf plugin list all | to csv -n"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "\
 bar,false,http://example.com/bar
 dummy,true,http://example.com/dummy

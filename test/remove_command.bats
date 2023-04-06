@@ -14,7 +14,7 @@ teardown() {
   install_dummy_plugin
 
   run asdf plugin-remove "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "plugin-remove ${ASDF_DIR}/plugins/dummy" ]
 }
 
@@ -33,22 +33,22 @@ teardown() {
 @test "plugin_remove_command should remove installed versions" {
   install_dummy_plugin
   run asdf install dummy 1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/installs/dummy" ]
 
   run asdf plugin-remove dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -d "$ASDF_DIR/installs/dummy" ]
 }
 
 @test "plugin_remove_command should also remove shims for that plugin" {
   install_dummy_plugin
   run asdf install dummy 1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
 
   run asdf plugin-remove dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -f "$ASDF_DIR/shims/dummy" ]
 }
 
@@ -60,7 +60,7 @@ teardown() {
   echo "# asdf-plugin: gummy" >"$ASDF_DIR/shims/gummy"
 
   run asdf plugin-remove dummy
-  [ "$status" -eq 0 ]
+  assert_success
 
   # unrelated shim should exist
   [ -f "$ASDF_DIR/shims/gummy" ]

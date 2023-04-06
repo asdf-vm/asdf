@@ -23,7 +23,7 @@ teardown() {
   expected="dummy           1.1.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -33,7 +33,7 @@ teardown() {
   expected="dummy           nightly-2000-01-01 $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -43,7 +43,7 @@ teardown() {
   expected="dummy           1.2.0 1.1.0     $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -54,7 +54,7 @@ teardown() {
   expected="dummy           1.2.0           $PROJECT_DIR/.dummy-version"
 
   run asdf current "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -120,7 +120,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
   echo 'y 2.1.0' >>"$PROJECT_DIR/.tool-versions"
 
   run asdf current "y"
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" == *'2.1.0'* ]]
 }
 
@@ -129,7 +129,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
   expected="No plugins installed"
 
   run asdf current
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -139,6 +139,6 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
   expected="dummy           1.2.0           $PROJECT_DIR/.tool-versions"
 
   run asdf current "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }

@@ -27,12 +27,12 @@ teardown() {
   run asdf plugin-test dummy "${BASE_DIR}/repo-dummy"
   echo "status = ${status}"
   echo "output = ${output}"
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "plugin_test_command works with all options provided" {
   run asdf plugin-test dummy "${BASE_DIR}/repo-dummy" --asdf-tool-version 1.0.0 --asdf-plugin-gitref master
   echo "status = ${status}"
   echo "output = ${output}"
-  [ "$status" -eq 0 ]
+  assert_success
 }

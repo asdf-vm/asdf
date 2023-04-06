@@ -22,7 +22,7 @@ teardown() {
 
 @test "uninstall_command should remove the plugin with that version from asdf" {
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
   run asdf uninstall dummy 1.1.0
   [ ! -f "$ASDF_DIR/installs/dummy/1.1.0/version" ]
@@ -30,13 +30,13 @@ teardown() {
 
 @test "uninstall_command should invoke the plugin bin/uninstall if available" {
   run asdf install dummy 1.1.0
-  [ "$status" -eq 0 ]
+  assert_success
   mkdir -p "$ASDF_DIR/plugins/dummy/bin"
   echo "echo custom uninstall" >"$ASDF_DIR/plugins/dummy/bin/uninstall"
   chmod 755 "$ASDF_DIR/plugins/dummy/bin/uninstall"
   run asdf uninstall dummy 1.1.0
   [ "$output" = "custom uninstall" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "uninstall_command should remove the plugin shims if no other version is installed" {
@@ -67,7 +67,7 @@ teardown() {
 
   run asdf uninstall dummy 1.0.0
   run grep "asdf-plugin: dummy 1.1.0" "$ASDF_DIR/shims/dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   run grep "asdf-plugin: dummy 1.0.0" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 1 ]
 }

@@ -23,7 +23,7 @@ teardown() {
   run asdf reshim dummy
 
   run asdf shim-versions dummy
-  [ "$status" -eq 0 ]
+  assert_success
 
   echo "$output" | grep "dummy 3.0"
   echo "$output" | grep "dummy 1.0"

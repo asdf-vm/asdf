@@ -21,7 +21,7 @@ teardown() {
   cd "$PROJECT_DIR"
 
   run asdf which "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
 
@@ -41,7 +41,7 @@ teardown() {
   run asdf reshim dummy 1.0
 
   run asdf which "other_bin"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/subdir/other_bin" ]
 }
 
@@ -54,7 +54,7 @@ teardown() {
   chmod +x "$PROJECT_DIR/sys/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" asdf which "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$PROJECT_DIR/sys/dummy" ]
 }
 
@@ -80,7 +80,7 @@ teardown() {
   install_dummy_exec_path_script "dummy"
 
   run asdf which "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/custom/dummy" ]
 }
 
@@ -93,7 +93,7 @@ teardown() {
   echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
 
   run asdf which "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.1/bin/dummy" ]
 }
 

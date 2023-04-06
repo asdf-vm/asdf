@@ -29,7 +29,7 @@ Dummy plugin documentation
 Dummy plugin is a plugin only used for unit tests
 EOF
   )"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected_output" ]
 }
 
@@ -47,7 +47,7 @@ Dummy plugin is a plugin only used for unit tests
 Details specific for version 1.2.3
 EOF
   )"
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected_output" ]
 }
 
@@ -72,7 +72,7 @@ EOF
 
   run asdf help
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ $output == 'version: v'* ]]
   [[ $output == *$'MANAGE PLUGINS\n'* ]]
   [[ $output == *$'MANAGE PACKAGES\n'* ]]

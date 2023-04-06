@@ -33,7 +33,7 @@ dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" == *"$expected_plugin_repo_sync"* ]]
   [[ "$output" == *"$expected_plugins_list"* ]]
 }
@@ -47,7 +47,7 @@ dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -60,7 +60,7 @@ dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -71,6 +71,6 @@ dummy                        *http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }

@@ -22,7 +22,7 @@ teardown() {
 
   run asdf info
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ $output == *$'OS:\n'* ]]
   [[ $output == *$'SHELL:\n'* ]]
   [[ $output == *$'BASH VERSION:\n'* ]]

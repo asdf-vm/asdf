@@ -18,13 +18,13 @@ teardown() {
 @test "[latest_command - dummy_plugin] shows latest stable version" {
   run asdf latest dummy
   [ "2.0.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_plugin] shows latest stable version that matches the given string" {
   run asdf latest dummy 1
   [ "1.1.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_plugin] an invalid version should return an error" {
@@ -41,7 +41,7 @@ teardown() {
   echo "status: $status"
   echo "output: $output"
   [ "5.1.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_legacy_plugin] shows latest stable version that matches the given string" {
@@ -49,7 +49,7 @@ teardown() {
   echo "status: $status"
   echo "output: $output"
   [ "1.1.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_legacy_plugin] No stable version should return an error" {
@@ -65,7 +65,7 @@ teardown() {
   echo "status: $status"
   echo "output: $output"
   [ "4.0.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_legacy_plugin] do not show latest unstable version with capital characters that matches the given string" {
@@ -73,7 +73,7 @@ teardown() {
   echo "status: $status"
   echo "output: $output"
   [ "5.1.0" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - dummy_legacy_plugin] an invalid version should return an error" {
@@ -93,11 +93,11 @@ teardown() {
   run asdf latest --all
   echo "output $output"
   [ "$(echo -e "dummy\t2.0.0\tinstalled\nlegacy-dummy\t5.1.0\tmissing\n")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "[latest_command - all plugins] not installed plugin should return missing" {
   run asdf latest --all
   [ "$(echo -e "dummy\t2.0.0\tmissing\nlegacy-dummy\t5.1.0\tmissing\n")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }

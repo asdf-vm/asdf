@@ -30,7 +30,7 @@ teardown() {
   run asdf install
 
   run asdf env dummy which dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
 
@@ -42,7 +42,7 @@ teardown() {
   chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
 
   run asdf env dummy
-  [ "$status" -eq 0 ]
+  assert_success
   echo "$output" | grep 'FOO=bar'
 }
 
@@ -56,7 +56,7 @@ teardown() {
   echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
   run asdf env dummy
-  [ "$status" -eq 0 ]
+  assert_success
 
   run grep 'FOO=bar' <<<"$output"
   [ "$output" = "" ]
@@ -64,7 +64,7 @@ teardown() {
 
   run asdf env dummy which dummy
   [ "$output" = "$ASDF_DIR/shims/dummy" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "asdf env should set PATH correctly" {
@@ -72,7 +72,7 @@ teardown() {
   run asdf install
 
   run asdf env dummy
-  [ "$status" -eq 0 ]
+  assert_success
 
   # Should set path
   path_line=$(echo "$output" | grep '^PATH=')

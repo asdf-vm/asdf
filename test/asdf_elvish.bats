@@ -33,7 +33,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$HOME/.asdf" ]
 }
 
@@ -44,7 +44,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "/path/to/asdf" ]
 }
 
@@ -55,7 +55,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:ASDF_DATA_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "/path/to/asdf-data" ]
 }
 
@@ -66,7 +66,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | grep "asdf")
   [ "$result" != "" ]
@@ -79,7 +79,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$_asdf:"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "<ns " ]]
 }
 
@@ -92,7 +92,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     echo \$E:PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$result" | tr ':' '\n' | grep "asdf" | sort | uniq -d)
   [ "$result" = "" ]
@@ -105,7 +105,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     pprint \$asdf~"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "<closure " ]]
 }
 
@@ -116,7 +116,7 @@ cleaned_path() {
     use ./asdf _asdf; var asdf~ = \$_asdf:asdf~
     asdf info"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]

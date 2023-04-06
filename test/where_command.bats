@@ -16,13 +16,13 @@ teardown() {
 
 @test "where shows install location of selected version" {
   run asdf where 'dummy' '1.0'
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0" ]
 }
 
 @test "where understands versions installed by ref" {
   run asdf where 'dummy' 'ref:master'
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/ref-master" ]
 }
 
@@ -31,14 +31,14 @@ teardown() {
 
   run asdf where 'dummy'
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
 }
 
 @test "where shows install location of first current version if not version specified and multiple current versions" {
   echo 'dummy 2.1 1.0' >>"$HOME/.tool-versions"
   run asdf where 'dummy'
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$ASDF_DIR/installs/dummy/2.1" ]
 }
 

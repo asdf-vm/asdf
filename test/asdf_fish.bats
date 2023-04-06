@@ -25,7 +25,7 @@ cleaned_path() {
     . asdf.fish
     echo \$ASDF_DIR"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" != "" ]
 }
 
@@ -39,7 +39,7 @@ cleaned_path() {
     . (pwd)/asdf.fish  # if the full path is not passed, status -f will return the relative path
     echo \$PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | grep "asdf")
   [ "$result" != "" ]
@@ -56,7 +56,7 @@ cleaned_path() {
     . asdf.fish
     echo \$PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
   [ "$result" = "" ]
@@ -71,7 +71,7 @@ cleaned_path() {
     . asdf.fish
     type asdf"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "is a function" ]]
 }
 
@@ -84,7 +84,7 @@ cleaned_path() {
     . asdf.fish
     asdf info"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]

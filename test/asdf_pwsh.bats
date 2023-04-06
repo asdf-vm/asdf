@@ -26,7 +26,7 @@ cleaned_path() {
     . ./asdf.ps1
     Write-Output \"\$env:ASDF_DIR\""
 
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" != "" ]
 }
 
@@ -41,7 +41,7 @@ cleaned_path() {
     . ./asdf.ps1
     Write-Output \$Env:PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
   result=$(echo "$output" | grep "asdf")
   [ "$result" != "" ]
 }
@@ -58,7 +58,7 @@ cleaned_path() {
     . ./asdf.ps1
     Write-Output \$Env:PATH"
 
-  [ "$status" -eq 0 ]
+  assert_success
 
   result=$(echo "$output" | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
   [ "$result" = "" ]
@@ -75,7 +75,7 @@ cleaned_path() {
     ./ asdf.ps1
     \$(Get-Command -CommandType asdf).Name"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "asdf" ]]
 }
 
@@ -90,7 +90,7 @@ cleaned_path() {
     . ./asdf.ps1
     asdf info"
 
-  [ "$status" -eq 0 ]
+  assert_success
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]
 }

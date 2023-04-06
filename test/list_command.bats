@@ -21,7 +21,7 @@ teardown() {
   run asdf list
   [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
   [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_command should list plugins with installed versions and any selected versions marked with asterisk" {
@@ -33,7 +33,7 @@ teardown() {
   run asdf list
   [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n *1.1.0")"* ]]
   [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_command should continue listing even when no version is installed for any of the plugins" {
@@ -47,7 +47,7 @@ teardown() {
   [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
   [[ "$output" == *"$(echo -e "mummy\n  No versions installed")"* ]]
   [[ "$output" == *"$(echo -e "tummy\n  2.0.0")"* ]]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_command with plugin should list installed versions" {
@@ -55,7 +55,7 @@ teardown() {
   run asdf install dummy 1.1.0
   run asdf list dummy
   [ "$(echo -e "  1.0.0\n  1.1.0")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_command with version filters installed versions" {
@@ -64,7 +64,7 @@ teardown() {
   run asdf install dummy 2.0
   run asdf list dummy 1
   [ "$(echo -e "  1.0\n  1.1")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_command with an invalid version should return an error" {
@@ -78,13 +78,13 @@ teardown() {
 @test "list_all_command lists available versions" {
   run asdf list-all dummy
   [ "$(echo -e "1.0.0\n1.1.0\n2.0.0")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_all_command with version filters available versions" {
   run asdf list-all dummy 1
   [ "$(echo -e "1.0.0\n1.1.0")" = "$output" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "list_all_command with an invalid version should return an error" {

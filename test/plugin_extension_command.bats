@@ -22,7 +22,7 @@ teardown() {
   touch "$plugin_path/lib/commands/command-foo.bash"
   touch "$plugin_path/lib/commands/command-foo-bar.bash"
   run asdf help
-  [ "$status" -eq 0 ]
+  assert_success
   echo "$output" | grep "PLUGIN dummy" # should present plugin section
   listed_cmds=$(echo "$output" | grep -c "asdf dummy")
   [ "$listed_cmds" -eq 3 ]
@@ -42,7 +42,7 @@ teardown() {
   touch "$plugin_path/lib/commands/command-foo-bar.bash"
 
   run asdf help
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" == *"PLUGIN $plugin_name"* ]]
   listed_cmds=$(grep -c "asdf $plugin_name" <<<"${output}")
   [[ $listed_cmds -eq 3 ]]
@@ -63,7 +63,7 @@ EOF
   expected="this is an executable bar"
 
   run asdf dummy foo bar
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -76,7 +76,7 @@ EOF
   expected="sourced script has asdf utils $plugin_path bar"
 
   run asdf dummy foo bar
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -93,7 +93,7 @@ EOF
   expected="hello"
 
   run asdf dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }
 
@@ -110,6 +110,6 @@ EOF
   expected="hello world"
 
   run asdf dummy world
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$output" = "$expected" ]
 }

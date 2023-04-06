@@ -31,7 +31,7 @@ teardown() {
 
   run asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "asdf exec should pass all arguments to executable even if shim is not in PATH" {
@@ -45,7 +45,7 @@ teardown() {
 
   run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "shim exec should pass all arguments to executable" {
@@ -54,7 +54,7 @@ teardown() {
 
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "shim exec should pass stdin to executable" {
@@ -68,7 +68,7 @@ teardown() {
 
   run echo "$(echo hello | "$ASDF_DIR/shims/upper")"
   [ "$output" = "HELLO" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "shim exec should fail if no version is selected" {
@@ -136,7 +136,7 @@ teardown() {
   echo "dummy 1.0 3.0 2.0.0" >"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$status" -eq 0 ]
+  assert_success
 
   echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
 }
@@ -148,7 +148,7 @@ teardown() {
   echo "dummy 1.0" >>"$PROJECT_DIR/.tool-versions"
 
   run "$ASDF_DIR/shims/dummy" world hello
-  [ "$status" -eq 0 ]
+  assert_success
 
   echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
 }
@@ -168,12 +168,12 @@ teardown() {
   cd "$PROJECT_DIR"/A
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 
   cd "$PROJECT_DIR"/B
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$output" = "This is Mummy 3.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "shim exec should determine correct executable on a project with two plugins set that provide the same tool" {
@@ -190,7 +190,7 @@ teardown() {
 
   run "$ASDF_DIR/shims/dummy" world hello
   [ "$output" = "This is Mummy 3.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }
 
 @test "shim exec should fallback to system executable when specified version is system" {
@@ -414,7 +414,7 @@ pre_dummy_dummy = echo PRE $version $1 $2
 EOM
 
   run "$ASDF_DIR/shims/dummy" hello world
-  [ "$status" -eq 0 ]
+  assert_success
   echo "$output" | grep "PRE 1.0 hello world"
   echo "$output" | grep "This is Dummy 1.0! world hello"
 }
@@ -446,5 +446,5 @@ EOM
 
   run asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
-  [ "$status" -eq 0 ]
+  assert_success
 }

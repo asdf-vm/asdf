@@ -15,7 +15,7 @@ teardown() {
 @test "asdf plugin-update should pull latest default branch (refs/remotes/origin/HEAD) for plugin" {
   run asdf plugin-update dummy
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "Updating dummy to master"* ]]
   [ "$repo_head" = "master" ]
 }
@@ -33,7 +33,7 @@ teardown() {
   run asdf plugin-update dummy
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "Updating dummy to main"* ]]
   [ "$repo_head" = "main" ]
 }
@@ -51,7 +51,7 @@ teardown() {
   run asdf plugin-update dummy
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "Updating dummy to my/default"* ]]
   [ "$repo_head" = "my/default" ]
 }
@@ -75,30 +75,30 @@ teardown() {
   run asdf plugin-update dummy
   repo_head="$(git --git-dir "$ASDF_DIR/plugins/dummy/.git" --work-tree "$ASDF_DIR/plugins/dummy" rev-parse --abbrev-ref HEAD)"
 
-  [ "$status" -eq 0 ]
+  assert_success
   [[ "$output" =~ "Updating dummy to main"* ]]
   [ "$repo_head" = "main" ]
 }
 
 @test "asdf plugin-update should not remove plugin versions" {
   run asdf install dummy 1.1
-  [ "$status" -eq 0 ]
+  assert_success
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1/version")" = "1.1" ]
   run asdf plugin-update dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/installs/dummy/1.1/version" ]
   run asdf plugin-update --all
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/installs/dummy/1.1/version" ]
 }
 
 @test "asdf plugin-update should not remove plugins" {
   # dummy plugin is already installed
   run asdf plugin-update dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/plugins/dummy" ]
   run asdf plugin-update --all
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/plugins/dummy" ]
 }
 
@@ -106,10 +106,10 @@ teardown() {
   run asdf install dummy 1.1
   [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf plugin-update dummy
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
   run asdf plugin-update --all
-  [ "$status" -eq 0 ]
+  assert_success
   [ -f "$ASDF_DIR/shims/dummy" ]
 }
 

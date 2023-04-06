@@ -13,11 +13,11 @@ teardown() {
 
 @test "plugin_remove command removes the plugin directory" {
   run asdf install dummy 1.0
-  [ "$status" -eq 0 ]
+  assert_success
   [ -d "$ASDF_DIR/downloads/dummy" ]
 
   run asdf plugin-remove "dummy"
-  [ "$status" -eq 0 ]
+  assert_success
   [ ! -d "$ASDF_DIR/downloads/dummy" ]
 }
 
