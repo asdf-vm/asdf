@@ -80,6 +80,16 @@ def noFunctionKeywordFixer(line: str, m: Any) -> str:
 
     return f'{prestr}{midstr}() {poststr}'
 
+# Before: >/dev/null 2>&1
+# After: &>/dev/null
+# ---
+# Before: 2>/dev/null 1>&2
+# After: &>/dev/null
+def noVerboseRedirectionFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}&>/dev/null{poststr}'
+
 def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
     content_arr = filepath.read_text().split('\n')
 
@@ -172,6 +182,21 @@ def main():
             ],
             'found': 0
         },
+        {
+            'name': 'no-verbose-redirection',
+            'regex': '(?P<match>(>/dev/null 2>&1|2>/dev/null 1>&2))',
+            'reason': 'Use `&>/dev/null` instead of `>/dev/null 2>&1` or `2>/dev/null 1>&2` for consistency',
+            'fixerFn': noVerboseRedirectionFixer,
+            'testPositiveMatches': [
+                'echo woof >/dev/null 2>&1',
+                'echo woof 2>/dev/null 1>&2',
+            ],
+            'testNegativeMatches': [
+                'echo woof &>/dev/null',
+                'echo woof >&/dev/null',
+            ],
+            'found': 0
+        }
     ]
 
     parser = argparse.ArgumentParser()

@@ -25,9 +25,9 @@ install_command() {
 }
 
 get_concurrency() {
-  if command -v nproc >/dev/null 2>&1; then
+  if command -v nproc &>/dev/null; then
     nproc
-  elif command -v sysctl >/dev/null 2>&1 && sysctl hw.ncpu >/dev/null 2>&1; then
+  elif command -v sysctl &>/dev/null && sysctl hw.ncpu &>/dev/null; then
     sysctl -n hw.ncpu
   elif [ -f /proc/cpuinfo ]; then
     grep -c processor /proc/cpuinfo
