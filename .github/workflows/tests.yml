@@ -8,9 +8,9 @@ on:
 
 env:
   ELVISH_VERSION: v0.19.2
-  FISH_VERSION: 3.6.1-1~jammy
+  FISH_VERSION: 3.6.1
   NUSHELL_VERSION: 0.78.0
-  POWERSHELL_VERSION: 7.3.3-1.deb
+  POWERSHELL_VERSION: 7.3.3
 
 jobs:
   detect-changes:
@@ -66,8 +66,8 @@ jobs:
           sudo add-apt-repository -y ppa:fish-shell/release-3
           sudo apt-get update
           sudo apt-get -y install curl parallel \
-            fish=${{ env.FISH_VERSION }} \
-            powershell=${{ env.POWERSHELL_VERSION }}
+            fish="${{ env.FISH_VERSION }}-1~jammy" \
+            powershell="${{ env.POWERSHELL_VERSION }}-1.deb"
 
           # Create $HOME/bin
           mkdir -p "$HOME/bin"
