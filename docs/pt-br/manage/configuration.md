@@ -48,7 +48,6 @@ legacy_version_file = yes
 **Configurações**
 
 - `legacy_version_file` - por padrão é `no`. Se definido como `yes`, fará com que os plug-ins que suportam esse recurso leiam os arquivos de versão usados por outros gerenciadores de versão (por exemplo, `.ruby-version` no caso do `rbenv` do Ruby).
-- `use_release_candidates` - por padrão é `no`. Se definido como `yes`, fará com que o comando `asdf update` atualize para o mais recente em vez da versão semântica mais recente.
 
 - `always_keep_download` - por padrão é `no`. Se definido como `yes`, fará com que o `asdf install` sempre mantenha o código-fonte ou binário baixado. Se definido como `no`, o código fonte ou binário baixado por `asdf install` será excluído após a instalação bem sucedida.
 

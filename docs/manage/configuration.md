@@ -69,15 +69,6 @@ Plugins **with support** can read the versions files used by other version manag
 | `no` <Badge type="tip" text="default" vertical="middle" /> | Use `.tool-versions` to read versions                                      |
 | `yes`                                                      | Use plugin fallback to legacy version files (`.ruby-version`) if available |
 
-### `use_release_candidates`
-
-Configure the `asdf update` command to upgrade to the latest Release Candidate instead of the latest Semantic Version.
-
-| Options                                                    | Description               |
-| :--------------------------------------------------------- | :------------------------ |
-| `no` <Badge type="tip" text="default" vertical="middle" /> | Semantic Version is used  |
-| `yes`                                                      | Release Candidate is used |
-
 ### `always_keep_download`
 
 Configure the `asdf install` command to keep or delete the source code or binary it downloads.

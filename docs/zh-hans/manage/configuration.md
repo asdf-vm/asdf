@@ -54,7 +54,6 @@ python 3.7.2 2.7.15 system
 
 ```:no-line-numbers
 legacy_version_file = no
-use_release_candidates = no
 always_keep_download = no
 plugin_repository_last_check_duration = 60
 ```
@@ -67,15 +66,6 @@ plugin_repository_last_check_duration = 60
 | :------------------------------------------------------ | :------------------------------------------------------- |
 | `no` <Badge type="tip" text="默认" vertical="middle" /> | 从 `.tool-versions` 文件读取版本                         |
 | `yes`                                                   | 如果可行的话，从传统版本文件读取版本（`.ruby-versions`） |
-
-### `use_release_candidates`
-
-配置 `asdf update` 命令以升级到最新的候选版本，而不是最新的语义版本。
-
-| 选项                                                    | 描述           |
-| :------------------------------------------------------ | :------------- |
-| `no` <Badge type="tip" text="默认" vertical="middle" /> | 语义版本被使用 |
-| `yes`                                                   | 候选版本被使用 |
 
 ### `always_keep_download`
 
