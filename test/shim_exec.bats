@@ -333,7 +333,6 @@ teardown() {
   chmod +x "$PROJECT_DIR/sys/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/dummy"
-  echo "$status $output"
   [ "$output" = "$ASDF_DIR/shims/dummy" ]
 }
 

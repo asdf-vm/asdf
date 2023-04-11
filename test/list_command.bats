@@ -19,8 +19,8 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n  1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
+  [[ "$output" == *$'dummy\n  1.0.0\n  1.1.0'* ]]
+  [[ "$output" == *$'dummy-broken\n  No versions installed'* ]]
   [ "$status" -eq 0 ]
 }
 
@@ -31,8 +31,8 @@ teardown() {
   run asdf install dummy 1.1.0
 
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0\n *1.1.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
+  [[ "$output" == *$'dummy\n  1.0.0\n *1.1.0'* ]]
+  [[ "$output" == *$'dummy-broken\n  No versions installed'* ]]
   [ "$status" -eq 0 ]
 }
 
@@ -43,10 +43,10 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install tummy 2.0.0
   run asdf list
-  [[ "$output" == *"$(echo -e "dummy\n  1.0.0")"* ]]
-  [[ "$output" == *"$(echo -e "dummy-broken\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "mummy\n  No versions installed")"* ]]
-  [[ "$output" == *"$(echo -e "tummy\n  2.0.0")"* ]]
+  [[ "$output" == *$'dummy\n  1.0.0'* ]]
+  [[ "$output" == *$'dummy-broken\n  No versions installed'* ]]
+  [[ "$output" == *$'mummy\n  No versions installed'* ]]
+  [[ "$output" == *$'tummy\n  2.0.0'* ]]
   [ "$status" -eq 0 ]
 }
 
@@ -54,7 +54,7 @@ teardown() {
   run asdf install dummy 1.0.0
   run asdf install dummy 1.1.0
   run asdf list dummy
-  [ "$(echo -e "  1.0.0\n  1.1.0")" = "$output" ]
+  [ $'  1.0.0\n  1.1.0' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
@@ -63,7 +63,7 @@ teardown() {
   run asdf install dummy 1.1
   run asdf install dummy 2.0
   run asdf list dummy 1
-  [ "$(echo -e "  1.0\n  1.1")" = "$output" ]
+  [ $'  1.0\n  1.1' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
@@ -77,13 +77,13 @@ teardown() {
 
 @test "list_all_command lists available versions" {
   run asdf list-all dummy
-  [ "$(echo -e "1.0.0\n1.1.0\n2.0.0")" = "$output" ]
+  [ $'1.0.0\n1.1.0\n2.0.0' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "list_all_command with version filters available versions" {
   run asdf list-all dummy 1
-  [ "$(echo -e "1.0.0\n1.1.0")" = "$output" ]
+  [ $'1.0.0\n1.1.0' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
