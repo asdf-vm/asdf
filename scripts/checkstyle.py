@@ -80,17 +80,41 @@ def noFunctionKeywordFixer(line: str, m: Any) -> str:
 
     return f'{prestr}{midstr}() {poststr}'
 
-def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
-    content_arr = filepath.read_text().split('\n')
+# Before: >/dev/null 2>&1
+# After: &>/dev/null
+# ---
+# Before: 2>/dev/null 1>&2
+# After: &>/dev/null
+def noVerboseRedirectionFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}&>/dev/null{poststr}'
+
+def lintfile(file: Path, rules: List[Rule], options: Dict[str, Any]):
+    content_arr = file.read_text().split('\n')
 
     for line_i, line in enumerate(content_arr):
         if 'checkstyle-ignore' in line:
             continue
 
         for rule in rules:
+            should_run = False
+            if 'sh' in rule['fileTypes']:
+                if file.name.endswith('.sh') or str(file.absolute()).endswith('bin/asdf'):
+                    should_run = True
+            if 'bash' in rule['fileTypes']:
+                if file.name.endswith('.bash') or file.name.endswith('.bats'):
+                    should_run = True
+
+            if options['verbose']:
+                print(f'{str(file)}: {should_run}')
+
+            if not should_run:
+                continue
+
             m = re.search(rule['regex'], line)
             if m is not None and m.group('match') is not None:
-                dir = os.path.relpath(filepath.resolve(), Path.cwd())
+                dir = os.path.relpath(file.resolve(), Path.cwd())
                 prestr = line[0:m.start('match')]
                 midstr = line[m.start('match'):m.end('match')]
                 poststr = line[m.end('match'):]
@@ -106,7 +130,7 @@ def lintfile(filepath: Path, rules: List[Rule], options: Dict[str, Any]):
                 rule['found'] += 1
 
     if options['fix']:
-        filepath.write_text('\n'.join(content_arr))
+        file.write_text('\n'.join(content_arr))
 
 def main():
     rules: List[Rule] = [
@@ -114,6 +138,7 @@ def main():
             'name': 'no-double-backslash',
             'regex': '".*?(?P<match>\\\\\\\\[abeEfnrtv\'"?xuUc]).*?(?<!\\\\)"',
             'reason': 'Backslashes are only required if followed by a $, `, ", \\, or <newline>',
+            'fileTypes': ['bash', 'sh'],
             'fixerFn': noDoubleBackslashFixer,
             'testPositiveMatches': [
                 'printf "%s\\\\n" "Hai"',
@@ -123,12 +148,12 @@ def main():
                 'printf "%s\\n" "Hai"',
                 'echo -n "Hello\\n"'
             ],
-            'found': 0
         },
         {
             'name': 'no-pwd-capture',
             'regex': '(?P<match>\\$\\(pwd\\))',
             'reason': '$PWD is essentially equivalent to $(pwd) without the overhead of a subshell',
+            'fileTypes': ['bash', 'sh'],
             'fixerFn': noPwdCaptureFixer,
             'testPositiveMatches': [
                 '$(pwd)'
@@ -136,12 +161,12 @@ def main():
             'testNegativeMatches': [
                 '$PWD'
             ],
-            'found': 0
         },
         {
             'name': 'no-test-double-equals',
             'regex': '(?<!\\[)\\[ (?:[^]]|](?=}))*?(?P<match>==).*?]',
             'reason': 'Disallow double equals in places where they are not necessary for consistency',
+            'fileTypes': ['bash', 'sh'],
             'fixerFn': noTestDoubleEqualsFixer,
             'testPositiveMatches': [
                 '[ a == b ]',
@@ -156,12 +181,12 @@ def main():
                 '[[ "${lines[0]}" == \'usage: \'* ]]',
                 '[ "${lines[0]}" = blah ]',
             ],
-            'found': 0
         },
         {
             'name': 'no-function-keyword',
             'regex': '^[ \\t]*(?P<match>function .*?(?:\\([ \\t]*\\))?[ \\t]*){',
             'reason': 'Only allow functions declared like `fn_name() {{ :; }}` for consistency (see ' + c.LINK('https://www.shellcheck.net/wiki/SC2113', 'ShellCheck SC2113') + ')',
+            'fileTypes': ['bash', 'sh'],
             'fixerFn': noFunctionKeywordFixer,
             'testPositiveMatches': [
                 'function fn() { :; }',
@@ -170,13 +195,29 @@ def main():
             'testNegativeMatches': [
                 'fn() { :; }',
             ],
-            'found': 0
+        },
+        {
+            'name': 'no-verbose-redirection',
+            'regex': '(?P<match>(>/dev/null 2>&1|2>/dev/null 1>&2))',
+            'reason': 'Use `&>/dev/null` instead of `>/dev/null 2>&1` or `2>/dev/null 1>&2` for consistency',
+            'fileTypes': ['bash'],
+            'fixerFn': noVerboseRedirectionFixer,
+            'testPositiveMatches': [
+                'echo woof >/dev/null 2>&1',
+                'echo woof 2>/dev/null 1>&2',
+            ],
+            'testNegativeMatches': [
+                'echo woof &>/dev/null',
+                'echo woof >&/dev/null',
+            ],
         },
     ]
+    [rule.update({ 'found': 0 }) for rule in rules]
 
     parser = argparse.ArgumentParser()
     parser.add_argument('files', metavar='FILES', nargs='*')
     parser.add_argument('--fix', action='store_true')
+    parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--internal-test-regex', action='store_true')
     args = parser.parse_args()
 
@@ -199,7 +240,8 @@ def main():
         return
 
     options = {
-        'fix': args.fix
+        'fix': args.fix,
+        'verbose': args.verbose,
     }
 
     # parse files and print matched lints
@@ -210,9 +252,11 @@ def main():
                 lintfile(p, rules, options)
     else:
         for file in Path.cwd().glob('**/*'):
-            if file.name.endswith('.bash') or file.name.endswith('.sh') or file.name.endswith('.bats') or str(file.absolute()).endswith('bin/asdf'):
-                if file.is_file():
-                    lintfile(file, rules, options)
+            if '.git' in str(file.absolute()):
+                continue
+
+            if file.is_file():
+                lintfile(file, rules, options)
 
     # print final results
     print(f'{c.UNDERLINE}TOTAL ISSUES{c.RESET}')

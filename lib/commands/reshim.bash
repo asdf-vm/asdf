@@ -11,7 +11,7 @@ remove_shim_for_version() {
   local count_installed
   count_installed=$(list_installed_versions "$plugin_name" | wc -l)
 
-  if ! grep -x "# asdf-plugin: $plugin_name $version" "$shim_path" >/dev/null 2>&1; then
+  if ! grep -x "# asdf-plugin: $plugin_name $version" "$shim_path" &>/dev/null; then
     return 0
   fi
 
