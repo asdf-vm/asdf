@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-# check .sh files
-shfmt --language-dialect posix --indent 2 --write \
-  lib/*.sh
-
 # check .bash files
 shfmt --language-dialect bash --indent 2 --write \
   completions/*.bash \
