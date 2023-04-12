@@ -63,7 +63,7 @@ plugin_add_command() {
   if [ -n "$2" ]; then
     local source_url=$2
   else
-    initialize_or_update_repository
+    initialize_or_update_plugin_repository
     local source_url
     source_url=$(get_plugin_source_url "$plugin_name")
   fi

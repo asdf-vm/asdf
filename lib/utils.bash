@@ -50,7 +50,7 @@ asdf_dir() {
   fi
 }
 
-asdf_repository_url() {
+asdf_plugin_repository_url() {
   printf "https://github.com/asdf-vm/asdf-plugins.git\n"
 }
 
@@ -418,7 +418,7 @@ repository_needs_update() {
   [ "$sync_required" ]
 }
 
-initialize_or_update_repository() {
+initialize_or_update_plugin_repository() {
   local repository_url
   local repository_path
 
@@ -428,7 +428,7 @@ initialize_or_update_repository() {
     exit 1
   fi
 
-  repository_url=$(asdf_repository_url)
+  repository_url=$(asdf_plugin_repository_url)
   repository_path=$(asdf_data_dir)/repository
 
   if [ ! -d "$repository_path" ]; then
@@ -436,7 +436,8 @@ initialize_or_update_repository() {
     git clone "$repository_url" "$repository_path"
   elif repository_needs_update; then
     printf "updating plugin repository..."
-    (cd "$repository_path" && git fetch && git reset --hard origin/master)
+    git -C "$repository_path" fetch
+    git -C "$repository_path" reset --hard origin/master
   fi
 
   mkdir -p "$(asdf_data_dir)/tmp"
