@@ -16,8 +16,6 @@ banned_commands=(
   eval
   # realpath not available by default on OSX.
   realpath
-  # readlink on OSX behaves differently from readlink on other Unix systems
-  readlink
   # source isn't POSIX compliant. . behaves the same and is POSIX compliant
   # Except in fish, where . is deprecated, and will be removed in the future.
   source
@@ -32,6 +30,8 @@ banned_commands_regex=(
   "grep.* -P"
   # Ban grep long commands as they do not work on alpine
   "grep[^|]+--\w{2,}"
+  # readlink -f on OSX behaves differently from readlink -f on other Unix systems
+  'readlink.+-.*f.+["$]'
   # sort --sort-version isn't supported everywhere
   "sort.*-V"
   "sort.*--sort-versions"
