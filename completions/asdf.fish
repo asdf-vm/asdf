@@ -31,7 +31,7 @@ function __fish_asdf_arg_at -a number
 end
 
 function __fish_asdf_list_versions -a plugin
-    asdf list $plugin 2>/dev/null | sed -e 's/^[[:space:]]*//'
+    asdf list $plugin 2>/dev/null | string trim | string trim --left --chars '*'
 end
 
 function __fish_asdf_list_all -a plugin
