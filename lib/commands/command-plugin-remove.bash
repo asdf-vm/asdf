@@ -21,16 +21,13 @@ plugin_remove_command() {
   rm -rf "$(asdf_data_dir)/installs/${plugin_name}"
   rm -rf "$(asdf_data_dir)/downloads/${plugin_name}"
 
-  local is_nullglob_disabled=
-  shopt -q nullglob || is_nullglob_disabled=yes
-  shopt -s nullglob
   for f in "$(asdf_data_dir)"/shims/*; do
-    if grep -q "asdf-plugin: ${plugin_name}" "$f"; then
-      rm -f "$f"
+    if [ -f "$f" ]; then # nullglob may not be set
+      if grep -q "asdf-plugin: ${plugin_name}" "$f"; then
+        rm -f "$f"
+      fi
     fi
   done
-  [ "$is_nullglob_disabled" = 'yes' ] && shopt -u nullglob
-  unset -v is_nullglob_disabled
 
   asdf_run_hook "post_asdf_plugin_remove" "$plugin_name"
   asdf_run_hook "post_asdf_plugin_remove_${plugin_name}"
