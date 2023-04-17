@@ -16,7 +16,7 @@ asdf_version() {
   fi
 }
 
-asdf_default_tool_versions_filename() {
+asdf_tool_versions_filename() {
   printf '%s\n' "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
@@ -163,7 +163,7 @@ get_version_in_dir() {
 
   local asdf_version
 
-  file_name=$(asdf_default_tool_versions_filename)
+  file_name=$(asdf_tool_versions_filename)
   asdf_version=$(parse_asdf_version_file "$search_path/$file_name" "$plugin_name")
 
   if [ -n "$asdf_version" ]; then
@@ -456,7 +456,7 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-  find_file_upwards "$(asdf_default_tool_versions_filename)"
+  find_file_upwards "$(asdf_tool_versions_filename)"
 }
 
 find_file_upwards() {

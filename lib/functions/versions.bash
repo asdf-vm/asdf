@@ -17,7 +17,7 @@ version_command() {
   local file_name
   local file
 
-  file_name="$(asdf_default_tool_versions_filename)"
+  file_name="$(asdf_tool_versions_filename)"
 
   if [ "$cmd" = "global" ]; then
     file="$HOME/$file_name"

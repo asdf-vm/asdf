@@ -69,7 +69,7 @@ asdf_cmd() {
   fi
 
   # Internal Variables
-  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=$(asdf_default_tool_versions_filename)
+  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=$(asdf_tool_versions_filename)
   export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 
   ASDF_CONFIG_FILE=$(asdf_config_file)
