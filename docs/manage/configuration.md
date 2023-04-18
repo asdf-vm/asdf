@@ -136,14 +136,14 @@ Disabling the plugin short-name repository does not remove plugins previously in
 
 ### `concurrency`
 
-The default concurrency to use.
+The default number of cores to use during compilation.
 
-| Options | Description                                                                              |
-| :------ | :--------------------------------------------------------------------------------------- |
-| integer | Number of cores to use when compiling the source code                                    |
-| `auto`  | Calculate the number of cores using `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo` |
+| Options | Description                                                                                          |
+| :------ | :--------------------------------------------------------------------------------------------------- |
+| integer | Number of cores to use when compiling the source code                                                |
+| `auto`  | Calculate the number of cores using `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo` or else `1` |
 
-Note that if the environment variable `ASDF_CONCURRENCY` is set, that takes precedence.
+Note: the environment variable `ASDF_CONCURRENCY` take precedence if set.
 
 ## Environment Variables
 
@@ -186,7 +186,9 @@ The location where `asdf` will install plugins, shims and tool versions. Can be 
 
 ### `ASDF_CONCURRENCY`
 
-- Default: Output of `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo`
+Number of cores to use when compiling the source code. If unset, the asdf config `concurrency` value is used. If set, this environment variable takes precedence over the asdf config `concurrency` value. 
+
+- Default: unset environment variable
 - Usage: `export ASDF_CONCURRENCY=32`
 
 ## Internal Configuration
