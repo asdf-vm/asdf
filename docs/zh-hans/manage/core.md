@@ -221,7 +221,7 @@ rm -rf ~/.config/fish/completions/asdf.fish
 2. 移除 `$HOME/.asdf` 目录：
 
 ```shell:no-line-numbers
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 3. 执行以下命令移除 `asdf` 所有配置文件：
@@ -271,7 +271,7 @@ pacman -Rs asdf-vm
 3. 移除 `$HOME/.asdf` 目录：
 
 ```shell:no-line-numbers
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 4. 执行以下命令移除 `asdf` 所有配置文件：

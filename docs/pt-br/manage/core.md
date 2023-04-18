@@ -223,7 +223,7 @@ rm -rf ~/.config/fish/completions/asdf.fish
 2. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 3. Execute o comando para remover todos os arquivos de configurações do `asdf`:
@@ -273,7 +273,7 @@ pacman -Rs asdf-vm
 3. Remova o diretório `$HOME/.asdf`:
 
 ```shell
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 4. Execute o comando para remover todos os arquivos de configurações do `asdf`:
