@@ -179,7 +179,7 @@ install_tool_version() {
   concurrency=$(get_concurrency)
   trap 'handle_cancel $install_path' INT
 
-  if [ -d "$install_path" ]; then
+  if [ -d "$install_path" ] && [ "${ASDF_FORCE_INSTALL}" != "true" ]; then
     printf "%s %s is already installed\n" "$plugin_name" "$full_version"
   else
 
