@@ -26,26 +26,26 @@ install_command() {
 
 get_concurrency() {
   local asdf_concurrency=
+
   if [ -n "$ASDF_CONCURRENCY" ]; then
-    asdf_concurrency=$ASDF_CONCURRENCY
+    asdf_concurrency="$ASDF_CONCURRENCY"
   else
     asdf_concurrency=$(get_asdf_config_value 'concurrency')
   fi
 
   if [ "$asdf_concurrency" = 'auto' ]; then
     if command -v nproc &>/dev/null; then
-      nproc
+      asdf_concurrency=$(nproc)
     elif command -v sysctl &>/dev/null && sysctl hw.ncpu &>/dev/null; then
-      sysctl -n hw.ncpu
+      asdf_concurrency=$(sysctl -n hw.ncpu)
     elif [ -f /proc/cpuinfo ]; then
-      grep -c processor /proc/cpuinfo
+      asdf_concurrency=$(grep -c processor /proc/cpuinfo)
     else
-      printf '%s\n' '1'
+      asdf_concurrency="1"
     fi
-  else
-    printf '%s\n' "$asdf_concurrency"
   fi
 
+  printf "%s\n" "$asdf_concurrency"
 }
 
 install_one_local_tool() {
