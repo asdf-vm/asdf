@@ -221,7 +221,7 @@ rm -rf ~/.config/fish/completions/asdf.fish
 2. Remove the `$HOME/.asdf` dir:
 
 ```shell:no-line-numbers
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 3. Run this command to remove all `asdf` config files:
@@ -271,7 +271,7 @@ pacman -Rs asdf-vm
 3. Remove the `$HOME/.asdf` dir:
 
 ```shell:no-line-numbers
-rm -rf "${ASDF_DATA_DIR:-$HOME/.asdf}"
+rm -rf (string join : -- $ASDF_DATA_DIR $HOME/.asdf)
 ```
 
 4. Run this command to remove all `asdf` config files:
