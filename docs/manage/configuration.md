@@ -134,44 +134,84 @@ Disabling the plugin short-name repository does not remove plugins previously in
 
 :::
 
+### `concurrency`
+
+The default number of cores to use during compilation.
+
+| Options | Description                                                                                          |
+| :------ | :--------------------------------------------------------------------------------------------------- |
+| integer | Number of cores to use when compiling the source code                                                |
+| `auto`  | Calculate the number of cores using `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo` or else `1` |
+
+Note: the environment variable `ASDF_CONCURRENCY` take precedence if set.
+
 ## Environment Variables
 
 Setting environment variables varies depending on your system and Shell. Default locations depend upon your installation location and method (Git clone, Homebrew, AUR).
 
 Environment variables should generally be set before sourcing `asdf.sh`/`asdf.fish` etc. For Elvish set above `use asdf`.
 
-The following examples assume:
-
-- an installation to `$HOME/.asdf`
-- a Bash Shell
+The following describe usage with a Bash Shell.
 
 ### `ASDF_CONFIG_FILE`
 
 Path to the `.asdfrc` configuration file. Can be set to any location. Must be an absolute path.
 
-- Default: `$HOME/.asdfrc`
+- If Unset: `$HOME/.asdfrc` will be used.
 - Usage: `export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
 
 ### `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`
 
 The filename of the file storing the tool names and versions. Can be any valid filename. Typically, you should not set this value unless you want to ignore `.tool-versions` files.
 
-- Default: `.tool-versions`
+- If Unset: `.tool-versions` will be used.
 - Usage: `export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=tool_versions`
 
 ### `ASDF_DIR`
 
 The location of `asdf` core scripts. Can be set to any location. Must be an absolute path.
 
-- Default: `$HOME/.asdf` (always the parent directory of the `bin/asdf` executable)
+- If Unset: the parent directory of the `bin/asdf` executable is used.
 - Usage: `export ASDF_DIR=/home/john_doe/.config/asdf`
 
 ### `ASDF_DATA_DIR`
 
 The location where `asdf` will install plugins, shims and tool versions. Can be set to any location. Must be an absolute path.
 
-- Default: `$HOME/.asdf`
+- If Unset: `$HOME/.asdf` if it exists, or else the value of `ASDF_DIR`
 - Usage: `export ASDF_DATA_DIR=/home/john_doe/.asdf`
+
+### `ASDF_CONCURRENCY`
+
+Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value. 
+
+- If Unset: the asdf config `concurrency` value is used.
+- Usage: `export ASDF_CONCURRENCY=32`
+
+## Full Configuration Example
+
+Following a simple asdf setup with:
+
+- a Bash Shell
+- an installation location of `$HOME/.asdf`
+- installed via Git
+- NO environment variables set 
+- NO custom `.asdfrc` file
+
+would result in the following outcomes:
+
+| Configuration                         | Value            | Calculated by                                                                                                                                      |
+| :------------------------------------ | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| config file location                  | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE` is empty, so use `$HOME/.asdfrc`                                                                                                |
+| default tool versions filename        | `.tool-versions` | `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` is empty, so use `.tool-versions`                                                                            |
+| asdf dir                              | `$HOME/.asdf`    | `ASDF_DIR` is empty, so use parent dir of `bin/asdf`                                                                                               |
+| asdf data dir                         | `$HOME/.asdf`    | `ASDF_DATA_DIR` is empty so use `$HOME/.asdf` as `$HOME` exists.                                                                                   |
+| concurrency                           | `auto`           | `ASDF_CONCURRENCY` is empty, so rely on `concurrency` value from the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults) |
+| legacy_version_file                   | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
+| use_release_candidates                | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
+| always_keep_download                  | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
+| plugin_repository_last_check_duration | `60`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
+| disable_plugin_short_name_repository  | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
 
 ## Internal Configuration
 
