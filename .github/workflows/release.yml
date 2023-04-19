@@ -14,6 +14,12 @@ jobs:
         with:
           release-type: simple
           bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
+          changelog-types: |
+            [
+              { "type": "feat", "section": "Features", "hidden": false },
+              { "type": "fix", "section": "Patches", "hidden": false },
+              { "type": "docs", "section": "Documentation", "hidden": false }
+            ]
           extra-files: |
             SECURITY.md
             docs/guide/getting-started.md
