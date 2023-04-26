@@ -17,6 +17,7 @@ sync_command() {
         local tool_versions_file="${HOME}"/"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
   else
     display_error "usage: asdf sync [--local | --global]"
+    exit 1
   fi
 
   if [ -f "${tool_versions_file}" ]; then
