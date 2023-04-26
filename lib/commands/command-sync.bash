@@ -32,7 +32,7 @@ sync_command() {
 
         echo "Sync ${plugin_name} in version ${plugin_version}"
         if ! plugin_list_command | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
-          if grep -E "^${plugin_name}$" "${plugin_list_tmpfile}"; then
+          if grep -E "^${plugin_name}$" "${plugin_list_tmpfile}" > /dev/null 2>&1; then
             plugin_add_command "${plugin_name}"
             install_command "${plugin_name}" "${plugin_version}"
           else
