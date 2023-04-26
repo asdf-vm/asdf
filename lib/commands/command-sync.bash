@@ -12,46 +12,46 @@
 sync_command() { 
   local temp_dir
   temp_dir=${TMPDIR:-/tmp}
-  
+
   if [[ "$1" == "--local" || "$1" == "" ]]; then
-        local tool_versions_file=./"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
+    local tool_versions_file=./"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
   elif [ "$1" == "--global" ]; then
-        local tool_versions_file="${HOME}"/"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
+    local tool_versions_file="${HOME}"/"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
   else
     display_error "usage: asdf sync [--local | --global]"
     exit 1
   fi
 
   if [ -f "${tool_versions_file}" ]; then
-      local plugin
-      local plugin_list_tmpfile
-      plugin_list_tmpfile=$(mktemp "$temp_dir/asdf-command-sync-list-plugins.XXXXXX")
+    local plugin
+    local plugin_list_tmpfile
+    plugin_list_tmpfile=$(mktemp "$temp_dir/asdf-command-sync-list-plugins.XXXXXX")
 
-      plugin_list_all_command | awk '{print $1}'> "${plugin_list_tmpfile}"
+    plugin_list_all_command | awk '{print $1}'> "${plugin_list_tmpfile}"
 
-      while read plugin; do
-        local plugin_name
-        plugin_name=$(echo "${plugin}" | awk '{print $1}' )
-        local plugin_version
-        plugin_version=$(echo "${plugin}" | awk '{print $2}' )
+    while read -r plugin; do
+      local plugin_name
+      plugin_name=$(echo "${plugin}" | awk '{print $1}' )
+      local plugin_version
+      plugin_version=$(echo "${plugin}" | awk '{print $2}' )
 
-        echo "Sync ${plugin_name} in version ${plugin_version}"
-        if ! plugin_list_command | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
-          if grep -E "^${plugin_name}$" "${plugin_list_tmpfile}" > /dev/null 2>&1; then
-            plugin_add_command "${plugin_name}"
-            install_command "${plugin_name}" "${plugin_version}"
-          else
-            display_error "plugin ${plugin_name} not found in repository"
-          fi
-        else
+      echo "Sync ${plugin_name} in version ${plugin_version}"
+      if ! plugin_list_command "" | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
+        if grep -E "^${plugin_name}$" "${plugin_list_tmpfile}" > /dev/null 2>&1; then
+          plugin_add_command "${plugin_name}"
           install_command "${plugin_name}" "${plugin_version}"
+        else
+          display_error "plugin ${plugin_name} not found in repository"
         fi
-        
+      else
+        install_command "${plugin_name}" "${plugin_version}"
+      fi
+      
 
-      done < "${tool_versions_file}"
+    done < "${tool_versions_file}"
   else
-      display_error "No ${tool_versions_file} here"
-      exit 1
+    display_error "No ${tool_versions_file} here"
+    exit 1
   fi
   
 }
