@@ -9,7 +9,9 @@
 # shellcheck source=lib/functions/installs.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/installs.bash"
 
-sync_command() {
+sync_command() { 
+  local temp_dir
+  temp_dir=${TMPDIR:-/tmp}
   
   if [[ "$1" == "--local" || "$1" == "" ]]; then
         local tool_versions_file=./"${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
@@ -22,13 +24,16 @@ sync_command() {
 
   if [ -f "${tool_versions_file}" ]; then
       local plugin
-      readonly plugin_list_tmpfile=$(mktemp)
+      local plugin_list_tmpfile
+      plugin_list_tmpfile=$(mktemp "$temp_dir/asdf-command-sync-list-plugins.XXXXXX")
 
       plugin_list_all_command | awk '{print $1}'> "${plugin_list_tmpfile}"
 
       while read plugin; do
-        local plugin_name=$(echo "${plugin}" | awk '{print $1}' )
-        local plugin_version=$(echo "${plugin}" | awk '{print $2}' )
+        local plugin_name
+        plugin_name=$(echo "${plugin}" | awk '{print $1}' )
+        local plugin_version
+        plugin_version=$(echo "${plugin}" | awk '{print $2}' )
 
         echo "Sync ${plugin_name} in version ${plugin_version}"
         if ! plugin_list_command | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
