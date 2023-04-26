@@ -23,12 +23,19 @@ sync_command() {
       local plugin
       readonly plugin_list_tmpfile=$(mktemp)
 
+      plugin_list_all_command | awk '{print $1}'> "${plugin_list_tmpfile}"
+
       while read plugin; do
         local plugin_name=$(echo "${plugin}" | awk '{print $1}' )
         local plugin_version=$(echo "${plugin}" | awk '{print $2}' )
 
-        if ! plugin_list_command | grep -E "^${plugin_name}$"; then
-          plugin_add_command "${plugin_name}"
+        echo "Sync ${plugin_name} in version ${plugin_version}"
+        if ! plugin_list_command | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
+          if grep -E "^${plugin_name}$"; then
+            plugin_add_command "${plugin_name}"
+          else
+            display_error "plugin ${plugin_name} not found in repository"
+          fi
         fi
         install_command "${plugin_name}" "${plugin_version}"
       done < "${tool_versions_file}"
