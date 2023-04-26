@@ -31,13 +31,17 @@ sync_command() {
 
         echo "Sync ${plugin_name} in version ${plugin_version}"
         if ! plugin_list_command | grep -E "^${plugin_name}$" > /dev/null 2>&1; then
-          if grep -E "^${plugin_name}$"; then
+          if grep -E "^${plugin_name}$" "${plugin_list_tmpfile}"; then
             plugin_add_command "${plugin_name}"
+            install_command "${plugin_name}" "${plugin_version}"
           else
             display_error "plugin ${plugin_name} not found in repository"
           fi
+        else
+          install_command "${plugin_name}" "${plugin_version}"
         fi
-        install_command "${plugin_name}" "${plugin_version}"
+        
+
       done < "${tool_versions_file}"
   else
       display_error "No ${tool_versions_file} here"
