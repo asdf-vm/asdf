@@ -47,7 +47,7 @@ function __fish_asdf_plugin_list_all
 end
 
 function __fish_asdf_list_shims
-    ls $asdf_data_dir/shims
+    path basename $asdf_data_dir/shims/*
 end
 
 # update
