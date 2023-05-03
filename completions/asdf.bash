@@ -71,13 +71,13 @@ _asdf() {
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "--all" -- "$cur"))
     ;;
-  which)
+  which | shim-versions)
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -c -- "$cur"))
     ;;
   plugin-list | plugin-list-all | info) ;;
   *)
-    local cmds='current global help install latest list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim shell uninstall update where which info'
+    local cmds='current global help install latest list list-all local plugin-add plugin-list plugin-list-all plugin-remove plugin-update reshim shim-versions shell uninstall update where which info'
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "$cmds" -- "$cur"))
     ;;
