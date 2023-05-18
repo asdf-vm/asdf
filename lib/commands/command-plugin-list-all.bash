@@ -1,7 +1,7 @@
 # -*- sh -*-
 
 plugin_list_all_command() {
-  initialize_or_update_repository
+  initialize_or_update_plugin_repository
 
   local plugins_index_path
   plugins_index_path="$(asdf_data_dir)/repository/plugins"

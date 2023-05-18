@@ -1,74 +1,67 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2164
 
 load test_helpers
 
 setup() {
-  cd $(dirname "$BATS_TEST_DIRNAME")
+  cd "$(dirname "$BATS_TEST_DIRNAME")"
 
-  if ! command -v nu; then
+  if ! command -v nu &>/dev/null && [ -z "$GITHUB_ACTIONS" ]; then
     skip "Nu is not installed"
   fi
+
+  setup_asdf_dir
+}
+
+teardown() {
+  clean_asdf_dir
 }
 
 cleaned_path() {
-  echo $PATH | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
+  echo "$PATH" | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
+}
+
+run_nushell() {
+  run nu -c "
+    hide-env -i asdf
+    hide-env -i ASDF_DIR
+    let-env PATH = ( '$(cleaned_path)' | split row ':' )
+    let-env ASDF_NU_DIR = '$PWD'
+
+    source asdf.nu
+    $1"
 }
 
 @test "exports ASDF_DIR" {
-  result=$(nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+  run_nushell "echo \$env.ASDF_DIR"
 
-    source asdf.nu
-
-    echo \$env.ASDF_DIR
-  ")
-
-  [ "$?" -eq 0 ]
-  output=$(echo "$result" | grep "asdf")
-  [ "$output" = $PWD ]
+  [ "$status" -eq 0 ]
+  result=$(echo "$output" | grep "asdf")
+  [ "$result" = "$PWD" ]
 }
 
 @test "adds asdf dirs to PATH" {
-  result=$(nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+  run_nushell "\$env.PATH | to text"
 
-    source asdf.nu
+  [ "$status" -eq 0 ]
 
-
-    \$env.PATH | to text
- ")
-  [ "$?" -eq 0 ]
-  output_bin=$(echo "$result" | grep "asdf/bin")
-  [ "$output_bin" = "$PWD/bin" ]
-  output_shims=$(echo "$result" | grep "/shims")
-  [ "$output_shims" = "$HOME/.asdf/shims" ]
+  [[ "$output" == *"$PWD/bin"* ]]
+  [[ "$output" == *"$HOME/.asdf/shims"* ]]
 }
 
 @test "does not add paths to PATH more than once" {
-  result=$(nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
-
+  run_nushell "
     source asdf.nu
-    source asdf.nu
+    echo \$env.PATH"
 
-    echo \$env.PATH
-  ")
-  [ "$?" -eq 0 ]
-  output=$(echo $result | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
-  [ "$output" = "" ]
+  [ "$status" -eq 0 ]
+
+  result=$(echo "$output" | tr ' ' '\n' | grep "asdf" | sort | uniq -d)
+  [ "$result" = "" ]
 }
 
 @test "retains ASDF_DIR" {
-  output=$(nu -c "
+  run nu -c "
     hide-env -i asdf
     let-env ASDF_DIR = ( pwd )
     let-env PATH = ( '$(cleaned_path)' | split row ':' )
@@ -76,38 +69,92 @@ cleaned_path() {
 
     source asdf.nu
 
-    echo \$env.ASDF_DIR
-  ")
+    echo \$env.ASDF_DIR"
 
-  [ "$?" -eq 0 ]
+  [ "$status" -eq 0 ]
   [ "$output" = "$PWD" ]
 }
 
-@test "defines the asdf function" {
-  output=$(nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+@test "defines the asdf or main function" {
+  run_nushell "which asdf | get path | to text"
 
-    source asdf.nu
-    which asdf | get path | to text
-  ")
-  [ "$?" -eq 0 ]
-  [[ "$output" =~ "command" ]]
+  [ "$status" -eq 0 ]
 }
 
 @test "function calls asdf command" {
-  result=$(nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+  run_nushell "asdf info"
 
-    source asdf.nu
-    asdf info
-  ")
-  [ "$?" -eq 0 ]
-  output=$(echo "$result" | grep "ASDF INSTALLED PLUGINS:")
-  [ "$output" != "" ]
+  [ "$status" -eq 0 ]
+
+  result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
+  [ "$result" != "" ]
+}
+
+@test "parses the output of asdf plugin list" {
+  setup_repo
+  install_dummy_plugin
+  run_nushell "asdf plugin list | to csv -n"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "dummy" ]
+}
+
+@test "parses the output of asdf plugin list --urls" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --urls | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local repo_url
+  repo_url=$(get_plugin_remote_url "dummy")
+
+  [ "$output" = "dummy,$repo_url" ]
+}
+
+@test "parses the output of asdf plugin list --refs" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --refs | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local branch gitref
+  branch=$(get_plugin_remote_branch "dummy")
+  gitref=$(get_plugin_remote_gitref "dummy")
+
+  [ "$output" = "dummy,$branch,$gitref" ]
+}
+
+@test "parses the output of asdf plugin list --urls --refs" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --urls --refs | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local repo_url branch gitref
+  repo_url=$(get_plugin_remote_url "dummy")
+  branch=$(get_plugin_remote_branch "dummy")
+  gitref=$(get_plugin_remote_gitref "dummy")
+
+  [ "$output" = "dummy,$repo_url,$branch,$gitref" ]
+}
+
+@test "parses the output of asdf plugin list all" {
+  setup_repo
+  install_dummy_plugin
+  run_nushell "asdf plugin list all | to csv -n"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "\
+bar,false,http://example.com/bar
+dummy,true,http://example.com/dummy
+foo,false,http://example.com/foo" ]
 }

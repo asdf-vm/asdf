@@ -31,6 +31,9 @@ shell_command() {
       # and pass to unset-env.
       printf "unset-env\n%s" "$version_env_var"
       ;;
+    pwsh)
+      printf '%s\n' "if (\$(Test-Path Env:$version_env_var) -eq 'True') { Remove-Item Env:$version_env_var }"
+      ;;
     *)
       printf "unset %s\n" "$version_env_var"
       ;;
@@ -55,6 +58,9 @@ shell_command() {
     # var name and value are printed on separate lines for asdf.elv to parse
     # and pass to set-env.
     printf "set-env\n%s\n%s" "$version_env_var" "$version"
+    ;;
+  pwsh)
+    printf '%s\n' "\$Env:$version_env_var = '$version'"
     ;;
   *)
     printf "export %s=\"%s\"\n" "$version_env_var" "$version"

@@ -2,12 +2,6 @@
 
 set -euo pipefail
 
-# check .sh files
-# TODO(jthegedus): unlock this check later
-# TODO  shfmt --language-dialect posix --indent 2 --write \
-# TODO  asdf.sh \
-# TODO  lib/*.sh
-
 # check .bash files
 shfmt --language-dialect bash --indent 2 --write \
   completions/*.bash \
@@ -25,3 +19,6 @@ shfmt --language-dialect bash --indent 2 --write \
 # check .bats files
 shfmt --language-dialect bats --indent 2 --write \
   test/*.bats
+
+# check .fish files
+fish_indent --write ./**/*.fish

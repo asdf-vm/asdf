@@ -64,9 +64,48 @@ The following is the `.gitignore` file in the `asdf-vm/asdf` repository. We igno
 
 @[code](../../.gitignore)
 
+### `.git-blame-ignore-revs`
+
+`asdf` uses a `.git-blame-ignore-revs` to reduce noise when running a blame. See the [git blame documentation](https://git-scm.com/docs/git-blame) for more information.
+
+Use the file with `git blame` like so:
+
+```sh:no-line-numbers
+git blame --ignore-revs-file .git-blame-ignore-revs ./test/install_command.bats
+```
+
+Optionally, configure to use the file on every invocation of `blame` without manually supplying it:
+
+```sh:no-line-numbers
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+It is possible to configure IDEs to use this file. For example, when using VSCode (with [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)), write the following to `.vscode/settings.json`:
+
+```json:no-line-numbers
+{
+  "gitlens.advanced.blame.customArguments": [
+    "--ignore-revs-file",
+    ".git-blame-ignore-revs"
+  ]
+}
+```
+
 ## Bats Testing
 
-It is **strongly encouraged** to examine the existing test suite and the [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html) before writing tests.
+Execute tests locally with:
+
+```shell
+./scripts/test.bash
+```
+
+Before writing tests **please read**:
+
+- existing tests in `test/`
+- [bats-core documentation](https://bats-core.readthedocs.io/en/stable/index.html)
+- existing Bats settings used in `scripts/test.bash`
+
+### Bats Tips
 
 Bats debugging can be difficult at times. Using the TAP output with `-t` flag will enable you to print outputs with the special file descriptor `>&3` during test execution, simplifying debugging. As an example:
 

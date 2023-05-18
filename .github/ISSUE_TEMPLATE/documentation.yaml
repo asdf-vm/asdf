@@ -1,0 +1,16 @@
+name: Documentation
+description: Suggest a documentation improvements for this project
+labels: "documentation"
+body: 
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to help improve our docs!
+  - type: textarea
+    id: problem
+    attributes:
+      label: How can we improve the documentation?
+      description: Please provide a clear and concise description of the problem. The more information you can provide here, the better.
+      placeholder: The documentation can be improved by...
+    validations:
+      required: true

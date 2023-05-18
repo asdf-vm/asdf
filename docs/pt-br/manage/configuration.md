@@ -37,7 +37,7 @@ Para isntalar somente uma ferramenta definida em `.tool-versions`, execute o cam
 
 Edite o arquivo diretamente no diretório ou use `asdf local` (ou `asdf global`) para atualiza-lo.
 
-## \$HOME/.asdfrc
+## `$HOME/.asdfrc`
 
 Adicione um arquivo `.asdfrc` ao seu diretório home e asdf usará as configurações especificadas no arquivo. O arquivo deve ser formatado assim:
 

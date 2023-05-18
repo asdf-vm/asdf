@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+        uses: asdf-vm/actions/install@v2
 
       - name: Run ShellCheck
         run: scripts/shellcheck.bash
@@ -25,8 +25,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Fish (for fish_indent)
+        run: |
+          sudo add-apt-repository -y ppa:fish-shell/nightly-master
+          sudo apt-get update
+          sudo apt-get -y install fish
+
       - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+        uses: asdf-vm/actions/install@v2
 
       - name: List file to shfmt
         run: shfmt -f .
@@ -40,8 +46,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v1
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.7.13"
 
       - name: Run checkstyle.py
         run: scripts/checkstyle.py
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check workflow files
+        uses: docker://rhysd/actionlint:1.6.23
+        with:
+          args: -color
