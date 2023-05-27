@@ -59,6 +59,36 @@ fi
 _asdf_bin="$ASDF_DIR/bin"
 _asdf_shims="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
 
+# If ASDF_FORCE_PREPEND is set, remove any existing instances of asdf from PATH so
+# the prepending done after is always at the frontmost part of the PATH.
+if [ -n "${ASDF_FORCE_PREPEND+x}" ]; then
+  if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
+    # shellcheck disable=SC3060
+    case ":$PATH:" in
+      *":${_asdf_bin}:"*) PATH=${PATH//$_asdf_bin:/} ;;
+    esac
+    # shellcheck disable=SC3060
+    case ":$PATH:" in
+      *":${_asdf_shims}:"*) PATH=${PATH//$_asdf_shims:/} ;;
+    esac
+  else
+    _path=${PATH}:
+    _new_path=
+    while [ -n "$_path" ]; do
+      _part=${_path%%:*}
+      _path=${_path#*:}
+
+      if [ "$_part" = "$_asdf_bin" ] || [ "$_part" = "$_asdf_shims" ]; then
+        continue
+      fi
+
+      _new_path="$_new_path${_new_path:+:}$_part"
+    done
+    PATH=$_new_path
+    unset -v _path _new_path _part
+  fi
+fi
+
 case ":$PATH:" in
   *":$_asdf_bin:"*) : ;;
   *) PATH="$_asdf_bin:$PATH" ;;

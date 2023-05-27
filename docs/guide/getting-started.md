@@ -51,7 +51,9 @@ We highly recommend using the official `git` method.
 
 ## 3. Install asdf
 
-There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system:
+There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
+
+**macOS users, be sure to read the warning about `path_helper` at the end of this section.**
 
 ::: details Bash & Git
 
@@ -358,6 +360,10 @@ export ASDF_DIR="/opt/asdf-vm"
 :::
 
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
+
+::: warning
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` has poor logic and rearranges items in `PATH` (and `MANPATH`) in a bad way. To workaround this, set the `ASDF_FORCE_PREPEND` variable before sourcing `asdf`, like so: `ASDF_FORCE_PREPEND= . "<path-to-asdf-directory>/asdf.sh"`.
+:::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
