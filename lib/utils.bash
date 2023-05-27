@@ -373,6 +373,8 @@ get_asdf_config_value_from_file() {
     return 1
   fi
 
+  util_validate_no_carriage_returns "$config_path"
+
   local result
   result=$(grep -E "^\s*$key\s*=\s*" "$config_path" | head | sed -e 's/^[^=]*= *//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
@@ -465,6 +467,8 @@ find_file_upwards() {
   search_path=$PWD
   while [ "$search_path" != "/" ]; do
     if [ -f "$search_path/$name" ]; then
+      util_validate_no_carriage_returns "$search_path/$name"
+
       printf "%s\n" "${search_path}/$name"
       return 0
     fi
@@ -860,6 +864,15 @@ util_resolve_user_path() {
     util_resolve_user_path_reply="${HOME}/${path:2}"
   else
     util_resolve_user_path_reply="$path"
+  fi
+}
+
+# @description Check if a file contains carriage returns. If it does, print a warning.
+util_validate_no_carriage_returns() {
+  local file_path="$1"
+
+  if grep -qr $'\r' "$file_path"; then
+    printf '%s\n' "asdf: Warning: File $file_path contains carriage returns. Please remove them." >&2
   fi
 }
 
