@@ -10,7 +10,7 @@ export ASDF_DIR="${ASDF_DIR:-}"
 if [ -z "$ASDF_DIR" ]; then
   if [ -n "$BASH_VERSION" ]; then
     # Use BASH_SOURCE[0] to obtain the relative path to this source'd file. Since it's
-    # a relative path, 'cd' to its dirname and use '$PWD" to obtain the fullpath.
+    # a relative path, 'cd' to its dirname and use '$PWD' to obtain the fullpath.
     # Use 'builtin cd' to ensure user-defined 'cd()' functions aren't called.
     # Use variable '_asdf_old_dir' to avoid using subshells.
 
