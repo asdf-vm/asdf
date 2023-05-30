@@ -394,15 +394,6 @@ get_asdf_config_value() {
   local local_config_path
   local_config_path="$(find_file_upwards ".asdfrc")"
 
-#  paths=()
-#  if [[ -f "$local_config_path" ]]; then paths+=("$local_config_path"); fi
-#  if [[ -f "$config_path" ]]; then paths+=("$config_path"); fi
-#  if [[ -f "$default_config_path" ]]; then paths+=("$default_config_path"); fi
-#  jq -Rnr --arg key "$key" '[inputs |
-#    select(test("^\\s*\($key)\\s*=\\s*")) |
-#    capture("^\\s*\($key)\\s*=\\s*(?<value>.+)\\s*$") |
-#    .value
-#  ] | .[0]//""' "${paths[@]}"
   get_asdf_config_value_from_file "$local_config_path" "$key" ||
     get_asdf_config_value_from_file "$config_path" "$key" ||
     get_asdf_config_value_from_file "$default_config_path" "$key"
@@ -859,7 +850,6 @@ remove_path_from_path() {
   # Output is a new string suitable for assignment to PATH
   local PATH=$1
   local path=$2
-#  jq -Rr --arg path "${path}" 'gsub($path; "")|gsub("::"; ":")|gsub("^:|:$"; "")' <<< "${PATH}"
   substitute "$PATH" "$path" "" | sed -e "s|::|:|g"
 }
 
