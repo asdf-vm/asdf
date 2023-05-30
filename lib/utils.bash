@@ -394,9 +394,18 @@ get_asdf_config_value() {
   local local_config_path
   local_config_path="$(find_file_upwards ".asdfrc")"
 
-  get_asdf_config_value_from_file "$local_config_path" "$key" ||
-    get_asdf_config_value_from_file "$config_path" "$key" ||
-    get_asdf_config_value_from_file "$default_config_path" "$key"
+  paths=()
+  if [[ -f "$local_config_path" ]]; then paths+=("$local_config_path"); fi
+  if [[ -f "$config_path" ]]; then paths+=("$config_path"); fi
+  if [[ -f "$default_config_path" ]]; then paths+=("$default_config_path"); fi
+  jq -Rnr --arg key "$key" '[inputs |
+    select(test("^\\s*\($key)\\s*=\\s*")) |
+    capture("^\\s*\($key)\\s*=\\s*(?<value>.+)\\s*$") |
+    .value
+  ] | .[0]//""' "${paths[@]}"
+#  get_asdf_config_value_from_file "$local_config_path" "$key" ||
+#    get_asdf_config_value_from_file "$config_path" "$key" ||
+#    get_asdf_config_value_from_file "$default_config_path" "$key"
 }
 
 # Whether the plugin shortname repo needs to be synced
