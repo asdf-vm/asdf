@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+[[ "${ASDF_DEBUG}" == "1" ]] && set -x || true
 
 # shellcheck source=lib/utils.bash
 . "$(dirname "$(dirname "$0")")/lib/utils.bash"
