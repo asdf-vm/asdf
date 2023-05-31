@@ -367,7 +367,8 @@ get_preset_version_for() {
 
 get_asdf_config_value_from_file() {
   local config_path=$1
-  local key=$(escape_regexp $2)
+  local key
+  key=$(escape_regexp "$2")
 
   if [ ! -f "$config_path" ]; then
     return 1
@@ -635,7 +636,7 @@ is_executable() {
 escape_regexp() {
   # if the plugin in question has special characters (+, ., * or ?) it will cause any grep or sed
   # calls with that plugin name to fail
-  printf "%s" $1 | sed -e "s/\([.+*?]\)/\\\\\1/g"
+  printf "%s" "$1" | sed -e "s/\([.+*?]\)/\\\\\1/g"
 }
 
 plugin_shims() {
