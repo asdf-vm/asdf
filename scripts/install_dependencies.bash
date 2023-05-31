@@ -20,15 +20,15 @@ fi
 
 ### Set environment variables for tracking versions
 # Elvish
-ELVISH_SEMVER="v0.19.2"
+elvish_semver="v0.19.2"
 # Fish
-FISH_SEMVER="3.6.1"
-FISH_APT_SEMVER="${FISH_SEMVER}-1~jammy"
+fish_semver="3.6.1"
+fish_apt_semver="${fish_semver}-1~jammy"
 # Nushell
-NUSHELL_SEMVER="0.78.0"
+nushell_semver="0.78.0"
 # Powershell
-POWERSHELL_SEMVER="7.3.3"
-POWERSHELL_APT_SEMVER="${POWERSHELL_SEMVER}-1.deb"
+powershell_semver="7.3.3"
+powershell_apt_semver="${powershell_semver}-1.deb"
 
 ### Install dependencies on Linux
 if [ "$RUNNER_OS" = "Linux" ]; then
@@ -39,23 +39,23 @@ if [ "$RUNNER_OS" = "Linux" ]; then
   sudo add-apt-repository -y ppa:fish-shell/release-3
   sudo apt-get update
   sudo apt-get -y install curl parallel \
-    fish="${FISH_APT_SEMVER}" \
-    powershell="${POWERSHELL_APT_SEMVER}"
+    fish="${fish_apt_semver}" \
+    powershell="${powershell_apt_semver}"
 
   # Create $HOME/bin
   mkdir -p "$HOME/bin"
 
   # Download elvish binary and add to path
-  curl https://dl.elv.sh/linux-amd64/elvish-${ELVISH_SEMVER}.tar.gz -o elvish-${ELVISH_SEMVER}.tar.gz
-  tar xzf elvish-${ELVISH_SEMVER}.tar.gz
-  rm elvish-${ELVISH_SEMVER}.tar.gz
-  mv elvish-${ELVISH_SEMVER} "$HOME/bin/elvish"
+  curl https://dl.elv.sh/linux-amd64/elvish-${elvish_semver}.tar.gz -o elvish-${elvish_semver}.tar.gz
+  tar xzf elvish-${elvish_semver}.tar.gz
+  rm elvish-${elvish_semver}.tar.gz
+  mv elvish-${elvish_semver} "$HOME/bin/elvish"
 
   # Download nushell binary and add to path
-  curl -L https://github.com/nushell/nushell/releases/download/${NUSHELL_SEMVER}/nu-${NUSHELL_SEMVER}-x86_64-unknown-linux-gnu.tar.gz -o nu-${NUSHELL_SEMVER}-x86_64-unknown-linux-gnu.tar.gz
-  tar xzf nu-${NUSHELL_SEMVER}-x86_64-unknown-linux-gnu.tar.gz
-  rm nu-${NUSHELL_SEMVER}-x86_64-unknown-linux-gnu.tar.gz
-  mv nu-${NUSHELL_SEMVER}-x86_64-unknown-linux-gnu/* "$HOME/bin"
+  curl -L https://github.com/nushell/nushell/releases/download/${nushell_semver}/nu-${nushell_semver}-x86_64-unknown-linux-gnu.tar.gz -o nu-${nushell_semver}-x86_64-unknown-linux-gnu.tar.gz
+  tar xzf nu-${nushell_semver}-x86_64-unknown-linux-gnu.tar.gz
+  rm nu-${nushell_semver}-x86_64-unknown-linux-gnu.tar.gz
+  mv nu-${nushell_semver}-x86_64-unknown-linux-gnu/* "$HOME/bin"
 
   # Add $HOME/bin to path (add Elvish & Nushell to path)
   echo "$HOME/bin" >>"$GITHUB_PATH"
