@@ -6,12 +6,6 @@ on:
       - master
   pull_request:
 
-env:
-  ELVISH_VERSION: v0.19.2
-  FISH_VERSION: 3.6.1
-  NUSHELL_VERSION: 0.78.0
-  POWERSHELL_VERSION: 7.3.3
-
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -22,11 +16,9 @@ jobs:
       documentation: ${{ steps.filter.outputs.documentation }}
       cli: ${{ steps.filter.outputs.cli }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -34,7 +26,6 @@ jobs:
             documentation:
               - '.github/workflows/**'
               - 'docs/**'
-              - '.tool-versions'
             cli:
               - '.github/workflows/**'
               - 'bin/**'
@@ -42,10 +33,9 @@ jobs:
               - 'scripts/**'
               - 'test/**'
               - '.tool-versions'
-              - 'asdf.elv'
-              - 'asdf.fish'
-              - 'asdf.nu'
-              - 'asdf.sh'
+              - 'asdf.*'
+              - 'defaults'
+              - 'help.txt'
 
   ubuntu:
     needs: detect-changes
@@ -54,46 +44,11 @@ jobs:
     if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install test dependencies
-        run: |
-          curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee >/dev/null /etc/apt/trusted.gpg.d/microsoft.asc
-          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
-          sudo add-apt-repository -y ppa:fish-shell/release-3
-          sudo apt-get update
-          sudo apt-get -y install curl parallel \
-            fish="${{ env.FISH_VERSION }}-1~jammy" \
-            powershell="${{ env.POWERSHELL_VERSION }}-1.deb"
-
-          # Create $HOME/bin
-          mkdir -p "$HOME/bin"
-
-          # Download elvish binary and add to path
-          curl https://dl.elv.sh/linux-amd64/elvish-${{ env.ELVISH_VERSION }}.tar.gz -o elvish-${{ env.ELVISH_VERSION }}.tar.gz
-          tar xzf elvish-${{ env.ELVISH_VERSION }}.tar.gz
-          rm elvish-${{ env.ELVISH_VERSION }}.tar.gz
-          mv elvish-${{ env.ELVISH_VERSION }} "$HOME/bin/elvish"
-
-          # Download nushell binary and add to path
-          curl -L https://github.com/nushell/nushell/releases/download/${{ env.NUSHELL_VERSION }}/nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz -o nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
-          tar xzf nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
-          rm nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu.tar.gz
-          mv nu-${{ env.NUSHELL_VERSION }}-x86_64-unknown-linux-gnu/* "$HOME/bin"
-
-          # Add $HOME/bin to path
-          echo "$HOME/bin" >>"$GITHUB_PATH"
-
-      - name: Install bats
-        run: |
-          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git "$HOME/bats-core"
-          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
-
-      - name: Run tests
-        run: scripts/test.bash
+      - run: scripts/install_dependencies.bash
+      - run: scripts/test.bash
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
@@ -104,26 +59,11 @@ jobs:
     if: ${{ needs.detect-changes.outputs.cli == 'true' }}
     runs-on: macos-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install test dependencies
-        run: |
-          brew install coreutils parallel \
-            elvish \
-            fish \
-            nushell \
-            powershell
-
-      - name: Install bats
-        run: |
-          git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git "$HOME/bats-core"
-          echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
-
-      - name: Run tests
-        run: scripts/test.bash
+      - run: scripts/install_dependencies.bash
+      - run: scripts/test.bash
         env:
           GITHUB_API_TOKEN: ${{ github.token }}
 
@@ -141,13 +81,11 @@ jobs:
           fetch-depth: 0
 
       # only run steps past here if changes to docs/** directory
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - uses: actions/cache@v3
         id: npm-cache
         with:
           path: |
