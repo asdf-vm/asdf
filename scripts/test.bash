@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+IFS=$'\n\t'
+
+repo_root=$(git rev-parse --show-toplevel)
+if [ "$repo_root" != "$PWD" ]; then
+  printf "%s\n" "[ERROR] This scripts requires execution from the repository root directory."
+  printf "\t%s\t%s\n" "Repo root dir:" "$repo_root"
+  printf "\t%s\t%s\n\n" "Current dir:" "$PWD"
+  exit 1
+fi
 
 test_directory="test"
 bats_options=(--timing --print-output-on-failure)

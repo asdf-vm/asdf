@@ -6,61 +6,26 @@ on:
       - master
   pull_request:
 
+env:
+  PYTHON_MIN_VERSION: "3.7.13"
+
 jobs:
-  shellcheck:
+  asdf:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v2
-
-      - name: Run ShellCheck
-        run: scripts/shellcheck.bash
-
-  shellfmt:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Fish (for fish_indent)
-        run: |
-          sudo add-apt-repository -y ppa:fish-shell/nightly-master
-          sudo apt-get update
-          sudo apt-get -y install fish
-
-      - name: Install asdf dependencies
-        uses: asdf-vm/actions/install@v2
-
-      - name: List file to shfmt
-        run: shfmt -f .
-
-      - name: Run shfmt
-        run: scripts/shfmt.bash
-
-  checkstyle-py:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: asdf-vm/actions/install@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.7.13"
+          python-version: ${{ env.PYTHON_MIN_VERSION }}
+      - run: scripts/install_dependencies.bash
+      - run: scripts/lint.bash --check
 
-      - name: Run checkstyle.py
-        run: scripts/checkstyle.py
-
-  actionlint:
+  actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Check workflow files
-        uses: docker://rhysd/actionlint:1.6.23
+        uses: docker://rhysd/actionlint:1.6.24
         with:
           args: -color
