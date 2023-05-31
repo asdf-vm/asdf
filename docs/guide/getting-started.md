@@ -362,7 +362,7 @@ export ASDF_DIR="/opt/asdf-vm"
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 ::: warning
-On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` has poor logic and rearranges items in `PATH` (and `MANPATH`) in a bad way. To workaround this, set the `ASDF_FORCE_PREPEND` variable before sourcing `asdf`, like so: `ASDF_FORCE_PREPEND= . "<path-to-asdf-directory>/asdf.sh"`.
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`) causing inconsistent behavior for tools which require specific ordering. To workaround this, set the `ASDF_FORCE_PREPEND` variable before sourcing `asdf`, like so: `ASDF_FORCE_PREPEND= . "<path-to-asdf-directory>/asdf.sh"`.
 :::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
