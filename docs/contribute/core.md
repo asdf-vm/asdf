@@ -40,14 +40,15 @@ If you want to try out your changes without making change to your installed `asd
 It is best to format, lint and test your code locally before you commit or push to the remote. Use the following scripts/commands:
 
 ```shell:no-line-numbers
-# Shellcheck
-./scripts/shellcheck.bash
+# Lint
+./scripts/lint.bash --check
 
-# Format
-./scripts/shfmt.bash
+# Fix & Format
+./scripts/lint.bash --fix
 
 # Test: all tests
-bats test/
+./scripts/test.bash
+
 # Test: for specific command
 bats test/list_commands.bash
 ```
