@@ -183,7 +183,7 @@ The location where `asdf` will install plugins, shims and tool versions. Can be 
 
 ### `ASDF_CONCURRENCY`
 
-Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value.
+Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value. 
 
 - If Unset: the asdf config `concurrency` value is used.
 - Usage: `export ASDF_CONCURRENCY=32`
