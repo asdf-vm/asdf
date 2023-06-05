@@ -183,10 +183,17 @@ The location where `asdf` will install plugins, shims and tool versions. Can be 
 
 ### `ASDF_CONCURRENCY`
 
-Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value. 
+Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value.
 
 - If Unset: the asdf config `concurrency` value is used.
 - Usage: `export ASDF_CONCURRENCY=32`
+
+### `ASDF_FORCE_PREPEND`
+
+Whether or not to prepend the `asdf` shims and path directories to the front-most (highest-priority) part of the `PATH`.
+
+- If `yes`: Force prepending to the `PATH`.
+- If unset or set to any string _other_ than `yes`: Do not force `asdf` directories to the front-most part of the path.
 
 ## Full Configuration Example
 
@@ -195,7 +202,7 @@ Following a simple asdf setup with:
 - a Bash Shell
 - an installation location of `$HOME/.asdf`
 - installed via Git
-- NO environment variables set 
+- NO environment variables set
 - NO custom `.asdfrc` file
 
 would result in the following outcomes:
