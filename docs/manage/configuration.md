@@ -204,7 +204,7 @@ Following a simple asdf setup with:
 - a Bash Shell
 - an installation location of `$HOME/.asdf`
 - installed via Git
-- NO environment variables set
+- NO environment variables set 
 - NO custom `.asdfrc` file
 
 would result in the following outcomes:
