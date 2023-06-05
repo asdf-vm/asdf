@@ -59,7 +59,6 @@ fi
 _asdf_bin="$ASDF_DIR/bin"
 _asdf_shims="${ASDF_DATA_DIR:-$HOME/.asdf}/shims"
 
-
 _asdf_should_prepend=no
 if [ -n "${ASDF_FORCE_PREPEND+x}" ]; then
   _asdf_should_prepend=$ASDF_FORCE_PREPEND
@@ -79,6 +78,7 @@ else
     if [ "$_asdf_output" = 'Darwin' ]; then
       _asdf_should_prepend=yes
     fi
+    unset -v _asdf_output
   fi
 fi
 

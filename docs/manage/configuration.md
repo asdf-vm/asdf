@@ -190,10 +190,12 @@ Number of cores to use when compiling the source code. If set, this value takes 
 
 ### `ASDF_FORCE_PREPEND`
 
-Whether or not to prepend the `asdf` shims and path directories to the front-most (highest-priority) part of the `PATH`.
+Whether or not to prepend the `asdf` shims and path directories to the front-most (highest-priority) part of the `PATH`
 
-- If `yes`: Force prepending to the `PATH`.
-- If unset or set to any string _other_ than `yes`: Do not force `asdf` directories to the front-most part of the path.
+- If Unset: On macOS, defaults to `yes`; but on other systems, defaults to `no`
+- If `yes`: Force `asdf` directories to the front of the `PATH`
+- If set to any string _other_ than `yes`: Do _not_ force `asdf` directories to the front of the `PATH`
+- Usage: `ASDF_FORCE_PREPEND=no . "<path-to-asdf-directory>/asdf.sh"`
 
 ## Full Configuration Example
 
