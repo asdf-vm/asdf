@@ -95,11 +95,13 @@ asdf_cmd() {
     exec "$ASDF_CMD_FILE" "${@:${args_offset}}"
   elif [ -f "$ASDF_CMD_FILE" ]; then
     set -- "${@:${args_offset}}"
+    # shellcheck source=/dev/null
     . "$ASDF_CMD_FILE"
   else
     local asdf_cmd_dir
     asdf_cmd_dir="$(asdf_dir)/lib/commands"
     printf "%s\n" "Unknown command: \`asdf ${*}\`" >&2
+    # shellcheck source=lib/commands/command-help.bash
     . "$asdf_cmd_dir/command-help.bash" >&2
     return 127
   fi
