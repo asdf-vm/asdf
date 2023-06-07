@@ -6,3 +6,8 @@ repository
 .vagrant
 keyrings
 /tmp
+
+
+# Added by cargo
+
+/target

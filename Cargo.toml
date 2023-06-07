@@ -1,0 +1,18 @@
+[package]
+name = "asdf-core-rust"
+version = "0.1.0"
+edition = "2021"
+
+description = "Extendable version manager with support for Ruby, Node.js, Elixir, Erlang & more - now in Rust!"
+homepage = "https://asdf-vm.com/"
+license = "MIT"
+keywords = ["version-manager", "asdf-vm", "multiple-languages", "shell"]
+categories = ["command-line-interface", "command-line-utilities", "config", "development-tools"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "asdf"
+path = "src/main.rs"
+
+[dependencies]
