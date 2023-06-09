@@ -188,6 +188,15 @@ Number of cores to use when compiling the source code. If set, this value takes 
 - If Unset: the asdf config `concurrency` value is used.
 - Usage: `export ASDF_CONCURRENCY=32`
 
+### `ASDF_FORCE_PREPEND`
+
+Whether or not to prepend the `asdf` shims and path directories to the front-most (highest-priority) part of the `PATH`.
+
+- If Unset: On macOS, defaults to `yes`; but on other systems, defaults to `no`
+- If `yes`: Force `asdf` directories to the front of the `PATH`
+- If set to any string _other_ than `yes`: Do _not_ force `asdf` directories to the front of the `PATH`
+- Usage: `ASDF_FORCE_PREPEND=no . "<path-to-asdf-directory>/asdf.sh"`
+
 ## Full Configuration Example
 
 Following a simple asdf setup with:
