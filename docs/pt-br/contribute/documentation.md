@@ -8,7 +8,7 @@ Documentação e guia de contribuição do site.
 
 Fork `asdf` no GitHub e/ou Git clone o branch padrão:
 
-```shell:no-line-numbers
+```shell
 # clone your fork
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # or clone asdf
@@ -17,21 +17,21 @@ git clone https://github.com/asdf-vm/asdf.git
 
 As ferramentas para desenvolvimento de sites Docs são gerenciadas com `asdf` em `docs/.tool-versions`. Adicione os plugins com:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
 ```
 
 Instale a(s) versão(ões) da ferramenta com:
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
 - [Node.js](https://nodejs.org): tempo de execução JavaScript criado no mecanismo JavaScript V8 do Chrome.
-- 
+-
 Instale as dependências do Node.js do `docs/package.json`:
 
-```shell:no-line-numbers
+```shell
 npm install
 ```
 
@@ -45,13 +45,13 @@ npm install
 
  Para iniciar o servidor de desenvolvimento local:
 
-```shell:no-line-numbers
+```shell
 npm run dev
 ```
 
 Formate o código antes de confirmar:
 
-```shell:no-line-numbers
+```shell
 npm run format
 ```
 
@@ -104,7 +104,7 @@ O conteúdo de markdown para cada localidade deve estar em uma pasta com o mesmo
 
 `/pt-BR/` exigirá o mesmo conjunto de arquivos markdown localizados em `docs/pt-BR/`, assim:
 
-```shell:no-line-numbers
+```shell
 docs
 ├─ README.md
 ├─ foo.md

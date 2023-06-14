@@ -12,7 +12,7 @@ Configurações globais podem ser modificadas no arquivo `$HOME/.tool-versions`
 
 O arquivo `.tool-versions` se parece assim:
 
-```:no-line-numbers
+```
 ruby 2.5.3
 nodejs 10.15.0
 ```
@@ -27,7 +27,7 @@ As versões podem estar no seguinte formato:
 
 Várias versões podem ser definidas, separando-as com um espaço. Por exemplo, para usar Python 3.7.2, e também Python 2.7.15, use a linha abaixo em seu arquivo `.tool-versions`.
 
-```:no-line-numbers
+```
 python 3.7.2 2.7.15 system
 ```
 
@@ -41,7 +41,7 @@ Edite o arquivo diretamente no diretório ou use `asdf local` (ou `asdf global`)
 
 Adicione um arquivo `.asdfrc` ao seu diretório home e asdf usará as configurações especificadas no arquivo. O arquivo deve ser formatado assim:
 
-```:no-line-numbers
+```
 legacy_version_file = yes
 ```
 

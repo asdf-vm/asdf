@@ -1,0 +1,6 @@
+# VitePress build output & cache directory
+.vitepress/cache
+.vitepress/dist
+node_modules
+package.json
+package-lock.json

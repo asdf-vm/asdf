@@ -4,4 +4,4 @@
 
 A lista de todos os comandos disponíveis em `asdf`. Esta lista é o texto do comando `asdf help`.
 
-@[code](../../../help.txt)
+<<< @../../help.txt

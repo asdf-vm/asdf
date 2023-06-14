@@ -1,13 +1,13 @@
 {
   "scripts": {
-    "dev": "vuepress dev .",
-    "build": "vuepress build .",
-    "format": "npx -y prettier --write '{.vuepress/{config,navbar,sidebar}.js,./**/*.md}'"
+    "fmt": "prettier --write '.vitepress/{config,navbars,sidebars}.ts' '.vitepress/theme/**/*'",
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
   },
   "devDependencies": {
-    "@vuepress/plugin-active-header-links": "^2.0.0-beta.53",
-    "@vuepress/plugin-search": "^2.0.0-beta.53",
-    "@vuepress/plugin-shiki": "^2.0.0-beta.53",
-    "vuepress": "^2.0.0-beta.53"
+    "@types/node": "^20.3.1",
+    "prettier": "^2.8.8",
+    "vitepress": "^1.0.0-beta.2"
   }
 }

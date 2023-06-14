@@ -90,7 +90,7 @@ List all installable versions.
 
 Must print a string with a **space-separated** list of versions. For example:
 
-```text:no-line-numbers
+```txt
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
@@ -129,7 +129,7 @@ No environment variables are provided to this script.
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/list-all"
 ```
 
@@ -177,7 +177,7 @@ All plugins must include this script as support for legacy plugins will eventual
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/download
 ```
 
@@ -228,7 +228,7 @@ variable. If set, assume the `bin/download` script already downloaded the versio
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/install
 ```
 
@@ -277,7 +277,7 @@ Determine the latest stable version of a tool. If absent, the asdf core will `ta
 
 The script should accept a single argument, the filter query.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/latest-stable ""
 "${plugin_path}"/bin/latest-stable "$query"
 ```
@@ -314,7 +314,7 @@ Output a general description about the plugin and the tool being managed.
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/help.overview
 ```
 
@@ -326,7 +326,7 @@ Output a general description about the plugin and the tool being managed.
 
 Output the list of dependencies tailored to the operating system. One dependency per line.
 
-```bash:no-line-numbers
+```bash
 git
 curl
 sed
@@ -353,7 +353,7 @@ sed
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/help.deps
 ```
 
@@ -387,7 +387,7 @@ Output any required or optional configuration for the plugin and tool. For examp
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/help.config
 ```
 
@@ -399,7 +399,7 @@ Output any required or optional configuration for the plugin and tool. For examp
 
 Output a list of links relevant to the plugin and tool. One link per line.
 
-```bash:no-line-numbers
+```bash
 Git Repository:	https://github.com/vlang/v
 Documentation:	https://vlang.io
 ```
@@ -429,7 +429,7 @@ Documentation:	https://vlang.io
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}"/bin/help.links
 ```
 
@@ -447,7 +447,7 @@ List directories containing executables for the specified version of the tool.
 - Output a space-separated list of paths containing executables.
 - Paths must be relative to `ASDF_INSTALL_PATH`. Example output would be:
 
-```bash:no-line-numbers
+```bash
 bin tools veggies
 ```
 
@@ -471,7 +471,7 @@ This will instruct asdf to create shims for the files in:
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/list-bin-paths"
 ```
 
@@ -499,7 +499,7 @@ Prepare the environment before executing the shims for the binaries for the tool
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/exec-env"
 ```
 
@@ -548,7 +548,7 @@ Output:
 
 **Call signature from asdf core**
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$relative_path"
 ```
 
@@ -577,7 +577,7 @@ No environment variables are provided to this script.
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/uninstall"
 ```
 
@@ -592,7 +592,7 @@ List legacy configuration filenames for determining the specified version of the
 **Implementation Details**
 
 - Output a space-separated list of filenames.
-  ```bash:no-line-numbers
+  ```bash
   .ruby-version .rvmrc
   ```
 - Only applies for users who have enabled the `legacy_version_file` option in their `"${HOME}"/.asdfrc`.
@@ -613,7 +613,7 @@ Any command which reads a tool version.
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/list-legacy-filenames"
 ```
 
@@ -632,7 +632,7 @@ Parse the legacy file found by asdf to determine the version of the tool. Useful
   - when parsing the same legacy file.
   - regardless of what is installed on the machine or whether the legacy version is valid or complete. Some legacy file formats may not be suitable.
 - Output a single line with the version:
-  ```bash:no-line-numbers
+  ```bash
   1.2.3
   ```
 
@@ -648,7 +648,7 @@ Any command which reads a tool version.
 
 The script should accept a single argument, the path to the legacy file for reading its contents.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/parse-legacy-file" "$file_path"
 ```
 
@@ -676,7 +676,7 @@ See also the related command hooks:
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/post-plugin-add"
 ```
 
@@ -705,7 +705,7 @@ See also the related command hooks:
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/post-plugin-update"
 ```
 
@@ -732,7 +732,7 @@ See also the related command hooks:
 
 No parameters provided.
 
-```bash:no-line-numbers
+```bash
 "${plugin_path}/bin/pre-plugin-remove"
 ```
 
@@ -747,7 +747,7 @@ the asdf command line interface by using the plugin name as a subcommand.
 
 For example, suppose a `foo` plugin has:
 
-```shell:no-line-numbers
+```shell
 foo/
   lib/commands/
     command.bash
@@ -758,7 +758,7 @@ foo/
 
 Users can now execute:
 
-```shell:no-line-numbers
+```shell
 $ asdf foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash`
 $ asdf foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command.bash bar`
 $ asdf foo help    # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-help.bash`
@@ -806,7 +806,7 @@ executable. This makes it not possible to use the standard Bash shim.
 
 `asdf` contains the `plugin-test` command to test your plugin:
 
-```shell:no-line-numbers
+```shell
 asdf plugin test <plugin_name> <plugin_url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git_ref>] [test_command...]
 ```
 
@@ -819,7 +819,7 @@ asdf plugin test <plugin_name> <plugin_url> [--asdf-tool-version <version>] [--a
 - Optional parameter `[test_command...]` is the command to execute to validate
   the installed tool works correctly. Typically `<tool> --version` or
   `<tool> --help`. For example, to test the NodeJS plugin, we could run
-  ```shell:no-line-numbers
+  ```shell
   # asdf plugin test <plugin_name>  <plugin_url>                               [test_command]
     asdf plugin test nodejs         https://github.com/asdf-vm/asdf-nodejs.git node --version
   ```
@@ -880,7 +880,7 @@ os:
 When using another CI you may need to pass a relative path to the plugin
 location:
 
-```shell:no-line-numbers
+```shell
 asdf plugin test <tool_name> <path> '<tool_command> --version'
 ```
 
@@ -922,7 +922,7 @@ NEVER publish your authentication tokens in your code repository
 
 The recommended installation method for a plugin is via direct URL installation:
 
-```shell:no-line-numbers
+```shell
 # asdf plugin add <name> <git_url>
   asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
 ```

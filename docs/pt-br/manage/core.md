@@ -10,7 +10,7 @@ Baseado no [Guia de Introdução](/pt-br/guide/getting-started.md).
 
 ## Execute
 
-```shell:no-line-numbers
+```shell
 asdf exec <command> [args...]
 ```
 
@@ -20,7 +20,7 @@ Executa o comando shim para a versão atual
 
 ## Variável de Ambiente
 
-```shell:no-line-numbers
+```shell
 asdf env <command> [util]
 ```
 
@@ -28,7 +28,7 @@ asdf env <command> [util]
 
 ## Informações
 
-```shell:no-line-numbers
+```shell
 asdf info
 ```
 
@@ -36,7 +36,7 @@ asdf info
 
 ## Reshim
 
-```shell:no-line-numbers
+```shell
 asdf reshim <name> <version>
 ```
 
@@ -44,7 +44,7 @@ Isso recria os shims para a versão atual de um pacote. Por padrão, os calços 
 
 ## Versionamento do Shim
 
-```shell:no-line-numbers
+```shell
 asdf shim-versions <command>
 ```
 
@@ -52,14 +52,14 @@ Lista os plugins e versões que fornecem shims para um comando.
 
 Como exemplo, o [Node.js](https://nodejs.org/) vem com dois executáveis, `node` e `npm`. Quando muitas versões das ferramentas são instaladas com [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) `shim-versions` pode retornar:
 
-```shell:no-line-numbers
+```shell
 ➜ asdf shim-versions node
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
 ```
 
-```shell:no-line-numbers
+```shell
 ➜ asdf shim-versions npm
 nodejs 14.8.0
 nodejs 14.17.3
@@ -295,19 +295,19 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 
 e desinstale o módulo `asdf` com este comando:
 
-```shell:no-line-numbers
+```shell
 rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Remova o diretório `$HOME/.asdf`:
 
-```shell:no-line-numbers
+```shell
 if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 ```
 
 3. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
-```shell:no-line-numbers
+```shell
 rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
@@ -324,19 +324,19 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 
 e desinstale o módulo `asdf` com este comando:
 
-```shell:no-line-numbers
+```shell
 rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
 
-```shell:no-line-numbers
+```shell
 brew uninstall asdf --force
 ```
 
 3. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
-```shell:no-line-numbers
+```shell
 rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 
@@ -353,25 +353,25 @@ set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~
 
 e desinstale o módulo `asdf` com este comando:
 
-```shell:no-line-numbers
+```shell
 rm -f ~/.config/elvish/lib/asdf.elv
 ```
 
 2. Desinstale com seu gerenciador de pacotes:
 
-```shell:no-line-numbers
+```shell
 pacman -Rs asdf-vm
 ```
 
 3. Remova o diretório `$ HOME/.asdf`:
 
-```shell:no-line-numbers
+```shell
 if (!=s $E:ASDF_DATA_DIR "") { rm -rf $E:ASDF_DATA_DIR } else { rm -rf ~/.asdf }
 ```
 
 4. Execute este comando para remover todos os arquivos de configuração `asdf`:
 
-```shell:no-line-numbers
+```shell
 rm -rf "$HOME/.tool-versions" "$HOME/.asdfrc"
 ```
 

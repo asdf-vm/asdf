@@ -6,7 +6,7 @@ Documentation & site contribution guide.
 
 Fork `asdf` on GitHub and/or Git clone the default branch:
 
-```shell:no-line-numbers
+```shell
 # clone your fork
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # or clone asdf
@@ -15,13 +15,13 @@ git clone https://github.com/asdf-vm/asdf.git
 
 The tools for Docs site development are managed with `asdf` in the `docs/.tool-versions`. Add the plugins with:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
 ```
 
 Install the tool version(s) with:
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
@@ -29,7 +29,7 @@ asdf install
 
 Install Node.js dependencies from `docs/package.json`:
 
-```shell:no-line-numbers
+```shell
 npm install
 ```
 
@@ -43,13 +43,13 @@ npm install
 
 To start the local development server:
 
-```shell:no-line-numbers
+```shell
 npm run dev
 ```
 
 Format the code before committing:
 
-```shell:no-line-numbers
+```shell
 npm run format
 ```
 
@@ -103,7 +103,7 @@ The markdown content for each locale must fall under a folder with the same name
 
 `/pt-BR/` will require the same set of markdown files located under `docs/pt-BR/`, like so:
 
-```shell:no-line-numbers
+```shell
 docs
 ├─ README.md
 ├─ foo.md

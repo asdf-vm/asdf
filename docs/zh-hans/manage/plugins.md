@@ -8,14 +8,14 @@
 
 通过 Git URL 地址添加插件：
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name> <git-url>
 # asdf plugin add elm https://github.com/vic/asdf-elm
 ```
 
 或者通过插件存储库中的缩写添加插件：
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name>
 # asdf plugin add erlang
 ```
@@ -26,14 +26,14 @@ asdf plugin add <name>
 
 ## 列举已安装
 
-```shell:no-line-numbers
+```shell
 asdf plugin list
 # asdf plugin list
 # java
 # nodejs
 ```
 
-```shell:no-line-numbers
+```shell
 asdf plugin list --urls
 # asdf plugin list
 # java            https://github.com/halcyon/asdf-java.git
@@ -42,7 +42,7 @@ asdf plugin list --urls
 
 ## 列举缩写存储库中的所有插件
 
-```shell:no-line-numbers
+```shell
 asdf plugin list all
 ```
 
@@ -50,13 +50,13 @@ asdf plugin list all
 
 ## 更新
 
-```shell:no-line-numbers
+```shell
 asdf plugin update --all
 ```
 
 如果你想要更新特定的包，如下所示。
 
-```shell:no-line-numbers
+```shell
 asdf plugin update <name>
 # asdf plugin update erlang
 ```
@@ -65,7 +65,7 @@ asdf plugin update <name>
 
 ## 移除
 
-```bash:no-line-numbers
+```bash
 asdf plugin remove <name>
 # asdf plugin remove erlang
 ```

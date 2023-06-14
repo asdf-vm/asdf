@@ -6,7 +6,7 @@
 
 在 Github 上 fork `asdf` 并且/或者使用 Git 克隆默认分支：
 
-```shell:no-line-numbers
+```shell
 # 克隆你 fork 的 asdf
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # 或者直接克隆 asdf
@@ -15,13 +15,13 @@ git clone https://github.com/asdf-vm/asdf.git
 
 文档网站开发所需的工具都在文件 `docs/.tool-versions` 中使用 `asdf` 进行管理。使用以下命令添加插件：
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
 ```
 
 使用以下命令安装工具版本：
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
@@ -29,7 +29,7 @@ asdf install
 
 根据 `docs/package.json` 文件安装 Node.js 依赖：
 
-```shell:no-line-numbers
+```shell
 npm install
 ```
 
@@ -43,13 +43,13 @@ npm install
 
 启动本地开发服务器：
 
-```shell:no-line-numbers
+```shell
 npm run dev
 ```
 
 在提交之前格式化代码：
 
-```shell:no-line-numbers
+```shell
 npm run format
 ```
 
@@ -102,7 +102,7 @@ Vuepress 有一流的国际化支持。根配置文件 `docs/.vuepress/config.js
 
 `/pt-BR/` 将要求 markdown 文件的同一集合位于 `docs/pt-BR/` 目录下，如下所示：
 
-```shell:no-line-numbers
+```shell
 docs
 ├─ README.md
 ├─ foo.md
