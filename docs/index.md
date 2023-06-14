@@ -38,14 +38,3 @@ features:
     icon: 🤖
 
 ---
----
-home: true
-title: 首页
-# heroImage: https://vuejs.org/images/logo.png
-actions:
-- text: 快速上手
-  link: /zh-hans/guide/getting-started.html
-  type: primary
-- text: 项目简介
-  link: /zh-hans/guide/introduction.html
-  type: secondary
