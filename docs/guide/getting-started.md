@@ -34,8 +34,10 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 <!-- x-release-please-start-version -->
 
+
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
+
 ```
 
 <!-- x-release-please-end -->
@@ -51,7 +53,9 @@ We highly recommend using the official `git` method.
 
 ## 3. Install asdf
 
-There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system:
+There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
+
+**macOS users, be sure to read the warning about `path_helper` at the end of this section.**
 
 ::: details Bash & Git
 
@@ -358,6 +362,10 @@ export ASDF_DIR="/opt/asdf-vm"
 :::
 
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
+
+::: warning
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcily adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.`.
+:::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
