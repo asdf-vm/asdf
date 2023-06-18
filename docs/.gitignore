@@ -1,3 +1,7 @@
+### Custom ###
+# VitePress build output & cache directory
+.vitepress/cache
+.vitepress/dist
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
