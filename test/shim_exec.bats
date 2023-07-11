@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2016,SC2164
 
 load test_helpers
 
@@ -38,11 +39,11 @@ teardown() {
   run asdf install
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-  run env PATH=$path which dummy
+  run env PATH="$path" which dummy
   [ "$output" = "" ]
   [ "$status" -eq 1 ]
 
-  run env PATH=$path asdf exec dummy world hello
+  run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
@@ -205,6 +206,8 @@ teardown() {
   [ "$output" = "System" ]
 }
 
+# NOTE: The name of this test is linked to a condition in `test_helpers.bash. See
+# the 'setup_asdf_dir' function for details.
 @test "shim exec should use path executable when specified version path:<path>" {
   run asdf install dummy 1.0
 
@@ -330,7 +333,6 @@ teardown() {
   chmod +x "$PROJECT_DIR/sys/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/dummy"
-  echo "$status $output"
   [ "$output" = "$ASDF_DIR/shims/dummy" ]
 }
 
@@ -393,7 +395,6 @@ teardown() {
   run asdf install dummy 1.0
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
-
   echo 'echo $3 # always same path' >"$exec_path"
   chmod +x "$exec_path"
 

@@ -2,7 +2,7 @@
 
 ## Install Version
 
-```shell:no-line-numbers
+```shell
 asdf install <name> <version>
 # asdf install erlang 17.3
 ```
@@ -11,63 +11,63 @@ If a plugin supports downloading & compiling from source, you can specify `ref:f
 
 ## Install Latest Stable Version
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest
 # asdf install erlang latest
 ```
 
 Install latest stable version that begins with a given string.
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest:<version>
 # asdf install erlang latest:17
 ```
 
 ## List Installed Versions
 
-```shell:no-line-numbers
+```shell
 asdf list <name>
 # asdf list erlang
 ```
 
 Filter versions to those that begin with a given string.
 
-```shell:no-line-numbers
+```shell
 asdf list <name> <version>
 # asdf list erlang 17
 ```
 
 ## List All Available Versions
 
-```shell:no-line-numbers
+```shell
 asdf list all <name>
 # asdf list all erlang
 ```
 
 Filter versions to those that begin with a given string.
 
-```shell:no-line-numbers
+```shell
 asdf list all <name> <version>
 # asdf list all erlang 17
 ```
 
 ## Show Latest Stable Version
 
-```shell:no-line-numbers
+```shell
 asdf latest <name>
 # asdf latest erlang
 ```
 
 Show latest stable version that begins with a given string.
 
-```shell:no-line-numbers
+```shell
 asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
 ## Set Current Version
 
-```shell:no-line-numbers
+```shell
 asdf global <name> <version> [<version>...]
 asdf shell <name> <version> [<version>...]
 asdf local <name> <version> [<version>...]
@@ -80,7 +80,7 @@ asdf local <name> latest[:<version>]
 
 `global` writes the version to `$HOME/.tool-versions`.
 
-`shell` set the version to an environment variable named `ASDF_${LANG}_VERSION`, for the current shell session only.
+`shell` set the version to an environment variable named `ASDF_${TOOL}_VERSION`, for the current shell session only.
 
 `local` writes the version to `$PWD/.tool-versions`, creating it if needed.
 
@@ -95,7 +95,7 @@ can set an environment variable like `ASDF_${TOOL}_VERSION`.
 The following example runs tests on an Elixir project with version `1.4.0`.
 The version format is the same supported by the `.tool-versions` file.
 
-```shell:no-line-numbers
+```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
@@ -105,27 +105,27 @@ To use the system version of tool `<name>` instead of an asdf managed version yo
 
 Set system with either `global`, `local` or `shell` as outlined in [Set Current Version](#set-current-version) section above.
 
-```shell:no-line-numbers
+```shell
 asdf local <name> system
 # asdf local python system
 ```
 
 ## View Current Version
 
-```shell:no-line-numbers
+```shell
 asdf current
 # asdf current
-# erlang 17.3 (set by /Users/kim/.tool-versions)
-# nodejs 6.11.5 (set by /Users/kim/cool-node-project/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
+# nodejs          6.11.5        /Users/kim/cool-node-project/.tool-versions
 
 asdf current <name>
 # asdf current erlang
-# 17.3 (set by /Users/kim/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
 ```
 
 ## Uninstall Version
 
-```shell:no-line-numbers
+```shell
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```
@@ -147,7 +147,7 @@ Because this system uses `exec` calls, any scripts in the package that are meant
 source $(asdf which ${PLUGIN})/../script.sh
 
 # returns path to the package installation directory
-source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
+source $(asdf where ${PLUGIN})/bin/script.sh
 ```
 
 ### By-passing asdf shims

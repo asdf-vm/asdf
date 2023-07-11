@@ -1,14 +1,14 @@
 def-env configure-asdf [] {
 
     let-env ASDF_DIR = ( if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR } )
-        
+
     let shims_dir = ( if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) { $env.HOME | path join '.asdf' } else { $env.ASDF_DIR } | path join 'shims' )
 
     let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
 
 
-    let-env PATH = ( $env.PATH | where { |p| $p != $shims_dir } | append $shims_dir )
-    let-env PATH = ( $env.PATH | where { |p| $p != $asdf_bin_dir } | append $asdf_bin_dir )
+    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
+    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $asdf_bin_dir } | prepend $asdf_bin_dir )
 
 }
 
@@ -17,19 +17,19 @@ configure-asdf
 ## Completions
 
 module asdf {
-    
+
     def "complete asdf sub-commands" [] {
         [
-            "plugin", 
-            "list", 
-            "install", 
-            "uninstall", 
-            "current", 
-            "where", 
-            "which", 
-            "local", 
-            "global", 
-            "shell", 
+            "plugin",
+            "list",
+            "install",
+            "uninstall",
+            "current",
+            "where",
+            "which",
+            "local",
+            "global",
+            "shell",
             "latest",
             "help",
             "exec",
@@ -63,7 +63,7 @@ module asdf {
     }
 
     # ASDF version manager
-    export extern "asdf" [
+    export extern main [
         subcommand?: string@"complete asdf sub-commands"
     ]
 
@@ -79,40 +79,41 @@ module asdf {
     ] {
 
         let params = [
-            {name: 'urls', enabled: $urls, template: '\s+?(?P<repository>git@.+\.git)', flag: '--urls'}
-            {name: 'refs', enabled: $refs, template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)', flag: '--refs'}
+            {name: 'urls', enabled: $urls, flag: '--urls',
+             template: '\s+?(?P<repository>(?:http[s]?|git).+\.git|/.+)'}
+            {name: 'refs', enabled: $refs, flag: '--refs',
+             template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)'}
         ]
-        
+
         let template = '(?P<name>.+)' + (
-                            $params | 
+                            $params |
                             where enabled |
                             get --ignore-errors template |
-                            str join '' | 
+                            str join '' |
                             str trim
                         )
 
-        let parsed_urls_flag = ($params | where enabled and name == 'urls'  | get --ignore-errors flag | default '' )
-        let parsed_refs_flag = ($params | where enabled and name == 'refs'  | get --ignore-errors flag | default '' )
-        
-        ^asdf plugin list $parsed_urls_flag $parsed_refs_flag | lines | parse -r $template | str trim        
+        let flags = ($params | where enabled | get --ignore-errors flag | default '' )
+
+        ^asdf plugin list $flags | lines | parse -r $template | str trim
     }
 
     # list all available plugins
     export def "asdf plugin list all" [] {
-        let template = '(?P<name>.+)\s+?(?P<installed>[*]?)(?P<repository>(?:git|http).+\.git)'
+        let template = '(?P<name>.+)\s+?(?P<installed>[*]?)(?P<repository>(?:git|http|https).+)'
         let is_installed = { |it| $it.installed == '*' }
 
-        ^asdf plugin list all | 
-            lines | 
-            parse -r $template | 
-            str trim | 
+        ^asdf plugin list all |
+            lines |
+            parse -r $template |
+            str trim |
             update installed $is_installed |
             sort-by name
     }
 
     # Add a plugin
     export extern  "asdf plugin add" [
-        name: string # Name of the plugin 
+        name: string # Name of the plugin
         git_url?: string # Git url of the plugin
     ]
 
@@ -120,7 +121,7 @@ module asdf {
     export extern "asdf plugin remove" [
         name: string@"complete asdf installed plugins" # Name of the plugin
     ]
-    
+
     # Update a plugin
     export extern "asdf plugin update" [
         name: string@"complete asdf installed plugins" # Name of the plugin
@@ -175,13 +176,13 @@ module asdf {
     export extern "asdf shell" [
         name: string@"complete asdf installed" # Name of the package
         version?: string # Version of the package or latest
-    ]    
+    ]
 
     # Show latest stable version of a package
     export extern "asdf latest" [
         name: string # Name of the package
         version?: string # Filter latest stable version from this version
-    ]       
+    ]
 
     # Show latest stable version for all installed packages
     export extern "asdf latest --all" []

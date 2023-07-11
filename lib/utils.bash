@@ -5,9 +5,6 @@ GREP_OPTIONS="--color=never"
 # shellcheck disable=SC2034
 GREP_COLORS=
 
-ASDF_DIR=${ASDF_DIR:-''}
-ASDF_DATA_DIR=${ASDF_DATA_DIR:-''}
-
 asdf_version() {
   local version git_rev
   version="v$(cat "$(asdf_dir)/version.txt")"
@@ -19,21 +16,12 @@ asdf_version() {
   fi
 }
 
-asdf_dir() {
-  if [ -z "$ASDF_DIR" ]; then
-    local current_script_path=${BASH_SOURCE[0]}
-    export ASDF_DIR
-    ASDF_DIR=$(
-      cd "$(dirname "$(dirname "$current_script_path")")" || exit
-      printf '%s\n' "$PWD"
-    )
-  fi
-
-  printf "%s\n" "$ASDF_DIR"
+asdf_tool_versions_filename() {
+  printf '%s\n' "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
-asdf_repository_url() {
-  printf "https://github.com/asdf-vm/asdf-plugins.git\n"
+asdf_config_file() {
+  printf '%s\n' "${ASDF_CONFIG_FILE:-$HOME/.asdfrc}"
 }
 
 asdf_data_dir() {
@@ -48,6 +36,22 @@ asdf_data_dir() {
   fi
 
   printf "%s\n" "$data_dir"
+}
+
+asdf_dir() {
+  if [ -z "$ASDF_DIR" ]; then
+    local current_script_path=${BASH_SOURCE[0]}
+    printf '%s\n' "$(
+      cd -- "$(dirname "$(dirname "$current_script_path")")" || exit
+      printf '%s\n' "$PWD"
+    )"
+  else
+    printf '%s\n' "$ASDF_DIR"
+  fi
+}
+
+asdf_plugin_repository_url() {
+  printf "https://github.com/asdf-vm/asdf-plugins.git\n"
 }
 
 get_install_path() {
@@ -159,7 +163,7 @@ get_version_in_dir() {
 
   local asdf_version
 
-  file_name=$(version_file_name)
+  file_name=$(asdf_tool_versions_filename)
   asdf_version=$(parse_asdf_version_file "$search_path/$file_name" "$plugin_name")
 
   if [ -n "$asdf_version" ]; then
@@ -176,10 +180,6 @@ get_version_in_dir() {
       return 0
     fi
   done
-}
-
-version_file_name() {
-  printf "%s" "${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME:-.tool-versions}"
 }
 
 find_versions() {
@@ -206,7 +206,7 @@ find_versions() {
   local legacy_filenames=""
 
   if [ "$legacy_config" = "yes" ] && [ -f "$legacy_list_filenames_script" ]; then
-    legacy_filenames=$($legacy_list_filenames_script)
+    legacy_filenames=$("$legacy_list_filenames_script")
   fi
 
   while [ "$search_path" != "/" ]; do
@@ -373,6 +373,8 @@ get_asdf_config_value_from_file() {
     return 1
   fi
 
+  util_validate_no_carriage_returns "$config_path"
+
   local result
   result=$(grep -E "^\s*$key\s*=\s*" "$config_path" | head | sed -e 's/^[^=]*= *//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   if [ -n "$result" ]; then
@@ -385,7 +387,8 @@ get_asdf_config_value_from_file() {
 
 get_asdf_config_value() {
   local key=$1
-  local config_path=${ASDF_CONFIG_FILE:-"$HOME/.asdfrc"}
+  local config_path=
+  config_path=$(asdf_config_file)
   local default_config_path=${ASDF_CONFIG_DEFAULT_FILE:-"$(asdf_dir)/defaults"}
 
   local local_config_path
@@ -417,7 +420,7 @@ repository_needs_update() {
   [ "$sync_required" ]
 }
 
-initialize_or_update_repository() {
+initialize_or_update_plugin_repository() {
   local repository_url
   local repository_path
 
@@ -427,7 +430,7 @@ initialize_or_update_repository() {
     exit 1
   fi
 
-  repository_url=$(asdf_repository_url)
+  repository_url=$(asdf_plugin_repository_url)
   repository_path=$(asdf_data_dir)/repository
 
   if [ ! -d "$repository_path" ]; then
@@ -435,7 +438,8 @@ initialize_or_update_repository() {
     git clone "$repository_url" "$repository_path"
   elif repository_needs_update; then
     printf "updating plugin repository..."
-    (cd "$repository_path" && git fetch && git reset --hard origin/master)
+    git -C "$repository_path" fetch
+    git -C "$repository_path" reset --hard origin/master
   fi
 
   mkdir -p "$(asdf_data_dir)/tmp"
@@ -454,7 +458,7 @@ get_plugin_source_url() {
 }
 
 find_tool_versions() {
-  find_file_upwards "$(version_file_name)"
+  find_file_upwards "$(asdf_tool_versions_filename)"
 }
 
 find_file_upwards() {
@@ -463,6 +467,8 @@ find_file_upwards() {
   search_path=$PWD
   while [ "$search_path" != "/" ]; do
     if [ -f "$search_path/$name" ]; then
+      util_validate_no_carriage_returns "$search_path/$name"
+
       printf "%s\n" "${search_path}/$name"
       return 0
     fi
@@ -776,7 +782,7 @@ with_shim_executable() {
 
     # This function does get invoked, but shellcheck sees it as unused code
     # shellcheck disable=SC2317
-    function run_within_env() {
+    run_within_env() {
       local path
       path=$(remove_path_from_path "$PATH" "$(asdf_data_dir)/shims")
 
@@ -859,6 +865,36 @@ util_resolve_user_path() {
   else
     util_resolve_user_path_reply="$path"
   fi
+}
+
+# @description Check if a file contains carriage returns. If it does, print a warning.
+util_validate_no_carriage_returns() {
+  local file_path="$1"
+
+  if grep -qr $'\r' "$file_path"; then
+    printf '%s\n' "asdf: Warning: File $file_path contains carriage returns. Please remove them." >&2
+  fi
+}
+
+get_plugin_remote_url() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" remote get-url origin 2>/dev/null
+}
+
+get_plugin_remote_branch() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" rev-parse --abbrev-ref HEAD 2>/dev/null
+}
+
+get_plugin_remote_gitref() {
+  local plugin_name="$1"
+  local plugin_path
+  plugin_path="$(get_plugin_path "$plugin_name")"
+  git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null
 }
 
 # @description Returns true if any arguments is '-h' or '--help'

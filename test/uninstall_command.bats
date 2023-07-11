@@ -32,7 +32,7 @@ teardown() {
   run asdf install dummy 1.1.0
   [ "$status" -eq 0 ]
   mkdir -p "$ASDF_DIR/plugins/dummy/bin"
-  echo "echo custom uninstall" >"$ASDF_DIR/plugins/dummy/bin/uninstall"
+  printf '%s\n' "echo custom uninstall" >"$ASDF_DIR/plugins/dummy/bin/uninstall"
   chmod 755 "$ASDF_DIR/plugins/dummy/bin/uninstall"
   run asdf uninstall dummy 1.1.0
   [ "$output" = "custom uninstall" ]

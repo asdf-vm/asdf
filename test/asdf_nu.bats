@@ -1,20 +1,27 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2164
 
 load test_helpers
 
 setup() {
   cd "$(dirname "$BATS_TEST_DIRNAME")"
 
-  if ! command -v nu; then
+  if ! command -v nu &>/dev/null && [ -z "$GITHUB_ACTIONS" ]; then
     skip "Nu is not installed"
   fi
+
+  setup_asdf_dir
+}
+
+teardown() {
+  clean_asdf_dir
 }
 
 cleaned_path() {
   echo "$PATH" | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
 }
 
-@test "exports ASDF_DIR" {
+run_nushell() {
   run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
@@ -22,46 +29,29 @@ cleaned_path() {
     let-env ASDF_NU_DIR = '$PWD'
 
     source asdf.nu
+    $1"
+}
 
-    echo \$env.ASDF_DIR"
+@test "exports ASDF_DIR" {
+  run_nushell "echo \$env.ASDF_DIR"
 
   [ "$status" -eq 0 ]
-
   result=$(echo "$output" | grep "asdf")
   [ "$result" = "$PWD" ]
 }
 
 @test "adds asdf dirs to PATH" {
-  run nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
-
-    source asdf.nu
-
-
-    \$env.PATH | to text"
+  run_nushell "\$env.PATH | to text"
 
   [ "$status" -eq 0 ]
 
-  output_bin=$(echo "$output" | grep "asdf/bin")
-  [ "$output_bin" = "$PWD/bin" ]
-
-  output_shims=$(echo "$output" | grep "/shims")
-  [ "$output_shims" = "$HOME/.asdf/shims" ]
+  [[ "$output" == *"$PWD/bin"* ]]
+  [[ "$output" == *"$HOME/.asdf/shims"* ]]
 }
 
 @test "does not add paths to PATH more than once" {
-  run nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
-
+  run_nushell "
     source asdf.nu
-    source asdf.nu
-
     echo \$env.PATH"
 
   [ "$status" -eq 0 ]
@@ -85,32 +75,86 @@ cleaned_path() {
   [ "$output" = "$PWD" ]
 }
 
-@test "defines the asdf function" {
-  run nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
-
-    source asdf.nu
-    which asdf | get path | to text"
+@test "defines the asdf or main function" {
+  run_nushell "which asdf | get path | to text"
 
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "command" ]]
 }
 
 @test "function calls asdf command" {
-  run nu -c "
-    hide-env -i asdf
-    hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
-
-    source asdf.nu
-    asdf info"
+  run_nushell "asdf info"
 
   [ "$status" -eq 0 ]
 
   result=$(echo "$output" | grep "ASDF INSTALLED PLUGINS:")
   [ "$result" != "" ]
+}
+
+@test "parses the output of asdf plugin list" {
+  setup_repo
+  install_dummy_plugin
+  run_nushell "asdf plugin list | to csv -n"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "dummy" ]
+}
+
+@test "parses the output of asdf plugin list --urls" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --urls | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local repo_url
+  repo_url=$(get_plugin_remote_url "dummy")
+
+  [ "$output" = "dummy,$repo_url" ]
+}
+
+@test "parses the output of asdf plugin list --refs" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --refs | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local branch gitref
+  branch=$(get_plugin_remote_branch "dummy")
+  gitref=$(get_plugin_remote_gitref "dummy")
+
+  [ "$output" = "dummy,$branch,$gitref" ]
+}
+
+@test "parses the output of asdf plugin list --urls --refs" {
+  setup_repo
+  install_mock_plugin_repo "dummy"
+  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+
+  run_nushell "asdf plugin list --urls --refs | to csv -n"
+
+  [ "$status" -eq 0 ]
+
+  local repo_url branch gitref
+  repo_url=$(get_plugin_remote_url "dummy")
+  branch=$(get_plugin_remote_branch "dummy")
+  gitref=$(get_plugin_remote_gitref "dummy")
+
+  [ "$output" = "dummy,$repo_url,$branch,$gitref" ]
+}
+
+@test "parses the output of asdf plugin list all" {
+  setup_repo
+  install_dummy_plugin
+  run_nushell "asdf plugin list all | to csv -n"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "\
+bar,false,http://example.com/bar
+dummy,true,http://example.com/dummy
+foo,false,http://example.com/foo" ]
 }

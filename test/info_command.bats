@@ -23,7 +23,13 @@ teardown() {
   run asdf info
 
   [ "$status" -eq 0 ]
-  # TODO: Assert asdf info output is printed
+  [[ $output == *$'OS:\n'* ]]
+  [[ $output == *$'SHELL:\n'* ]]
+  [[ $output == *$'BASH VERSION:\n'* ]]
+  [[ $output == *$'ASDF VERSION:\n'* ]]
+  [[ $output == *$'ASDF INTERNAL VARIABLES:\n'* ]]
+  [[ $output == *$'ASDF INSTALLED PLUGINS:\n'* ]]
+
 }
 
 @test "info prints help if --help is passed" {

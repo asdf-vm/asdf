@@ -33,15 +33,27 @@ install_command() {
 }
 
 get_concurrency() {
-  if command -v nproc >/dev/null 2>&1; then
-    nproc
-  elif command -v sysctl >/dev/null 2>&1 && sysctl hw.ncpu >/dev/null 2>&1; then
-    sysctl -n hw.ncpu
-  elif [ -f /proc/cpuinfo ]; then
-    grep -c processor /proc/cpuinfo
+  local asdf_concurrency=
+
+  if [ -n "$ASDF_CONCURRENCY" ]; then
+    asdf_concurrency="$ASDF_CONCURRENCY"
   else
-    printf "1\n"
+    asdf_concurrency=$(get_asdf_config_value 'concurrency')
   fi
+
+  if [ "$asdf_concurrency" = 'auto' ]; then
+    if command -v nproc &>/dev/null; then
+      asdf_concurrency=$(nproc)
+    elif command -v sysctl &>/dev/null && sysctl hw.ncpu &>/dev/null; then
+      asdf_concurrency=$(sysctl -n hw.ncpu)
+    elif [ -f /proc/cpuinfo ]; then
+      asdf_concurrency=$(grep -c processor /proc/cpuinfo)
+    else
+      asdf_concurrency="1"
+    fi
+  fi
+
+  printf "%s\n" "$asdf_concurrency"
 }
 
 install_one_local_tool() {
@@ -203,7 +215,7 @@ install_tool_version() {
         export ASDF_INSTALL_PATH=$install_path
         # shellcheck disable=SC2030
         export ASDF_DOWNLOAD_PATH=$download_path
-        mkdir "$download_path"
+        mkdir -p "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
         "${plugin_path}"/bin/download
       )

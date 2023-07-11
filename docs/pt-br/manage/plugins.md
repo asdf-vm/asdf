@@ -10,14 +10,14 @@ Veja [Criando Plugins](/pt-br/plugins/create.md) para a API do plugin usada para
 
 Adicione os plugins via sua Url Git:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name> <git-url>
 # asdf plugin add elm https://github.com/vic/asdf-elm
 ```
 
 ou pelo nome abreviado dentro do repositório de plugins:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name>
 # asdf plugin add erlang
 ```
@@ -28,14 +28,14 @@ Prefira o método mais longo `git-url`, pois ele é independente do repositório
 
 ## Listar Instalados
 
-```shell:no-line-numbers
+```shell
 asdf plugin list
 # asdf plugin list
 # java
 # nodejs
 ```
 
-```shell:no-line-numbers
+```shell
 asdf plugin list --urls
 # asdf plugin list
 # java            https://github.com/halcyon/asdf-java.git
@@ -44,21 +44,21 @@ asdf plugin list --urls
 
 ## Listar todos nomes abreviados no repositório
 
-```shell:no-line-numbers
+```shell
 asdf plugin list all
 ```
 
 Veja [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugin-template) para toda a lista de nomes curtos de plugins.
- 
+
 ## Atualizar
 
-```shell:no-line-numbers
+```shell
 asdf plugin update --all
 ```
 
 Se você quiser atualizar um pacote específico, apenas use.
 
-```shell:no-line-numbers
+```shell
 asdf plugin update <name>
 # asdf plugin update erlang
 ```
@@ -67,7 +67,7 @@ Esta atualização irá buscar o último _commit_ na _branch_ padrão no _origin
 
 ## Remover
 
-```bash:no-line-numbers
+```bash
 asdf plugin remove <name>
 # asdf plugin remove erlang
 ```

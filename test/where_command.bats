@@ -2,7 +2,7 @@
 
 load test_helpers
 
-function setup() {
+setup() {
   setup_asdf_dir
   install_dummy_plugin
   install_dummy_version 1.0
@@ -10,7 +10,7 @@ function setup() {
   install_dummy_version ref-master
 }
 
-function teardown() {
+teardown() {
   clean_asdf_dir
 }
 

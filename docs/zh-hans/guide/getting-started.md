@@ -34,8 +34,8 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 <!-- x-release-please-start-version -->
 
-```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.1
+```shell
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
 ```
 
 <!-- x-release-please-end -->
@@ -91,13 +91,13 @@ We highly recommend using the official `git` method.
 
 使用以下命令将 `asdf.sh` 加入到 `~/.bashrc` 文件中：
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
@@ -109,13 +109,13 @@ echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.ba
 
 使用以下命令将 `asdf.sh` 加入到 `~/.bash_profile` 文件中：
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
 ```
 
 补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
@@ -142,7 +142,7 @@ source ~/.asdf/asdf.fish
 
 补全功能必须按照以下命令手动配置完成：
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
@@ -152,7 +152,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 
 使用以下命令将 `asdf.fish` 加入到 `~/.config/fish/config.fish` 文件中：
 
-```shell:no-line-numbers
+```shell
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
@@ -174,7 +174,7 @@ source /opt/asdf-vm/asdf.fish
 
 使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -188,7 +188,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 
 使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -202,7 +202,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 
 使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -263,6 +263,102 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 补全功能会被放在一个对 ZSH 很友好的位置，但是 [ZSH 必须使用自动补全完成配置](https://wiki.archlinux.org/index.php/zsh#Command_completion)。
 :::
 
+::: details PowerShell Core & Git
+
+在 `~/.config/powershell/profile.ps1` 文件中加入以下内容：
+
+```shell
+. "$HOME/.asdf/asdf.ps1"
+```
+
+:::
+
+::: details PowerShell Core & Homebrew
+
+使用以下命令将 `asdf.ps1` 加入到 `~/.config/powershell/profile.ps1` 文件中：
+
+```shell
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+```
+
+:::
+
+::: details PowerShell Core & Pacman
+
+在 `~/.config/powershell/profile.ps1` 文件中加入以下内容：
+
+```shell
+. /opt/asdf-vm/asdf.ps1
+```
+
+:::
+
+::: details Nushell & Git
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中：
+
+```shell
+"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
+::: details Nushell & Homebrew
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
+
+```shell
+"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
+::: details Nushell & Pacman
+
+使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
+
+```shell
+"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+```
+
+补全功能将会自动配置。
+:::
+
+::: details POSIX Shell & Git
+
+在 `~/.profile` 文件中加入以下内容：
+
+```shell
+export ASDF_DIR="$HOME/.asdf"
+. "$HOME/.asdf/asdf.sh"
+```
+
+:::
+
+::: details POSIX Shell & Homebrew
+
+使用以下命令将 `asdf.sh` 加入到 `~/.profile` 文件中：
+
+```shell
+echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+```
+
+:::
+
+::: details POSIX Shell & Pacman
+
+在 `~/.profile` 文件中加入以下内容：
+
+```shell
+export ASDF_DIR="/opt/asdf-vm"
+. /opt/asdf-vm/asdf.sh
+```
+
+:::
+
 `asdf` 脚本需要在设置好的 `$PATH` **之后**和已经生效的框架（比如 oh-my-zsh 等等）**之后**的位置生效。
 
 通常打开一个新的终端标签页来重启你的 shell 让 `PATH` 更改即时生效。
@@ -290,7 +386,7 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 ### 安装插件
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
@@ -302,7 +398,7 @@ asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
 我们将只安装最新可用的 `latest` 版本：
 
-```shell:no-line-numbers
+```shell
 asdf install nodejs latest
 ```
 
@@ -322,7 +418,7 @@ asdf install nodejs latest
 
 全局默认配置在 `$HOME/.tool-versions` 文件中进行管理。使用以下命令可以设置一个全局版本：
 
-```shell:no-line-numbers
+```shell
 asdf global nodejs latest
 ```
 
@@ -338,7 +434,7 @@ nodejs 16.5.0
 
 本地版本被定义在 `$PWD/.tool-versions` 文件中（当前工作目录）。通常，这将会是一个项目的 Git 存储库。当在你想要的目录执行：
 
-```shell:no-line-numbers
+```shell
 asdf local nodejs latest
 ```
 

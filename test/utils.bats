@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,SC2031,SC2164
 
 load test_helpers
 
@@ -21,14 +22,14 @@ teardown() {
 @test "get_install_path should output version path when version is provided" {
   run get_install_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/1.0.0" ]
 }
 
 @test "get_install_path should output custom path when custom install type is provided" {
   run get_install_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  install_path=${output#$HOME/}
+  install_path=${output#"$HOME/"}
   [ "$install_path" = ".asdf/installs/foo/custom-1.0.0" ]
 }
 
@@ -41,15 +42,14 @@ teardown() {
 @test "get_download_path should output version path when version is provided" {
   run get_download_path foo version "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
-  echo "$download_path"
+  download_path=${output#"$HOME/"}
   [ "$download_path" = ".asdf/downloads/foo/1.0.0" ]
 }
 
 @test "get_download_path should output custom path when custom download type is provided" {
   run get_download_path foo custom "1.0.0"
   [ "$status" -eq 0 ]
-  download_path=${output#$HOME/}
+  download_path=${output#"$HOME/"}
   [ "$download_path" = ".asdf/downloads/foo/custom-1.0.0" ]
 }
 
@@ -234,7 +234,7 @@ teardown() {
 
   run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "0.1.0|$HOME/.dummy-version" ]]
+  [[ "$output" == *"0.1.0|$HOME/.dummy-version"* ]]
 }
 
 @test "get_preset_version_for returns the current version" {
@@ -452,11 +452,24 @@ EOF
 
   message="callback invoked"
 
-  function callback() {
+  callback() {
     echo "$message"
   }
 
   run with_shim_executable test-dash callback
   [ "$status" -eq 0 ]
   [ "$output" = "$message" ]
+}
+
+@test "prints warning if .tool-versions file has carriage returns" {
+  ASDF_CONFIG_FILE="$BATS_TEST_TMPDIR/asdfrc"
+  cat >"$ASDF_CONFIG_FILE" <<<$'key2 = value2\r'
+
+  [[ "$(get_asdf_config_value "key1" 2>&1)" = *"contains carriage returns"* ]]
+}
+
+@test "prints if asdfrc config file has carriage returns" {
+  cat >".tool-versions" <<<$'nodejs 19.6.0\r'
+
+  [[ "$(find_tool_versions 2>&1)" = *"contains carriage returns"* ]]
 }
