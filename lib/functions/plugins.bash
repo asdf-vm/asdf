@@ -79,8 +79,8 @@ plugin_add_command() {
   mkdir -p "$(asdf_data_dir)/plugins"
 
   if [ -d "$plugin_path" ]; then
-    display_error "Plugin named $plugin_name already added"
-    exit 2
+    printf '%s\n' "Plugin named $plugin_name already added"
+    exit 0
   else
     asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_add_${plugin_name}"
