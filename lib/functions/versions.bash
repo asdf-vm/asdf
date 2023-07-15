@@ -34,6 +34,11 @@ version_command() {
 
   check_if_plugin_exists "$plugin_name"
 
+  if ((${#versions[@]} == 2)); then
+    versions[0]="${versions[0]}:${versions[1]}"
+    unset "versions[$((${#versions[@]} - 1))]" # Remove last element in array
+  fi
+
   declare -a resolved_versions
   local item
   for item in "${!versions[@]}"; do
