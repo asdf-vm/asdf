@@ -41,6 +41,8 @@ teardown() {
     [ "$status" -eq 0 ]
     cd "$ASDF_DIR"
     git tag | grep "$tag"
+  else
+    skip "Failed to obtain git tag"
   fi
 }
 
@@ -54,6 +56,8 @@ teardown() {
     [ "$status" -eq 0 ]
     cd "$ASDF_DIR"
     git tag | grep "$tag"
+  else
+    skip "Failed to obtain git tag"
   fi
 }
 

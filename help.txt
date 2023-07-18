@@ -59,6 +59,8 @@ asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
 asdf update                             Update asdf to the latest stable release
 asdf update --head                      Update asdf to the latest on the master branch
+asdf update --interactive|-i            Update asdf interactively, choosing from versioned local git tags
+asdf update <ref>                       Update asdf to specified ref
 
 RESOURCES
 GitHub: https://github.com/asdf-vm/asdf
