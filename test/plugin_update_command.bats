@@ -221,3 +221,9 @@ EOM
 UPDATE"
   [[ "$output" = *"${expected_output}" ]]
 }
+
+@test "asdf plugin-update prints the location of plugin (specific)" {
+  run asdf plugin-update dummy
+  local expected_output="Plugin dummy location: "
+  [[ "$output" == *"$expected_output"* ]]
+}
