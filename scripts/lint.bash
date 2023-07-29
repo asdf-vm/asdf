@@ -3,6 +3,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+print.info() {
+  printf '[INFO] %s\n' "$*"
+}
+
+print.error() {
+  printf '[ERROR] %s\n' "$*" >&2
+}
+
 usage() {
   printf "%s\n" "Lint script for the asdf codebase. Must be executed from the"
   printf "%s\n\n" "repository root directory."
@@ -21,7 +29,7 @@ run_shfmt_stylecheck() {
     shfmt_flag="--diff"
   fi
 
-  printf "%s\n" "[INFO] Checking .bash with shfmt"
+  print.info "Checking .bash with shfmt"
   shfmt --language-dialect bash --indent 2 "${shfmt_flag}" \
     completions/*.bash \
     bin/asdf \
@@ -35,17 +43,17 @@ run_shfmt_stylecheck() {
     test/fixtures/dummy_legacy_plugin/bin/* \
     test/fixtures/dummy_plugin/bin/*
 
-  printf "%s\n" "[INFO] Checking .bats with shfmt"
+  print.info "Checking .bats with shfmt"
   shfmt --language-dialect bats --indent 2 "${shfmt_flag}" \
     test/*.bats
 }
 
 run_shellcheck_linter() {
-  printf "%s\n" "[INFO] Checking .sh files with Shellcheck"
+  print.info "Checking .sh files with Shellcheck"
   shellcheck --shell sh --external-sources \
     asdf.sh
 
-  printf "%s\n" "[INFO] Checking .bash files with Shellcheck"
+  print.info "Checking .bash files with Shellcheck"
   shellcheck --shell bash --external-sources \
     completions/*.bash \
     bin/asdf \
@@ -59,7 +67,7 @@ run_shellcheck_linter() {
     test/fixtures/dummy_legacy_plugin/bin/* \
     test/fixtures/dummy_plugin/bin/*
 
-  printf "%s\n" "[INFO] Checking .bats files with Shellcheck"
+  print.info "Checking .bats files with Shellcheck"
   shellcheck --shell bats --external-source \
     test/*.bats
 }
@@ -74,7 +82,7 @@ run_custom_python_stylecheck() {
 
   if [ -n "$github_actions" ] && ! command -v python3 &>/dev/null; then
     # fail if CI and no python3
-    printf "%s\n" "[ERROR] Detected execution in GitHub Actions but python3 was not found. This is required during CI linting."
+    print.error "Detected execution in GitHub Actions but python3 was not found. This is required during CI linting."
     exit 1
   fi
 
@@ -82,7 +90,7 @@ run_custom_python_stylecheck() {
     # skip if local and no python3
     printf "%s\n" "[WARNING] python3 not found. Skipping Custom Python Script."
   else
-    printf "%s\n" "[INFO] Checking files with Custom Python Script."
+    print.info "Checking files with Custom Python Script."
     "${0%/*}/checkstyle.py" "${flag}"
   fi
 
@@ -106,7 +114,7 @@ run_fish_linter() {
 
   if [ -n "$github_actions" ] && ! command -v fish_indent &>/dev/null; then
     # fail if CI and no fish_ident
-    printf "%s\n" "[ERROR] Detected execution in GitHub Actions but fish_indent was not found. This is required during CI linting."
+    print.error "Detected execution in GitHub Actions but fish_indent was not found. This is required during CI linting."
     exit 1
   fi
 
@@ -114,7 +122,7 @@ run_fish_linter() {
     # skip if local and no fish_ident
     printf "%s\n" "[WARNING] fish_indent not found. Skipping .fish files."
   else
-    printf "%s\n" "[INFO] Checking .fish files with fish_indent"
+    print.info "Checking .fish files with fish_indent"
     fish_indent "${flag}" ./**/*.fish
   fi
 }
@@ -129,17 +137,19 @@ run_fish_linter() {
 #  printf "%s\n" "[WARNING] powershell linter/formatter not found, skipping for now."
 #}
 
-repo_root=$(git rev-parse --show-toplevel)
-if [ "$repo_root" != "$PWD" ]; then
-  printf "%s\n" "[ERROR] This scripts requires execution from the repository root directory."
-  printf "\t%s\t%s\n" "Repo root dir:" "$repo_root"
-  printf "\t%s\t%s\n\n" "Current dir:" "$PWD"
-  printf "%s\n" "See usage details with -h or --help."
-  exit 1
-fi
+{
+  repo_dir=$(git rev-parse --show-toplevel)
+  current_dir=$(pwd -P)
+  if [ "$repo_dir" != "$current_dir" ]; then
+    print.error "This scripts requires execution from the repository root directory."
+    printf "\t%s\t%s\n" "Repo root dir:" "$repo_dir"
+    printf "\t%s\t%s\n\n" "Current dir:" "$current_dir"
+    exit 1
+  fi
+}
 
 if [ $# -eq 0 ]; then
-  printf "%s\n" "[ERROR] At least one option required."
+  print.error "At least one option required."
   printf "=%.0s" {1..60}
   printf "\n"
   usage
@@ -159,7 +169,7 @@ case "$1" in
   mode="fix"
   ;;
 *)
-  printf "%s\n" "[ERROR] Invalid flag: $1"
+  print.error "Invalid flag: $1"
   printf "=%.0s" {1..60}
   printf "\n"
   usage
@@ -177,4 +187,4 @@ run_fish_linter "$mode"
 #run_nushell_linter "$mode"
 #run_powershell_linter "$mode"
 
-printf "%s\n" "[INFO] Success!"
+print.info "Success!"

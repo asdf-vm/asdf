@@ -18,7 +18,7 @@ if [ -z "$RUNNER_OS" ]; then
   exit 1
 fi
 
-### Set environment variables for tracking versions
+### Set variables for tracking versions
 # Elvish
 elvish_semver="v0.19.2"
 # Fish
@@ -73,5 +73,6 @@ fi
 
 ### Install bats-core
 printf "%s\n" "Installing bats-core"
-git clone --depth 1 --branch "v$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)" https://github.com/bats-core/bats-core.git "$HOME/bats-core"
+bats_version=$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)
+git clone --depth 1 --branch "v$bats_version" https://github.com/bats-core/bats-core.git "$HOME/bats-core"
 echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
