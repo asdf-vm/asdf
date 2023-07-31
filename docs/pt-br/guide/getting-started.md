@@ -298,7 +298,6 @@ Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
 
 ```shell
 source "/home/$HOME/.asdf/asdf.nu"
-use asdf *
 ```
 
 Lembre-se de modificiar `$HOME` para seu nome de usuário. O autocomplete já vem configurado.

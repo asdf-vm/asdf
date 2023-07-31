@@ -301,7 +301,6 @@ Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
 source "/home/$HOME/.asdf/asdf.nu"
-use asdf *
 ```
 
 Remember to change `$HOME` to your username. Completions are automatically configured.
