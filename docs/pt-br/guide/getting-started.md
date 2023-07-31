@@ -297,10 +297,11 @@ Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
 Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+source "/home/$HOME/.asdf/asdf.nu"
+use asdf *
 ```
 
-Ao concluir atualizará automaticamente
+Lembre-se de modificiar `$HOME` para seu nome de usuário. O autocomplete já vem configurado.
 :::
 
 ::: details Nushell & Homebrew

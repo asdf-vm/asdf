@@ -300,10 +300,11 @@ Add the following to `~/.config/powershell/profile.ps1`:
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+source "/home/$HOME/.asdf/asdf.nu"
+use asdf *
 ```
 
-Completions are automatically configured
+Remember to change `$HOME` to your username. Completions are automatically configured.
 :::
 
 ::: details Nushell & Homebrew
