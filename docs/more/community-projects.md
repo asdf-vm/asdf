@@ -1,4 +1,4 @@
-# Projects
+# Community Projects
 
 Here are some community projects related to `asdf`:
 

@@ -4,7 +4,7 @@
 
 ## Instalar Versão
 
-```shell:no-line-numbers
+```shell
 asdf install <name> <version>
 # asdf install erlang 17.3
 ```
@@ -13,63 +13,63 @@ Se um plugin suporta o download e compilação do código-fonte, você pode espe
 
 ## Instalar última versão estável
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest
 # asdf install erlang latest
 ```
 
 Instale a última versão estável que inicia com um texto.
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest:<version>
 # asdf install erlang latest:17
 ```
 
 ## Listar versões instaladas
 
-```shell:no-line-numbers
+```shell
 asdf list <name>
 # asdf list erlang
 ```
 
 Limite as versões que inicie com um determinado texto.
 
-```shell:no-line-numbers
+```shell
 asdf list <name> <version>
 # asdf list erlang 17
 ```
 
 ## Listar todas as versões disponíveis
 
-```shell:no-line-numbers
+```shell
 asdf list all <name>
 # asdf list all erlang
 ```
 
 Limite as versões que inicie com um determinado texto.
 
-```shell:no-line-numbers
+```shell
 asdf list all <name> <version>
 # asdf list all erlang 17
 ```
 
 ## Mostrar última versão estável
 
-```shell:no-line-numbers
+```shell
 asdf latest <name>
 # asdf latest erlang
 ```
 
 Mostrar última versão estável que inicie com um determinado texto.
 
-```shell:no-line-numbers
+```shell
 asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
 ## Selecionar versão atual
 
-```shell:no-line-numbers
+```shell
 asdf global <name> <version> [<version>...]
 asdf shell <name> <version> [<version>...]
 asdf local <name> <version> [<version>...]
@@ -86,7 +86,7 @@ asdf local <name> latest[:<version>]
 
 `local` escreve a versão para `$PWD/.tool-versions`, crie se necessário .
 
-Veja em `.tool-versions` [arquivo de seleção de configuração](/pt-br/core-configuration) para mais detalhes.
+Veja em `.tool-versions` [arquivo de seleção de configuração](/pt-br/manage/configuration) para mais detalhes.
 
 ::: warning Alternativa
 Se você quiser selecionar a versão atual do seu _shell_ ou para executar um comando em uma versão específica de sua ferramenta, você pode selecionar a versão na variável de ambiente `ASDF_${TOOL}_VERSION`.
@@ -95,7 +95,7 @@ Se você quiser selecionar a versão atual do seu _shell_ ou para executar um co
 O seguinte exemplo executa os testes em um projeto Elixir na versão `1.4.0`.
 O formato da versão é o mesmo suportado pelo arquivo `.tool-versions`.
 
-```shell:no-line-numbers
+```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
@@ -106,14 +106,14 @@ Para usar o sistema de versão da ferramenta `<name>` inicie um gerenciador de v
 Selecione o sistema com `global`, `local` ou `shell`
 Set system with either `global`, `local` or `shell` conforme descrito em [Selecionar versão atual](#selecionar-versão-atual).
 
-```shell:no-line-numbers
+```shell
 asdf local <name> system
 # asdf local python system
 ```
 
 ## Verificar a versão atual
 
-```shell:no-line-numbers
+```shell
 asdf current
 # asdf current
 # erlang 17.3 (set by /Users/kim/.tool-versions)
@@ -126,7 +126,7 @@ asdf current <name>
 
 ## Desinstalar versão
 
-```shell:no-line-numbers
+```shell
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```

@@ -2,7 +2,7 @@
 
 ## 安装版本
 
-```shell:no-line-numbers
+```shell
 asdf install <name> <version>
 # asdf install erlang 17.3
 ```
@@ -11,63 +11,63 @@ asdf install <name> <version>
 
 ## 安装最新稳定版本
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest
 # asdf install erlang latest
 ```
 
 安装给定字符串开头的最新稳定版本。
 
-```shell:no-line-numbers
+```shell
 asdf install <name> latest:<version>
 # asdf install erlang latest:17
 ```
 
 ## 列举已安装版本
 
-```shell:no-line-numbers
+```shell
 asdf list <name>
 # asdf list erlang
 ```
 
 筛选出以给定字符串开头的版本。
 
-```shell:no-line-numbers
+```shell
 asdf list <name> <version>
 # asdf list erlang 17
 ```
 
 ## 列举所有可用版本
 
-```shell:no-line-numbers
+```shell
 asdf list all <name>
 # asdf list all erlang
 ```
 
 筛选出以给定字符串开头的版本。
 
-```shell:no-line-numbers
+```shell
 asdf list all <name> <version>
 # asdf list all erlang 17
 ```
 
 ## 显示最新稳定版本
 
-```shell:no-line-numbers
+```shell
 asdf latest <name>
 # asdf latest erlang
 ```
 
 显示以给定字符串开头的最新稳定版本。
 
-```shell:no-line-numbers
+```shell
 asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
 ## 设置当前版本
 
-```shell:no-line-numbers
+```shell
 asdf global <name> <version> [<version>...]
 asdf shell <name> <version> [<version>...]
 asdf local <name> <version> [<version>...]
@@ -93,7 +93,7 @@ asdf local <name> latest[:<version>]
 下面的示例在版本为 `1.4.0` 的 Elixir 项目上运行测试。
 版本格式与 `.tool-versions` 文件支持的版本格式相同。
 
-```shell:no-line-numbers
+```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
@@ -103,14 +103,14 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 使用 `global`、`local` 或者 `shell` 设置系统，如上面的 [设置当前版本](#设置当前版本) 部分所述。
 
-```shell:no-line-numbers
+```shell
 asdf local <name> system
 # asdf local python system
 ```
 
 ## 显示当前版本
 
-```shell:no-line-numbers
+```shell
 asdf current
 # asdf current
 # erlang 17.3 (set by /Users/kim/.tool-versions)
@@ -123,7 +123,7 @@ asdf current <name>
 
 ## 卸载版本
 
-```shell:no-line-numbers
+```shell
 asdf uninstall <name> <version>
 # asdf uninstall erlang 17.3
 ```

@@ -2,4 +2,4 @@
 
 The list of all commands available in `asdf`. This list is the `asdf help` command text.
 
-@[code](../../help.txt)
+<<< @../../help.txt

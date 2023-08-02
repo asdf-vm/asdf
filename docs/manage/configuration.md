@@ -14,14 +14,14 @@ Global defaults can be set in the file `$HOME/.tool-versions`
 
 This is what a `.tool-versions` file looks like:
 
-```:no-line-numbers
+```
 ruby 2.5.3
 nodejs 10.15.0
 ```
 
 You can also include comments:
 
-```:no-line-numbers
+```
 ruby 2.5.3 # This is a comment
 # This is another comment
 nodejs 10.15.0
@@ -38,7 +38,7 @@ The versions can be in the following format:
 
 Multiple versions can be set by separating them with a space. For example, to use Python `3.7.2`, fallback to Python `2.7.15` and finally to the `system` Python, the following line can be added to `.tool-versions`.
 
-```:no-line-numbers
+```
 python 3.7.2 2.7.15 system
 ```
 
@@ -58,7 +58,14 @@ The `.asdfrc` file defines the user's machine specific configuration.
 
 The below file shows the required format with the default values:
 
-@[code :no-line-numbers](../../defaults)
+```txt
+legacy_version_file = no
+use_release_candidates = no
+always_keep_download = no
+plugin_repository_last_check_duration = 60
+disable_plugin_short_name_repository = no
+concurrency = auto
+```
 
 ### `legacy_version_file`
 
@@ -183,7 +190,7 @@ The location where `asdf` will install plugins, shims and tool versions. Can be 
 
 ### `ASDF_CONCURRENCY`
 
-Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value. 
+Number of cores to use when compiling the source code. If set, this value takes precedence over the asdf config `concurrency` value.
 
 - If Unset: the asdf config `concurrency` value is used.
 - Usage: `export ASDF_CONCURRENCY=32`
@@ -204,7 +211,7 @@ Following a simple asdf setup with:
 - a Bash Shell
 - an installation location of `$HOME/.asdf`
 - installed via Git
-- NO environment variables set 
+- NO environment variables set
 - NO custom `.asdfrc` file
 
 would result in the following outcomes:

@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "20"
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -42,18 +42,18 @@ jobs:
         if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Build VuePress site
+      - name: Build VitePress site
         run: npm run build
 
       - name: Bundle CNAME with site dist
-        run: cp CNAME .vuepress/dist
+        run: cp CNAME .vitepress/dist
 
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3
         with:
           # deploy to gh-pages branch
           target_branch: gh-pages
-          # deploy the default output dir of VuePress
-          build_dir: docs/.vuepress/dist
+          # deploy the default output dir of VitePress
+          build_dir: docs/.vitepress/dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
