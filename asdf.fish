@@ -18,7 +18,8 @@ end
 if not contains $_asdf_shims $fish_user_paths
     set --global --prepend fish_user_paths $_asdf_shims
 end
-set --erase _asdf_bin _asdf_shims
+set --erase _asdf_bin
+set --erase _asdf_shims
 
 # The asdf function is a wrapper so we can export variables
 function asdf
