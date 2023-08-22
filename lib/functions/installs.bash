@@ -207,7 +207,7 @@ install_tool_version() {
         export ASDF_INSTALL_PATH=$install_path
         # shellcheck disable=SC2030
         export ASDF_DOWNLOAD_PATH=$download_path
-        mkdir "$download_path"
+        mkdir -p "$download_path"
         asdf_run_hook "pre_asdf_download_${plugin_name}" "$full_version"
         "${plugin_path}"/bin/download
       )

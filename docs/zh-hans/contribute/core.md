@@ -6,7 +6,7 @@
 
 在 Github 上 fork `asdf` 并且/或者使用 Git 克隆默认分支：
 
-```shell:no-line-numbers
+```shell
 # 克隆你 fork 的 asdf
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # 或者直接克隆 asdf
@@ -15,7 +15,7 @@ git clone https://github.com/asdf-vm/asdf.git
 
 核心开发所需的工具都列举在这个存储库的 `.tool-versions` 文件中。如果你想要使用 `asdf` 自身来管理它，请使用以下命令添加这些插件：
 
-```shell:no-line-numbers
+```shell
 asdf plugin add bats https://github.com/timgluz/asdf-bats.git
 asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git
 asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
@@ -23,7 +23,7 @@ asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
 
 使用以下命令安装这些版本来开发 `asdf`：
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
@@ -39,7 +39,7 @@ asdf install
 
 最好在提交或推送到远程之前，在本地做好格式化、lint 检查和测试你的代码。可以使用以下脚本/命令：
 
-```shell:no-line-numbers
+```shell
 # 脚本检查
 ./scripts/shellcheck.bash
 
@@ -81,7 +81,7 @@ printf "%s\n" "Will be printed during bats -t test/some_tests.bats" >&3
 
 约定式提交遵循以下格式：
 
-```:no-line-numbers
+```
 <type>[optional scope][optional !]: <description>
 
 <!-- 例子 -->

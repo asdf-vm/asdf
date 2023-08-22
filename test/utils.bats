@@ -460,3 +460,16 @@ EOF
   [ "$status" -eq 0 ]
   [ "$output" = "$message" ]
 }
+
+@test "prints warning if .tool-versions file has carriage returns" {
+  ASDF_CONFIG_FILE="$BATS_TEST_TMPDIR/asdfrc"
+  cat >"$ASDF_CONFIG_FILE" <<<$'key2 = value2\r'
+
+  [[ "$(get_asdf_config_value "key1" 2>&1)" = *"contains carriage returns"* ]]
+}
+
+@test "prints if asdfrc config file has carriage returns" {
+  cat >".tool-versions" <<<$'nodejs 19.6.0\r'
+
+  [[ "$(find_tool_versions 2>&1)" = *"contains carriage returns"* ]]
+}

@@ -8,7 +8,7 @@ guia de contribuição principal `asdf`.
 
 Fork `asdf` no GitHub e/ou Git clone o branch padrão:
 
-```shell:no-line-numbers
+```shell
 # clone your fork
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # or clone asdf
@@ -17,7 +17,7 @@ git clone https://github.com/asdf-vm/asdf.git
 
 As ferramentas para o desenvolvimento do núcleo estão em `.tool-versions` deste repositório.  Se você deseja gerenciar com o próprio `asdf`, adicione os plugins:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add bats https://github.com/timgluz/asdf-bats.git
 asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git
 asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
@@ -25,7 +25,7 @@ asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
 
 Instale as versões para desenvolver `asdf` com:
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
@@ -41,7 +41,7 @@ Se você quiser testar suas alterações sem fazer alterações em seu `asdf` in
 
 É melhor formatar, lint e testar seu código localmente antes de confirmar ou enviar para o controle remoto. Use os seguintes scripts/comandos:
 
-```shell:no-line-numbers
+```shell
 # Shellcheck
 ./scripts/shellcheck.bash
 
@@ -83,7 +83,7 @@ O `asdf` está usando uma ferramenta de lançamento automatizada chamada [Releas
 
 O Commit Convencional segue este formato:
 
-```:no-line-numbers
+```
 <type>[optional scope][optional !]: <description>
 
 <!-- examples -->

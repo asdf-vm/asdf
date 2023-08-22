@@ -38,8 +38,8 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 <!-- x-release-please-start-version -->
 
-```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
+```shell
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
 ```
 
 <!-- x-release-please-end -->
@@ -95,13 +95,13 @@ O auto completar deve ser configurado manualmente a partir da adição da seguin
 
 Adicione `asdf.sh` ao `~/.bashrc` através do comando:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bashrc
 ```
 
 O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
@@ -113,13 +113,13 @@ Se você estiver usando o **macOS Catalina ou mais recente**, o shell padrão mu
 
 Adicione `asdf.sh` ao `~/.bash_profile` através do comando:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.bash_profile
 ```
 
 O auto completar deve ser configurado seguindo as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash), ou as seguintes:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
@@ -146,7 +146,7 @@ source ~/.asdf/asdf.fish
 
 O auto completar deve ser configurado manualmente através do seguinte comando:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
@@ -156,7 +156,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 
 Adicione `asdf.fish` ao seu `~/.config/fish/config.fish` através do comando:
 
-```shell:no-line-numbers
+```shell
 echo -e "\nsource "(brew --prefix asdf)"/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
@@ -178,7 +178,7 @@ O auto completar é configurado automaticamente durante a instalação do pacote
 
 Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -192,7 +192,7 @@ Ao concluir atualizará automaticamente
 
 Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -205,7 +205,7 @@ Ao concluir atualizará automaticamente
 
 Adicione `asdf.elv` ao `~/.config/elvish/rc.elv` através do comando:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -276,7 +276,7 @@ Adicione a seguinte linha ao seu `~/.config/powershell/profile.ps1`:
 
 Adicione `asdf.ps1` ao seu `~/.config/powershell/profile.ps1` através do comando:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
 ```
 
@@ -307,7 +307,7 @@ Ao concluir atualizará automaticamente
 
 Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
 
-```shell:no-line-numbers
+```shell
 "\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
@@ -340,7 +340,7 @@ export ASDF_DIR="$HOME/.asdf"
 
 Adicione `asdf.sh` ao `~/.profile` através do comando:
 
-```shell:no-line-numbers
+```shell
 echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
 ```
@@ -382,7 +382,7 @@ Devemos instalar instalar as dependências primeiro, pois alguns plugins exigem 
 
 ### Instalando o plugin
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
@@ -394,7 +394,7 @@ Podemos ver quais versões tão disponíveis através do comando `asdf list all 
 
 Vamos instalar somente a última versão disponível, utilizando a tag `latest`:
 
-```shell:no-line-numbers
+```shell
 asdf install nodejs latest
 ```
 
@@ -414,7 +414,7 @@ Se uma versão não for especificada para uma ferramenta, ao executá-la resulta
 
 Os padrões globais são gerenciados em `$HOME/.tool-versions`. Defina uma versão global através do comando:
 
-```shell:no-line-numbers
+```shell
 asdf global nodejs latest
 ```
 
@@ -430,7 +430,7 @@ Alguns sistemas operacionais vêm por padrão com ferramentas que são gerenciad
 
 Versões locais são definidas no arquivo `$PWD/.tool-versions` (seu diretório atual). Geralmente, será um repositório Git para um projeto. Quando estiver no diretório desejado, execute:
 
-```shell:no-line-numbers
+```shell
 asdf local nodejs latest
 ```
 

@@ -34,8 +34,10 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 <!-- x-release-please-start-version -->
 
-```shell:no-line-numbers
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.11.3
+
+```shell
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
+
 ```
 
 <!-- x-release-please-end -->
@@ -51,7 +53,9 @@ We highly recommend using the official `git` method.
 
 ## 3. Install asdf
 
-There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system:
+There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
+
+**macOS users, be sure to read the warning about `path_helper` at the end of this section.**
 
 ::: details Bash & Git
 
@@ -91,13 +95,13 @@ Completions must be configured manually with the following entry in your `.bash_
 
 Add `asdf.sh` to your `~/.bashrc` with:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
 ```
 
 Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
 ```
 
@@ -109,13 +113,13 @@ If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. 
 
 Add `asdf.sh` to your `~/.bash_profile` with:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
 ```
 
 Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
 ```
 
@@ -142,7 +146,7 @@ source ~/.asdf/asdf.fish
 
 Completions must be configured manually with the following command:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
@@ -152,7 +156,7 @@ mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.
 
 Add `asdf.fish` to your `~/.config/fish/config.fish` with:
 
-```shell:no-line-numbers
+```shell
 echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
 ```
 
@@ -174,7 +178,7 @@ Completions are automatically configured on installation by the AUR package.
 
 Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -188,7 +192,7 @@ Completions are automatically configured.
 
 Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -201,7 +205,7 @@ Completions are automatically configured.
 
 Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
-```shell:no-line-numbers
+```shell
 mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
 echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
 echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
@@ -275,7 +279,7 @@ Add the following to `~/.config/powershell/profile.ps1`:
 
 Add `asdf.sh` to your `~/.config/powershell/profile.ps1` with:
 
-```shell:no-line-numbers
+```shell
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
 ```
 
@@ -306,7 +310,7 @@ Completions are automatically configured
 
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
-```shell:no-line-numbers
+```shell
 "\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
@@ -339,7 +343,7 @@ export ASDF_DIR="$HOME/.asdf"
 
 Add `asdf.sh` to your `~/.profile` with:
 
-```shell:no-line-numbers
+```shell
 echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
 echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
 ```
@@ -358,6 +362,10 @@ export ASDF_DIR="/opt/asdf-vm"
 :::
 
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
+
+::: warning
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcily adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.`.
+:::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
@@ -385,7 +393,7 @@ We should install dependencies first as some Plugins have post-install hooks.
 
 ### Install the Plugin
 
-```shell:no-line-numbers
+```shell
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 ```
 
@@ -397,7 +405,7 @@ We can see which versions are available with `asdf list all nodejs` or a subset 
 
 We will just install the `latest` available version:
 
-```shell:no-line-numbers
+```shell
 asdf install nodejs latest
 ```
 
@@ -417,7 +425,7 @@ Without a version listed for a tool execution of the tool will **error**. `asdf 
 
 Global defaults are managed in `$HOME/.tool-versions`. Set a global version with:
 
-```shell:no-line-numbers
+```shell
 asdf global nodejs latest
 ```
 
@@ -433,7 +441,7 @@ Some OSs already have tools installed that are managed by the system and not `as
 
 Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
 
-```shell:no-line-numbers
+```shell
 asdf local nodejs latest
 ```
 

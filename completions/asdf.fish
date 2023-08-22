@@ -47,7 +47,7 @@ function __fish_asdf_plugin_list_all
 end
 
 function __fish_asdf_list_shims
-    ls $asdf_data_dir/shims
+    path basename $asdf_data_dir/shims/*
 end
 
 # update
@@ -115,6 +115,10 @@ complete -f -c asdf -n '__fish_asdf_using_command list-all; and __fish_asdf_arg_
 complete -f -c asdf -n __fish_asdf_needs_command -a reshim -d "Recreate shims for version of a package"
 complete -f -c asdf -n '__fish_asdf_using_command reshim; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 complete -f -c asdf -n '__fish_asdf_using_command reshim; and __fish_asdf_arg_number 3' -a '(__fish_asdf_list_versions (__fish_asdf_arg_at 3))'
+
+# shim-versions completion
+complete -f -c asdf -n __fish_asdf_needs_command -a shim-versions -d "List the plugins and versions that provide a command"
+complete -f -c asdf -n '__fish_asdf_using_command shim-versions; and __fish_asdf_arg_number 2' -a '(__fish_asdf_list_shims)'
 
 # local completion
 complete -f -c asdf -n __fish_asdf_needs_command -a local -d "Set local version for a plugin"
