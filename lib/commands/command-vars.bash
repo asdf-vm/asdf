@@ -36,23 +36,47 @@ find-vars-files() {
   traverse-vars-files "$PWD"
 }
 
+# Reads file line-by-line and concatenates multi-line values
+#
+#   FOO=bar
+#   baz
+#
+# becomes
+#
+#   FOO='bar
+#   baz'
+#
+multiline-vars() {
+  regex='^([A-Z]\w*)=(.*)'
+  var=''
+  value=''
+  while read -r line; do
+    if [[ $line =~ $regex ]]; then
+      [[ -n $var ]] && echo -e "$var='$value'"
+      var=${BASH_REMATCH[1]}
+      value=$(sed -e "s/'/'\\\\''/g"i <<< ${BASH_REMATCH[2]})
+    elif [ ! $line == "\n" ]; then
+      value="$value\n$line"
+    fi
+  done
+  [[ -n $var ]] && echo -e "$var='$value'"
+}
+
 sanitize-vars() {
   sed \
-    -e "/^[ "$'\t'"]*[A-Za-z_][0-9A-Za-z_]*?\{0,1\}=/ !d" \
-    -e "s/'/'\\\\''/g" \
     -e "s/\(\\\\\\\$\)/'\\1'/g" \
     -e "s/\\\\\\\\/\\\\/g" \
     -e "s/\(\\\$[0-9A-Za-z_][0-9A-Za-z_]*\)/'\\1'/g" \
     -e "s/\(\\\${[0-9A-Za-z_][0-9A-Za-z_]*}\)/'\\1'/g" \
-    -e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=\(.*\)$/export \\1='\\2'/" \
+    -e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=/export \\1=/" \
     -e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g"
 }
 
 while read -r file; do
-  #printf '# %s\n' "$file"
+  printf '# %s\n' "$file"
   {
     cat "$file"
     printf "\n"
-  } | sanitize-vars
+  } | multiline-vars | sanitize-vars
   printf "\n"
 done < <(find-vars-files)
