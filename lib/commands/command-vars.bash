@@ -10,7 +10,7 @@
 # For more information on asdf-vars, see:
 # https://github.com/excid3/asdf-vars#readme
 
-traverse-vars-files() {
+traverse_vars_files() {
   local root="$1"
   local results=""
 
@@ -28,12 +28,12 @@ traverse-vars-files() {
   fi
 }
 
-find-vars-files() {
+find_vars_files() {
   if [ -e "${ASDF_DIR}/vars" ]; then
     printf '%s/vars\n' "${ASDF_DIR}"
   fi
 
-  traverse-vars-files "$PWD"
+  traverse_vars_files "$PWD"
 }
 
 # Reads file line-by-line and wraps multi-line values
@@ -46,7 +46,7 @@ find-vars-files() {
 #   FOO='bar
 #   baz'
 #
-multiline-vars() {
+multiline_vars() {
   [[ -n $ZSH_VERSION ]] && setopt LOCAL_OPTIONS KSH_ARRAYS BASH_REMATCH
 
   regex="^([A-Z_][0-9A-Za-z_]*)=(.*)"
@@ -64,7 +64,7 @@ multiline-vars() {
   [[ -n $var ]] && printf "%s='%b'\n" $var "$value"
 }
 
-sanitize-vars() {
+sanitize_vars() {
   sed \
     -e "s/\(\\\\\\\$\)/'\\1'/g" \
     -e "s/\\\\\\\\/\\\\/g" \
@@ -74,11 +74,12 @@ sanitize-vars() {
     -e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g"
 }
 
+local files=$(find_vars_files)
 while read -r file; do
   printf '# %s\n' "$file"
   {
     cat "$file"
     printf "\n"
-  } | multiline-vars | sanitize-vars
+  } | multiline_vars | sanitize_vars
   printf "\n"
-done < <(find-vars-files)
+done <<<"$files"
