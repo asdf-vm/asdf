@@ -36,23 +36,49 @@ find-vars-files() {
   traverse-vars-files "$PWD"
 }
 
+# Reads file line-by-line and wraps multi-line values
+#
+#   FOO=bar
+#   baz
+#
+# becomes
+#
+#   FOO='bar
+#   baz'
+#
+multiline-vars() {
+  [[ -n $ZSH_VERSION ]] && setopt LOCAL_OPTIONS KSH_ARRAYS BASH_REMATCH
+
+  regex="^([A-Z_][0-9A-Za-z_]*)=(.*)"
+  var=''
+  value=''
+  while read -r line; do
+    if [[ "$line" =~ ${regex} ]]; then
+      [[ -n $var ]] && printf "%s='%b'\n" $var "$value"
+      var=${BASH_REMATCH[1]}
+      value=$(sed -e "s/'/'\\\\''/g"i <<< ${BASH_REMATCH[2]})
+    elif [[ -n $line ]]; then
+      value="$value\n$(sed -e "s/'/'\\\\''/g"i <<< $line)"
+    fi
+  done
+  [[ -n $var ]] && printf "%s='%b'\n" $var "$value"
+}
+
 sanitize-vars() {
   sed \
-    -e "/^[ "$'\t'"]*[A-Za-z_][0-9A-Za-z_]*?\{0,1\}=/ !d" \
-    -e "s/'/'\\\\''/g" \
     -e "s/\(\\\\\\\$\)/'\\1'/g" \
     -e "s/\\\\\\\\/\\\\/g" \
     -e "s/\(\\\$[0-9A-Za-z_][0-9A-Za-z_]*\)/'\\1'/g" \
     -e "s/\(\\\${[0-9A-Za-z_][0-9A-Za-z_]*}\)/'\\1'/g" \
-    -e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=\(.*\)$/export \\1='\\2'/" \
+    -e "s/^[ "$'\t'"]*\([A-Za-z_][0-9A-Za-z_]*?\{0,1\}\)=/export \\1=/" \
     -e "s/export \([A-Za-z_][0-9A-Za-z_]*\)?=/[ -n \"\$\\1\" ] || export \\1=/g"
 }
 
 while read -r file; do
-  #printf '# %s\n' "$file"
+  printf '# %s\n' "$file"
   {
     cat "$file"
     printf "\n"
-  } | sanitize-vars
+  } | multiline-vars | sanitize-vars
   printf "\n"
 done < <(find-vars-files)
