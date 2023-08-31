@@ -185,7 +185,7 @@ EOM
   new_ref="$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" rev-parse --short HEAD)"
 
   local expected_output="plugin updated path=${plugin_path} old git-ref=${old_ref} new git-ref=${new_ref}"
-  [[ "$output" = "UPDATE"*"${expected_output}" ]]
+  [[ "$output" = *"UPDATE"*"${expected_output}" ]]
 }
 
 @test "asdf plugin-update executes configured post hook (generic)" {
