@@ -25,7 +25,7 @@ elvish_semver="v0.19.2"
 fish_semver="3.6.1"
 fish_apt_semver="${fish_semver}-1~jammy"
 # Nushell
-nushell_semver="0.78.0"
+nushell_semver="0.84.0"
 # Powershell
 powershell_semver="7.3.3"
 powershell_apt_semver="${powershell_semver}-1.deb"
