@@ -8,6 +8,6 @@
   "devDependencies": {
     "@types/node": "^20.3.3",
     "prettier": "^2.8.8",
-    "vitepress": "^1.0.0-beta.3"
+    "vitepress": "^1.0.0-rc.10"
   }
 }
