@@ -100,6 +100,3 @@ shell_command() {
 }
 
 shell_command "$@"
-
-
-
