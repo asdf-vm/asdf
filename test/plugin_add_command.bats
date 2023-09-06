@@ -97,12 +97,12 @@ teardown() {
   [ "$output" = "dummy" ]
 }
 
-@test "plugin_add command with URL specified run twice returns error second time" {
+@test "plugin_add command with URL specified twice returns success on second time" {
   install_mock_plugin_repo "dummy"
 
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
   run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-  [ "$status" -eq 2 ]
+  [ "$status" -eq 0 ]
   [ "$output" = "Plugin named dummy already added" ]
 }
 
