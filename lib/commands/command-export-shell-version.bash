@@ -2,19 +2,50 @@
 # shellcheck source=lib/functions/versions.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
+unset_all_fish(){
+  printf "for var in (env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}')\n"
+  printf "    echo Removing Env: \$var\n"
+  printf "    set -e \$var\n"
+  printf "end\n"
+}
+unset_all(){
+ printf "for var in \$(env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}'); do\n"
+ printf "    echo Removing Env: " 
+ printf "    \$var\n"
+ printf "    unset \$var\n"
+ printf "done\n"
+}
+
 # Output from this command must be executable shell code
-shell_command() {
+shell_command() {     
   local asdf_shell="$1"
   shift
-
-  if [ "$#" -lt "2" ]; then
-    printf "Usage: asdf shell <name> {<version>|--unset}\n" >&2
+ 
+  if [ "$#" -lt "2" ] && [ "$1" != "--unset-all" ]; then
+    printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
     printf "false\n"
     exit 1
   fi
 
   local plugin=$1
   local version=$2
+  
+  if [ "$plugin" = "--unset-all" ] ; then
+    case "$asdf_shell" in 
+    fish)
+      unset_all_fish
+      ;;
+    elvish)
+      # TODO
+      printf 'print It will be implemented soon'
+      ;; 
+    *)
+      unset_all 
+      ;;
+    esac
+    
+    exit 0
+  fi
 
   local upcase_name
   upcase_name=$(tr '[:lower:]-' '[:upper:]_' <<<"$plugin")
@@ -69,3 +100,6 @@ shell_command() {
 }
 
 shell_command "$@"
+
+
+
