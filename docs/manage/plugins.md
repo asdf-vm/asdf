@@ -8,14 +8,14 @@ See [Creating Plugins](/plugins/create.md) for the plugin API used to support mo
 
 Add plugins via their Git URL:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name> <git-url>
 # asdf plugin add elm https://github.com/vic/asdf-elm
 ```
 
 or via the short-name association in the plugins repository:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add <name>
 # asdf plugin add erlang
 ```
@@ -28,14 +28,14 @@ Prefer the longer `git-url` method as it is independent of the short-name repo.
 
 ## List Installed
 
-```shell:no-line-numbers
+```shell
 asdf plugin list
 # asdf plugin list
 # java
 # nodejs
 ```
 
-```shell:no-line-numbers
+```shell
 asdf plugin list --urls
 # asdf plugin list
 # java            https://github.com/halcyon/asdf-java.git
@@ -44,7 +44,7 @@ asdf plugin list --urls
 
 ## List All in Short-name Repository
 
-```shell:no-line-numbers
+```shell
 asdf plugin list all
 ```
 
@@ -52,13 +52,13 @@ See [Plugins Shortname Index](https://github.com/asdf-vm/asdf-plugins) for the e
 
 ## Update
 
-```shell:no-line-numbers
+```shell
 asdf plugin update --all
 ```
 
 If you want to update a specific package, just say so.
 
-```shell:no-line-numbers
+```shell
 asdf plugin update <name>
 # asdf plugin update erlang
 ```
@@ -67,7 +67,7 @@ This update will fetch the _latest commit_ on the _default branch_ of the _origi
 
 ## Remove
 
-```bash:no-line-numbers
+```bash
 asdf plugin remove <name>
 # asdf plugin remove erlang
 ```

@@ -6,7 +6,7 @@
 
 Fork `asdf` on GitHub and/or Git clone the default branch:
 
-```shell:no-line-numbers
+```shell
 # clone your fork
 git clone https://github.com/<GITHUB_USER>/asdf.git
 # or clone asdf
@@ -15,7 +15,7 @@ git clone https://github.com/asdf-vm/asdf.git
 
 The tools for core development are in this repo's `.tool-versions`. If you wish to manage with `asdf` itself, add the plugins:
 
-```shell:no-line-numbers
+```shell
 asdf plugin add bats https://github.com/timgluz/asdf-bats.git
 asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git
 asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
@@ -23,7 +23,7 @@ asdf plugin add shfmt https://github.com/luizm/asdf-shfmt.git
 
 Install the versions to develop `asdf` with:
 
-```shell:no-line-numbers
+```shell
 asdf install
 ```
 
@@ -39,7 +39,7 @@ If you want to try out your changes without making change to your installed `asd
 
 It is best to format, lint and test your code locally before you commit or push to the remote. Use the following scripts/commands:
 
-```shell:no-line-numbers
+```shell
 # Lint
 ./scripts/lint.bash --check
 
@@ -71,19 +71,19 @@ The following is the `.gitignore` file in the `asdf-vm/asdf` repository. We igno
 
 Use the file with `git blame` like so:
 
-```sh:no-line-numbers
+```sh
 git blame --ignore-revs-file .git-blame-ignore-revs ./test/install_command.bats
 ```
 
 Optionally, configure to use the file on every invocation of `blame` without manually supplying it:
 
-```sh:no-line-numbers
+```sh
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 It is possible to configure IDEs to use this file. For example, when using VSCode (with [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)), write the following to `.vscode/settings.json`:
 
-```json:no-line-numbers
+```json
 {
   "gitlens.advanced.blame.customArguments": [
     "--ignore-revs-file",
@@ -127,7 +127,7 @@ This is further documented in bats-core [Printing to the Terminal](https://bats-
 
 Conventional Commit follows this format:
 
-```:no-line-numbers
+```
 <type>[optional scope][optional !]: <description>
 
 <!-- examples -->
