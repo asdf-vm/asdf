@@ -92,6 +92,18 @@ asdf_cmd() {
   fi
 
   if [ -x "$ASDF_CMD_FILE" ]; then
+    # When '$ASDF_CMD_FILE' is an executable, we are executing a command directly from a plugin.
+    # Example: https://github.com/asdf-community/asdf-nim/blob/397c14a7f04ad5b91963814afc2e9cc92366e1c5/lib/commands/command-install-deps.bash
+    # In those cases, the path to that command is always an absolute path. However, this codepath can also be activated if a user accidentally
+    # marks files in ./lib/commands/* as executable. This code detects when that happens and prints a useful warning message.
+    if [[ "$ASDF_CMD_FILE" == ./lib/commands/* ]]; then
+      printf '%s\n' "----------"
+      printf '%s\n' "asdf: Warning: You are executing an asdf command from \$ASDF_DIR, but we detected that some files have been"
+      printf '%s\n' "               erroneously marked as executable. All files under '$ASDF_DIR/lib/commands' must NOT be marked"
+      printf '%s\n' "               as executable. Otherwise, asdf will not be able to source its core files"
+      printf '%s\n' "----------"
+    fi >&2
+
     exec "$ASDF_CMD_FILE" "${@:${args_offset}}"
   elif [ -f "$ASDF_CMD_FILE" ]; then
     set -- "${@:${args_offset}}"

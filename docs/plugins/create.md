@@ -278,7 +278,6 @@ Determine the latest stable version of a tool. If absent, the asdf core will `ta
 The script should accept a single argument, the filter query.
 
 ```bash
-"${plugin_path}"/bin/latest-stable ""
 "${plugin_path}"/bin/latest-stable "$query"
 ```
 
