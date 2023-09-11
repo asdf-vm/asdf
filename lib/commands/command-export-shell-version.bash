@@ -2,25 +2,25 @@
 # shellcheck source=lib/functions/versions.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
-unset_all_fish(){
+unset_all_fish() {
   printf "for var in (env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}')\n"
   printf "    echo Removing Env: \$var\n"
   printf "    set -e \$var\n"
   printf "end\n"
 }
-unset_all(){
+unset_all() {
   printf "for var in \$(env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}'); do\n"
-  printf "    echo Removing Env: " 
+  printf "    echo Removing Env: "
   printf "    \$var\n"
   printf "    unset -v \$var\n"
   printf "done\n"
 }
 
 # Output from this command must be executable shell code
-shell_command() {     
+shell_command() {
   local asdf_shell="$1"
   shift
-   
+
   if [ "$#" -lt "2" ] && [ "$1" != "--unset-all" ]; then
     printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
     printf "false\n"
@@ -29,21 +29,21 @@ shell_command() {
 
   local plugin=$1
   local version=$2
-  
-  if [ "$plugin" = "--unset-all" ] ; then
-    case "$asdf_shell" in 
+
+  if [ "$plugin" = "--unset-all" ]; then
+    case "$asdf_shell" in
     fish)
       unset_all_fish
       ;;
     elvish)
       # TODO
       printf "asdf: Flag '--unset-all' not implemented for Elvish shell" >&2
-      ;; 
+      ;;
     *)
-      unset_all 
+      unset_all
       ;;
     esac
-    
+
     exit 0
   fi
 
