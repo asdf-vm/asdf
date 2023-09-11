@@ -13,7 +13,7 @@ jobs:
   asdf:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: asdf-vm/actions/install@v2
       - uses: actions/setup-python@v4
         with:
@@ -24,7 +24,7 @@ jobs:
   actions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check workflow files
         uses: docker://rhysd/actionlint:1.6.24
         with:
