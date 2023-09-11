@@ -1,13 +1,7 @@
 :root {
-  --vp-c-brand: #b744b8;
-  --vp-c-brand-light: #a379c9;
-  --vp-c-brand-lighter: #a379c9; /* TODO: change this colour to be lighter */
-  --vp-c-brand-dark: #a379c9;
-  --vp-c-brand-darker: #a379c9; /* TODO: change this colour to be lighter */
-  /* tip container */
-  /* TODO: change these css vars to be correct */
-  --vp-c-tip: #0070f3;
-  --vp-c-tip-bg: #e3eeff;
-  --vp-c-tip-title: #004bad;
-  --vp-c-tip-text: #002974;
+  --vp-c-brand-1: #b744b8;
+  --vp-c-brand-2: #a379c9;
+  /* TODO: make brand-2 and brand-3 different & set brand-soft */
+  --vp-c-brand-3: #a379c9;
+  /* --vp-c-brand-soft: #fae3ff; */
 }
