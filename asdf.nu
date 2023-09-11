@@ -1,7 +1,5 @@
 def-env configure-asdf [] {
 
-    ## $env.ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')
-
     $env.ASDF_DIR = ( if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR } )
 
     let shims_dir = ( if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) { $env.HOME | path join '.asdf' } else { $env.ASDF_DIR } | path join 'shims' )
