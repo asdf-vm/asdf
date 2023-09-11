@@ -9,18 +9,18 @@ unset_all_fish(){
   printf "end\n"
 }
 unset_all(){
- printf "for var in \$(env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}'); do\n"
- printf "    echo Removing Env: " 
- printf "    \$var\n"
- printf "    unset \$var\n"
- printf "done\n"
+  printf "for var in \$(env | awk -F= '/^ASDF_[A-Za-z0-9_]+_VERSION=/ {print \$1}'); do\n"
+  printf "    echo Removing Env: " 
+  printf "    \$var\n"
+  printf "    unset -v \$var\n"
+  printf "done\n"
 }
 
 # Output from this command must be executable shell code
 shell_command() {     
   local asdf_shell="$1"
   shift
- 
+   
   if [ "$#" -lt "2" ] && [ "$1" != "--unset-all" ]; then
     printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
     printf "false\n"
@@ -37,7 +37,7 @@ shell_command() {
       ;;
     elvish)
       # TODO
-      printf 'print It will be implemented soon'
+      printf "asdf: Flag '--unset-all' not implemented for Elvish shell" >&2
       ;; 
     *)
       unset_all 
