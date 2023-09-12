@@ -20,17 +20,8 @@ unset_all() {
 shell_command() {
   local asdf_shell="$1"
   shift
-
-  if [ "$#" -lt "2" ] && [ "$1" != "--unset-all" ]; then
-    printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
-    printf "false\n"
-    exit 1
-  fi
-
-  local plugin=$1
-  local version=$2
-
-  if [ "$plugin" = "--unset-all" ]; then
+  
+  if [ "$1" = '--unset-all' ]; then
     case "$asdf_shell" in
     fish)
       unset_all_fish
@@ -43,10 +34,18 @@ shell_command() {
       unset_all
       ;;
     esac
-
     exit 0
   fi
+  
 
+  if [ "$#" -lt "2" ]; then
+    printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
+    printf "false\n"
+    exit 1
+  fi
+
+  local plugin=$1
+  local version=$2
   local upcase_name
   upcase_name=$(tr '[:lower:]-' '[:upper:]_' <<<"$plugin")
   local version_env_var="ASDF_${upcase_name}_VERSION"
