@@ -20,7 +20,7 @@ unset_all() {
 shell_command() {
   local asdf_shell="$1"
   shift
-  
+
   if [ "$1" = '--unset-all' ]; then
     case "$asdf_shell" in
     fish)
@@ -36,7 +36,6 @@ shell_command() {
     esac
     exit 0
   fi
-  
 
   if [ "$#" -lt "2" ]; then
     printf "Usage: asdf shell {<name> {<version>|--unset}|--unset-all}\n" >&2
