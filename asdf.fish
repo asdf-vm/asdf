@@ -1,5 +1,5 @@
 if test -z $ASDF_DIR
-    set ASDF_DIR (realpath --no-symlinks (dirname (status filename)))
+    set ASDF_DIR (builtin realpath --no-symlinks (dirname (status filename)))
 end
 set --export ASDF_DIR $ASDF_DIR
 
