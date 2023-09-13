@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.1](https://github.com/asdf-vm/asdf/compare/v0.13.0...v0.13.1) (2023-09-12)
+
+
+### Patches
+
+* **fish:** use builtin realpath over system one ([#1637](https://github.com/asdf-vm/asdf/issues/1637)) ([5ac3032](https://github.com/asdf-vm/asdf/commit/5ac30328a7bbd1a8d974bb5fb1f14d8bd2d1e03f))
+
 ## [0.13.0](https://github.com/asdf-vm/asdf/compare/v0.12.0...v0.13.0) (2023-09-11)
 
 
