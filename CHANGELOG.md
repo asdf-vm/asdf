@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.13.1](https://github.com/asdf-vm/asdf/compare/v0.13.0...v0.13.1) (2023-09-12)
+
+
+### Patches
+
+* **fish:** use builtin realpath over system one ([#1637](https://github.com/asdf-vm/asdf/issues/1637)) ([5ac3032](https://github.com/asdf-vm/asdf/commit/5ac30328a7bbd1a8d974bb5fb1f14d8bd2d1e03f))
+
+## [0.13.0](https://github.com/asdf-vm/asdf/compare/v0.12.0...v0.13.0) (2023-09-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* `plugin list` exit code 0 when no plugins are installed ([#1597](https://github.com/asdf-vm/asdf/issues/1597))
+* 0 exit code for success when adding an existing plugin ([#1598](https://github.com/asdf-vm/asdf/issues/1598))
+* **fish:** don't resolve symlinks for ASDF_DIR ([#1583](https://github.com/asdf-vm/asdf/issues/1583))
+
+### Features
+
+* add plugin location when update the plugin ([#1602](https://github.com/asdf-vm/asdf/issues/1602)) ([36c7024](https://github.com/asdf-vm/asdf/commit/36c7024baa4b829b3629b4e0430157266d354158))
+
+
+### Patches
+
+* `plugin list` exit code 0 when no plugins are installed ([#1597](https://github.com/asdf-vm/asdf/issues/1597)) ([a029c00](https://github.com/asdf-vm/asdf/commit/a029c007503f2eec911a0c836e8622bb38c5e065))
+* 0 exit code for success when adding an existing plugin ([#1598](https://github.com/asdf-vm/asdf/issues/1598)) ([4dd1904](https://github.com/asdf-vm/asdf/commit/4dd190466a9855dac300ce691e66a7629ef37b82))
+* **fish:** don't resolve symlinks for ASDF_DIR ([#1583](https://github.com/asdf-vm/asdf/issues/1583)) ([d1a563d](https://github.com/asdf-vm/asdf/commit/d1a563dcc0107d5c631f73b114044898b5cadcf9))
+* improve lint and test scripts ([#1607](https://github.com/asdf-vm/asdf/issues/1607)) ([b320803](https://github.com/asdf-vm/asdf/commit/b3208031204aabad6e85346155baacab16862da8))
+* Make asdf.fish compatible with Fish 3.1.2 ([#1590](https://github.com/asdf-vm/asdf/issues/1590)) ([e83d71e](https://github.com/asdf-vm/asdf/commit/e83d71e43f525453994eb4cfda8ad66f8b914529))
+* no longer write temporary files to home directory ([#1592](https://github.com/asdf-vm/asdf/issues/1592)) ([624604a](https://github.com/asdf-vm/asdf/commit/624604a8626dc6006d78121d4cf0f6c920449c56))
+* nushell language syntax update ([#1624](https://github.com/asdf-vm/asdf/issues/1624)) ([0ddab5d](https://github.com/asdf-vm/asdf/commit/0ddab5dfaf28ad97c84a6aa56b08ccc212e07b4d))
+* set default shell version values on POSIX entrypoint ([#1594](https://github.com/asdf-vm/asdf/issues/1594)) ([4d5f22d](https://github.com/asdf-vm/asdf/commit/4d5f22ddb89ce53e24b1ab1cbefce3be95238a19))
+* warn when any ./lib/commands are marked as executable ([#1593](https://github.com/asdf-vm/asdf/issues/1593)) ([2043a09](https://github.com/asdf-vm/asdf/commit/2043a09574bdfdfcf2daf2fdb3bff2d9d2dad64e))
+
+
+### Documentation
+
+* `bin/latest-stable` empty query is set to default ([#1591](https://github.com/asdf-vm/asdf/issues/1591)) ([299dc97](https://github.com/asdf-vm/asdf/commit/299dc97a5b63d8afe1a0bba03e32dddfb7fb8e51))
+* migrate to VitePress from VuePress ([#1578](https://github.com/asdf-vm/asdf/issues/1578)) ([5133819](https://github.com/asdf-vm/asdf/commit/5133819a77aaa393def347bfecb1c442ece4c7f8))
+* upgrade deps & fix breaking changes ([446f8c5](https://github.com/asdf-vm/asdf/commit/446f8c5f947cc5f30f03403c2cfe4dec71b0a494))
+
 ## [0.12.0](https://github.com/asdf-vm/asdf/compare/v0.11.3...v0.12.0) (2023-06-09)
 
 

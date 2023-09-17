@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "fmt": "prettier --write '.vitepress/{config,navbars,sidebars}.ts' '.vitepress/theme/**/*'",
     "dev": "vitepress dev",
@@ -6,8 +7,8 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "@types/node": "^20.3.3",
-    "prettier": "^2.8.8",
-    "vitepress": "^1.0.0-beta.3"
+    "@types/node": "^20.6.0",
+    "prettier": "^3.0.3",
+    "vitepress": "^1.0.0-rc.12"
   }
 }

@@ -1,14 +1,13 @@
 def-env configure-asdf [] {
 
-    let-env ASDF_DIR = ( if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR } )
+    $env.ASDF_DIR = ( if ( $env | get --ignore-errors ASDF_DIR | is-empty ) { $env.ASDF_NU_DIR } else { $env.ASDF_DIR } )
 
     let shims_dir = ( if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) { $env.HOME | path join '.asdf' } else { $env.ASDF_DIR } | path join 'shims' )
 
     let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
 
-
-    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
-    let-env PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $asdf_bin_dir } | prepend $asdf_bin_dir )
+    $env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
+    $env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $asdf_bin_dir } | prepend $asdf_bin_dir )
 
 }
 

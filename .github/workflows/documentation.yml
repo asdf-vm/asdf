@@ -18,7 +18,7 @@ jobs:
         working-directory: docs/
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # fetch all commits to get last updated time or other git log info
           fetch-depth: 0
@@ -49,7 +49,7 @@ jobs:
         run: cp CNAME .vitepress/dist
 
       - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
+        uses: crazy-max/ghaction-github-pages@v4
         with:
           # deploy to gh-pages branch
           target_branch: gh-pages

@@ -48,7 +48,7 @@ plugin_list_command() {
     ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
     display_error 'No plugins installed'
-    exit 1
+    exit 0
   fi
 }
 
@@ -90,8 +90,8 @@ plugin_add_command() {
   mkdir -p "$(asdf_data_dir)/plugins"
 
   if [ -d "$plugin_path" ]; then
-    display_error "Plugin named $plugin_name already added"
-    exit 2
+    printf '%s\n' "Plugin named $plugin_name already added"
+    exit 0
   else
     asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_add_${plugin_name}"
@@ -159,6 +159,7 @@ update_plugin() {
   local prev_ref=
   local post_ref=
   {
+    printf "Location of %s plugin: %s\n" "$plugin_name" "$plugin_path"
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 

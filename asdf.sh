@@ -8,7 +8,7 @@
 export ASDF_DIR="${ASDF_DIR:-}"
 
 if [ -z "$ASDF_DIR" ]; then
-  if [ -n "$BASH_VERSION" ]; then
+  if [ -n "${BASH_VERSION:-}" ]; then
     # Use BASH_SOURCE[0] to obtain the relative path to this source'd file. Since it's
     # a relative path, 'cd' to its dirname and use '$PWD' to obtain the fullpath.
     # Use 'builtin cd' to ensure user-defined 'cd()' functions aren't called.
@@ -28,14 +28,14 @@ if [ -z "$ASDF_DIR" ]; then
       return 1
     fi
     unset -v _asdf_old_dir
-  elif [ -n "$ZSH_VERSION" ]; then
+  elif [ -n "${ZSH_VERSION:-}" ]; then
     # Use '%x' to expand to path of current file. It must be prefixed
     # with '(%):-', so it expands in non-prompt-string contexts.
 
     # shellcheck disable=SC2296
     ASDF_DIR=${(%):-%x}
     ASDF_DIR=${ASDF_DIR%/*}
-  elif [ -n "$KSH_VERSION" ] && [ -z "$PATHSEP" ]; then
+  elif [ -n "${KSH_VERSION:-}" ] && [ -z "$PATHSEP" ]; then
     # Only the original KornShell (kornshell.com) has a '.sh.file' variable with the path
     # of the current file. To prevent errors with other variations, such as the MirBSD
     # Korn shell (mksh), test for 'PATHSEP' which is _not_ set on the original Korn Shell.
@@ -65,7 +65,7 @@ if [ -n "${ASDF_FORCE_PREPEND+x}" ]; then
 else
   # If ASDF_FORCE_PREPEND is not set, then prepend by default on macOS
   # to workaround `path_helper`.
-  if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
+  if [ -n "${BASH_VERSION:-}" ] || [ -n "${ZSH_VERSION:-}" ]; then
     # shellcheck disable=SC3028
     case $OSTYPE in
       darwin*) _asdf_should_prepend=yes ;;
@@ -85,7 +85,7 @@ fi
 # If prepending is enabled, remove any existing instances of asdf from PATH so
 # the prepending done after is always at the frontmost part of the PATH.
 if [ "$_asdf_should_prepend" = 'yes' ]; then
-  if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
+  if [ -n "${BASH_VERSION:-}" ] || [ -n "${ZSH_VERSION:-}" ]; then
     # shellcheck disable=SC3060
     case ":$PATH:" in
       *":${_asdf_bin}:"*) PATH=${PATH//$_asdf_bin:/} ;;
