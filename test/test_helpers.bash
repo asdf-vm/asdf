@@ -29,6 +29,8 @@ setup_asdf_dir() {
     echo "Error: Unable to source asdf.sh. Please report this fail."
     exit 1
   fi
+
+  ls -a "$ASDF_DIR"
   # shellcheck disable=SC2031
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
