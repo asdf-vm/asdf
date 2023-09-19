@@ -20,7 +20,7 @@ setup_asdf_dir() {
   mkdir -p "$ASDF_DIR/tmp"
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
-  # it is necessary so execute shell command 
+  # it is necessary so execute shell command
   cp -r .. "$ASDF_DIR"
 
   if source "$ASDF_DIR/asdf.sh"; then

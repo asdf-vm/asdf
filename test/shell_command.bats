@@ -1,5 +1,3 @@
-
-
 load test_helpers
 
 setup() {
@@ -17,7 +15,6 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-
 @test "asdf shell --unset-all removes all ASDF_{PLUGIN}_VERSION" {
   # mock data
   run export ASDF_DUMMY_VERSION="1.1.0"
@@ -25,4 +22,3 @@ teardown() {
   [ "$status" -eq 0 ]
 
 }
-
