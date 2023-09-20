@@ -12,6 +12,8 @@ teardown() {
 }
 @test "shell_command with 'latest' version" {
   run asdf shell dummy 1.1.0
+  echo "Actual Output: $output"
+  echo "Actual Exit Status: $status"
   [ "$status" -eq 0 ]
 }
 
@@ -19,6 +21,7 @@ teardown() {
   # mock data
   run export ASDF_DUMMY_VERSION="1.1.0"
   run asdf shell --unset-all
+  echo "Actual Output: $output"
+  echo "Actual Exit Status: $status"
   [ "$status" -eq 0 ]
-
 }
