@@ -24,7 +24,7 @@ setup_asdf_dir() {
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
-unstall_mock_plugin() {
+install_mock_plugin() {
   local plugin_name=$1
   local location="${2:-$ASDF_DIR}"
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$location/plugins/$plugin_name"
