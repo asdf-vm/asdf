@@ -20,15 +20,15 @@ setup_asdf_dir() {
   mkdir -p "$ASDF_DIR/tmp"
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
-  # it is necessary so execute shell command
-  # cp -r .. "$ASDF_DIR"
+  # it is necessary to execute shell command
+  cp -r .. "$ASDF_DIR"
 
-  # if source "$ASDF_DIR/asdf.sh"; then
-  #   echo "Sourced asdf.sh successfully."
-  # else
-  #   echo "Error: Unable to source asdf.sh. Please report this fail."
-  #   exit 1
-  # fi
+  if source "$ASDF_DIR/asdf.sh"; then
+     echo "Sourced asdf.sh successfully."
+   else
+     echo "Error: Unable to source asdf.sh. Please report this fail."
+     exit 1
+  fi
 
   ls -a "$ASDF_DIR"
   # shellcheck disable=SC2031

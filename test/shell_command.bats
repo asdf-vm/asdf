@@ -10,8 +10,11 @@ setup() {
 teardown() {
   clean_asdf_dir
 }
+
 @test "shell_command with 'latest' version" {
-  run asdf shell dummy 1.1.0
+  run asdf plugin add ruby
+  run asdf install ruby 3.2.0
+  run asdf shell ruby 3.2.0
   echo "Actual Output: $output"
   echo "Actual Exit Status: $status"
   [ "$status" -eq 0 ]
