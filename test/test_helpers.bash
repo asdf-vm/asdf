@@ -24,19 +24,7 @@ setup_asdf_dir() {
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
-setup_asdf_dir_wwith_shell() {
-  setup_asdf_dir
-  # it is necessary to execute shell command
-  cp -r . "$ASDF_DIR/"
-  if source "$ASDF_DIR/asdf.sh"; then
-    echo "Sourced asdf.sh successfully."
-  else
-    echo "Error: Unable to source asdf.sh. Please report this fail."
-    exit 1
-  fi
-}
-
-install_mock_plugin() {
+unstall_mock_plugin() {
   local plugin_name=$1
   local location="${2:-$ASDF_DIR}"
   cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugin" "$location/plugins/$plugin_name"
