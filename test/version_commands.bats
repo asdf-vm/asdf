@@ -335,7 +335,7 @@ teardown() {
   touch other-dir/.tool-versions
   ln -s other-dir/.tool-versions .tool-versions
   run asdf local "dummy" "1.1.0"
-  run asdf local "dummy" "1.1.0"shell wrapper function with --unset should unset ENV var
+  run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
   [ -L .tool-versions ]
   [ "$(cat other-dir/.tool-versions)" = "dummy 1.1.0" ]
