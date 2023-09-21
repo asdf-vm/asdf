@@ -20,6 +20,12 @@ setup_asdf_dir() {
   mkdir -p "$ASDF_DIR/tmp"
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
+  # shellcheck disable=SC2031
+  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
+}
+
+setup_asdf_dir_wwith_shell() {
+  setup_asdf_dir
   # it is necessary to execute shell command
   cp -r . "$ASDF_DIR/"
   if source "$ASDF_DIR/asdf.sh"; then
@@ -28,9 +34,6 @@ setup_asdf_dir() {
     echo "Error: Unable to source asdf.sh. Please report this fail."
     exit 1
   fi
-
-  # shellcheck disable=SC2031
-  PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
 install_mock_plugin() {
