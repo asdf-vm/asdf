@@ -21,16 +21,15 @@ setup_asdf_dir() {
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # it is necessary to execute shell command
-  cp -r .. "$ASDF_DIR"
-
+  cp -r .. "$ASDF_DIR/"
+  ls -a "$ASDF_DIR"
   if source "$ASDF_DIR/asdf.sh"; then
-     echo "Sourced asdf.sh successfully."
-   else
-     echo "Error: Unable to source asdf.sh. Please report this fail."
-     exit 1
+    echo "Sourced asdf.sh successfully."
+  else
+    echo "Error: Unable to source asdf.sh. Please report this fail."
+    exit 1
   fi
 
-  ls -a "$ASDF_DIR"
   # shellcheck disable=SC2031
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
