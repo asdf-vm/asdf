@@ -21,7 +21,7 @@ setup_asdf_dir() {
   ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # it is necessary to execute shell command
-  cp -r .. "$ASDF_DIR/"
+  cp -r . "$ASDF_DIR/"
   ls -a "$ASDF_DIR"
   if source "$ASDF_DIR/asdf.sh"; then
     echo "Sourced asdf.sh successfully."
