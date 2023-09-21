@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o pipefail
 
 # shellcheck source=lib/utils.bash
 . "$(dirname "$(dirname "$0")")/lib/utils.bash"
@@ -48,15 +49,13 @@ find_asdf_cmd() {
 
 find_plugin_cmd() {
   local ASDF_CMD_FILE args_offset
-  if [ -d "$(get_plugin_path "$1")/bin" ]; then
-    local result=
-    result="$(find_cmd "$(get_plugin_path "$1")/lib/commands" "${@:2}")"
-    ASDF_CMD_FILE=${result% *}
-    args_offset=${result##* }
-    if [ -n "$ASDF_CMD_FILE" ]; then
-      args_offset=$((args_offset + 1)) # since the first argument is the plugin name
-      printf "%s %s\n" "$ASDF_CMD_FILE" "$args_offset"
-    fi
+  local result=
+  result="$(find_cmd "$(get_plugin_path "$1")/lib/commands" "${@:2}")"
+  ASDF_CMD_FILE=${result% *}
+  args_offset=${result##* }
+  if [ -n "$ASDF_CMD_FILE" ]; then
+    args_offset=$((args_offset + 1)) # since the first argument is the plugin name
+    printf "%s %s\n" "$ASDF_CMD_FILE" "$args_offset"
   fi
 }
 
