@@ -22,7 +22,6 @@ setup_asdf_dir() {
 
   # it is necessary to execute shell command
   cp -r . "$ASDF_DIR/"
-  ls -a "$ASDF_DIR"
   if source "$ASDF_DIR/asdf.sh"; then
     echo "Sourced asdf.sh successfully."
   else
