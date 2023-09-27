@@ -137,13 +137,6 @@ check_if_version_exists() {
   fi
 }
 
-version_not_installed_text() {
-  local plugin_name=$1
-  local version=$2
-
-  printf "version %s is not installed for %s\n" "$version" "$plugin_name"
-}
-
 get_plugin_path() {
   if [ -n "$1" ]; then
     printf "%s\n" "$(asdf_data_dir)/plugins/$1"
@@ -154,6 +147,18 @@ get_plugin_path() {
 
 display_error() {
   printf "%s\n" "$1" >&2
+}
+
+display_no_version_set() {
+  local plugin_name=$1
+  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\n" "$plugin_name" "$plugin_name"
+}
+
+display_version_not_installed() {
+  local plugin_name=$1
+  local version=$2
+
+  printf "version %s is not installed for %s\n" "$version" "$plugin_name"
 }
 
 get_version_in_dir() {
@@ -227,11 +232,6 @@ find_versions() {
       return 0
     fi
   fi
-}
-
-display_no_version_set() {
-  local plugin_name=$1
-  printf "No version is set for %s; please run \`asdf <global | shell | local> %s <version>\`\n" "$plugin_name" "$plugin_name"
 }
 
 get_version_from_env() {

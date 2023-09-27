@@ -70,8 +70,8 @@ teardown() {
   [ "$status" -eq 1 ]
 }
 
-@test "version_not_installed_text is correct" {
-  run version_not_installed_text "dummy" "1.0.0"
+@test "display_version_not_installed is correct" {
+  run display_version_not_installed "dummy" "1.0.0"
   [ "$status" -eq 0 ]
   [ "$output" = "version 1.0.0 is not installed for dummy" ]
 }

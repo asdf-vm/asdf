@@ -53,7 +53,7 @@ version_command() {
     fi
 
     if ! (check_if_version_exists "$plugin_name" "$version"); then
-      version_not_installed_text "$plugin_name" "$version" 1>&2
+      display_version_not_installed "$plugin_name" "$version" 1>&2
       exit 1
     fi
 

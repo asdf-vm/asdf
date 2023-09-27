@@ -35,7 +35,7 @@ if [ "$RUNNER_OS" = "Linux" ]; then
   printf "%s\n" "Installing dependencies on Linux"
 
   curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc >/dev/null
-  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
+  sudo sh -c 'printf "%s\n" "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
   sudo add-apt-repository -y ppa:fish-shell/release-3
   sudo apt-get update
   sudo apt-get -y install curl parallel \
@@ -58,7 +58,7 @@ if [ "$RUNNER_OS" = "Linux" ]; then
   mv nu-${nushell_semver}-x86_64-unknown-linux-gnu/* "$HOME/bin"
 
   # Add $HOME/bin to path (add Elvish & Nushell to path)
-  echo "$HOME/bin" >>"$GITHUB_PATH"
+  printf '%s\n' "$HOME/bin" >>"$GITHUB_PATH"
 fi
 
 ### Install dependencies on macOS
@@ -75,4 +75,4 @@ fi
 printf "%s\n" "Installing bats-core"
 bats_version=$(grep -Eo "^\\s*bats\\s*.*$" ".tool-versions" | cut -d ' ' -f2-)
 git clone --depth 1 --branch "v$bats_version" https://github.com/bats-core/bats-core.git "$HOME/bats-core"
-echo "$HOME/bats-core/bin" >>"$GITHUB_PATH"
+printf '%s\n' "$HOME/bats-core/bin" >>"$GITHUB_PATH"

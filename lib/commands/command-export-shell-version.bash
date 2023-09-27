@@ -44,7 +44,7 @@ shell_command() {
     version=$(latest_command "$plugin")
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
-    version_not_installed_text "$plugin" "$version" 1>&2
+    display_version_not_installed "$plugin" "$version" 1>&2
     printf "false\n"
     exit 1
   fi
