@@ -79,7 +79,7 @@ plugin_test_command() {
     fi
 
     # shellcheck disable=SC2119
-    if ! (plugin_list_command | grep "^$plugin_name$" >/dev/null); then
+    if ! (plugin_list_command | grep -q "^$plugin_name$"); then
       fail_test "$plugin_name was not properly installed"
     fi
 
@@ -90,8 +90,8 @@ plugin_test_command() {
     local plugin_path
     plugin_path=$(get_plugin_path "$plugin_name")
     local list_all="$plugin_path/bin/list-all"
-    if grep api.github.com "$list_all" >/dev/null; then
-      if ! grep Authorization "$list_all" >/dev/null; then
+    if grep -q api.github.com "$list_all"; then
+      if ! grep -q Authorization "$list_all"; then
         printf "\nLooks like %s/bin/list-all relies on GitHub releases\n" "$plugin_name"
         printf "but it does not properly sets an Authorization header to prevent\n"
         printf "GitHub API rate limiting.\n\n"
