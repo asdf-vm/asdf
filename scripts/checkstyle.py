@@ -35,7 +35,7 @@ class c:
     UNDERLINE = '\033[4m'
     LINK: Callable[[str, str], str] = lambda href, text: f'\033]8;;{href}\a{text}\033]8;;\a'
 
-def utilGetStrs(line: Any, m: Any):
+def utilGetStrs(line: str, m: Any):
     return (
         line[0:m.start('match')],
         line[m.start('match'):m.end('match')],
@@ -90,6 +90,42 @@ def noVerboseRedirectionFixer(line: str, m: Any) -> str:
 
     return f'{prestr}&>/dev/null{poststr}'
 
+def noExplicitStandardOutputRedirectionFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
+
+    return f'{prestr}>&2{poststr}'
+
+# Before: printf '%s\n' 'text' >&2
+# After: display_error 'text'
+def noPrintfStandardErrorFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
+
+    poststr = poststr.rstrip()
+    if poststr.endswith('>&2'): # str.removesuffix Python 3.9
+        poststr = poststr[0:len(poststr)-len('>&2')]
+    poststr = poststr.rstrip()
+
+    return f'{prestr}display_error{poststr}'
+
+# Before: display_info 'text\n'
+# After: display_info 'text'
+def noDisplayFnNewlineFixer(line: str, m: Any) -> str:
+    prestr, midstr, poststr = utilGetStrs(line, m)
+
+    midstr = midstr.removesuffix('\\n')
+
+    return f'{prestr}{midstr}{poststr}'
+
+# Before: display_info '%s\n' 'text'
+# After: display_info 'text'
+def noDisplayFnFormattingArgFixer(line: str, m: Any) -> str:
+    prestr, _, poststr = utilGetStrs(line, m)
+
+    prestr = prestr.rstrip()
+    poststr = poststr.lstrip()
+
+    return f'{prestr} {poststr}'
+
 def lintfile(file: Path, rules: List[Rule], options: Dict[str, Any]):
     content_arr = file.read_text().split('\n')
 
@@ -105,6 +141,13 @@ def lintfile(file: Path, rules: List[Rule], options: Dict[str, Any]):
             if 'bash' in rule['fileTypes']:
                 if file.name.endswith('.bash') or file.name.endswith('.bats'):
                     should_run = True
+
+            if 'matchesIgnored' in rule:
+                for glb in rule['matchesIgnored']:
+                    if file.match(glb):
+                        should_run = False
+                        break
+
 
             if options['verbose']:
                 print(f'{str(file)}: {should_run}')
@@ -142,11 +185,15 @@ def main():
             'fixerFn': noDoubleBackslashFixer,
             'testPositiveMatches': [
                 'printf "%s\\\\n" "Hai"',
-                'echo -n "Hello\\\\n"'
+                'echo -n "Hello\\\\n"',
+            ],
+            'testPositiveMatchesFixed': [
+                'printf "%s\\n" "Hai"',
+                'echo -n "Hello\\n"',
             ],
             'testNegativeMatches': [
                 'printf "%s\\n" "Hai"',
-                'echo -n "Hello\\n"'
+                'echo -n "Hello\\n"',
             ],
         },
         {
@@ -156,10 +203,13 @@ def main():
             'fileTypes': ['bash', 'sh'],
             'fixerFn': noPwdCaptureFixer,
             'testPositiveMatches': [
-                '$(pwd)'
+                '$(pwd)',
+            ],
+            'testPositiveMatchesFixed': [
+                '$PWD',
             ],
             'testNegativeMatches': [
-                '$PWD'
+                '$PWD',
             ],
         },
         {
@@ -171,6 +221,10 @@ def main():
             'testPositiveMatches': [
                 '[ a == b ]',
                 '[ "${lines[0]}" == blah ]',
+            ],
+            'testPositiveMatchesFixed': [
+                '[ a = b ]',
+                '[ "${lines[0]}" = blah ]',
             ],
             'testNegativeMatches': [
                 '[ a = b ]',
@@ -189,8 +243,12 @@ def main():
             'fileTypes': ['bash', 'sh'],
             'fixerFn': noFunctionKeywordFixer,
             'testPositiveMatches': [
-                'function fn() { :; }',
-                'function fn { :; }',
+                'function fn1() { :; }',
+                'function fn2 { :; }',
+            ],
+            'testPositiveMatchesFixed': [
+                'fn1() { :; }',
+                'fn2() { :; }',
             ],
             'testNegativeMatches': [
                 'fn() { :; }',
@@ -203,12 +261,90 @@ def main():
             'fileTypes': ['bash'],
             'fixerFn': noVerboseRedirectionFixer,
             'testPositiveMatches': [
-                'echo woof >/dev/null 2>&1',
-                'echo woof 2>/dev/null 1>&2',
+                'echo woof1 >/dev/null 2>&1',
+                'echo woof2 2>/dev/null 1>&2',
+            ],
+            'testPositiveMatchesFixed': [
+                'echo woof1 &>/dev/null',
+                'echo woof2 &>/dev/null',
             ],
             'testNegativeMatches': [
                 'echo woof &>/dev/null',
                 'echo woof >&/dev/null',
+            ],
+        },
+        {
+            'name': 'no-explicit-stdout-redirection',
+            'regex': '(?P<match>1>&2)',
+            'reason': 'For consistency and to support less complex linters',
+            'fileTypes': ['bash', 'sh'],
+            'fixerFn': noExplicitStandardOutputRedirectionFixer,
+            'testPositiveMatches': [
+                'echo blah 1>&2',
+            ],
+            'testPositiveMatchesFixed': [
+                'echo blah >&2',
+            ],
+            'testNegativeMatches': [
+                'echo blah >&2',
+            ],
+        },
+        {
+            'name': 'no-printf-standard-error',
+            'regex': '(?P<match>display_info|printf|echo).*(?P<r>>&2)',
+            'reason': 'Use `display_error`, which has shared semantics and logic',
+            'fileTypes': ['bash', 'sh'],
+            'matchesIgnored': ['scripts/*', 'asdf.sh'],
+            'fixerFn': noPrintfStandardErrorFixer,
+            'testPositiveMatches': [
+                'printf "text1" >&2',
+                "echo 'text2' >&2",
+                'display_info text4 >&2',
+            ],
+            'testPositiveMatchesFixed': [
+                'display_error "text1"',
+                "display_error 'text2'",
+                "display_error text4",
+            ],
+            'testNegativeMatches': [
+                'echo woah1',
+                'echo woah2',
+                '>&2 printf text3',
+            ],
+        },
+        {
+            'name': 'no-display-fn-newline',
+            'regex': 'display_info[ \\t]+[\'"](?P<match>.*?\\\\n)[\'"][ \\t]*$',
+            'reason': 'Function `display_info` already prints a newline',
+            'fileTypes': ['bash', 'sh'],
+            'fixerFn': noDisplayFnNewlineFixer,
+            'testPositiveMatches': [
+                'display_info "a\\n"',
+                "display_info 'b\\n'",
+            ],
+            'testPositiveMatchesFixed': [
+                'display_info "a"',
+                "display_info 'b'",
+            ],
+            'testNegativeMatches': [
+                'display_info c',
+                'display_info "\\nd"'
+            ],
+        },
+        {
+            'name': 'no-display-formatting-arg',
+            'regex': 'display_info[ \\t]+(?P<match>[\'"]%s\\\\n[\'"])',
+            'reason': 'Function `display_info` already prints a newline',
+            'fileTypes': ['bash', 'sh'],
+            'fixerFn': noDisplayFnFormattingArgFixer,
+            'testPositiveMatches': [
+                'display_info "%s\\n" other',
+            ],
+            'testPositiveMatchesFixed': [
+                'display_info other',
+            ],
+            'testNegativeMatches': [
+                'display_info "%s\\n\\n"',
             ],
         },
     ]
@@ -223,12 +359,24 @@ def main():
 
     if args.internal_test_regex:
         for rule in rules:
-            for positiveMatch in rule['testPositiveMatches']:
+            for (i, positiveMatch) in enumerate(rule['testPositiveMatches']):
                 m: Any = re.search(rule['regex'], positiveMatch)
                 if m is None or m.group('match') is None:
                     print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.CYAN}positive{c.RESET} test:')
                     print(f'=> {positiveMatch}')
-                    print()
+                    exit(1)
+
+                if len(rule['testPositiveMatchesFixed']) < len(rule['testPositiveMatches']):
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.BLUE}fixer preliminary{c.RESET} test:')
+                    print(f'=> Missing items in array: testPositiveMatchesFixed')
+                    exit(1)
+
+                fixedLine = rule['fixerFn'](positiveMatch, m)
+                if rule['testPositiveMatchesFixed'][i] != fixedLine:
+                    print(f'{c.MAGENTA}{rule["name"]}{c.RESET}: Failed {c.BLUE}fixer{c.RESET} test:')
+                    print(f'=> expected: {rule["testPositiveMatchesFixed"][i]}')
+                    print(f'=> received: {fixedLine}')
+                    exit(1)
 
             for negativeMatch in rule['testNegativeMatches']:
                 m: Any = re.search(rule['regex'], negativeMatch)
