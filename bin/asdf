@@ -1,8 +1,47 @@
 #!/usr/bin/env bash
 set -o pipefail
 
+if type -p realpath > /dev/null; then
+  absdir() {
+    local path
+    path="$(realpath "$1")"
+    printf "%s\n" "${path%/*}"
+  }
+elif test -n "$(type -p greadlink readlink | head -1)"; then
+  absdir() {
+    local name path readlink
+    path="$1"
+    readlink="$(type -p greadlink readlink | head -1)"
+    (
+      while [ -n "${path}" ]; do
+        pathdir="${path%/*}"
+        if [ "${pathdir}" != "${path}" ]; then
+          cd "${pathdir}" || exit 1
+        fi
+        name="${path##*/}"
+        path="$($readlink "${name}")"
+      done
+      printf "%s\n" "${PWD}"
+    )
+  }
+else
+  printf "Unable to find readlink or realpath" >&2
+  exit 1
+fi
+
+asdf_dir() {
+  if [ -z "$ASDF_DIR" ]; then
+    local bin_dir root_dir
+    bin_dir="$(absdir "${BASH_SOURCE[0]}")"
+    root_dir="${bin_dir%/*}"
+    printf '%s\n' "$root_dir"
+  else
+    printf '%s\n' "$ASDF_DIR"
+  fi
+}
+
 # shellcheck source=lib/utils.bash
-. "$(dirname "$(dirname "$0")")/lib/utils.bash"
+. "$(asdf_dir)/lib/utils.bash"
 
 find_cmd() {
   local cmd_dir="$1"

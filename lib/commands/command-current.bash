@@ -1,6 +1,6 @@
 # -*- sh -*-
 # shellcheck source=lib/functions/plugins.bash
-. "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
+. "$(asdf_dir)/lib/functions/plugins.bash"
 
 # shellcheck disable=SC2059
 plugin_current_command() {

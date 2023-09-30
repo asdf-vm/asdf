@@ -38,18 +38,6 @@ asdf_data_dir() {
   printf "%s\n" "$data_dir"
 }
 
-asdf_dir() {
-  if [ -z "$ASDF_DIR" ]; then
-    local current_script_path=${BASH_SOURCE[0]}
-    printf '%s\n' "$(
-      cd -- "$(dirname "$(dirname "$current_script_path")")" || exit
-      printf '%s\n' "$PWD"
-    )"
-  else
-    printf '%s\n' "$ASDF_DIR"
-  fi
-}
-
 asdf_plugin_repository_url() {
   printf "https://github.com/asdf-vm/asdf-plugins.git\n"
 }
