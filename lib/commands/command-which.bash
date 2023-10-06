@@ -15,7 +15,7 @@ which_command() {
     local executable_path="$3"
 
     if [ ! -x "$executable_path" ]; then
-      printf "No %s executable found for %s %s\n" "$shim_name" "$plugin_name" "$version" >&2
+      display_error "No %s executable found for %s %s\n" "$shim_name" "$plugin_name" "$version"
       exit 1
     fi
 

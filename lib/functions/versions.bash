@@ -53,7 +53,7 @@ version_command() {
     fi
 
     if ! (check_if_version_exists "$plugin_name" "$version"); then
-      display_version_not_installed "$plugin_name" "$version" 1>&2
+      display_version_not_installed "$plugin_name" "$version" >&2
       exit 1
     fi
 
@@ -99,9 +99,9 @@ list_all_command() {
 
   if [[ $return_code -ne 0 ]]; then
     # Printing all output to allow plugin to handle error formatting
-    printf "Plugin %s's list-all callback script failed with output:\n" "${plugin_name}" >&2
-    printf "%s\n" "$(cat "$std_err_file")" >&2
-    printf "%s\n" "$(cat "$std_out_file")" >&2
+    display_error "Plugin %s's list-all callback script failed with output:\n" "${plugin_name}"
+    display_error "%s\n" "$(cat "$std_err_file")"
+    display_error "%s\n" "$(cat "$std_out_file")"
     rm "$std_out_file" "$std_err_file"
     exit 1
   fi
@@ -151,7 +151,7 @@ latest_command() {
     versions=$("${plugin_path}"/bin/latest-stable "$query")
     if [ -z "${versions}" ]; then
       # this branch requires this print to mimic the error from the list-all branch
-      printf "No compatible versions available (%s %s)\n" "$plugin_name" "$query" >&2
+      display_error "No compatible versions available (%s %s)\n" "$plugin_name" "$query"
       exit 1
     fi
   else
@@ -208,7 +208,7 @@ latest_all() {
       printf "%s\t%s\t%s\n" "$plugin_name" "$version" "$installed_status"
     done
   else
-    printf "%s\n" 'No plugins installed'
+    display_info 'No plugins installed'
   fi
   exit 0
 }

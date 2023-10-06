@@ -8,7 +8,7 @@ shell_command() {
   shift
 
   if [ "$#" -lt "2" ]; then
-    printf "Usage: asdf shell <name> {<version>|--unset}\n" >&2
+    display_error "Usage: asdf shell <name> {<version>|--unset}\n"
     printf "false\n"
     exit 1
   fi
@@ -44,7 +44,7 @@ shell_command() {
     version=$(latest_command "$plugin")
   fi
   if ! (check_if_version_exists "$plugin" "$version"); then
-    display_version_not_installed "$plugin" "$version" 1>&2
+    display_version_not_installed "$plugin" "$version" >&2
     printf "false\n"
     exit 1
   fi

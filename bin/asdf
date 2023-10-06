@@ -63,7 +63,7 @@ asdf_cmd() {
   local ASDF_CMD_FILE args_offset
 
   if [ "shell" = "$1" ]; then
-    printf "Shell integration is not enabled. Please ensure you source asdf in your shell setup." >&2
+    display_error "Shell integration is not enabled. Please ensure you source asdf in your shell setup."
     exit 1
   fi
 
@@ -96,12 +96,12 @@ asdf_cmd() {
     # In those cases, the path to that command is always an absolute path. However, this codepath can also be activated if a user accidentally
     # marks files in ./lib/commands/* as executable. This code detects when that happens and prints a useful warning message.
     if [[ "$ASDF_CMD_FILE" == ./lib/commands/* ]]; then
-      printf '%s\n' "----------"
-      printf '%s\n' "asdf: Warning: You are executing an asdf command from \$ASDF_DIR, but we detected that some files have been"
-      printf '%s\n' "               erroneously marked as executable. All files under '$ASDF_DIR/lib/commands' must NOT be marked"
-      printf '%s\n' "               as executable. Otherwise, asdf will not be able to source its core files"
-      printf '%s\n' "----------"
-    fi >&2
+      display_error "----------"
+      display_error "asdf: Warning: You are executing an asdf command from \$ASDF_DIR, but we detected that some files have been"
+      display_error "               erroneously marked as executable. All files under '$ASDF_DIR/lib/commands' must NOT be marked"
+      display_error "               as executable. Otherwise, asdf will not be able to source its core files"
+      display_error "----------"
+    fi
 
     exec "$ASDF_CMD_FILE" "${@:${args_offset}}"
   elif [ -f "$ASDF_CMD_FILE" ]; then
@@ -111,7 +111,7 @@ asdf_cmd() {
   else
     local asdf_cmd_dir
     asdf_cmd_dir="$(asdf_dir)/lib/commands"
-    printf "%s\n" "Unknown command: \`asdf ${*}\`" >&2
+    display_error "Unknown command: \`asdf ${*}\`"
     # shellcheck source=lib/commands/command-help.bash
     . "$asdf_cmd_dir/command-help.bash" >&2
     return 127

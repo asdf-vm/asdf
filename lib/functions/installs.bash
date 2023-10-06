@@ -67,7 +67,7 @@ install_one_local_tool() {
       install_tool_version "$plugin_name" "$plugin_version"
     done
   else
-    printf "No versions specified for %s in config files or environment\n" "$plugin_name"
+    display_info "No versions specified for %s in config files or environment\n" "$plugin_name"
     exit 1
   fi
 }
@@ -97,7 +97,7 @@ install_local_tool_versions() {
   fi
 
   if [ -z "$plugins_installed" ]; then
-    printf "Install plugins first to be able to install tools\n"
+    display_info "Install plugins first to be able to install tools"
     exit 1
   fi
 
@@ -107,7 +107,7 @@ install_local_tool_versions() {
     tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
     for plugin_name in $tools_file; do
       if ! printf '%s\n' "${plugins_installed[@]}" | grep -q "^$plugin_name\$"; then
-        printf "%s plugin is not installed\n" "$plugin_name"
+        display_info "%s plugin is not installed\n" "$plugin_name"
         some_plugin_not_installed='yes'
       fi
     done
@@ -134,9 +134,9 @@ install_local_tool_versions() {
   fi
 
   if [ -z "$some_tools_installed" ]; then
-    printf "Either specify a tool & version in the command\n"
-    printf "OR add .tool-versions file in this directory\n"
-    printf "or in a parent directory\n"
+    display_info "Either specify a tool & version in the command"
+    display_info "OR add .tool-versions file in this directory"
+    display_info "or in a parent directory"
     exit 1
   fi
 }
@@ -192,7 +192,7 @@ install_tool_version() {
   trap 'handle_cancel $install_path' INT
 
   if [ -d "$install_path" ]; then
-    printf "%s %s is already installed\n" "$plugin_name" "$full_version"
+    display_info "%s %s is already installed\n" "$plugin_name" "$full_version"
   else
 
     if [ -f "${plugin_path}/bin/download" ]; then

@@ -146,7 +146,21 @@ get_plugin_path() {
 }
 
 display_error() {
-  printf "%s\n" "$1" >&2
+  if (($# == 1)); then
+    set -- '%s\n' "$@"
+  fi
+
+  # shellcheck disable=SC2059
+  printf "$@" >&2 # checkstyle-ignore
+}
+
+display_info() {
+  if (($# == 1)); then
+    set -- '%s\n' "$@"
+  fi
+
+  # shellcheck disable=SC2059
+  printf "$@"
 }
 
 display_no_version_set() {
@@ -426,7 +440,7 @@ initialize_or_update_plugin_repository() {
 
   disable_plugin_short_name_repo="$(get_asdf_config_value "disable_plugin_short_name_repository")"
   if [ "yes" = "$disable_plugin_short_name_repo" ]; then
-    printf "Short-name plugin repository is disabled\n" >&2
+    display_error "Short-name plugin repository is disabled"
     exit 1
   fi
 
@@ -646,7 +660,7 @@ shim_plugin_versions() {
   if [ -x "$shim_path" ]; then
     grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | uniq
   else
-    printf "asdf: unknown shim %s\n" "$executable_name"
+    display_info "asdf: unknown shim %s\n" "$executable_name"
     return 1
   fi
 }
@@ -659,7 +673,7 @@ shim_plugins() {
   if [ -x "$shim_path" ]; then
     grep "# asdf-plugin: " "$shim_path" 2>/dev/null | sed -e "s/# asdf-plugin: //" | cut -d' ' -f 1 | uniq
   else
-    printf "asdf: unknown shim %s\n" "$executable_name"
+    display_info "asdf: unknown shim %s\n" "$executable_name"
     return 1
   fi
 }
@@ -761,7 +775,7 @@ with_shim_executable() {
   local shim_exec="${2}"
 
   if [ ! -f "$(asdf_data_dir)/shims/${shim_name}" ]; then
-    printf "%s %s %s\n" "unknown command:" "${shim_name}." "Perhaps you have to reshim?" >&2
+    display_error "%s %s %s\n" "unknown command:" "${shim_name}." "Perhaps you have to reshim?"
     return 1
   fi
 
@@ -820,15 +834,15 @@ with_shim_executable() {
     done
 
     if [ -n "${preset_plugin_versions[*]}" ]; then
-      printf "%s %s\n" "No preset version installed for command" "$shim_name"
-      printf "%s\n\n" "Please install a version by running one of the following:"
+      display_info "%s %s\n" "No preset version installed for command" "$shim_name"
+      display_info "%s\n\n" "Please install a version by running one of the following:"
       for preset_plugin_version in "${preset_plugin_versions[@]}"; do
-        printf "%s %s\n" "asdf install" "$preset_plugin_version"
+        display_info "%s %s\n" "asdf install" "$preset_plugin_version"
       done
-      printf "\n%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
+      display_info "\n%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
     else
-      printf "%s %s\n" "No version is set for command" "$shim_name"
-      printf "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
+      display_info "%s %s\n" "No version is set for command" "$shim_name"
+      display_info "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
     fi
     shim_plugin_versions "${shim_name}"
   ) >&2
@@ -872,7 +886,7 @@ util_validate_no_carriage_returns() {
   local file_path="$1"
 
   if grep -qr $'\r' "$file_path"; then
-    printf '%s\n' "asdf: Warning: File $file_path contains carriage returns. Please remove them." >&2
+    display_error "asdf: Warning: File $file_path contains carriage returns. Please remove them."
   fi
 }
 

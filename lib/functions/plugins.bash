@@ -79,7 +79,7 @@ plugin_add_command() {
   mkdir -p "$(asdf_data_dir)/plugins"
 
   if [ -d "$plugin_path" ]; then
-    printf '%s\n' "Plugin named $plugin_name already added"
+    display_info "Plugin named $plugin_name already added"
     exit 0
   else
     asdf_run_hook "pre_asdf_plugin_add" "$plugin_name"
@@ -140,11 +140,11 @@ update_plugin() {
   local prev_ref=
   local post_ref=
   {
-    printf "Location of %s plugin: %s\n" "$plugin_name" "$plugin_path"
+    display_info "Location of %s plugin: %s\n" "$plugin_name" "$plugin_path"
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 
-    printf "Updating %s to %s\n" "$plugin_name" "$gitref"
+    display_info "Updating %s to %s\n" "$plugin_name" "$gitref"
 
     git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
     prev_ref=$(git "${common_git_options[@]}" rev-parse --short HEAD)
