@@ -132,11 +132,10 @@ plugin_update_command() {
 update_plugin() {
   local plugin_name=$1
   local plugin_path=$2
-  plugin_remote_default_branch=$(git --git-dir "$plugin_path/.git" --work-tree "$plugin_path" ls-remote --symref origin HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')
-  local gitref=${3:-${plugin_remote_default_branch}}
+  local common_git_options=(--git-dir "$plugin_path/.git" --work-tree "$plugin_path")
+  local gitref=${3:-$(git "${common_git_options[@]}" ls-remote --symref origin HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')}
   logfile=$(mktemp)
 
-  local common_git_options=(--git-dir "$plugin_path/.git" --work-tree "$plugin_path")
   local prev_ref=
   local post_ref=
   {
