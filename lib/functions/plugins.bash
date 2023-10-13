@@ -145,7 +145,17 @@ update_plugin() {
 
     printf "Updating %s to %s\n" "$plugin_name" "$gitref"
 
-    git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
+    local is_commit=false
+    rp=$(git "${common_git_options[@]}" rev-parse --verify -q "$gitref" || true)
+    # if rp is non-empty and gitref is a prefix of rp, then gitref is a commit
+    if [[ -n "$rp" && "$rp" == "$gitref"* ]]; then
+      is_commit=true
+    fi
+
+    # if gitref is not commit, or it is a commit but it's not present in the already cloned repo, then fetch from remote
+    if ! $is_commit || ! git "${common_git_options[@]}" cat-file -t "$gitref" >/dev/null 2>&1; then
+      git "${common_git_options[@]}" fetch --prune --update-head-ok origin "$gitref:$gitref"
+    fi
     prev_ref=$(git "${common_git_options[@]}" rev-parse --short HEAD)
     post_ref=$(git "${common_git_options[@]}" rev-parse --short "${gitref}")
     git "${common_git_options[@]}" -c advice.detachedHead=false checkout --force "$gitref"
