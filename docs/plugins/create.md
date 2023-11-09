@@ -685,14 +685,14 @@ No parameters provided.
 
 **Description**
 
-Execute this callback script **after** asdf has downloaded the _updated_ plugin with `asdf plugin update <tool> [<git-ref>]`.
+Execute this callback script **after** asdf has downloaded the _update_ plugin with `asdf plugin update <tool> [<git-ref>]`.
 
 See also the related command hooks:
 
-- `pre_asdf_plugin_updated`
-- `pre_asdf_plugin_updated_${plugin_name}`
-- `post_asdf_plugin_updated`
-- `post_asdf_plugin_updated_${plugin_name}`
+- `pre_asdf_plugin_update`
+- `pre_asdf_plugin_update_${plugin_name}`
+- `post_asdf_plugin_update`
+- `post_asdf_plugin_update_${plugin_name}`
 
 **Environment Variables available to script**
 

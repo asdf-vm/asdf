@@ -150,10 +150,10 @@ bin tools veggies
 
 其他请参考相关钩子：
 
-- `pre_asdf_plugin_updated`
-- `pre_asdf_plugin_updated_${plugin_name}`
-- `post_asdf_plugin_updated`
-- `post_asdf_plugin_updated_${plugin_name}`
+- `pre_asdf_plugin_update`
+- `pre_asdf_plugin_update_${plugin_name}`
+- `post_asdf_plugin_update`
+- `post_asdf_plugin_update_${plugin_name}`
 
 #### bin/pre-plugin-remove
 
