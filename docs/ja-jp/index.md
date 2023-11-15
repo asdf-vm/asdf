@@ -25,7 +25,7 @@ features:
     details: "既存ランタイム・ツールを使用した大規模なエコシステムです。必要に応じて新しいツールをサポートできるシンプルなAPIを用意しています!"
     icon: 🔌
   - title: 後方互換性
-    details: ".nvmrc、.node-versions、.ruby-versionといった既存構成ファイルから、スムーズに移行できます!"
+    details: ".nvmrc、.node-version、.ruby-versionといった既存構成ファイルから、スムーズに移行できます!"
     icon: ⏮
   - title: "単一の構成ファイル"
     details: ".tool-versionsを使用すると、すべてのツール、ランタイム、およびそれらのバージョンを、共有された単一の場所で管理できます。"
