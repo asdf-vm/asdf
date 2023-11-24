@@ -130,7 +130,7 @@ list_all_command() {
 }
 
 latest_command() {
-  DEFAULT_QUERY="[0-9]"
+  DEFAULT_QUERY="v?[0-9]"
 
   local plugin_name=$1
   local query=$2
