@@ -155,17 +155,13 @@ latest_command() {
       exit 1
     fi
   else
-    # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-    versions=$(list_all_command "$plugin_name" "$query" |
-      grep -ivE "(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-      sed 's/^[[:space:]]\+//' |
-      tail -1)
-    if [ -z "${versions}" ]; then
+    version=$(_latest_version_helper "$plugin_name" "$query")
+    if [ -z "${version}" ]; then
       exit 1
     fi
   fi
 
-  printf "%s\n" "$versions"
+  printf "%s\n" "$version"
 }
 
 latest_all() {
@@ -186,11 +182,7 @@ latest_all() {
           version="unknown"
         fi
       else
-        # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest)
-        version=$(list_all_command "$plugin_name" |
-          grep -ivE "(^Available version:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)" |
-          sed 's/^[[:space:]]\+//' |
-          tail -1)
+        version=$(_latest_version_helper "$plugin_name")
         if [ -z "${version}" ]; then
           version="unknown"
         fi
@@ -237,4 +229,12 @@ local_command() {
   else
     version_command local "$@"
   fi
+}
+
+_latest_version_helper() {
+  # pattern from xxenv-latest (https://github.com/momo-lab/xxenv-latest/blob/fe8fb00d55d2fb8daca834214f7ac614f87c255f/bin/xxenv-latest#L85)
+  list_all_command "$@" |
+    grep -ivE "(^Available versions?:|-src|-dev|-latest|-stm|[-\\.]rc|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+$|snapshot|master|-nightly)" |
+    sed 's/^[[:space:]]\+//' |
+    tail -1
 }
