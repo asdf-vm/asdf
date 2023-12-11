@@ -14,7 +14,8 @@ plugin_test_command() {
   local plugin_url="$2"
   shift 2
 
-  local plugin_gitref="master"
+  plugin_remote_default_branch=$(git ls-remote --symref $plugin_url HEAD | awk '{ sub(/refs\/heads\//, ""); print $2; exit }')
+  local plugin_gitref=${3:-${plugin_remote_default_branch}}
   local tool_version
   local interpret_args_literally
   local skip_next_arg
