@@ -1,3 +1,4 @@
+golang 1.21.5
 bats 1.8.2
 shellcheck 0.9.0
 shfmt 3.6.0
