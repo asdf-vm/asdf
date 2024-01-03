@@ -135,7 +135,7 @@ install_local_tool_versions() {
 
   if [ -z "$some_tools_installed" ]; then
     printf "Either specify a tool & version in the command\n"
-    printf "OR add .tool-versions file in this directory\n"
+    printf "OR add a .tool-versions file in this directory\n"
     printf "or in a parent directory\n"
     exit 1
   fi
