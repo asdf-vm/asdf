@@ -412,6 +412,7 @@ repository_needs_update() {
     local update_file_dir
     local update_file_name
     update_file_dir="$(asdf_data_dir)/tmp"
+    mkdir -p "$update_file_dir"
     update_file_name="repo-updated"
     # `find` outputs filename if it has not been modified in plugin_repository_last_check_duration setting.
     sync_required=$(find "$update_file_dir" -name "$update_file_name" -type f -mmin +"${plugin_repository_last_check_duration:-60}" -print)
