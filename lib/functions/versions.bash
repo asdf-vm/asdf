@@ -165,7 +165,7 @@ latest_command() {
     fi
   fi
 
-  printf "%s\n" "$versions"
+  printf "%s %s\n" "$plugin_name" "$versions"
 }
 
 latest_all() {
