@@ -308,7 +308,7 @@ Ao concluir atualizará automaticamente
 Adicione `asdf.nu` ao seu `~/.config/nushell/config.nu` através do comando:
 
 ```shell
-"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
 Ao concluir atualizará automaticamente
