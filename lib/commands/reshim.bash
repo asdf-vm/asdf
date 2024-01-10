@@ -18,7 +18,7 @@ remove_shim_for_version() {
   sed -i.bak -e "/# asdf-plugin: $plugin_name $version"'$/d' "$shim_path"
   rm "$shim_path".bak
 
-  if ! grep "# asdf-plugin:" "$shim_path" >/dev/null ||
+  if ! grep -q "# asdf-plugin:" "$shim_path" ||
     [ "$count_installed" -eq 0 ]; then
     rm -f "$shim_path"
   fi
