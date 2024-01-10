@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 set -o pipefail
-[[ "${ASDF_DEBUG}" == "1" ]] && set -x || true
+if [[ "${ASDF_DEBUG}" == "1" ]]; then
+  set -x
+fi
 
 # shellcheck source=lib/utils.bash
 . "$(dirname "$(dirname "$0")")/lib/utils.bash"
