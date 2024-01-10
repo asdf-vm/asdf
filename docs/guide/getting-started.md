@@ -36,7 +36,7 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 
 ```
 
@@ -300,7 +300,7 @@ Add the following to `~/.config/powershell/profile.ps1`:
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+"\n$env.ASDF_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
 ```
 
 Completions are automatically configured
@@ -311,7 +311,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
 Completions are automatically configured
@@ -322,7 +322,7 @@ Completions are automatically configured
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 ```shell
-"\nlet-env ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+"\n$env.ASDF_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
 ```
 
 Completions are automatically configured.
@@ -364,7 +364,7 @@ export ASDF_DIR="/opt/asdf-vm"
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 ::: warning
-On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcily adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.`.
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcily adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.
 :::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.

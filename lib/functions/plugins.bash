@@ -140,6 +140,7 @@ update_plugin() {
   local prev_ref=
   local post_ref=
   {
+    printf "Location of %s plugin: %s\n" "$plugin_name" "$plugin_path"
     asdf_run_hook "pre_asdf_plugin_update" "$plugin_name"
     asdf_run_hook "pre_asdf_plugin_update_${plugin_name}"
 

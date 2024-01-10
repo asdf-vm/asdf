@@ -209,8 +209,8 @@ asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--a
 ```
 
 Apenas os dois primeiros argumentos são necessários.
-Se \__version_ for especificado, a ferramenta será instalada com essa versão específica. O padrão é o que retorna `asdf mais recente <plugin-name>`.
-Se _git-ref_ for especificado, o plug-in em si é verificado nesse commit/branch/tag, útil para testar um pull-request no CI do seu plug-in.
+Se \__version_ for especificado, a ferramenta será instalada com essa versão específica. O padrão é o que retorna `asdf latest <plugin-name>`.
+Se _git-ref_ for especificado, o plug-in em si é verificado nesse commit/branch/tag, útil para testar um pull-request no CI do seu plug-in. O padrão é o branch _default_ do repositório do plugin.
 
 Os argumentos Rest são considerados o comando a ser executado para garantir que a ferramenta instalada funcione corretamente.
 Normalmente seria algo que leva `--version` ou `--help`.

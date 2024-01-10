@@ -23,8 +23,8 @@ features:
   - title: Plugins
     details: "Grande ecossistema de runtimes e ferramentas existentes. API simples para adicionar suporte para novas ferramentas conforme necessário!"
     icon: 🔌
-  - title: "Compatível com varios arquivos de configuração"
-    details: "Suporte para arquivos de configuração existentes .nvmrc, .node-versions, .ruby-version para uma migração tranquila!"
+  - title: "Compatível com vários arquivos de configuração"
+    details: "Suporte para arquivos de configuração existentes .nvmrc, .node-version, .ruby-version para uma migração tranquila!"
     icon: ⏮
   - title: "Só um arquivo de configuração"
     details: ".tool-versions para gerenciar todas as suas ferramentas, runtimes e suas versões em um único arquivo"

@@ -242,9 +242,9 @@ EOM
   echo 'legacy_version_file = yes' >"$HOME/.asdfrc"
   echo '1.2.0' >>"$PROJECT_DIR/.dummy-version"
   cd "$PROJECT_DIR"
+
   run asdf install
   [ "$status" -eq 0 ]
-  [ -z "$output" ]
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
 
@@ -257,7 +257,6 @@ EOM
 
   run asdf install
   [ "$status" -eq 0 ]
-  [ -z "$output" ]
   [ -f "$ASDF_DIR/installs/dummy/1.2.0/version" ]
 }
 
@@ -301,4 +300,13 @@ EOM
   [ ! -d "$ASDF_DIR/downloads/dummy-broken/1.1.0" ]
   [ ! -d "$ASDF_DIR/installs/dummy-broken/1.1.0" ]
   [ "$output" = "Download failed!" ]
+}
+
+@test "install_command prints info message if plugin does not support preserving download data if configured" {
+  install_dummy_plugin_no_download
+
+  run asdf install dummy-no-download 1.0.0
+  [ "$status" -eq 0 ]
+
+  [[ "$output" == *'asdf: Warn:'*'not be preserved'* ]]
 }

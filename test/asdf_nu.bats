@@ -25,8 +25,8 @@ run_nushell() {
   run nu -c "
     hide-env -i asdf
     hide-env -i ASDF_DIR
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+    \$env.PATH = ( '$(cleaned_path)' | split row ':' )
+    \$env.ASDF_DIR = '$PWD'
 
     source asdf.nu
     $1"
@@ -60,12 +60,27 @@ run_nushell() {
   [ "$result" = "" ]
 }
 
-@test "retains ASDF_DIR" {
+@test "retains ASDF_DIR (from ASDF_NU_DIR)" {
   run nu -c "
     hide-env -i asdf
-    let-env ASDF_DIR = ( pwd )
-    let-env PATH = ( '$(cleaned_path)' | split row ':' )
-    let-env ASDF_NU_DIR = '$PWD'
+    \$env.ASDF_DIR = ( pwd )
+    \$env.PATH = ( '$(cleaned_path)' | split row ':' )
+    \$env.ASDF_NU_DIR = '$PWD'
+
+    source asdf.nu
+
+    echo \$env.ASDF_DIR"
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "$PWD" ]
+}
+
+@test "retains ASDF_DIR (from ASDF_DIR)" {
+  run nu -c "
+    hide-env -i asdf
+    \$env.ASDF_DIR = ( pwd )
+    \$env.PATH = ( '$(cleaned_path)' | split row ':' )
+    \$env.ASDF_DIR = '$PWD'
 
     source asdf.nu
 
