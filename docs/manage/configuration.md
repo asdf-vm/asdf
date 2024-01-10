@@ -152,6 +152,31 @@ The default number of cores to use during compilation.
 
 Note: the environment variable `ASDF_CONCURRENCY` take precedence if set.
 
+### Plugin Hooks
+
+It is possible to execute custom code:
+
+- Before or after a plugin is installed, reshimed, updated, or uninstalled
+- Before or after a plugin command is executed
+
+For example, if a plugin called `foo` is installed and provides a `bar` executable, then the following hooks can be used to execute custom code first:
+
+```text
+pre_foo_bar = echo Executing with args: $@
+```
+
+The following patterns are supported:
+
+- `pre_<plugin_name>_<command>`
+- `pre_asdf_download_<plugin_name>`
+- `{pre,post}_asdf_{install,reshim,uninstall}_<plugin_name>`
+  - `$1`: full version
+- `{pre,post}_asdf_plugin_{add,update,remove,reshim}`
+  - `$1`: plugin name
+- `{pre,post}_asdf_plugin_{add,update,remove}_<plugin_name>`
+
+See [Create a Plugin](../plugins/create.md) for specifics on what command hooks are ran before or after what commands.
+
 ## Environment Variables
 
 Setting environment variables varies depending on your system and Shell. Default locations depend upon your installation location and method (Git clone, Homebrew, AUR).

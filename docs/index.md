@@ -25,7 +25,7 @@ features:
     details: "Large ecosystem of existing runtimes & tools. Simple API to add support for new tools as you need!"
     icon: 🔌
   - title: Backwards Compatible
-    details: "Support for existing config files .nvmrc, .node-versions, .ruby-version for smooth migration!"
+    details: "Support for existing config files .nvmrc, .node-version, .ruby-version for smooth migration!"
     icon: ⏮
   - title: "One Config File"
     details: ".tool-versions to manage all your tools, runtimes and their versions in a single, sharable place."
