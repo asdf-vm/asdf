@@ -32,6 +32,24 @@ const en = [
   },
 ];
 
+const ja_jp = [
+  { text: "ガイド", link: "/ja-jp/guide/getting-started" },
+  {
+    text: "リファレンス",
+    link: "/ja-jp/manage/configuration",
+  },
+  {
+    text: getVersion(),
+    items: [
+      {
+        text: "変更履歴",
+        link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md",
+      },
+      { text: "コントリビューション", link: "/ja-jp/contribute/core" },
+    ],
+  },
+];
+
 const pt_br = [
   { text: "Guia", link: "/pt-br/guide/getting-started" },
   {
@@ -68,4 +86,4 @@ const zh_hans = [
   },
 ];
 
-export { en, pt_br, zh_hans };
+export { en, ja_jp, pt_br, zh_hans };
