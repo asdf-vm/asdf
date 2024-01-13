@@ -54,6 +54,7 @@ asdf exec <command> [args...]           Executes the command shim for current ve
 asdf env <command> [util]               Runs util (default: `env`) inside the
                                         environment used for command shim execution.
 asdf info                               Print OS, Shell and ASDF debug information.
+asdf version                            Print the currently installed version of ASDF
 asdf reshim <name> <version>            Recreate shims for version of a package
 asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
