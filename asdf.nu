@@ -1,4 +1,4 @@
-def-env configure-asdf [] {
+def --env configure-asdf [] {
     $env.ASDF_DIR = (
       if ($env | get --ignore-errors ASDF_NU_DIR | is-empty) == false {
         $env.ASDF_NU_DIR
