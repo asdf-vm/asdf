@@ -16,7 +16,7 @@ cleaned_path() {
 }
 
 @test "exports ASDF_DIR" {
-  run fish -c "
+  run fish --no-config -c "
     set -e asdf
     set -e ASDF_DIR
     set -e ASDF_DATA_DIR
@@ -30,7 +30,7 @@ cleaned_path() {
 }
 
 @test "adds asdf dirs to PATH" {
-  run fish -c "
+  run fish --no-config -c "
     set -e asdf
     set -e ASDF_DIR
     set -e ASDF_DATA_DIR
@@ -46,7 +46,7 @@ cleaned_path() {
 }
 
 @test "does not add paths to PATH more than once" {
-  run fish -c "
+  run fish --no-config -c "
     set -e asdf
     set -e ASDF_DIR
     set -e ASDF_DATA_DIR
@@ -63,7 +63,7 @@ cleaned_path() {
 }
 
 @test "defines the asdf function" {
-  run fish -c "
+  run fish --no-config -c "
     set -e asdf
     set -e ASDF_DIR
     set PATH $(cleaned_path)
@@ -76,7 +76,7 @@ cleaned_path() {
 }
 
 @test "function calls asdf command" {
-  run fish -c "
+  run fish --no-config -c "
     set -e asdf
     set -x ASDF_DIR $(pwd) # checkstyle-ignore
     set PATH $(cleaned_path)
