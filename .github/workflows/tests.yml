@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: "18"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: npm-cache
         with:
           path: |
