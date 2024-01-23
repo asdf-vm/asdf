@@ -65,6 +65,7 @@ always_keep_download = no
 plugin_repository_last_check_duration = 60
 disable_plugin_short_name_repository = no
 concurrency = auto
+version_with_plugin_name = no
 ```
 
 ### `legacy_version_file`
@@ -151,6 +152,29 @@ The default number of cores to use during compilation.
 | `auto`  | Calculate the number of cores using `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo` or else `1` |
 
 Note: the environment variable `ASDF_CONCURRENCY` take precedence if set.
+
+### `version_with_plugin_name`
+
+Configure the `asdf latest` command to display the plugin's name along with the latest version, e.g., `<plugin> <version>` rather than just `<version>`.  This makes it easier to update your `.tool-versions` file.
+
+For example:
+
+```shellsession
+$ asdf latest ruby 2 # with default settings
+2.7.8
+
+$ asdf latest ruby 2 # version_with_plugin_name = yes
+ruby 2.7.8
+
+$ asdf latest ruby 2 > .tool-versions # version_with_plugin_name = yes
+$ asdf install
+ruby 2.7.8 installed
+```
+
+| Options                                                    | Description                    |
+| :--------------------------------------------------------- | :----------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Just output version            |
+| `yes`                                                      | Prepend plugin name to version |
 
 ### Plugin Hooks
 
