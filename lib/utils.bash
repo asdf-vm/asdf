@@ -119,7 +119,6 @@ check_if_plugin_exists() {
 
   if [ ! -d "$(asdf_data_dir)/plugins/$plugin_name" ]; then
     display_error "No such plugin: $plugin_name"
-    display_error "Try: asdf plugin add $plugin_name"
     exit 1
   fi
 }

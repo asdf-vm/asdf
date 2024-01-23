@@ -42,7 +42,6 @@ plugin_list_command() {
     ) | awk '{ if (NF > 1) { printf("%-28s", $1) ; $1="" }; print $0}'
   else
     display_error 'No plugins installed'
-    display_error 'Try: asdf plugin add PLUGIN'
     exit 0
   fi
 }

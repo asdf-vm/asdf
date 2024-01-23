@@ -16,7 +16,6 @@ list_command() {
       done
     else
       printf "%s\n" 'No plugins installed'
-      printf "%s\n" 'Try: asdf plugin add PLUGIN'
     fi
   else
     check_if_plugin_exists "$plugin_name"

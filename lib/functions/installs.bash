@@ -98,7 +98,6 @@ install_local_tool_versions() {
 
   if [ -z "$plugins_installed" ]; then
     printf "Install plugins first to be able to install tools\n"
-    printf "e.g., asdf plugin add PLUGIN\n"
     exit 1
   fi
 
@@ -109,7 +108,6 @@ install_local_tool_versions() {
     for plugin_name in $tools_file; do
       if ! printf '%s\n' "${plugins_installed[@]}" | grep -q "^$plugin_name\$"; then
         printf "%s plugin is not installed\n" "$plugin_name"
-        printf "Try: asdf plugin add %s\n" "$plugin_name"
         some_plugin_not_installed='yes'
       fi
     done
