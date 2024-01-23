@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.14.0](https://github.com/asdf-vm/asdf/compare/v0.13.1...v0.14.0) (2024-01-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Enable `pipefail` ([#1608](https://github.com/asdf-vm/asdf/issues/1608))
+
+### Patches
+
+* `plugin test` git-ref to use plugin repo default branch ([#1694](https://github.com/asdf-vm/asdf/issues/1694)) ([6d8cf9d](https://github.com/asdf-vm/asdf/commit/6d8cf9d44b3d985ac59f1eac827c5275392f90fd))
+* avoid mention of `ASDF_NU_DIR` ([#1660](https://github.com/asdf-vm/asdf/issues/1660)) ([dfea89c](https://github.com/asdf-vm/asdf/commit/dfea89ccc703f3ef5a87c4b85726456d70167d89))
+* Enable `pipefail` ([#1608](https://github.com/asdf-vm/asdf/issues/1608)) ([4085e55](https://github.com/asdf-vm/asdf/commit/4085e5542bac824ea124610ad247c2f90d1b8d93))
+* **fish:** use PATH instead of fish_user_paths ([#1709](https://github.com/asdf-vm/asdf/issues/1709)) ([5327697](https://github.com/asdf-vm/asdf/commit/53276973f7c99695cd9a28b04c010b006d7f60ca))
+* list `asdf version` command under help.txt UTILS section ([#1673](https://github.com/asdf-vm/asdf/issues/1673)) ([240a5fb](https://github.com/asdf-vm/asdf/commit/240a5fbdea1de055672d02f83db1de990ea2bf83))
+* **nushell:** Use `def --env` instead of `def-env` ([#1681](https://github.com/asdf-vm/asdf/issues/1681)) ([3b8f400](https://github.com/asdf-vm/asdf/commit/3b8f400c3e628851286bfebd8da5bc7ab45cd676))
+* plugin extension commands to not require `bin/` directory ([#1643](https://github.com/asdf-vm/asdf/issues/1643)) ([61420ad](https://github.com/asdf-vm/asdf/commit/61420ad90829b2c9bf1ca16681a2eb652adcc755))
+* use universal scope for fish_user_paths ([#1699](https://github.com/asdf-vm/asdf/issues/1699)) ([0ffee72](https://github.com/asdf-vm/asdf/commit/0ffee7224bc00a917ceaea689c6268fd1f03bd62))
+* warn if plugin does not support keeping downloads if configured ([#1644](https://github.com/asdf-vm/asdf/issues/1644)) ([19515ed](https://github.com/asdf-vm/asdf/commit/19515eda3b91167b0d76c35ffc4402de688007e0))
+
+
+### Documentation
+
+* add Japanese translation ([#1667](https://github.com/asdf-vm/asdf/issues/1667)) ([2b9bec7](https://github.com/asdf-vm/asdf/commit/2b9bec7710cd18e51a01652e1f58cc309baf2fd7))
+* fix some pt-br spelling ([#1640](https://github.com/asdf-vm/asdf/issues/1640)) ([0c7c41a](https://github.com/asdf-vm/asdf/commit/0c7c41ab44d3a42a9e57e3d20a646569c2eacfdc))
+* fix typo "node version" filename ([#1679](https://github.com/asdf-vm/asdf/issues/1679)) ([fad23bc](https://github.com/asdf-vm/asdf/commit/fad23bc9f4d38747f28d6708ab01689749030063))
+* fix typo ([#1670](https://github.com/asdf-vm/asdf/issues/1670)) ([5737fa3](https://github.com/asdf-vm/asdf/commit/5737fa316eab01c4033565eacf678222cd861f8d))
+* Improve `.asdfrc` plugin hook docuentation ([#1661](https://github.com/asdf-vm/asdf/issues/1661)) ([8fbf9a3](https://github.com/asdf-vm/asdf/commit/8fbf9a396bd4a5b71ec7cf215d12040fb5365d6a))
+
 ## [0.13.1](https://github.com/asdf-vm/asdf/compare/v0.13.0...v0.13.1) (2023-09-12)
 
 
