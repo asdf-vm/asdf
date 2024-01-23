@@ -65,6 +65,7 @@ always_keep_download = no
 plugin_repository_last_check_duration = 60
 disable_plugin_short_name_repository = no
 concurrency = auto
+local_command_auto_install_missing_version = no
 ```
 
 ### `legacy_version_file`
@@ -151,6 +152,17 @@ The default number of cores to use during compilation.
 | `auto`  | Calculate the number of cores using `nproc`, then `sysctl hw.ncpu`, then `/proc/cpuinfo` or else `1` |
 
 Note: the environment variable `ASDF_CONCURRENCY` take precedence if set.
+
+### `local_command_auto_install_missing_version`
+
+Configure the `asdf local` command with the ability to auto-install missing versions.
+
+For example, if you want your `.tool-versions` file to reflect `ruby 2.7.8`, you can invoke `asdf local ruby 2.7.8`.  By default, if Ruby 2.7.8 is not yet installed, this command will exit with an error. However, if you set `local_command_auto_install_missing_version = yes` in `~/.asdfrc`, Ruby 2.7.8 will be downloaded & installed if necessary, and then `.tool-versions` will be updated.
+
+| Options                                                    | Description                                                |
+| :--------------------------------------------------------- | :--------------------------------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | Only update .tool-versions if version is already available |
+| `yes`                                                      | Install version if missing, then update .tool-versions     |
 
 ### Plugin Hooks
 
