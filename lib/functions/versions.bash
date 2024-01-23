@@ -53,8 +53,14 @@ version_command() {
     fi
 
     if ! (check_if_version_exists "$plugin_name" "$version"); then
-      version_not_installed_text "$plugin_name" "$version" 1>&2
-      exit 1
+      auto_install=$(get_asdf_config_value "local_command_auto_install_missing_version")
+      if [[ "$auto_install" == "yes" ]]; then
+        echo "install_tool_version $plugin_name $version"
+        install_tool_version "$plugin_name" "$version"
+      else
+        version_not_installed_text "$plugin_name" "$version" 1>&2
+        exit 1
+      fi
     fi
 
     resolved_versions+=("$version")
