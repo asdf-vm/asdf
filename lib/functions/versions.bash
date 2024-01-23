@@ -165,7 +165,12 @@ latest_command() {
     fi
   fi
 
-  printf "%s %s\n" "$plugin_name" "$versions"
+  with_version=$(get_asdf_config_value "version_with_plugin_name")
+  if [[ "$with_version" = "yes" ]]; then
+    printf "%s %s\n" "$plugin_name" "$versions"
+  else
+    printf "%s\n" "$versions"
+  fi
 }
 
 latest_all() {
