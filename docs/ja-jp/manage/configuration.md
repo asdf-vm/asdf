@@ -152,6 +152,31 @@ asdfプラグインのショートネームリポジトリの同期を無効化�
 
 備考: `ASDF_CONCURRENCY`環境変数が設定されている場合はそちらが優先されます。
 
+### プラグインフック
+
+下記のタイミングで、カスタムコードを実行することができます:
+
+- プラグインのインストール、Shim再生成、更新および削除をする際の前後
+- プラグインコマンドの実行前後
+
+例えば、`foo`というプラグインがインストールされていて、`bar`という実行可能ファイルが提供されている場合、以下のようなフックを使うことで、一番最初にカスタムコードを実行することができます:
+
+```text
+pre_foo_bar = echo Executing with args: $@
+```
+
+以下のパターンがサポートされています:
+
+- `pre_<plugin_name>_<command>`
+- `pre_asdf_download_<plugin_name>`
+- `{pre,post}_asdf_{install,reshim,uninstall}_<plugin_name>`
+  - `$1`: フルバージョン
+- `{pre,post}_asdf_plugin_{add,update,remove,reshim}`
+  - `$1`: プラグイン名
+- `{pre,post}_asdf_plugin_{add,update,remove}_<plugin_name>`
+
+どのようなコマンドの前後にどのようなコマンドフックを実行すべきかについての詳細は、[プラグインの作成](../plugins/create.md)をご覧ください。
+
 ## 環境変数
 
 環境変数の設定値は、お使いのシステムやシェルによって異なります。デフォルトロケーションは、インストールした場所や方法(Gitクローン、Homebrew、AUR)によって異なります。

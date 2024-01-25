@@ -11,7 +11,7 @@
 
 ## 1. 依存関係のインストール
 
-asdfの動作には`git`および`curl`が必要です。以下の表は、 _あなたが使用している_ パッケージマネージャで実行するコマンドの _一部例_ です(some might automatically install these tools in later steps)。
+asdfの動作には`git`および`curl`が必要です。以下の表は、 _あなたが使用している_ パッケージマネージャで実行するコマンドの _一部例_ です(いくつかのツールは、後の手順で自動的にインストールされます)。
 
 | OS    | パッケージマネージャ | コマンド                           |
 | ----- | -------------------- | ---------------------------------- |
@@ -34,8 +34,9 @@ asdfの動作には`git`および`curl`が必要です。以下の表は、 _あ
 
 <!-- x-release-please-start-version -->
 
+
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
 
 ```
 
@@ -299,7 +300,7 @@ echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell
 下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
 
 ```shell
-"\n$env.ASDF_NU_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+"\n$env.ASDF_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
 ```
 
 コマンド補完は自動的に設定されます。
@@ -310,7 +311,7 @@ echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell
 下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
 
 ```shell
-"\n$env.ASDF_NU_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
+"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
 ```
 
 コマンド補完は自動的に設定されます。
@@ -321,7 +322,7 @@ echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell
 下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
 
 ```shell
-"\n$env.ASDF_NU_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
+"\n$env.ASDF_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
 ```
 
 コマンド補完は自動的に設定されます。
@@ -363,7 +364,7 @@ export ASDF_DIR="/opt/asdf-vm"
 `asdf`のスクリプトは、`$PATH`を設定した**あと**、かつ、使用中のフレームワーク(oh-my-zsh など)を呼び出した**あと**に記述する必要があります。
 
 ::: warning 警告
-macOSでは、BasgまたはZSHシェルを起動すると、自動的に`path_helper`というユーティリティが呼び出されます。`path_helper`は`PATH`(および`MANPATH`)内の項目の順番を並び替えることができるため、特定の順序を必要とするツールの動作に、一貫性が無くなってしまいます。これを回避するため、macOSで`asdf`を利用するときは、強制的に`PATH`エントリの先頭に追加する(優先度を一番高くする)ようにしてください。これは、`ASDF_FORCE_PREPEND`環境変数で制御できます。
+macOSでは、BashまたはZSHシェルを起動すると、自動的に`path_helper`というユーティリティが呼び出されます。`path_helper`は`PATH`(および`MANPATH`)内の項目の順番を並び替えることができるため、特定の順序を必要とするツールの動作に、一貫性が無くなってしまいます。これを回避するため、macOSで`asdf`を利用するときは、強制的に`PATH`エントリの先頭に追加する(優先度を一番高くする)ようにしてください。これは、`ASDF_FORCE_PREPEND`環境変数で制御できます。
 :::
 
 `PATH`の変更を反映するために、シェルを再起動してください。たいていの場合、ターミナルのタブを新たに開けばOKです。
