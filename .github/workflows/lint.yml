@@ -10,7 +10,7 @@ env:
   PYTHON_MIN_VERSION: "3.7.13"
 
 jobs:
-  asdf:
+  asdf-bash:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +20,25 @@ jobs:
           python-version: ${{ env.PYTHON_MIN_VERSION }}
       - run: scripts/install_dependencies.bash
       - run: scripts/lint.bash --check
+
+  asdf-golang:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.5'
+      - name: Install dependencies
+        run: go get .
+      - name: Check format
+        run: '[ -z "$(gofmt -l ./...)" ]'
+      - name: Vet
+        run: go vet
+      - name: Install staticcheck for linting
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+      - name: Lint
+        run: staticcheck -tests -show-ignored ./...
 
   actions:
     runs-on: ubuntu-latest
