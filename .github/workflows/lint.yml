@@ -39,6 +39,8 @@ jobs:
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
       - name: Lint
         run: staticcheck -tests -show-ignored ./...
+      - name: Build
+        run: build -v ./...
 
   actions:
     runs-on: ubuntu-latest
