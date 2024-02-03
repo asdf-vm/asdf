@@ -14,3 +14,17 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v5.5.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          scopes: |
+            # The scope for all the Golang rewrite commits
+            golang-rewrite
+            # A list of all used scopes can be computed by running this command:
+            #
+            # git log --pretty=format:%s | rg '^[^: ]*\(([^):]*)\).*' -r '$1' | sort | uniq
+            #
+            # We only want to allow a limited set of scopes going forward, so
+            # the list of valid scopes has been pared down here.
+            docs
+            website
+            plugin
+            completions

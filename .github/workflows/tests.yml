@@ -9,8 +9,6 @@ on:
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
     # Set job outputs to values from filter step
     outputs:
       documentation: ${{ steps.filter.outputs.documentation }}
@@ -36,6 +34,21 @@ jobs:
               - 'asdf.*'
               - 'defaults'
               - 'help.txt'
+
+  test-golang:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.5'
+      - name: Install dependencies
+        run: go get .
+      - name: Run Go tests
+        run: go test
 
   ubuntu:
     needs: detect-changes
