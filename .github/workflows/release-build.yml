@@ -61,7 +61,7 @@ jobs:
           #
           # See: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167/highlight/true#M1027
           #echo "ASDF_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "ASDF_VERSION=$GITHUB_SHA" >> "$GITHUB_ENV"
+          echo "ASDF_VERSION=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
           echo "version is: ${{ env.ASDF_VERSION }}"
       - uses: actions/checkout@v3
       - name: Create GitHub release
@@ -74,6 +74,7 @@ jobs:
           name: ${{ env.ASDF_VERSION }}
 
   build:
+    needs: create-release
     runs-on: ubuntu-latest
     steps:
       -
