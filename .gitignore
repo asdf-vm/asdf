@@ -6,3 +6,5 @@ repository
 .vagrant
 keyrings
 /tmp
+
+dist/
