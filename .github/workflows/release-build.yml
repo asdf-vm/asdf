@@ -61,7 +61,9 @@ jobs:
           #
           # See: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167/highlight/true#M1027
           #echo "ASDF_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "ASDF_VERSION=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+          # Once we're using this for real releases we'll want to change this
+          # line below to contain the actual tag name
+          echo "ASDF_VERSION=0.0.0" >> "$GITHUB_ENV"
           echo "version is: ${{ env.ASDF_VERSION }}"
       - uses: actions/checkout@v3
       - name: Create GitHub release
@@ -93,7 +95,6 @@ jobs:
         # Downgraded to version 4 to get snapshot feature working
         uses: goreleaser/goreleaser-action@v4
         with:
-          distribution: goreleaser
           version: latest
           args: release --clean --snapshot
         env:
