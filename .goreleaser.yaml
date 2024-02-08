@@ -44,3 +44,8 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+snapshot:
+  # Dev prefix for snapshot builds as theses aren't intended for anything other
+  # than testing.
+  name_template: 'dev-{{ .Version }}-{{ .ShortCommit }}'
