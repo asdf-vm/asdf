@@ -12,13 +12,15 @@ setup_asdf_dir() {
     BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
   fi
 
-  HOME="$BASE_DIR/home"
+  # HOME is now defined by the Golang test code in main_test.go
+  #HOME="$BASE_DIR/home"
   ASDF_DIR="$HOME/.asdf"
   mkdir -p "$ASDF_DIR/plugins"
   mkdir -p "$ASDF_DIR/installs"
   mkdir -p "$ASDF_DIR/shims"
   mkdir -p "$ASDF_DIR/tmp"
-  ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
+  # ASDF_BIN is now defined by the Golang test code in main_test.go
+  #ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
   # shellcheck disable=SC2031
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
