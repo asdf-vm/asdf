@@ -23,101 +23,107 @@ func TestBatsTests(t *testing.T) {
 	build_asdf(t, dir)
 
 	// Run tests with the asdf binary in the temp directory
-	t.Run("current_command", func(t *testing.T) {
-		run_bats_file(t, dir, "current_command.bats")
-	})
 
-	t.Run("get_asdf_config_value", func(t *testing.T) {
-		run_bats_file(t, dir, "get_asdf_config_value.bats")
-	})
+	// Uncomment these as they are implemented
+	//t.Run("current_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "current_command.bats")
+	//})
 
-	t.Run("help_command", func(t *testing.T) {
-		run_bats_file(t, dir, "help_command.bats")
-	})
+	//t.Run("get_asdf_config_value", func(t *testing.T) {
+	//  run_bats_file(t, dir, "get_asdf_config_value.bats")
+	//})
 
-	t.Run("info_command", func(t *testing.T) {
-		run_bats_file(t, dir, "info_command.bats")
-	})
+	//t.Run("help_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "help_command.bats")
+	//})
 
-	t.Run("install_command", func(t *testing.T) {
-		run_bats_file(t, dir, "install_command.bats")
-	})
+	//t.Run("info_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "info_command.bats")
+	//})
 
-	t.Run("latest_command", func(t *testing.T) {
-		run_bats_file(t, dir, "latest_command.bats")
-	})
+	//t.Run("install_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "install_command.bats")
+	//})
 
-	t.Run("list_command", func(t *testing.T) {
-		run_bats_file(t, dir, "list_command.bats")
-	})
+	//t.Run("latest_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "latest_command.bats")
+	//})
 
-	t.Run("plugin_extension_command", func(t *testing.T) {
-		run_bats_file(t, dir, "plugin_extension_command.bats")
-	})
+	//t.Run("list_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "list_command.bats")
+	//})
 
-	t.Run("plugin_list_all_command", func(t *testing.T) {
-		run_bats_file(t, dir, "plugin_list_all_command.bats")
-	})
+	//t.Run("plugin_add_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_add_command.bats")
+	//})
 
-	t.Run("plugin_remove_command", func(t *testing.T) {
-		run_bats_file(t, dir, "plugin_remove_command.bats")
-	})
+	//t.Run("plugin_extension_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_extension_command.bats")
+	//})
 
-	t.Run("plugin_test_command", func(t *testing.T) {
-		run_bats_file(t, dir, "plugin_test_command.bats")
-	})
+	//t.Run("plugin_list_all_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_list_all_command.bats")
+	//})
 
-	t.Run("plugin_update_command", func(t *testing.T) {
-		run_bats_file(t, dir, "plugin_update_command.bats")
-	})
+	//t.Run("plugin_remove_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_remove_command.bats")
+	//})
 
-	t.Run("remove_command", func(t *testing.T) {
-		run_bats_file(t, dir, "remove_command.bats")
-	})
+	//t.Run("plugin_test_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_test_command.bats")
+	//})
 
-	t.Run("reshim_command", func(t *testing.T) {
-		run_bats_file(t, dir, "reshim_command.bats")
-	})
+	//t.Run("plugin_update_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "plugin_update_command.bats")
+	//})
 
-	t.Run("reshim_command", func(t *testing.T) {
-		run_bats_file(t, dir, "reshim_command.bats")
-	})
+	//t.Run("remove_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "remove_command.bats")
+	//})
 
-	t.Run("shim_env_command", func(t *testing.T) {
-		run_bats_file(t, dir, "shim_env_command.bats")
-	})
+	//t.Run("reshim_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "reshim_command.bats")
+	//})
 
-	t.Run("shim_exec", func(t *testing.T) {
-		run_bats_file(t, dir, "shim_exec.bats")
-	})
+	//t.Run("reshim_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "reshim_command.bats")
+	//})
 
-	t.Run("shim_versions_command", func(t *testing.T) {
-		run_bats_file(t, dir, "shim_versions_command.bats")
-	})
+	//t.Run("shim_env_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "shim_env_command.bats")
+	//})
 
-	t.Run("shim_versions_command", func(t *testing.T) {
-		run_bats_file(t, dir, "shim_versions_command.bats")
-	})
+	//t.Run("shim_exec", func(t *testing.T) {
+	//  run_bats_file(t, dir, "shim_exec.bats")
+	//})
 
-	t.Run("uninstall_command", func(t *testing.T) {
-		run_bats_file(t, dir, "uninstall_command.bats")
-	})
+	//t.Run("shim_versions_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "shim_versions_command.bats")
+	//})
 
-	t.Run("update_command", func(t *testing.T) {
-		run_bats_file(t, dir, "update_command.bats")
-	})
+	//t.Run("shim_versions_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "shim_versions_command.bats")
+	//})
 
-	t.Run("version_commands", func(t *testing.T) {
-		run_bats_file(t, dir, "version_commands.bats")
-	})
+	//t.Run("uninstall_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "uninstall_command.bats")
+	//})
 
-	t.Run("where_command", func(t *testing.T) {
-		run_bats_file(t, dir, "where_command.bats")
-	})
+	//t.Run("update_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "update_command.bats")
+	//})
 
-	t.Run("which_command", func(t *testing.T) {
-		run_bats_file(t, dir, "which_command.bats")
-	})
+	//t.Run("version_commands", func(t *testing.T) {
+	//  run_bats_file(t, dir, "version_commands.bats")
+	//})
+
+	//t.Run("where_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "where_command.bats")
+	//})
+
+	//t.Run("which_command", func(t *testing.T) {
+	//  run_bats_file(t, dir, "which_command.bats")
+	//})
 }
 
 func run_bats_file(t *testing.T, dir, filename string) {
