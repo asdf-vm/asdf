@@ -131,9 +131,10 @@ func run_bats_file(t *testing.T, dir, filename string) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
-	// Add dir to front of path
-	path := os.Getenv("PATH")
-	cmd.Env = append(cmd.Environ(), fmt.Sprintf("PATH=%s:%s", dir, path))
+	// Add dir to asdf test variables
+	asdf_test_home := fmt.Sprintf("HOME=%s/.asdf/", dir)
+	asdf_bin_path := fmt.Sprintf("ASDF_BIN=%s", dir)
+	cmd.Env = append(cmd.Environ(), asdf_bin_path, asdf_test_home)
 
 	err := cmd.Run()
 	if err != nil {
