@@ -1,8 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"asdf/commands"
+)
 
 // Placeholder for the real code
 func main() {
-	fmt.Println("Late but latest -- Rajinikanth")
+	commands.Execute()
 }
