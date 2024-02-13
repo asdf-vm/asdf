@@ -34,10 +34,12 @@ jobs:
               - 'asdf.*'
               - 'defaults'
               - 'help.txt'
+            go:
+              - '**.go'
 
   test-golang:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs.cli == 'true' }}
+    if: ${{ needs.detect-changes.outputs.go == 'true' || needs.detect-changes.outputs.cli == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
