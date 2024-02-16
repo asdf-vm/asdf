@@ -1,10 +1,10 @@
 package main
 
 import (
-	"asdf/commands"
+	"asdf/cmd"
 )
 
 // Placeholder for the real code
 func main() {
-	commands.Execute()
+	cmd.Execute()
 }
