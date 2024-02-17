@@ -173,3 +173,9 @@ EOM
   run grep "asdf-plugin: dummy path:$ASDF_DIR/installs/dummy" "$ASDF_DIR/shims/dummy"
   [ "$status" -eq 0 ]
 }
+
+@test "reshim prints help if --help is passed" {
+  run asdf reshim --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

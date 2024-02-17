@@ -109,3 +109,9 @@ teardown() {
   [ "$status" -eq 0 ]
   [ -f "$ASDF_DIR/shims/dummy" ]
 }
+
+@test "asdf update prints help if --help is passed" {
+  run asdf update --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

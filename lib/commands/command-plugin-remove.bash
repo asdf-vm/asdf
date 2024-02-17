@@ -1,6 +1,11 @@
 # -*- sh -*-
 
 plugin_remove_command() {
+  if has_help_flag "$@"; then
+    printf '%s\n' "usage: asdf plugin remove <name>"
+    exit 0
+  fi
+
   local plugin_name=$1
   check_if_plugin_exists "$plugin_name"
 

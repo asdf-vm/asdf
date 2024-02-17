@@ -31,3 +31,9 @@ teardown() {
   [[ $output == *$'ASDF INSTALLED PLUGINS:\n'* ]]
 
 }
+
+@test "info prints help if --help is passed" {
+  run asdf info --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

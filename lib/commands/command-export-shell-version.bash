@@ -4,11 +4,17 @@
 
 # Output from this command must be executable shell code
 shell_command() {
+  local help_text="usage: asdf shell <name> {<version>|--unset}"
+  if has_help_flag "$@"; then
+    printf '%s\n' "printf '%s\n' \"$help_text\""
+    exit 0
+  fi
+
   local asdf_shell="$1"
   shift
 
   if [ "$#" -lt "2" ]; then
-    printf "Usage: asdf shell <name> {<version>|--unset}\n" >&2
+    display_error "$help_text"
     printf "false\n"
     exit 1
   fi

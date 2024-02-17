@@ -69,3 +69,9 @@ teardown() {
   [ "$status" -eq 1 ]
   [ "$output" = "$expected" ]
 }
+
+@test "where prints help if --help is passed" {
+  run asdf where --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

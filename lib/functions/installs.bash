@@ -15,6 +15,14 @@ install_command() {
   local full_version=$2
   local extra_args="${*:3}"
 
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf install'
+    printf '%s\n' 'usage: asdf install <name>'
+    printf '%s\n' 'usage: asdf install <name> <version>'
+    printf '%s\n' 'usage: asdf install <name> latest[:<version>]'
+    exit 0
+  fi
+
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
     install_local_tool_versions "$extra_args"
   elif [[ $# -eq 1 ]]; then

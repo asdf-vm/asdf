@@ -174,3 +174,9 @@ EOM
 ADD"
   [ "$output" = "${expected_output}" ]
 }
+
+@test "plugin_add prints help if --help is passed" {
+  run asdf plugin add --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

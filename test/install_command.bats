@@ -310,3 +310,9 @@ EOM
 
   [[ "$output" == *'asdf: Warn:'*'not be preserved'* ]]
 }
+
+@test "install_command prints help if --help is passed" {
+  run asdf install --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

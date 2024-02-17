@@ -75,6 +75,12 @@ teardown() {
   [ "$status" -eq 1 ]
 }
 
+@test "list_command prints help if --help is passed" {
+  run asdf list --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}
+
 @test "list_all_command lists available versions" {
   run asdf list-all dummy
   [ $'1.0.0\n1.1.0\n2.0.0' = "$output" ]
@@ -108,4 +114,10 @@ teardown() {
 @test "list_all_command ignores stderr when completing successfully" {
   run asdf list-all dummy
   [[ "$output" != *"ignore this error"* ]]
+}
+
+@test "list_all_command prints help if --help is passed" {
+  run asdf list-all --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
 }

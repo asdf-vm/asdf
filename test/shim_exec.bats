@@ -447,3 +447,9 @@ EOM
   [ "$output" = "This is Dummy 1.0! hello world" ]
   [ "$status" -eq 0 ]
 }
+
+@test "asdf exec prints help if --help is passed" {
+  run asdf exec --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

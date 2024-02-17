@@ -102,3 +102,9 @@ EOM
   run asdf uninstall dummy 1.0.0
   [ "$output" = "removed dummy 1.0.0" ]
 }
+
+@test "uninstall command prints help if --help is passed" {
+  run asdf uninstall --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

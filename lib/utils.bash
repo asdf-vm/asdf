@@ -896,3 +896,15 @@ get_plugin_remote_gitref() {
   plugin_path="$(get_plugin_path "$plugin_name")"
   git --git-dir "$plugin_path/.git" rev-parse --short HEAD 2>/dev/null
 }
+
+# @description Returns true if any arguments is '-h' or '--help'
+has_help_flag() {
+  local arg=
+  for arg in "$@"; do
+    case $arg in
+    -h | --help) return 0 ;;
+    esac
+  done
+
+  return 1
+}

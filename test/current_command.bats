@@ -142,3 +142,9 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
+
+@test "current prints help if --help is passed" {
+  run asdf current --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

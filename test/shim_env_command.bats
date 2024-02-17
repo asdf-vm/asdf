@@ -82,3 +82,9 @@ teardown() {
   run grep -q '::' <<<"$path_line"
   [ "$status" -ne 0 ]
 }
+
+@test "asdf env prints help if --help is passed" {
+  run asdf env --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

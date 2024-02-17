@@ -26,3 +26,9 @@ teardown() {
   [ "$status" -eq 1 ]
   echo "$output" | grep "No such plugin: does-not-exist"
 }
+
+@test "plugin_remove prints help if --help is passed" {
+  run asdf plugin remove --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

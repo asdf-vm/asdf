@@ -3,6 +3,11 @@
 . "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
 
 info_command() {
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf info'
+    exit 0
+  fi
+
   printf "%s:\n%s\n\n" "OS" "$(uname -a)"
   printf "%s:\n%s\n\n" "SHELL" "$("$SHELL" --version)"
   printf "%s:\n%s\n\n" "BASH VERSION" "$BASH_VERSION"

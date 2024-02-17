@@ -37,6 +37,11 @@ help_command() {
   local tool_version="$2"
   local plugin_path
 
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf help <name> [<version>]'
+    exit 0
+  fi
+
   # If plugin name is present as first argument output plugin help info
   if [ -n "$plugin_name" ]; then
     plugin_path=$(get_plugin_path "$plugin_name")

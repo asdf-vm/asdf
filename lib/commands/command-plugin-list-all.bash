@@ -1,6 +1,11 @@
 # -*- sh -*-
 
 plugin_list_all_command() {
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf plugin list all'
+    exit 0
+  fi
+
   initialize_or_update_plugin_repository
 
   local plugins_index_path

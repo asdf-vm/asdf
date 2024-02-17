@@ -1,4 +1,10 @@
 plugin_list_command() {
+  if has_help_flag "$@"; then
+    printf '%s\n' "usage: asdf plugin list [--urls] [--refs]"
+    printf '%s\n' "usage: asdf plugin list all"
+    exit 0
+  fi
+
   local plugins_path
   plugins_path=$(get_plugin_path)
 
@@ -47,8 +53,13 @@ plugin_list_command() {
 }
 
 plugin_add_command() {
+  local help_text="usage: asdf plugin add <name> [<git-url>]"
+  if has_help_flag "$@"; then
+    printf '%s\n' "$help_text"
+    exit 0
+  fi
   if [[ $# -lt 1 || $# -gt 2 ]]; then
-    display_error "usage: asdf plugin add <name> [<git-url>]"
+    display_error "$help_text"
     exit 1
   fi
 
@@ -104,8 +115,16 @@ plugin_add_command() {
 }
 
 plugin_update_command() {
+  local help_text1="usage: asdf plugin-update <name> [git-ref]"
+  local help_text2="usage: asdf plugin-update --all"
+  if has_help_flag "$@"; then
+    printf '%s\n' "$help_text1"
+    printf '%s\n' "$help_text2"
+    exit 0
+  fi
   if [ "$#" -lt 1 ]; then
-    display_error "usage: asdf plugin-update {<name> [git-ref] | --all}"
+    display_error "$help_text1"
+    display_error "$help_text2"
     exit 1
   fi
 

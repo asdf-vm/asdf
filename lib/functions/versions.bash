@@ -2,13 +2,20 @@ version_command() {
   local cmd=$1
   local plugin_name=$2
 
-  if [ "$#" -lt "3" ]; then
-    if [ "$cmd" = "global" ]; then
-      printf "Usage: asdf global <name> <version>\n"
+  if has_help_flag "$@" || [ "$#" -lt "3" ]; then
+    if [ "$cmd" = 'global' ]; then
+      printf '%s\n' "usage: asdf global <name> <version>"
+      printf '%s\n' "usage: asdf global <name> latest[:<version>]"
     else
-      printf "Usage: asdf local <name> <version>\n"
+      printf '%s\n' "usage: asdf local <name> <version>"
+      printf '%s\n' "usage: asdf local <name> latest[:<version>]"
     fi
-    exit 1
+
+    if has_help_flag "$@"; then
+      exit 0
+    else
+      exit 1
+    fi
   fi
 
   shift 2
@@ -86,6 +93,12 @@ list_all_command() {
   local std_out_file
   local std_err_file
   local output
+
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf list all <name> [<version>]'
+    exit 0
+  fi
+
   plugin_path=$(get_plugin_path "$plugin_name")
   check_if_plugin_exists "$plugin_name"
 
@@ -135,6 +148,12 @@ latest_command() {
   local plugin_name=$1
   local query=$2
   local plugin_path
+
+  if has_help_flag "$@"; then
+    printf '%s\n' 'usage: asdf latest <name> [<version>]'
+    printf '%s\n' 'usage: asdf latest --all'
+    exit 0
+  fi
 
   if [ "$plugin_name" = "--all" ]; then
     latest_all

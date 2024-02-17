@@ -74,3 +74,9 @@ foo                           http://example.com/foo"
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
+
+@test "plugin_list_all prints help if --help is passed" {
+  run asdf plugin list all --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

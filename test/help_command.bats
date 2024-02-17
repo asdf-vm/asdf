@@ -79,3 +79,9 @@ EOF
   [[ $output == *$'UTILS\n'* ]]
   [[ $output == *$'"Late but latest"\n-- Rajinikanth' ]]
 }
+
+@test "help prints help if --help is passed" {
+  run asdf help --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

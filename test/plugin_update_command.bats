@@ -230,3 +230,9 @@ UPDATE"
   local expected_output="Location of dummy plugin: $plugin_path"
   [[ "$output" == *"$expected_output"* ]]
 }
+
+@test "asdf plugin-update prints help if --help is passed" {
+  run asdf plugin update --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}

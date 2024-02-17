@@ -28,3 +28,9 @@ teardown() {
   echo "$output" | grep "dummy 3.0"
   echo "$output" | grep "dummy 1.0"
 }
+
+@test "shim_versions_command prints help if --help is passed" {
+  run asdf shim-versions --help
+  [ "$status" -eq 0 ]
+  [[ "${lines[0]}" == 'usage: '* ]]
+}
