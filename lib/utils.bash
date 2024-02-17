@@ -62,7 +62,7 @@ get_install_path() {
   local install_dir
   install_dir="$(asdf_data_dir)/installs"
 
-  mkdir -p "${install_dir}/${plugin}"
+  [ -d "${install_dir}/${plugin}" ] || mkdir -p "${install_dir}/${plugin}"
 
   if [ "$install_type" = "version" ]; then
     printf "%s/%s/%s\n" "$install_dir" "$plugin" "$version"
@@ -81,7 +81,7 @@ get_download_path() {
   local download_dir
   download_dir="$(asdf_data_dir)/downloads"
 
-  mkdir -p "${download_dir}/${plugin}"
+  [ -d "${download_dir}/${plugin}" ] || mkdir -p "${download_dir}/${plugin}"
 
   if [ "$install_type" = "version" ]; then
     printf "%s/%s/%s\n" "$download_dir" "$plugin" "$version"
@@ -442,7 +442,7 @@ initialize_or_update_plugin_repository() {
     git -C "$repository_path" reset --hard origin/master
   fi
 
-  mkdir -p "$(asdf_data_dir)/tmp"
+  [ -d "$(asdf_data_dir)/tmp" ] || mkdir -p "$(asdf_data_dir)/tmp"
   touch "$(asdf_data_dir)/tmp/repo-updated"
 }
 

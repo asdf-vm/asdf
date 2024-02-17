@@ -685,14 +685,14 @@ No parameters provided.
 
 **Description**
 
-Execute this callback script **after** asdf has downloaded the _updated_ plugin with `asdf plugin update <tool> [<git-ref>]`.
+Execute this callback script **after** asdf has downloaded the _update_ plugin with `asdf plugin update <tool> [<git-ref>]`.
 
 See also the related command hooks:
 
-- `pre_asdf_plugin_updated`
-- `pre_asdf_plugin_updated_${plugin_name}`
-- `post_asdf_plugin_updated`
-- `post_asdf_plugin_updated_${plugin_name}`
+- `pre_asdf_plugin_update`
+- `pre_asdf_plugin_update_${plugin_name}`
+- `post_asdf_plugin_update`
+- `post_asdf_plugin_update_${plugin_name}`
 
 **Environment Variables available to script**
 
@@ -814,7 +814,7 @@ asdf plugin test <plugin_name> <plugin_url> [--asdf-tool-version <version>] [--a
   installed with that specific version. Defaults to `asdf latest <plugin-name>`
 - If optional `[--asdf-plugin-gitref <git_ref>]` is specified, the plugin itself
   is checked out at that commit/branch/tag. This is useful for testing a
-  pull-request on your plugin's CI.
+  pull-request on your plugin's CI. Defaults to the default branch of the plugin's repository.
 - Optional parameter `[test_command...]` is the command to execute to validate
   the installed tool works correctly. Typically `<tool> --version` or
   `<tool> --help`. For example, to test the NodeJS plugin, we could run
