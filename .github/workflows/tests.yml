@@ -13,6 +13,7 @@ jobs:
     outputs:
       documentation: ${{ steps.filter.outputs.documentation }}
       cli: ${{ steps.filter.outputs.cli }}
+      go: ${{ steps.filter.outputs.go }}
     steps:
       - uses: actions/checkout@v4
         with:

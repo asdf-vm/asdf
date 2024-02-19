@@ -1,0 +1,7 @@
+# This is a test asdfrc file containing all possible values. Each field to set
+# to a value that is different than the default.
+legacy_version_file = yes
+use_release_candidates = yes
+always_keep_download = yes
+plugin_repository_last_check_duration = never
+disable_plugin_short_name_repository = yes
