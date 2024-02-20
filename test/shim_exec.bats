@@ -129,6 +129,36 @@ teardown() {
   echo "$output" | grep -q "dummy 1.0" 2>/dev/null
 }
 
+@test "issue #928" {
+  # Install 1.0, with fake "dummyman" command, shimmed for 1.0
+  run asdf install dummy 1.0
+  echo "echo Dummy Manager" >"$ASDF_DIR/installs/dummy/1.0/bin/dummyman"
+  chmod +x "$ASDF_DIR/installs/dummy/1.0/bin/dummyman"
+  run asdf reshim dummy 1.0
+
+  # Install 1.3
+  run asdf install dummy 1.3
+
+  echo "dummy 1.3" >"$PROJECT_DIR/.tool-versions"
+
+  # reshim doesn't help
+  run asdf reshim dummy
+  run asdf shim-versions dummyman
+  [ "$status" -eq 0 ]
+  [ "$output" = "dummy 1.0" ]
+
+  run "$ASDF_DIR/shims/dummyman"
+  [ "$status" -eq 126 ]
+  echo ">> $output" >&3
+
+  # Below is current (misleading) message
+  echo "$output" | grep -q "No preset version installed for command dummyman" 2>/dev/null
+  echo "$output" | grep -q "Please install a version by running one of the following:" 2>/dev/null
+  echo "$output" | grep -q "asdf install dummy 1.3" 2>/dev/null
+  echo "$output" | grep -q "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
+}
+
 @test "shim exec should execute first plugin that is installed and set" {
   run asdf install dummy 2.0.0
   run asdf install dummy 3.0
