@@ -65,7 +65,7 @@ jobs:
           # line below to contain the actual tag name
           echo "ASDF_VERSION=0.0.0" >> "$GITHUB_ENV"
           echo "version is: ${{ env.ASDF_VERSION }}"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create GitHub release
         id: release
         uses: ncipollo/release-action@v1
