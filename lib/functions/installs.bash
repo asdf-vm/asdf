@@ -11,12 +11,37 @@ handle_cancel() {
 }
 
 install_command() {
-  local plugin_name=$1
-  local full_version=$2
-  local extra_args="${*:3}"
+  local argct
+  argct=0
+
+  local plugin_name
+  local full_version
+  local ordered_install
+  ordered_install=false
+
+  # parse input arguments and flags
+  for arg in "$@"
+  do
+      if [[ "$arg" == --* ]]; then
+        # flag
+        if [[ "$arg" == "--ordered-install" ]]; then
+          ordered_install=true
+        fi
+      else
+        # non flag
+        if [[ "$argct" -eq 0 ]]; then
+          plugin_name=$arg
+        elif [[ "$argct" -eq 1 ]]; then
+          full_version=$arg
+        else
+          extra_args="$extra_args $arg"
+        fi
+        ((argct++))
+      fi
+  done
 
   if [ "$plugin_name" = "" ] && [ "$full_version" = "" ]; then
-    install_local_tool_versions "$extra_args"
+    install_local_tool_versions "$ordered_install" "$extra_args"
   elif [[ $# -eq 1 ]]; then
     install_one_local_tool "$plugin_name"
   else
@@ -85,6 +110,9 @@ install_local_tool_versions() {
   local tool_versions_path
   tool_versions_path=$(find_tool_versions)
 
+  local ordered_install
+  ordered_install=$1
+
   # Locate all the plugins installed in the system
   local plugins_installed
   if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
@@ -118,19 +146,34 @@ install_local_tool_versions() {
   fi
 
   if [ -n "$plugins_installed" ]; then
-    for plugin_name in $plugins_installed; do
-      local plugin_version_and_path
-      plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
+    if [ "$ordered_install" == true ]; then
+      # ordered install mode allows the tools to be installed 
+      # in the order that they are listed in the .tool-versions file.
+      # This mode only supports .tool-versions file AND it will only
+      # use the .tool-versions from the current directory (i.e. won't scan higher directories)
+      echo "using ordered install..."
+      tool_versions=$(strip_tool_version_comments "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")
+      while IFS=' ' read -r tool_version; do
+        IFS=' ' read -ra parts <<< "$tool_version"
+        plugin_name=${parts[0]}
+        plugin_version=${parts[1]}
+        install_tool_version "$plugin_name" "$plugin_version"
+      done <<< $tool_versions
+    else
+      for plugin_name in $plugins_installed; do
+        local plugin_version_and_path
+        plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
 
-      if [ -n "$plugin_version_and_path" ]; then
-        local plugin_version
-        some_tools_installed='yes'
-        plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
-        for plugin_version in $plugin_versions; do
-          install_tool_version "$plugin_name" "$plugin_version"
-        done
-      fi
-    done
+        if [ -n "$plugin_version_and_path" ]; then
+          local plugin_version
+          some_tools_installed='yes'
+          plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
+          for plugin_version in $plugin_versions; do
+            install_tool_version "$plugin_name" "$plugin_version"
+          done
+        fi
+      done
+    fi
   fi
 
   if [ -z "$some_tools_installed" ]; then
