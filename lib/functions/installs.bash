@@ -171,22 +171,41 @@ install_directory_tools() {
 
   # install tools from .tool-versions
   # install order is the order listed in .tool-versions
+  tools_installed=$(install_directory_tools_tools_versions "$search_path" "$plugins_installed" "$tools_installed") 
+
+  # install tools from legacy version files
+  # install order is plugin order which is alphabetical
+  local legacy_config
+  legacy_config=$(get_asdf_config_value "legacy_version_file")
+  if [ "$legacy_config" = "yes" ]; then
+    tools_installed=$(install_directory_tools_legacy_versions "$search_path" "$plugins_installed" "$tools_installed") 
+  fi
+
+  printf "%s\n" "$tools_installed"
+}
+
+install_directory_tools_tools_versions() {
+  local search_path=$1
+  local plugins_installed=$2
+  local tools_installed=$3
+  # TODO when should we resolve tool version from the environment ?
+
   local tool_versions
   file_name=$(asdf_tool_versions_filename)
   if ! [[ -f "$search_path/$file_name" ]]; then
-    display_debug "install_directory_tools '$search_path': exiting early... $file_name file not found"
+    display_debug "install_directory_tools_tools_versions '$search_path': exiting early... $file_name file not found"
     printf "%s\n" "$tools_installed"
     return 0
   fi
 
   tool_versions=$(strip_tool_version_comments "$search_path/$file_name" | awk '{$1=$1};1')
   if [[ -z $tool_versions ]]; then
-    display_debug "install_directory_tools '$search_path': exiting early... no tools found in directory"
+    display_debug "install_directory_tools_tools_versions '$search_path': exiting early... no tools found in directory"
     printf "%s\n" "$tools_installed"
     return 0
   fi
   while IFS=' ' read -r tool_version; do
-    display_debug "install_directory_tools '$search_path': found '$tool_version'"
+    display_debug "install_directory_tools_tools_versions '$search_path': found '$tool_version'"
 
     # read one version from the file
     IFS=' ' read -ra parts <<< "$tool_version"
@@ -197,7 +216,7 @@ install_directory_tools() {
 
     # skip if plugin is installed already
     if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
-      display_debug "install_directory_tools '$search_path': '$plugin_name' is already installed... skipping"
+      display_debug "install_directory_tools_tools_versions '$search_path': '$plugin_name' is already installed... skipping"
       continue
     fi
 
@@ -205,58 +224,58 @@ install_directory_tools() {
     display_none $(install_tool_version "$plugin_name" "$plugin_version")
     tools_installed=$(echo "$tools_installed $plugin_name" | awk '{$1=$1};1')
 
-    display_debug "install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
+    display_debug "install_directory_tools_tools_versions '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
   done <<< $tool_versions
 
-  # TODO when should we resolve tool version from the environment ?
+  printf "%s\n" "$tools_installed"
+}
 
-  # install tools from legacy version files
-  # install order is plugin order which is alphabetical
-  local legacy_config
-  legacy_config=$(get_asdf_config_value "legacy_version_file")
-  if [ "$legacy_config" = "yes" ]; then
-    display_debug "install_directory_tools '$search_path': resolving legacy files"
-    local plugin_name
-    for plugin_name in $plugins_installed; do
-      # skip if plugin is installed already
-      if [[ -n $(stringlist_contains "$tool_versions" "$plugin_name") ]]; then
-        display_debug "install_directory_tools '$search_path': legacy_install $plugin_name: skipping as tool was already installed"
-        continue
-      fi
+install_directory_tools_legacy_versions() {
+  local search_path=$1
+  local plugins_installed=$2
+  local tools_installed=$3
 
-      # extract plugin legacy information
-      local plugin_path
-      plugin_path=$(get_plugin_path "$plugin_name")
-      local legacy_list_filenames_script
-      legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
+  display_debug "install_directory_tools_legacy_versions '$search_path': resolving legacy files"
+  local plugin_name
+  for plugin_name in $plugins_installed; do
+    # skip if plugin is installed already
+    if [[ -n $(stringlist_contains "$tool_versions" "$plugin_name") ]]; then
+      display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: skipping as tool was already installed"
+      continue
+    fi
 
-      # skip if no legacy_list_filenames_script available
-      if ! [[ -f "$legacy_list_filenames_script" ]]; then
-        display_debug "install_directory_tools '$search_path': legacy_install $plugin_name: skipping as legacy files are not supported"
-        continue
-      fi
+    # extract plugin legacy information
+    local plugin_path
+    plugin_path=$(get_plugin_path "$plugin_name")
+    local legacy_list_filenames_script
+    legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
 
-      # extract plugin legacy filenames
-      local legacy_filenames=""
-      legacy_filenames=$("$legacy_list_filenames_script")
+    # skip if no legacy_list_filenames_script available
+    if ! [[ -f "$legacy_list_filenames_script" ]]; then
+      display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: skipping as legacy files are not supported"
+      continue
+    fi
 
-      # lookup plugin version in current dir
-      local plugin_version
-      plugin_version=$(get_legacy_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
+    # extract plugin legacy filenames
+    local legacy_filenames=""
+    legacy_filenames=$("$legacy_list_filenames_script")
 
-      # skip if version cannot be found
-      if [ -z "$plugin_version" ]; then
-        display_debug "install_directory_tools '$search_path': legacy_install $plugin_name: skipping as version cannot be found"
-        continue
-      fi
+    # lookup plugin version in current dir
+    local plugin_version
+    plugin_version=$(get_legacy_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
 
-      display_debug "install_directory_tools '$search_path': legacy_install $plugin_name: plugin_version='$plugin_version'"
-      display_none $(install_tool_version "$plugin_name" "$plugin_version")
+    # skip if version cannot be found
+    if [ -z "$plugin_version" ]; then
+      display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: skipping as version cannot be found"
+      continue
+    fi
 
-      tools_installed=$(echo "$tools_installed $plugin_name" | awk '{$1=$1};1')
-      display_debug "install_directory_tools '$search_path': legacy_install $plugin_name: installed '$plugin_version' new state of tools_installed='$tools_installed'"
-    done
-  fi
+    display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: plugin_version='$plugin_version'"
+    display_none $(install_tool_version "$plugin_name" "$plugin_version")
+
+    tools_installed=$(echo "$tools_installed $plugin_name" | awk '{$1=$1};1')
+    display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: installed '$plugin_version' new state of tools_installed='$tools_installed'"
+  done
 
   printf "%s\n" "$tools_installed"
 }
