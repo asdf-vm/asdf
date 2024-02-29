@@ -160,6 +160,16 @@ install_directory_tools_recursive() {
     search_path=$(dirname "$search_path")
   done
 
+  # still got some tools to install... 
+  # lets see if $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME as actually
+  # an absolute path
+  if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
+    display_debug "--------------------------------------------------------------------------------------------------------------"
+    display_debug "attempting to treat \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME as an absolute path: $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+    tools_installed=$(install_directory_tools_tools_versions "" "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugins_installed" "$tools_installed")
+    display_debug "install_directory_tools_recursive '$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME': install_directory_tools returned tools_installed='$tools_installed'"
+  fi
+
   printf "%s\n" "$tools_installed"
 }
 
@@ -171,7 +181,8 @@ install_directory_tools() {
 
   # install tools from .tool-versions
   # install order is the order listed in .tool-versions
-  tools_installed=$(install_directory_tools_tools_versions "$search_path" "$plugins_installed" "$tools_installed") 
+  file_name=$(asdf_tool_versions_filename)
+  tools_installed=$(install_directory_tools_tools_versions "$search_path" "$file_name" "$plugins_installed" "$tools_installed") 
 
   # install tools from legacy version files
   # install order is plugin order which is alphabetical
@@ -186,12 +197,12 @@ install_directory_tools() {
 
 install_directory_tools_tools_versions() {
   local search_path=$1
-  local plugins_installed=$2
-  local tools_installed=$3
+  local file_name=$2
+  local plugins_installed=$3
+  local tools_installed=$4
   # TODO when should we resolve tool version from the environment ?
 
   local tool_versions
-  file_name=$(asdf_tool_versions_filename)
   if ! [[ -f "$search_path/$file_name" ]]; then
     display_debug "install_directory_tools_tools_versions '$search_path': exiting early... $file_name file not found"
     printf "%s\n" "$tools_installed"
