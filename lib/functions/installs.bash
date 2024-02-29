@@ -85,9 +85,6 @@ install_local_tool_versions() {
   local tool_versions_path
   tool_versions_path=$(find_tool_versions)
 
-  local ordered_install
-  ordered_install=$1
-
   # Locate all the plugins installed in the system
   local plugins_installed
   if find "$plugins_path" -mindepth 1 -type d &>/dev/null; then
