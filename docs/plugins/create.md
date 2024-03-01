@@ -814,7 +814,7 @@ asdf plugin test <plugin_name> <plugin_url> [--asdf-tool-version <version>] [--a
   installed with that specific version. Defaults to `asdf latest <plugin-name>`
 - If optional `[--asdf-plugin-gitref <git_ref>]` is specified, the plugin itself
   is checked out at that commit/branch/tag. This is useful for testing a
-  pull-request on your plugin's CI.
+  pull-request on your plugin's CI. Defaults to the default branch of the plugin's repository.
 - Optional parameter `[test_command...]` is the command to execute to validate
   the installed tool works correctly. Typically `<tool> --version` or
   `<tool> --help`. For example, to test the NodeJS plugin, we could run

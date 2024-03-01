@@ -76,7 +76,7 @@ plugin_add_command() {
   local plugin_path
   plugin_path=$(get_plugin_path "$plugin_name")
 
-  mkdir -p "$(asdf_data_dir)/plugins"
+  [ -d "$(asdf_data_dir)/plugins" ] || mkdir -p "$(asdf_data_dir)/plugins"
 
   if [ -d "$plugin_path" ]; then
     printf '%s\n' "Plugin named $plugin_name already added"
