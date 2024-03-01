@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"asdf/config"
+	"asdf/plugins"
 	"log"
 	"os"
 
@@ -14,6 +16,9 @@ Manage all your runtime versions with one tool!
 Complete documentation is available at https://asdf-vm.com/`
 
 func Execute() {
+	logger := log.New(os.Stderr, "", 0)
+	log.SetFlags(0)
+
 	app := &cli.App{
 		Name:    "asdf",
 		Version: "0.1.0",
@@ -39,14 +44,18 @@ func Execute() {
 					&cli.Command{
 						Name: "add",
 						Action: func(cCtx *cli.Context) error {
-							log.Print("Baz")
-							return nil
+							args := cCtx.Args()
+							conf, err := config.LoadConfig()
+							if err != nil {
+								logger.Printf("error loading config: %s", err)
+							}
+
+							return pluginAddCommand(cCtx, conf, logger, args.Get(0), args.Get(1))
 						},
 					},
 					&cli.Command{
 						Name: "list",
 						Action: func(cCtx *cli.Context) error {
-							log.Print("Bim")
 							return nil
 						},
 					},
@@ -80,4 +89,23 @@ func Execute() {
 		os.Exit(1)
 		log.Fatal(err)
 	}
+}
+
+func pluginAddCommand(cCtx *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
+	if pluginName == "" {
+		// Invalid arguments
+		// Maybe one day switch this to show the generated help
+		// cli.ShowSubcommandHelp(cCtx)
+		return cli.Exit("usage: asdf plugin add <name> [<git-url>]", 1)
+	} else if pluginRepo == "" {
+		// add from plugin repo
+		// TODO: implement
+		return cli.Exit("Not implemented yet", 1)
+	} else {
+		err := plugins.PluginAdd(conf, pluginName, pluginRepo)
+		if err != nil {
+			logger.Printf("error adding plugin: %s", err)
+		}
+	}
+	return nil
 }
