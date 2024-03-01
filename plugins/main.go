@@ -15,6 +15,69 @@ const dataDirPlugins = "plugins"
 const invalidPluginNameMsg = "'%q' is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 const pluginAlreadyExists = "plugin named %q already added"
 
+type Plugin struct {
+	Name string
+	Dir  string
+	Ref  string
+	Url  string
+}
+
+func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
+	pluginsDir := PluginsDataDirectory(config.DataDir)
+	files, err := os.ReadDir(pluginsDir)
+	if err != nil {
+		return plugins, err
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			if refs || urls {
+				var url string
+				var refString string
+				location := filepath.Join(pluginsDir, file.Name())
+				repo, err := git.PlainOpen(location)
+
+				// TODO: Improve these error messages
+				if err != nil {
+					return plugins, err
+				}
+
+				if refs {
+					ref, err := repo.Head()
+					refString = ref.Hash().String()
+
+					if err != nil {
+						return plugins, err
+					}
+				}
+
+				if urls {
+					remotes, err := repo.Remotes()
+					url = remotes[0].Config().URLs[0]
+
+					if err != nil {
+						return plugins, err
+					}
+				}
+
+				plugins = append(plugins, Plugin{
+					Name: file.Name(),
+					Dir:  location,
+					Url:  url,
+					Ref:  refString,
+				})
+			} else {
+				plugins = append(plugins, Plugin{
+					Name: file.Name(),
+					Dir:  filepath.Join(pluginsDir, file.Name()),
+				})
+			}
+		}
+	}
+
+	return plugins, nil
+}
+
 func PluginAdd(config config.Config, pluginName, pluginUrl string) error {
 	err := validatePluginName(pluginName)
 
@@ -64,7 +127,11 @@ func PluginExists(dataDir, pluginName string) (bool, error) {
 }
 
 func PluginDirectory(dataDir, pluginName string) string {
-	return filepath.Join(dataDir, dataDirPlugins, pluginName)
+	return filepath.Join(PluginsDataDirectory(dataDir), pluginName)
+}
+
+func PluginsDataDirectory(dataDir string) string {
+	return filepath.Join(dataDir, dataDirPlugins)
 }
 
 func validatePluginName(name string) error {
