@@ -157,7 +157,7 @@ install_directory_tools_recursive() {
     search_path=$(dirname "$search_path")
   done
 
-  # still got some tools to install... 
+  # still got some tools to install...
   # lets see if $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME as actually
   # an absolute path
   if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
@@ -179,14 +179,14 @@ install_directory_tools() {
   # install tools from .tool-versions
   # install order is the order listed in .tool-versions
   file_name=$(asdf_tool_versions_filename)
-  tools_installed=$(install_directory_tools_tools_versions "$search_path" "$file_name" "$plugins_installed" "$tools_installed") 
+  tools_installed=$(install_directory_tools_tools_versions "$search_path" "$file_name" "$plugins_installed" "$tools_installed")
 
   # install tools from legacy version files
   # install order is plugin order which is alphabetical
   local legacy_config
   legacy_config=$(get_asdf_config_value "legacy_version_file")
   if [ "$legacy_config" = "yes" ]; then
-    tools_installed=$(install_directory_tools_legacy_versions "$search_path" "$plugins_installed" "$tools_installed") 
+    tools_installed=$(install_directory_tools_legacy_versions "$search_path" "$plugins_installed" "$tools_installed")
   fi
 
   printf "%s\n" "$tools_installed"
@@ -226,6 +226,15 @@ install_directory_tools_tools_versions() {
     if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
       display_debug "install_directory_tools_tools_versions '$search_path': '$plugin_name' is already installed... skipping"
       continue
+    fi
+
+    # check if there is an environment override for it
+    # if so take the environment version
+    local env_version
+    env_version=$(get_version_from_env "$plugin_name")
+    if [ -n "$env_version" ]; then
+      display_debug "install_directory_tools_tools_versions '$search_path': $plugin_name: using environment override $env_version"
+      plugin_version=$env_version
     fi
 
     # install the version
@@ -271,6 +280,15 @@ install_directory_tools_legacy_versions() {
     # lookup plugin version in current dir
     local plugin_version
     plugin_version=$(get_legacy_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
+
+    # check if there is an environment override for it
+    # if so take the environment version
+    local env_version
+    env_version=$(get_version_from_env "$plugin_name")
+    if [ -n "$env_version" ]; then
+      display_debug "install_directory_tools_legacy_versions '$search_path': legacy_install $plugin_name: using environment override $env_version"
+      plugin_version=$env_version
+    fi
 
     # skip if version cannot be found
     if [ -z "$plugin_version" ]; then
