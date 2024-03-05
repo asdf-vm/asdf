@@ -147,8 +147,8 @@ install_directory_tools_recursive() {
     display_debug "install_directory_tools_recursive '$search_path': install_directory_tools returned tools_installed='$tools_installed'"
 
     # terminate if all tools are installed
-    if [[ -n $(stringlist_same_length "$plugins_installed" "$tools_installed") ]]; then
-      display_debug "install_directory_tools_recursive '$search_path': exiting as tools_installed has same length as plugins_installed: tools_installed='$tools_installed', plugins_installed='$plugins_installed'"
+    if [[ -n $(stringlist_a_subset_of_b "$plugins_installed" "$tools_installed") ]]; then
+      display_debug "install_directory_tools_recursive '$search_path': exiting because all known tools ($plugins_installed) are installed ($tools_installed)"
       printf "%s\n" "$tools_installed"
       return 0
     fi
@@ -436,14 +436,18 @@ get_legacy_version_in_dir() {
   done
 }
 
-
-stringlist_same_length() {
-  IFS=' ' read -r -a array1 <<< "$1"
-  IFS=' ' read -r -a array2 <<< "$2"
-  if [[ ${#array1[@]} -eq ${#array2[@]} ]]; then
-    printf "true\n"
-    return 0
-  fi
+stringlist_a_subset_of_b() {
+  local list_a=$1
+  local list_b=$2
+  local array_a
+  IFS=' ' read -r -a array_a <<< "$list_a"
+  for item_a in "${array_a[@]}"; do
+    if [[ -z $(stringlist_contains "$list_b" "$item_a") ]]; then
+      return 0
+    fi
+  done
+  printf "true\n"
+  return 0
 }
 
 stringlist_contains() {
