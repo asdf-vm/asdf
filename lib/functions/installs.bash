@@ -197,7 +197,6 @@ _install_directory_tools() {
   local file_name=$2
   local plugins_installed=$3
   local tools_installed=$4
-  # TODO when should we resolve tool version from the environment ?
 
   local tool_versions
   if ! [[ -f "$search_path/$file_name" ]]; then
