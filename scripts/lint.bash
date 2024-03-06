@@ -41,6 +41,7 @@ run_shfmt_stylecheck() {
     test/test_helpers.bash \
     test/fixtures/dummy_broken_plugin/bin/* \
     test/fixtures/dummy_legacy_plugin/bin/* \
+    test/fixtures/dummy_dependent_plugin/bin/* \
     test/fixtures/dummy_plugin/bin/*
 
   print.info "Checking .bats with shfmt"
@@ -65,6 +66,7 @@ run_shellcheck_linter() {
     test/test_helpers.bash \
     test/fixtures/dummy_broken_plugin/bin/* \
     test/fixtures/dummy_legacy_plugin/bin/* \
+    test/fixtures/dummy_dependent_plugin/bin/* \
     test/fixtures/dummy_plugin/bin/*
 
   print.info "Checking .bats files with Shellcheck"

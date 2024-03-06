@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# recurse 2 directories up to get to the
+# installs directory
+_ASDF_PATH=$(dirname "$ASDF_INSTALL_PATH")
+_ASDF_PATH=$(dirname "$_ASDF_PATH")
+DUMMY_EXPECTED_INSTALL="$_ASDF_PATH/dummy/1.2.0/version"
+
+mkdir -p "$ASDF_INSTALL_PATH"
+if ! [[ -f "$DUMMY_EXPECTED_INSTALL" ]]; then
+  echo "Could not detect dependent plugin dummy. at path $DUMMY_EXPECTED_INSTALL"
+  exit 1
+fi
+echo "Successfully detected depdendent plugin dummy."
+
+env >"$ASDF_INSTALL_PATH/env"
+echo "$ASDF_INSTALL_VERSION" >"$ASDF_INSTALL_PATH/version"

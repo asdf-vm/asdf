@@ -7,6 +7,7 @@ setup() {
   install_dummy_legacy_plugin
   install_dummy_plugin
   install_dummy_broken_plugin
+  install_dummy_dependent_plugin
 
   PROJECT_DIR="$HOME/project"
   mkdir -p "$PROJECT_DIR"
@@ -34,6 +35,15 @@ teardown() {
   run asdf install
   [ "$status" -eq 0 ]
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
+}
+
+@test "install_command installs plugins in order" {
+  cd "$PROJECT_DIR"
+  printf 'dummy 1.2.0\ndummy-dependent 1.3.0' >".tool-versions"
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
+  [ "$(cat "$ASDF_DIR/installs/dummy-dependent/1.3.0/version")" = "1.3.0" ]
 }
 
 @test "install_command with only name installs the version in .tool-versions" {
