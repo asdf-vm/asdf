@@ -215,7 +215,7 @@ _install_directory_tools() {
     display_debug "_install_directory_tools '$search_path': found '$tool_version'"
 
     # read one version from the file
-    IFS=' ' read -ra parts <<< "$tool_version"
+    IFS=' ' read -ra parts <<<"$tool_version"
     local plugin_name
     plugin_name=${parts[0]}
     local plugin_version
@@ -241,7 +241,7 @@ _install_directory_tools() {
     tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
 
     display_debug "_install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
-  done <<< $tool_versions
+  done <<<$tool_versions
 
   printf "%s\n" "$tools_installed"
 }
@@ -439,7 +439,7 @@ stringlist_a_subset_of_b() {
   local list_a=$1
   local list_b=$2
   local array_a
-  IFS=' ' read -r -a array_a <<< "$list_a"
+  IFS=' ' read -r -a array_a <<<"$list_a"
   for item_a in "${array_a[@]}"; do
     if [[ -z $(stringlist_contains "$list_b" "$item_a") ]]; then
       return 0
@@ -453,7 +453,7 @@ stringlist_contains() {
   local list=$1
   local search=$2
   local array
-  IFS=' ' read -r -a array <<< "$list"
+  IFS=' ' read -r -a array <<<"$list"
   for item in "${array[@]}"; do
     if [ $item = $search ]; then
       printf "true\n"
