@@ -238,7 +238,7 @@ _install_directory_tools() {
 
     # install the version
     display_none $(install_tool_version "$plugin_name" "$plugin_version")
-    tools_installed=$(echo "$tools_installed $plugin_name" | awk '{$1=$1};1')
+    tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
 
     display_debug "_install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
   done <<< $tool_versions
@@ -298,7 +298,7 @@ _install_directory_tools_legacy() {
     display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: plugin_version='$plugin_version'"
     display_none $(install_tool_version "$plugin_name" "$plugin_version")
 
-    tools_installed=$(echo "$tools_installed $plugin_name" | awk '{$1=$1};1')
+    tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
     display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: installed '$plugin_version' new state of tools_installed='$tools_installed'"
   done
 
