@@ -218,8 +218,6 @@ _install_directory_tools() {
     IFS=' ' read -ra parts <<<"$tool_version"
     local plugin_name
     plugin_name=${parts[0]}
-    local plugin_version
-    plugin_version=${parts[1]}
 
     # skip if plugin is installed already
     if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
@@ -227,18 +225,26 @@ _install_directory_tools() {
       continue
     fi
 
+    # install the versions
+    local plugin_version
+    for plugin_version in "${parts[@]:1}"; do
+      # install the version
+      display_none $(install_tool_version "$plugin_name" "$plugin_version")
+      tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+    done
+
     # check if there is an environment override for it
-    # if so take the environment version
+    # if so also install the environment version
     local env_version
     env_version=$(get_version_from_env "$plugin_name")
     if [ -n "$env_version" ]; then
       display_debug "_install_directory_tools '$search_path': $plugin_name: using environment override $env_version"
       plugin_version=$env_version
-    fi
 
-    # install the version
-    display_none $(install_tool_version "$plugin_name" "$plugin_version")
-    tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+      # install the version
+      display_none $(install_tool_version "$plugin_name" "$plugin_version")
+      tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+    fi
 
     display_debug "_install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
   done <<<$tool_versions
