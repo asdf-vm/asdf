@@ -7,14 +7,19 @@ bats_require_minimum_version 1.7.0
 
 setup_asdf_dir() {
   if [ "$BATS_TEST_NAME" = 'test_shim_exec_should_use_path_executable_when_specified_version_path-3a-3cpath-3e' ]; then
-    BASE_DIR="$(mktemp -dt "asdf_with_no_spaces.XXXX")"
+    BASE_DIR="$HOME/asdf_with_no_spaces/"
   else
-    BASE_DIR="$(mktemp -dt "asdf with spaces.XXXX")"
+    BASE_DIR="$HOME/asdf with spaces/"
   fi
+
+  # We don't call mktemp anymore so we need to create this sub directory manually
+  mkdir "$BASE_DIR"
 
   # HOME is now defined by the Golang test code in main_test.go
   #HOME="$BASE_DIR/home"
-  ASDF_DIR="$HOME/.asdf"
+  ASDF_DIR="$BASE_DIR/.asdf"
+  ASDF_DATA_DIR="$BASE_DIR/.asdf"
+  export ASDF_DATA_DIR
   mkdir -p "$ASDF_DIR/plugins"
   mkdir -p "$ASDF_DIR/installs"
   mkdir -p "$ASDF_DIR/shims"

@@ -24,7 +24,7 @@ func TestList(t *testing.T) {
 	testRepo, err := installMockPluginRepo(testDataDir, testPluginName)
 	assert.Nil(t, err)
 
-	err = PluginAdd(conf, testPluginName, testRepo)
+	err = Add(conf, testPluginName, testRepo)
 	assert.Nil(t, err)
 
 	t.Run("when urls and refs are set to false returns plugin names", func(t *testing.T) {
@@ -72,7 +72,7 @@ func TestList(t *testing.T) {
 	})
 }
 
-func TestPluginAdd(t *testing.T) {
+func TestAdd(t *testing.T) {
 	testDataDir := t.TempDir()
 
 	t.Run("when given an invalid plugin name prints an error", func(t *testing.T) {
@@ -80,7 +80,7 @@ func TestPluginAdd(t *testing.T) {
 
 		for _, invalid := range invalids {
 			t.Run(invalid, func(t *testing.T) {
-				err := PluginAdd(config.Config{}, invalid, testRepo)
+				err := Add(config.Config{}, invalid, testRepo)
 
 				expectedErrMsg := "is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 				if !strings.Contains(err.Error(), expectedErrMsg) {
@@ -94,14 +94,14 @@ func TestPluginAdd(t *testing.T) {
 		conf := config.Config{DataDir: testDataDir}
 
 		// Add plugin
-		err := PluginAdd(conf, testPluginName, testRepo)
+		err := Add(conf, testPluginName, testRepo)
 
 		if err != nil {
 			t.Fatal("Expected to be able to add plugin")
 		}
 
 		// Add it again to trigger error
-		err = PluginAdd(conf, testPluginName, testRepo)
+		err = Add(conf, testPluginName, testRepo)
 
 		if err == nil {
 			t.Fatal("expected error got nil")
@@ -116,7 +116,7 @@ func TestPluginAdd(t *testing.T) {
 	t.Run("when plugin name is valid but URL is invalid prints an error", func(t *testing.T) {
 		conf := config.Config{DataDir: testDataDir}
 
-		err := PluginAdd(conf, "foo", "foobar")
+		err := Add(conf, "foo", "foobar")
 
 		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
 	})
@@ -125,7 +125,7 @@ func TestPluginAdd(t *testing.T) {
 		testDataDir := t.TempDir()
 		conf := config.Config{DataDir: testDataDir}
 
-		err := PluginAdd(conf, testPluginName, testRepo)
+		err := Add(conf, testPluginName, testRepo)
 
 		assert.Nil(t, err, "Expected to be able to add plugin")
 
@@ -138,6 +138,38 @@ func TestPluginAdd(t *testing.T) {
 		entries, err := os.ReadDir(pluginDir + "/bin")
 		assert.Nil(t, err)
 		assert.Equal(t, 5, len(entries))
+	})
+}
+
+func TestRemove(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+
+	err := Add(conf, testPluginName, testRepo)
+	assert.Nil(t, err)
+
+	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
+		err := Remove(conf, "nonexistant")
+		assert.NotNil(t, err)
+		assert.ErrorContains(t, err, "no such plugin")
+	})
+
+	t.Run("returns error when invalid plugin name is given", func(t *testing.T) {
+		err := Remove(conf, "foo/bar/baz")
+		assert.NotNil(t, err)
+
+		expectedErrMsg := "is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
+		assert.ErrorContains(t, err, expectedErrMsg)
+	})
+
+	t.Run("removes plugin when passed name of installed plugin", func(t *testing.T) {
+		err := Remove(conf, testPluginName)
+		assert.Nil(t, err)
+
+		pluginDir := PluginDirectory(testDataDir, testPluginName)
+		_, err = os.Stat(pluginDir)
+		assert.NotNil(t, err)
+		assert.True(t, os.IsNotExist(err))
 	})
 }
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -12,12 +11,7 @@ import (
 // new Golang implementation matches the existing Bash implementation.
 
 func TestBatsTests(t *testing.T) {
-	// Create temp directory
-	dir, err := os.MkdirTemp("", "golang-bats-tests")
-	if err != nil {
-		t.Fatal("Failed to create temp dir")
-	}
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	// Build asdf and put in temp directory
 	buildAsdf(t, dir)
@@ -138,9 +132,9 @@ func runBatsFile(t *testing.T, dir, filename string) {
 	cmd.Stderr = &stderr
 
 	// Add dir to asdf test variables
-	asdfTestHome := fmt.Sprintf("HOME=%s/.asdf/", dir)
+	asdfTestHome := fmt.Sprintf("HOME=%s", dir)
 	asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
-	cmd.Env = append(cmd.Environ(), asdfBinPath, asdfTestHome)
+	cmd.Env = []string{asdfBinPath, asdfTestHome}
 
 	err := cmd.Run()
 	if err != nil {

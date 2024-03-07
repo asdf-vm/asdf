@@ -71,10 +71,10 @@ func Execute() {
 						},
 					},
 					&cli.Command{
-						Name: "Lorem",
+						Name: "remove",
 						Action: func(cCtx *cli.Context) error {
-							log.Print("Foobar")
-							return nil
+							args := cCtx.Args()
+							return pluginRemoveCommand(cCtx, logger, args.Get(0))
 						},
 					},
 					&cli.Command{
@@ -113,12 +113,27 @@ func pluginAddCommand(cCtx *cli.Context, conf config.Config, logger *log.Logger,
 		// TODO: implement
 		return cli.Exit("Not implemented yet", 1)
 	} else {
-		err := plugins.PluginAdd(conf, pluginName, pluginRepo)
+		err := plugins.Add(conf, pluginName, pluginRepo)
 		if err != nil {
 			logger.Printf("error adding plugin: %s", err)
 		}
 	}
 	return nil
+}
+
+func pluginRemoveCommand(cCtx *cli.Context, logger *log.Logger, pluginName string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	err = plugins.Remove(conf, pluginName)
+
+	if err != nil {
+		logger.Printf("error removing plugin: %s", err)
+	}
+	return err
 }
 
 func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
