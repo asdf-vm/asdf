@@ -48,6 +48,7 @@ func Execute() {
 							conf, err := config.LoadConfig()
 							if err != nil {
 								logger.Printf("error loading config: %s", err)
+								return err
 							}
 
 							return pluginAddCommand(cCtx, conf, logger, args.Get(0), args.Get(1))
@@ -55,8 +56,18 @@ func Execute() {
 					},
 					&cli.Command{
 						Name: "list",
+						Flags: []cli.Flag{
+							&cli.BoolFlag{
+								Name:  "urls",
+								Usage: "Show URLs",
+							},
+							&cli.BoolFlag{
+								Name:  "refs",
+								Usage: "Show Refs",
+							},
+						},
 						Action: func(cCtx *cli.Context) error {
-							return nil
+							return pluginListCommand(cCtx, logger)
 						},
 					},
 					&cli.Command{
@@ -107,5 +118,40 @@ func pluginAddCommand(cCtx *cli.Context, conf config.Config, logger *log.Logger,
 			logger.Printf("error adding plugin: %s", err)
 		}
 	}
+	return nil
+}
+
+func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
+	urls := cCtx.Bool("urls")
+	refs := cCtx.Bool("refs")
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	plugins, err := plugins.List(conf, urls, refs)
+
+	if err != nil {
+		logger.Printf("error loading plugin list: %s", err)
+		return err
+	}
+
+	// TODO: Add some sort of presenter logic in another file so we
+	// don't clutter up this cmd code with conditional presentation
+	// logic
+	for _, plugin := range plugins {
+		if urls && refs {
+			logger.Printf("%s\t\t%s\t%s\n", plugin.Name, plugin.Url, plugin.Ref)
+		} else if refs {
+			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.Ref)
+		} else if urls {
+			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.Url)
+		} else {
+			logger.Printf("%s\n", plugin.Name)
+		}
+	}
+
 	return nil
 }
