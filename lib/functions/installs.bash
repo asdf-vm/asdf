@@ -79,7 +79,6 @@ install_local_tool_versions() {
   local search_path
   search_path=$PWD
 
-  local some_tools_installed
   local some_plugin_not_installed
 
   local tool_versions_path
