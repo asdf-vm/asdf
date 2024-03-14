@@ -78,7 +78,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 	return plugins, nil
 }
 
-func PluginAdd(config config.Config, pluginName, pluginUrl string) error {
+func Add(config config.Config, pluginName, pluginUrl string) error {
 	err := validatePluginName(pluginName)
 
 	if err != nil {
@@ -110,6 +110,28 @@ func PluginAdd(config config.Config, pluginName, pluginUrl string) error {
 	}
 
 	return nil
+}
+
+func Remove(config config.Config, pluginName string) error {
+	err := validatePluginName(pluginName)
+
+	if err != nil {
+		return err
+	}
+
+	exists, err := PluginExists(config.DataDir, pluginName)
+
+	if err != nil {
+		return fmt.Errorf("unable to check if plugin exists: %w", err)
+	}
+
+	if !exists {
+		return fmt.Errorf("no such plugin: %s", pluginName)
+	}
+
+	pluginDir := PluginDirectory(config.DataDir, pluginName)
+
+	return os.RemoveAll(pluginDir)
 }
 
 func PluginExists(dataDir, pluginName string) (bool, error) {

@@ -32,7 +32,7 @@ teardown() {
   run asdf plugin add "plugin-with-w" "${BASE_DIR}/repo-plugin-with-w"
   [ "$status" -eq 0 ]
 
-  run asdf plugin-list
+  run asdf plugin list
   [ "$output" = "plugin-with-w" ]
 
   LANG="$ORIGINAL_LANG"
