@@ -260,7 +260,7 @@ _install_directory_tools_legacy() {
   local plugin_name
   for plugin_name in $plugins_installed; do
     # skip if plugin is installed already
-    if [[ -n $(stringlist_contains "$tool_versions" "$plugin_name") ]]; then
+    if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
       display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: skipping as tool was already installed"
       continue
     fi
