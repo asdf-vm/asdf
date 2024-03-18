@@ -218,7 +218,7 @@ _install_directory_tools() {
     local plugin_version
     for plugin_version in "${parts[@]:1}"; do
       # install the version
-      display_none $(install_tool_version "$plugin_name" "$plugin_version")
+      display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
       tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
     done
 
@@ -231,12 +231,12 @@ _install_directory_tools() {
       plugin_version=$env_version
 
       # install the version
-      display_none $(install_tool_version "$plugin_name" "$plugin_version")
+      display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
       tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
     fi
 
     display_debug "_install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
-  done <<<$tool_versions
+  done <<<"$tool_versions"
 
   printf "%s\n" "$tools_installed"
 }
@@ -291,7 +291,7 @@ _install_directory_tools_legacy() {
     fi
 
     display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: plugin_version='$plugin_version'"
-    display_none $(install_tool_version "$plugin_name" "$plugin_version")
+    display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
 
     tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
     display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: installed '$plugin_version' new state of tools_installed='$tools_installed'"
@@ -450,7 +450,7 @@ stringlist_contains() {
   local array
   IFS=' ' read -r -a array <<<"$list"
   for item in "${array[@]}"; do
-    if [ $item = $search ]; then
+    if [ "$item" = "$search" ]; then
       printf "true\n"
       return 0
     fi
