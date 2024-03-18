@@ -141,7 +141,7 @@ install_directory_tools_recursive() {
 
   while [ "$search_path" != "/" ]; do
     # install tools from files in current directory
-    display_debug "--------------------------------------------------------------------------------------------------------------"
+    display_debug_hr
     tools_installed=$(install_directory_tools "$search_path" "$plugins_installed" "$tools_installed")
     display_debug "install_directory_tools_recursive '$search_path': install_directory_tools returned tools_installed='$tools_installed'"
 
@@ -160,7 +160,7 @@ install_directory_tools_recursive() {
   # lets see if $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME as actually
   # an absolute path
   if [ -f "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]; then
-    display_debug "--------------------------------------------------------------------------------------------------------------"
+    display_debug_hr
     display_debug "attempting to treat \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME as an absolute path: $ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
     tools_installed=$(_install_directory_tools "" "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" "$plugins_installed" "$tools_installed")
     display_debug "install_directory_tools_recursive '$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME': install_directory_tools returned tools_installed='$tools_installed'"
@@ -465,6 +465,10 @@ stringlist_contains() {
       return 0
     fi
   done
+}
+
+display_debug_hr() {
+   display_debug "--------------------------------------------------------------------------------------------------------------"
 }
 
 display_debug() {
