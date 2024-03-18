@@ -79,7 +79,6 @@ install_local_tool_versions() {
   local search_path
   search_path=$PWD
 
-  local some_tools_installed
   local some_plugin_not_installed
 
   local tool_versions_path
@@ -102,6 +101,7 @@ install_local_tool_versions() {
   fi
 
   # Locate all the plugins defined in the versions file.
+  # This just checks the current directory
   local tools_file
   if [ -f "$tool_versions_path" ]; then
     tools_file=$(strip_tool_version_comments "$tool_versions_path" | cut -d ' ' -f 1)
@@ -117,28 +117,187 @@ install_local_tool_versions() {
     exit 1
   fi
 
+  local tools_installed
   if [ -n "$plugins_installed" ]; then
-    for plugin_name in $plugins_installed; do
-      local plugin_version_and_path
-      plugin_version_and_path="$(find_versions "$plugin_name" "$search_path")"
-
-      if [ -n "$plugin_version_and_path" ]; then
-        local plugin_version
-        some_tools_installed='yes'
-        plugin_versions=$(cut -d '|' -f 1 <<<"$plugin_version_and_path")
-        for plugin_version in $plugin_versions; do
-          install_tool_version "$plugin_name" "$plugin_version"
-        done
-      fi
-    done
+    plugins_installed=$(printf "%s" "$plugins_installed" | tr "\n" " " | awk '{$1=$1};1')
+    display_debug "install_local_tool_versions: plugins_installed='$plugins_installed'"
+    tools_installed=$(install_directory_tools_recursive "$search_path" "$plugins_installed")
   fi
 
-  if [ -z "$some_tools_installed" ]; then
+  if [ -z "$tools_installed" ]; then
     printf "Either specify a tool & version in the command\n"
     printf "OR add .tool-versions file in this directory\n"
     printf "or in a parent directory\n"
     exit 1
   fi
+}
+
+install_directory_tools_recursive() {
+  local search_path=$1
+  local plugins_installed=$2
+  local tools_installed=""
+
+  display_debug "install_directory_tools_recursive '$search_path': entered with plugins_installed='$plugins_installed'"
+
+  while [ "$search_path" != "/" ]; do
+    # install tools from files in current directory
+    display_debug_hr
+    tools_installed=$(install_directory_tools "$search_path" "$plugins_installed" "$tools_installed")
+    display_debug "install_directory_tools_recursive '$search_path': install_directory_tools returned tools_installed='$tools_installed'"
+
+    # terminate if all tools are installed
+    if [[ -n $(stringlist_a_subset_of_b "$plugins_installed" "$tools_installed") ]]; then
+      display_debug "install_directory_tools_recursive '$search_path': exiting because all known tools ($plugins_installed) are installed ($tools_installed)"
+      printf "%s\n" "$tools_installed"
+      return 0
+    fi
+
+    # go up a directory
+    search_path=$(dirname "$search_path")
+  done
+
+  printf "%s\n" "$tools_installed"
+}
+
+install_directory_tools() {
+  local search_path=$1
+  local plugins_installed=$2
+  local tools_installed=$3
+  display_debug "install_directory_tools '$search_path': starting install. tools_installed='$tools_installed'"
+
+  # install tools from .tool-versions
+  # install order is the order listed in .tool-versions
+  file_name=$(asdf_tool_versions_filename)
+  tools_installed=$(_install_directory_tools "$search_path" "$file_name" "$plugins_installed" "$tools_installed")
+
+  # install tools from legacy version files
+  # install order is plugin order which is alphabetical
+  local legacy_config
+  legacy_config=$(get_asdf_config_value "legacy_version_file")
+  if [ "$legacy_config" = "yes" ]; then
+    tools_installed=$(_install_directory_tools_legacy "$search_path" "$plugins_installed" "$tools_installed")
+  fi
+
+  printf "%s\n" "$tools_installed"
+}
+
+_install_directory_tools() {
+  local search_path=$1
+  local file_name=$2
+  local plugins_installed=$3
+  local tools_installed=$4
+
+  local tool_versions
+  if ! [[ -f "$search_path/$file_name" ]]; then
+    display_debug "_install_directory_tools '$search_path': exiting early... $file_name file not found"
+    printf "%s\n" "$tools_installed"
+    return 0
+  fi
+
+  tool_versions=$(strip_tool_version_comments "$search_path/$file_name" | awk '{$1=$1};1')
+  if [[ -z $tool_versions ]]; then
+    display_debug "_install_directory_tools '$search_path': exiting early... no tools found in directory"
+    printf "%s\n" "$tools_installed"
+    return 0
+  fi
+  while IFS=' ' read -r tool_version; do
+    display_debug "_install_directory_tools '$search_path': found '$tool_version'"
+
+    # read one version from the file
+    IFS=' ' read -ra parts <<<"$tool_version"
+    local plugin_name
+    plugin_name=${parts[0]}
+
+    # skip if plugin is installed already
+    if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
+      display_debug "_install_directory_tools '$search_path': '$plugin_name' is already installed... skipping"
+      continue
+    fi
+
+    # install the versions
+    local plugin_version
+    for plugin_version in "${parts[@]:1}"; do
+      # install the version
+      display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
+      tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+    done
+
+    # check if there is an environment override for it
+    # if so also install the environment version
+    local env_version
+    env_version=$(get_version_from_env "$plugin_name")
+    if [ -n "$env_version" ]; then
+      display_debug "_install_directory_tools '$search_path': $plugin_name: using environment override $env_version"
+      plugin_version=$env_version
+
+      # install the version
+      display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
+      tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+    fi
+
+    display_debug "_install_directory_tools '$search_path': installed '$plugin_name':'$plugin_version' new state of tools_installed='$tools_installed'"
+  done <<<"$tool_versions"
+
+  printf "%s\n" "$tools_installed"
+}
+
+_install_directory_tools_legacy() {
+  local search_path=$1
+  local plugins_installed=$2
+  local tools_installed=$3
+
+  display_debug "_install_directory_tools_legacy '$search_path': resolving legacy files"
+  local plugin_name
+  for plugin_name in $plugins_installed; do
+    # skip if plugin is installed already
+    if [[ -n $(stringlist_contains "$tools_installed" "$plugin_name") ]]; then
+      display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: skipping as tool was already installed"
+      continue
+    fi
+
+    # extract plugin legacy information
+    local plugin_path
+    plugin_path=$(get_plugin_path "$plugin_name")
+    local legacy_list_filenames_script
+    legacy_list_filenames_script="${plugin_path}/bin/list-legacy-filenames"
+
+    # skip if no legacy_list_filenames_script available
+    if ! [[ -f "$legacy_list_filenames_script" ]]; then
+      display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: skipping as legacy files are not supported"
+      continue
+    fi
+
+    # extract plugin legacy filenames
+    local legacy_filenames=""
+    legacy_filenames=$("$legacy_list_filenames_script")
+
+    # lookup plugin version in current dir
+    local plugin_version
+    plugin_version=$(get_legacy_version_in_dir "$plugin_name" "$search_path" "$legacy_filenames")
+
+    # check if there is an environment override for it
+    # if so take the environment version
+    local env_version
+    env_version=$(get_version_from_env "$plugin_name")
+    if [ -n "$env_version" ]; then
+      display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: using environment override $env_version"
+      plugin_version=$env_version
+    fi
+
+    # skip if version cannot be found
+    if [ -z "$plugin_version" ]; then
+      display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: skipping as version cannot be found"
+      continue
+    fi
+
+    display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: plugin_version='$plugin_version'"
+    display_none "$(install_tool_version "$plugin_name" "$plugin_version")"
+
+    tools_installed=$(printf "%s %s" "$tools_installed" "$plugin_name" | awk '{$1=$1};1')
+    display_debug "_install_directory_tools_legacy '$search_path': legacy_install $plugin_name: installed '$plugin_version' new state of tools_installed='$tools_installed'"
+  done
+
+  printf "%s\n" "$tools_installed"
 }
 
 install_tool_version() {
@@ -252,4 +411,48 @@ install_tool_version() {
       handle_failure "$install_path"
     fi
   fi
+}
+
+get_legacy_version_in_dir() {
+  local plugin_name=$1
+  local search_path=$2
+  local legacy_filenames=$3
+
+  local asdf_version
+  for filename in $legacy_filenames; do
+    local legacy_version
+    legacy_version=$(parse_legacy_version_file "$search_path/$filename" "$plugin_name")
+
+    if [ -n "$legacy_version" ]; then
+      printf "%s\n" "$legacy_version"
+      return 0
+    fi
+  done
+}
+
+stringlist_a_subset_of_b() {
+  local list_a=$1
+  local list_b=$2
+  local array_a
+  IFS=' ' read -r -a array_a <<<"$list_a"
+  for item_a in "${array_a[@]}"; do
+    if [[ -z $(stringlist_contains "$list_b" "$item_a") ]]; then
+      return 0
+    fi
+  done
+  printf "true\n"
+  return 0
+}
+
+stringlist_contains() {
+  local list=$1
+  local search=$2
+  local array
+  IFS=' ' read -r -a array <<<"$list"
+  for item in "${array[@]}"; do
+    if [ "$item" = "$search" ]; then
+      printf "true\n"
+      return 0
+    fi
+  done
 }
