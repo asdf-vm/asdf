@@ -466,17 +466,3 @@ stringlist_contains() {
     fi
   done
 }
-
-display_debug_hr() {
-   display_debug "--------------------------------------------------------------------------------------------------------------"
-}
-
-display_debug() {
-  if [[ $DEBUG = "true" ]]; then
-    printf "debug: %s\n" "$1" >&2
-  fi
-}
-
-display_none() {
-  printf ""
-}

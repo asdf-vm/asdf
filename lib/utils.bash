@@ -156,6 +156,20 @@ display_error() {
   printf "%s\n" "$1" >&2
 }
 
+display_debug_hr() {
+   display_debug "--------------------------------------------------------------------------------------------------------------"
+}
+
+display_debug() {
+  if [[ $DEBUG = "true" ]]; then
+    printf "debug: %s\n" "$1" >&2
+  fi
+}
+
+display_none() {
+  printf ""
+}
+
 get_version_in_dir() {
   local plugin_name=$1
   local search_path=$2
