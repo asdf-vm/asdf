@@ -27,7 +27,7 @@ setup_asdf_dir() {
   # ASDF_BIN is now defined by the Golang test code in main_test.go
   #ASDF_BIN="$(dirname "$BATS_TEST_DIRNAME")/bin"
 
-  # shellcheck disable=SC2031
+  # shellcheck disable=SC2031,SC2153
   PATH="$ASDF_BIN:$ASDF_DIR/shims:$PATH"
 }
 
