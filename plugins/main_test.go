@@ -34,7 +34,7 @@ func TestList(t *testing.T) {
 		plugin := plugins[0]
 		assert.Equal(t, "lua", plugin.Name)
 		assert.NotZero(t, plugin.Dir)
-		assert.Zero(t, plugin.Url)
+		assert.Zero(t, plugin.URL)
 		assert.Zero(t, plugin.Ref)
 	})
 
@@ -46,7 +46,7 @@ func TestList(t *testing.T) {
 		assert.Equal(t, "lua", plugin.Name)
 		assert.NotZero(t, plugin.Dir)
 		assert.Zero(t, plugin.Ref)
-		assert.NotZero(t, plugin.Url)
+		assert.NotZero(t, plugin.URL)
 	})
 
 	t.Run("when refs is set to true returns plugins with current repo refs set", func(t *testing.T) {
@@ -57,7 +57,7 @@ func TestList(t *testing.T) {
 		assert.Equal(t, "lua", plugin.Name)
 		assert.NotZero(t, plugin.Dir)
 		assert.NotZero(t, plugin.Ref)
-		assert.Zero(t, plugin.Url)
+		assert.Zero(t, plugin.URL)
 	})
 
 	t.Run("when refs and urls are both set to true returns plugins with both set", func(t *testing.T) {
@@ -68,7 +68,7 @@ func TestList(t *testing.T) {
 		assert.Equal(t, "lua", plugin.Name)
 		assert.NotZero(t, plugin.Dir)
 		assert.NotZero(t, plugin.Ref)
-		assert.NotZero(t, plugin.Url)
+		assert.NotZero(t, plugin.URL)
 	})
 }
 

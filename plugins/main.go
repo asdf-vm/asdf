@@ -19,11 +19,11 @@ type Plugin struct {
 	Name string
 	Dir  string
 	Ref  string
-	Url  string
+	URL  string
 }
 
 func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
-	pluginsDir := PluginsDataDirectory(config.DataDir)
+	pluginsDir := DataDirectory(config.DataDir)
 	files, err := os.ReadDir(pluginsDir)
 	if err != nil {
 		return plugins, err
@@ -63,7 +63,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 				plugins = append(plugins, Plugin{
 					Name: file.Name(),
 					Dir:  location,
-					Url:  url,
+					URL:  url,
 					Ref:  refString,
 				})
 			} else {
@@ -78,7 +78,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 	return plugins, nil
 }
 
-func Add(config config.Config, pluginName, pluginUrl string) error {
+func Add(config config.Config, pluginName, pluginURL string) error {
 	err := validatePluginName(pluginName)
 
 	if err != nil {
@@ -102,7 +102,7 @@ func Add(config config.Config, pluginName, pluginUrl string) error {
 	}
 
 	_, err = git.PlainClone(pluginDir, false, &git.CloneOptions{
-		URL: pluginUrl,
+		URL: pluginURL,
 	})
 
 	if err != nil {
@@ -149,10 +149,10 @@ func PluginExists(dataDir, pluginName string) (bool, error) {
 }
 
 func PluginDirectory(dataDir, pluginName string) string {
-	return filepath.Join(PluginsDataDirectory(dataDir), pluginName)
+	return filepath.Join(DataDirectory(dataDir), pluginName)
 }
 
-func PluginsDataDirectory(dataDir string) string {
+func DataDirectory(dataDir string) string {
 	return filepath.Join(dataDir, dataDirPlugins)
 }
 

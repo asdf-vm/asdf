@@ -53,14 +53,15 @@ type Config struct {
 func NewPluginRepoCheckDuration(checkDuration string) PluginRepoCheckDuration {
 	if strings.ToLower(checkDuration) == "never" {
 		return PluginRepoCheckDuration{Never: true}
-	} else {
-		every, err := strconv.Atoi(checkDuration)
-		if err != nil {
-			// if error parsing config use default value
-			return PluginRepoCheckDurationDefault
-		}
-		return PluginRepoCheckDuration{Every: every}
 	}
+
+	every, err := strconv.Atoi(checkDuration)
+	if err != nil {
+		// if error parsing config use default value
+		return PluginRepoCheckDurationDefault
+	}
+
+	return PluginRepoCheckDuration{Every: every}
 }
 
 func LoadConfig() (Config, error) {
