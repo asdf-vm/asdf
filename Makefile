@@ -25,7 +25,7 @@ cover: test
 
 lint: fmt
 	staticcheck -tests -show-ignored ./...
-	revive
+	revive ./...
 
 vet: fmt
 	go vet .

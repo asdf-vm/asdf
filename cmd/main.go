@@ -26,7 +26,7 @@ func Execute() {
 		// likely be written by me.
 		Copyright: "(c) 2024 Trevor Brown",
 		Authors: []*cli.Author{
-			&cli.Author{
+			{
 				Name: "Trevor Brown",
 			},
 		},
@@ -34,14 +34,14 @@ func Execute() {
 		UsageText: usageText,
 		Commands: []*cli.Command{
 			// TODO: Flesh out all these commands
-			&cli.Command{
+			{
 				Name: "plugin",
-				Action: func(cCtx *cli.Context) error {
+				Action: func(_ *cli.Context) error {
 					log.Print("Foobar")
 					return nil
 				},
 				Subcommands: []*cli.Command{
-					&cli.Command{
+					{
 						Name: "add",
 						Action: func(cCtx *cli.Context) error {
 							args := cCtx.Args()
@@ -54,7 +54,7 @@ func Execute() {
 							return pluginAddCommand(cCtx, conf, logger, args.Get(0), args.Get(1))
 						},
 					},
-					&cli.Command{
+					{
 						Name: "list",
 						Flags: []cli.Flag{
 							&cli.BoolFlag{
@@ -70,16 +70,16 @@ func Execute() {
 							return pluginListCommand(cCtx, logger)
 						},
 					},
-					&cli.Command{
+					{
 						Name: "remove",
 						Action: func(cCtx *cli.Context) error {
 							args := cCtx.Args()
 							return pluginRemoveCommand(cCtx, logger, args.Get(0))
 						},
 					},
-					&cli.Command{
+					{
 						Name: "update",
-						Action: func(cCtx *cli.Context) error {
+						Action: func(_ *cli.Context) error {
 							log.Print("Ipsum")
 							return nil
 						},
@@ -87,7 +87,7 @@ func Execute() {
 				},
 			},
 		},
-		Action: func(cCtx *cli.Context) error {
+		Action: func(_ *cli.Context) error {
 			// TODO: flesh this out
 			log.Print("Late but latest -- Rajinikanth")
 			return nil
@@ -98,11 +98,10 @@ func Execute() {
 
 	if err != nil {
 		os.Exit(1)
-		log.Fatal(err)
 	}
 }
 
-func pluginAddCommand(cCtx *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
+func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
 	if pluginName == "" {
 		// Invalid arguments
 		// Maybe one day switch this to show the generated help
@@ -112,16 +111,17 @@ func pluginAddCommand(cCtx *cli.Context, conf config.Config, logger *log.Logger,
 		// add from plugin repo
 		// TODO: implement
 		return cli.Exit("Not implemented yet", 1)
-	} else {
-		err := plugins.Add(conf, pluginName, pluginRepo)
-		if err != nil {
-			logger.Printf("error adding plugin: %s", err)
-		}
 	}
+
+	err := plugins.Add(conf, pluginName, pluginRepo)
+	if err != nil {
+		logger.Printf("error adding plugin: %s", err)
+	}
+
 	return nil
 }
 
-func pluginRemoveCommand(cCtx *cli.Context, logger *log.Logger, pluginName string) error {
+func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -158,11 +158,11 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 	// logic
 	for _, plugin := range plugins {
 		if urls && refs {
-			logger.Printf("%s\t\t%s\t%s\n", plugin.Name, plugin.Url, plugin.Ref)
+			logger.Printf("%s\t\t%s\t%s\n", plugin.Name, plugin.URL, plugin.Ref)
 		} else if refs {
 			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.Ref)
 		} else if urls {
-			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.Url)
+			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.URL)
 		} else {
 			logger.Printf("%s\n", plugin.Name)
 		}

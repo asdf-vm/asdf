@@ -1,0 +1,6 @@
+linters:
+  enable:
+    - govet
+    - gofmt
+    - revive
+    - staticcheck
