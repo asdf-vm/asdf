@@ -10,9 +10,6 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-const LegacyVersionFileDefault = false
-const AlwaysKeepDownloadDefault = false
-const DisablePluginShortNameRepositoryDefault = false
 const ForcePrependDefault = false
 const DataDirDefault = "~/.asdf"
 const ConfigFileDefault = "~/.asdfrc"
@@ -48,6 +45,16 @@ type Config struct {
 	ForcePrepend bool   `env:"ASDF_FORCE_PREPEND, overwrite"`
 	// Field that stores the settings struct if it is loaded
 	Settings Settings
+}
+
+func defaultSettings() *Settings {
+	return &Settings{
+		Loaded:                            false,
+		LegacyVersionFile:                 false,
+		AlwaysKeepDownload:                false,
+		PluginRepositoryLastCheckDuration: PluginRepoCheckDurationDefault,
+		DisablePluginShortNameRepository:  false,
+	}
 }
 
 func NewPluginRepoCheckDuration(checkDuration string) PluginRepoCheckDuration {
@@ -174,26 +181,26 @@ func loadSettings(asdfrcPath string) (Settings, error) {
 	}
 
 	mainConf := config.Section("")
-	checkDuration := NewPluginRepoCheckDuration(mainConf.Key("plugin_repository_last_check_duration").String())
 
-	return Settings{
-		Loaded:                            true,
-		LegacyVersionFile:                 yesNoToBool(mainConf, "legacy_version_file", LegacyVersionFileDefault),
-		AlwaysKeepDownload:                yesNoToBool(mainConf, "use_release_candidates", AlwaysKeepDownloadDefault),
-		PluginRepositoryLastCheckDuration: checkDuration,
-		DisablePluginShortNameRepository:  yesNoToBool(mainConf, "disable_plugin_short_name_repository", DisablePluginShortNameRepositoryDefault),
-	}, nil
+	settings := defaultSettings()
+
+	settings.Loaded = true
+	settings.PluginRepositoryLastCheckDuration = NewPluginRepoCheckDuration(mainConf.Key("plugin_repository_last_check_duration").String())
+
+	boolOverride(&settings.LegacyVersionFile, mainConf, "legacy_version_file")
+	boolOverride(&settings.AlwaysKeepDownload, mainConf, "always_keep_download")
+	boolOverride(&settings.DisablePluginShortNameRepository, mainConf, "disable_plugin_short_name_repository")
+
+	return *settings, nil
 }
 
-func yesNoToBool(section *ini.Section, key string, defaultValue bool) bool {
-	yesOrNo := section.Key(key).String()
-	lcYesOrNo := strings.ToLower(yesOrNo)
+func boolOverride(field *bool, section *ini.Section, key string) {
+	lcYesOrNo := strings.ToLower(section.Key(key).String())
+
 	if lcYesOrNo == "yes" {
-		return true
+		*field = true
 	}
 	if lcYesOrNo == "no" {
-		return false
+		*field = false
 	}
-
-	return defaultValue
 }
