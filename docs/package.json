@@ -7,8 +7,8 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "@types/node": "^20.8.10",
-    "prettier": "^3.0.3",
-    "vitepress": "^1.0.0-rc.24"
+    "@types/node": "^20.12.2",
+    "prettier": "^3.2.5",
+    "vitepress": "^1.0.2"
   }
 }
