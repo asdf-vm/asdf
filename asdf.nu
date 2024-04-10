@@ -107,7 +107,7 @@ module asdf {
 
         let flags = ($params | where enabled | get --ignore-errors flag | default '' )
 
-        ^asdf plugin list $flags | lines | parse -r $template | str trim
+        ^asdf plugin list ...$flags | lines | parse -r $template | str trim
     }
 
     # list all available plugins
