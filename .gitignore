@@ -6,3 +6,6 @@ repository
 .vagrant
 keyrings
 /tmp
+/.fleet
+/.idea
+/.vscode
