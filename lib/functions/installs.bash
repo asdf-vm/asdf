@@ -238,7 +238,7 @@ install_tool_version() {
       always_keep_download=$(get_asdf_config_value "always_keep_download")
       if [ ! "$keep_download" = "true" ] && [ ! "$always_keep_download" = "yes" ]; then
         if [ -d "$download_path" ]; then
-          rm -r "$download_path"
+          rm -rf "$download_path"
         else
           printf '%s\n' "asdf: Warn: You have configured asdf to preserve downloaded files (with always_keep_download=yes or --keep-download). But" >&2
           printf '%s\n' "asdf: Warn: the current plugin ($plugin_name) does not support that. Downloaded files will not be preserved." >&2
