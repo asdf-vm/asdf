@@ -222,7 +222,7 @@ asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--a
 
 只有前两个参数是必须的。
 如果指定了 \__version_，则该工具将随指定版本一起安装。默认返回为 `asdf latest <plugin-name>`。
-如果指定了 _git-ref_，则插件将检查提交/分支/标签。这对于在该插件的 CI 上测试拉取请求非常有用。
+如果指定了 _git-ref_，则插件将检查提交/分支/标签。这对于在该插件的 CI 上测试拉取请求非常有用。默认值是插件仓库的默认分支。
 
 剩下的参数被视为要执行的命令，以确保安装的工具正常工作。通常情况下，它需要带 `--version` 或者 `--help`。例如，要测试 NodeJS 插件，我们可以运行：
 
