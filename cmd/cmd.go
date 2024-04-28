@@ -82,9 +82,15 @@ func Execute() {
 					},
 					{
 						Name: "update",
-						Action: func(_ *cli.Context) error {
-							log.Print("Ipsum")
-							return nil
+						Flags: []cli.Flag{
+							&cli.BoolFlag{
+								Name:  "all",
+								Usage: "Update all installed plugins",
+							},
+						},
+						Action: func(cCtx *cli.Context) error {
+							args := cCtx.Args()
+							return pluginUpdateCommand(cCtx, logger, args.Get(0), args.Get(1))
 						},
 					},
 				},
@@ -169,4 +175,46 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 	}
 
 	return nil
+}
+
+func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref string) error {
+	updateAll := cCtx.Bool("all")
+	if !updateAll && pluginName == "" {
+		return cli.Exit("usage: asdf plugin-update {<name> [git-ref] | --all}", 1)
+	}
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	if updateAll {
+		installedPlugins, err := plugins.List(conf, false, false)
+		if err != nil {
+			logger.Printf("failed to get plugin list: %s", err)
+			return err
+		}
+
+		for _, plugin := range installedPlugins {
+			updatedToRef, err := plugins.Update(conf, plugin.Name, "")
+			formatUpdateResult(logger, plugin.Name, updatedToRef, err)
+		}
+
+		return nil
+	}
+
+	updatedToRef, err := plugins.Update(conf, pluginName, ref)
+	formatUpdateResult(logger, pluginName, updatedToRef, err)
+	return err
+}
+
+func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err error) {
+	if err != nil {
+		logger.Printf("failed to update %s due to error: %s\n", pluginName, err)
+
+		return
+	}
+
+	logger.Printf("updated %s to ref %s\n", pluginName, updatedToRef)
 }
