@@ -1,13 +1,14 @@
 package plugins
 
 import (
-	"asdf/config"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"asdf/config"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -76,7 +77,7 @@ func TestAdd(t *testing.T) {
 	testDataDir := t.TempDir()
 
 	t.Run("when given an invalid plugin name prints an error", func(t *testing.T) {
-		var invalids = []string{"plugin^name", "plugin%name", "plugin name", "PLUGIN_NAME"}
+		invalids := []string{"plugin^name", "plugin%name", "plugin name", "PLUGIN_NAME"}
 
 		for _, invalid := range invalids {
 			t.Run(invalid, func(t *testing.T) {
@@ -95,7 +96,6 @@ func TestAdd(t *testing.T) {
 
 		// Add plugin
 		err := Add(conf, testPluginName, testRepo)
-
 		if err != nil {
 			t.Fatal("Expected to be able to add plugin")
 		}
@@ -176,14 +176,13 @@ func TestRemove(t *testing.T) {
 func TestPluginExists(t *testing.T) {
 	testDataDir := t.TempDir()
 	pluginDir := PluginDirectory(testDataDir, testPluginName)
-	err := os.MkdirAll(pluginDir, 0777)
+	err := os.MkdirAll(pluginDir, 0o777)
 	if err != nil {
 		t.Errorf("got %v, expected nil", err)
 	}
 
 	t.Run("returns true when plugin exists", func(t *testing.T) {
 		exists, err := PluginExists(testDataDir, testPluginName)
-
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}
@@ -202,7 +201,6 @@ func TestPluginExists(t *testing.T) {
 		}
 
 		exists, err := PluginExists(testDataDir, pluginName)
-
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}
@@ -214,7 +212,6 @@ func TestPluginExists(t *testing.T) {
 
 	t.Run("returns false when plugin dir does not exist", func(t *testing.T) {
 		exists, err := PluginExists(testDataDir, "non-existant")
-
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}
@@ -241,7 +238,7 @@ func TestValidatePluginName(t *testing.T) {
 		refuteError(t, err)
 	})
 
-	var invalids = []string{"plugin^name", "plugin%name", "plugin name", "PLUGIN_NAME"}
+	invalids := []string{"plugin^name", "plugin%name", "plugin name", "PLUGIN_NAME"}
 
 	for _, invalid := range invalids {
 		t.Run(invalid, func(t *testing.T) {
@@ -261,7 +258,7 @@ func refuteError(t *testing.T, err error) {
 }
 
 func touchFile(name string) error {
-	file, err := os.OpenFile(name, os.O_RDONLY|os.O_CREATE, 0644)
+	file, err := os.OpenFile(name, os.O_RDONLY|os.O_CREATE, 0o644)
 	if err != nil {
 		return err
 	}
@@ -323,7 +320,6 @@ func runCmd(cmdName string, args ...string) error {
 	cmd.Stderr = &stderr
 
 	err := cmd.Run()
-
 	if err != nil {
 		// If command fails print both stderr and stdout
 		fmt.Println("stdout:", stdout.String())
@@ -336,7 +332,6 @@ func runCmd(cmdName string, args ...string) error {
 
 func moduleRoot() (string, error) {
 	currentDir, err := os.Getwd()
-
 	if err != nil {
 		return "", err
 	}

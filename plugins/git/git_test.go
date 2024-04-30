@@ -97,7 +97,7 @@ func TestPluginUpdate(t *testing.T) {
 	t.Run("returns error when plugin repo does not exist", func(t *testing.T) {
 		badPluginName := "badplugin"
 		badPluginDir := filepath.Join(tempDir, badPluginName)
-		err := os.MkdirAll(badPluginDir, 0777)
+		err := os.MkdirAll(badPluginDir, 0o777)
 		assert.Nil(t, err)
 
 		badPlugin := NewPlugin(badPluginDir)
@@ -141,7 +141,6 @@ func TestPluginUpdate(t *testing.T) {
 		assert.Equal(t, updatedToRef, "")
 		expectedErrMsg := "couldn't find remote ref \"non-existant\""
 		assert.ErrorContains(t, err, expectedErrMsg)
-
 	})
 
 	t.Run("updates plugin to ref when plugin with name and ref exist", func(t *testing.T) {
@@ -167,7 +166,6 @@ func getCurrentCommit(path string) (string, error) {
 
 func getCommit(path, revision string) (string, error) {
 	repo, err := git.PlainOpen(path)
-
 	if err != nil {
 		return "", err
 	}
@@ -179,25 +177,21 @@ func getCommit(path, revision string) (string, error) {
 
 func checkoutPreviousCommit(path string) (string, error) {
 	repo, err := git.PlainOpen(path)
-
 	if err != nil {
 		return "", err
 	}
 
 	previousHash, err := repo.ResolveRevision(plumbing.Revision("HEAD~"))
-
 	if err != nil {
 		return "", err
 	}
 
 	worktree, err := repo.Worktree()
-
 	if err != nil {
 		return "", err
 	}
 
 	err = worktree.Reset(&git.ResetOptions{Commit: *previousHash})
-
 	if err != nil {
 		return "", err
 	}

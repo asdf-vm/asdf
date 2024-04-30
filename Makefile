@@ -8,6 +8,7 @@ build: test lint
 
 fmt:
 	go fmt ./...
+	gofumpt -l -w .
 
 verify:
 	go mod verify
@@ -25,7 +26,7 @@ cover: test
 
 lint: fmt
 	staticcheck -tests -show-ignored ./...
-	revive ./...
+	revive -set_exit_status ./...
 
 vet: fmt
 	go vet .

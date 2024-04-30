@@ -40,7 +40,6 @@ func (g Plugin) Clone(pluginURL string) error {
 	_, err := git.PlainClone(g.directory, false, &git.CloneOptions{
 		URL: pluginURL,
 	})
-
 	if err != nil {
 		return fmt.Errorf("unable to clone plugin: %w", err)
 	}
@@ -51,7 +50,6 @@ func (g Plugin) Clone(pluginURL string) error {
 // Head returns the current HEAD ref of the plugin's Git repository
 func (g Plugin) Head() (string, error) {
 	repo, err := gitOpen(g.directory)
-
 	if err != nil {
 		return "", err
 	}
@@ -67,7 +65,6 @@ func (g Plugin) Head() (string, error) {
 // RemoteURL returns the URL of the default remote for the plugin's Git repository
 func (g Plugin) RemoteURL() (string, error) {
 	repo, err := gitOpen(g.directory)
-
 	if err != nil {
 		return "", err
 	}
@@ -84,7 +81,6 @@ func (g Plugin) RemoteURL() (string, error) {
 // latest commit on the current branch
 func (g Plugin) Update(ref string) (string, error) {
 	repo, err := gitOpen(g.directory)
-
 	if err != nil {
 		return "", err
 	}
@@ -94,7 +90,6 @@ func (g Plugin) Update(ref string) (string, error) {
 	if ref == "" {
 		// If no ref is provided checkout latest commit on current branch
 		head, err := repo.Head()
-
 		if err != nil {
 			return "", err
 		}
@@ -138,7 +133,6 @@ func (g Plugin) Update(ref string) (string, error) {
 
 func gitOpen(directory string) (*git.Repository, error) {
 	repo, err := git.PlainOpen(directory)
-
 	if err != nil {
 		return repo, fmt.Errorf("unable to open plugin Git repository: %w", err)
 	}
