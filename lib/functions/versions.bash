@@ -60,7 +60,7 @@ version_command() {
     resolved_versions+=("$version")
   done
 
-  if [ -f "$file" ] && grep "^$plugin_name " "$file" >/dev/null; then
+  if [ -f "$file" ] && grep -q "^$plugin_name " "$file"; then
     local temp_dir
     temp_dir=${TMPDIR:-/tmp}
 

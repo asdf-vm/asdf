@@ -16,6 +16,14 @@ export default defineConfig({
         sidebar: sidebars.en,
       },
     },
+    "ja-jp": {
+      label: "日本語",
+      lang: "ja-jp",
+      themeConfig: {
+        nav: navbars.ja_jp,
+        sidebar: sidebars.ja_jp,
+      },
+    },
     "pt-br": {
       label: "Brazilian Portuguese",
       lang: "pr-br",
