@@ -1,10 +1,12 @@
+// Package cmd contains the asdf CLI command code
 package cmd
 
 import (
-	"asdf/config"
-	"asdf/plugins"
 	"log"
 	"os"
+
+	"asdf/config"
+	"asdf/plugins"
 
 	"github.com/urfave/cli/v2"
 )
@@ -15,6 +17,7 @@ Manage all your runtime versions with one tool!
 
 Complete documentation is available at https://asdf-vm.com/`
 
+// Execute defines the full CLI API and then runs it
 func Execute() {
 	logger := log.New(os.Stderr, "", 0)
 	log.SetFlags(0)
@@ -95,7 +98,6 @@ func Execute() {
 	}
 
 	err := app.Run(os.Args)
-
 	if err != nil {
 		os.Exit(1)
 	}
@@ -129,7 +131,6 @@ func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) 
 	}
 
 	err = plugins.Remove(conf, pluginName)
-
 	if err != nil {
 		logger.Printf("error removing plugin: %s", err)
 	}
@@ -147,7 +148,6 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 	}
 
 	plugins, err := plugins.List(conf, urls, refs)
-
 	if err != nil {
 		logger.Printf("error loading plugin list: %s", err)
 		return err

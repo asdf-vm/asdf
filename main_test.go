@@ -118,7 +118,7 @@ func TestBatsTests(t *testing.T) {
 	//})
 }
 
-//func runBatsFile(t *testing.T, dir, filename string) {
+// func runBatsFile(t *testing.T, dir, filename string) {
 //  t.Helper()
 
 //  cmd := exec.Command("bats", "--verbose-run", fmt.Sprintf("test/%s", filename))
@@ -149,7 +149,6 @@ func buildAsdf(t *testing.T, dir string) {
 	cmd := exec.Command("go", "build", "-o", dir)
 
 	err := cmd.Run()
-
 	if err != nil {
 		t.Fatal("Failed to build asdf")
 	}

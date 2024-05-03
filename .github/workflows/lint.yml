@@ -31,12 +31,16 @@ jobs:
           go-version: '1.21.5'
       - name: Install dependencies
         run: go get .
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.57
+      - name: Install gofumpt for formatting
+        run: go install mvdan.cc/gofumpt@latest
+      - name: Run 'gofumpt'
+        run: gofumpt -l -w .
       - name: Check format
         run: '[ -z "$(gofmt -l ./...)" ]'
+      - name: Install revive for linting
+        run: go install github.com/mgechev/revive@latest
+      - name: Run 'revive'
+        run: revive -set_exit_status ./...
       - name: Vet
         run: go vet
       - name: Install staticcheck for linting
