@@ -157,7 +157,6 @@ func TestRemove(t *testing.T) {
 	t.Run("returns error when invalid plugin name is given", func(t *testing.T) {
 		err := Remove(conf, "foo/bar/baz")
 		assert.NotNil(t, err)
-
 		expectedErrMsg := "is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
@@ -171,6 +170,72 @@ func TestRemove(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.True(t, os.IsNotExist(err))
 	})
+}
+
+func TestUpdate(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+
+	err := Add(conf, testPluginName, testRepo)
+	assert.Nil(t, err)
+
+	badPluginName := "badplugin"
+	badRepo := PluginDirectory(testDataDir, badPluginName)
+	err = os.MkdirAll(badRepo, 0o777)
+	assert.Nil(t, err)
+
+	tests := []struct {
+		desc        string
+		givenConf   config.Config
+		givenName   string
+		givenRef    string
+		wantSomeRef bool
+		wantErrMsg  string
+	}{
+		{
+			desc:        "returns error when plugin with name does not exist",
+			givenConf:   conf,
+			givenName:   "nonexistant",
+			givenRef:    "",
+			wantSomeRef: false,
+			wantErrMsg:  "no such plugin: nonexistant",
+		},
+		{
+			desc:        "returns error when plugin repo does not exist",
+			givenConf:   conf,
+			givenName:   "badplugin",
+			givenRef:    "",
+			wantSomeRef: false,
+			wantErrMsg:  "unable to open plugin Git repository: repository does not exist",
+		},
+		{
+			desc:        "updates plugin when plugin with name exists",
+			givenConf:   conf,
+			givenName:   testPluginName,
+			givenRef:    "",
+			wantSomeRef: true,
+			wantErrMsg:  "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			updatedToRef, err := Update(tt.givenConf, tt.givenName, tt.givenRef)
+
+			if tt.wantErrMsg == "" {
+				assert.Nil(t, err)
+			} else {
+				assert.NotNil(t, err)
+				assert.ErrorContains(t, err, tt.wantErrMsg)
+			}
+
+			if tt.wantSomeRef == true {
+				assert.NotZero(t, updatedToRef)
+			} else {
+				assert.Zero(t, updatedToRef)
+			}
+		})
+	}
 }
 
 func TestPluginExists(t *testing.T) {
@@ -305,29 +370,34 @@ func installMockPluginRepo(dataDir, name string) (string, error) {
 		return location, err
 	}
 
-	err = runCmd("git", "-C", location, "commit", "-q", "-m", fmt.Sprintf("\"asdf %s plugin\"", name))
-	return location, err
-}
-
-// helper function to make running commands easier
-func runCmd(cmdName string, args ...string) error {
-	cmd := exec.Command(cmdName, args...)
-
-	// Capture stdout and stderr
-	var stdout strings.Builder
-	var stderr strings.Builder
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	err := cmd.Run()
+	err = runCmd("git", "-C", location, "commit", "-q", "-m", fmt.Sprintf("\"asdf %s plugin init\"", name))
 	if err != nil {
-		// If command fails print both stderr and stdout
-		fmt.Println("stdout:", stdout.String())
-		fmt.Println("stderr:", stderr.String())
-		return err
+		return location, err
 	}
 
-	return nil
+	err = runCmd("touch", filepath.Join(location, "README.md"))
+	if err != nil {
+		return location, err
+	}
+
+	err = runCmd("git", "-C", location, "add", "-A")
+	if err != nil {
+		return location, err
+	}
+
+	err = runCmd("git", "-C", location, "commit", "-q", "-m", fmt.Sprintf("\"asdf %s plugin readme \"", name))
+	if err != nil {
+		return location, err
+	}
+
+	// kind of ugly but I want a remote with a valid path so I use the same
+	// location as the remote. Probably should refactor
+	err = runCmd("git", "-C", location, "remote", "add", "origin", location)
+	if err != nil {
+		return location, err
+	}
+
+	return location, err
 }
 
 func moduleRoot() (string, error) {
@@ -359,4 +429,25 @@ func findModuleRoot(dir string) (roots string) {
 		dir = d
 	}
 	return ""
+}
+
+// helper function to make running commands easier
+func runCmd(cmdName string, args ...string) error {
+	cmd := exec.Command(cmdName, args...)
+
+	// Capture stdout and stderr
+	var stdout strings.Builder
+	var stderr strings.Builder
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	if err != nil {
+		// If command fails print both stderr and stdout
+		fmt.Println("stdout:", stdout.String())
+		fmt.Println("stderr:", stderr.String())
+		return err
+	}
+
+	return nil
 }

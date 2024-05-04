@@ -9,8 +9,7 @@ import (
 	"regexp"
 
 	"asdf/config"
-
-	"github.com/go-git/go-git/v5"
+	"asdf/plugins/git"
 )
 
 const (
@@ -19,7 +18,9 @@ const (
 	pluginAlreadyExists  = "plugin named %q already added"
 )
 
-// Plugin represents a plugin to the packages in asdf
+// Plugin struct represents an asdf plugin to all asdf code. The name and dir
+// fields are the most used fields. Ref and Dir only still git info, which is
+// only information and shown to the user at times.
 type Plugin struct {
 	Name string
 	Dir  string
@@ -42,25 +43,22 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 				var url string
 				var refString string
 				location := filepath.Join(pluginsDir, file.Name())
-				repo, err := git.PlainOpen(location)
+				plugin := git.NewPlugin(location)
+
 				// TODO: Improve these error messages
 				if err != nil {
 					return plugins, err
 				}
 
 				if refs {
-					ref, err := repo.Head()
-					refString = ref.Hash().String()
-
+					refString, err = plugin.Head()
 					if err != nil {
 						return plugins, err
 					}
 				}
 
 				if urls {
-					remotes, err := repo.Remotes()
-					url = remotes[0].Config().URLs[0]
-
+					url, err = plugin.RemoteURL()
 					if err != nil {
 						return plugins, err
 					}
@@ -107,17 +105,10 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		return fmt.Errorf("unable to create plugin directory: %w", err)
 	}
 
-	_, err = git.PlainClone(pluginDir, false, &git.CloneOptions{
-		URL: pluginURL,
-	})
-	if err != nil {
-		return fmt.Errorf("unable to clone plugin: %w", err)
-	}
-
-	return nil
+	return git.NewPlugin(pluginDir).Clone(pluginURL)
 }
 
-// Remove removes a plugin with the provided name if installed
+// Remove uninstalls a plugin by removing it from the file system if installed
 func Remove(config config.Config, pluginName string) error {
 	err := validatePluginName(pluginName)
 	if err != nil {
@@ -138,11 +129,33 @@ func Remove(config config.Config, pluginName string) error {
 	return os.RemoveAll(pluginDir)
 }
 
+// Update a plugin to a specific ref, or if no ref provided update to latest
+func Update(config config.Config, pluginName, ref string) (string, error) {
+	exists, err := PluginExists(config.DataDir, pluginName)
+	if err != nil {
+		return "", fmt.Errorf("unable to check if plugin exists: %w", err)
+	}
+
+	if !exists {
+		return "", fmt.Errorf("no such plugin: %s", pluginName)
+	}
+
+	pluginDir := PluginDirectory(config.DataDir, pluginName)
+
+	plugin := git.NewPlugin(pluginDir)
+
+	return plugin.Update(ref)
+}
+
 // PluginExists returns a boolean indicating whether or not a plugin with the
 // provided name is currently installed
 func PluginExists(dataDir, pluginName string) (bool, error) {
 	pluginDir := PluginDirectory(dataDir, pluginName)
-	fileInfo, err := os.Stat(pluginDir)
+	return directoryExists(pluginDir)
+}
+
+func directoryExists(dir string) (bool, error) {
+	fileInfo, err := os.Stat(dir)
 	if errors.Is(err, os.ErrNotExist) {
 		return false, nil
 	}
@@ -154,13 +167,14 @@ func PluginExists(dataDir, pluginName string) (bool, error) {
 	return fileInfo.IsDir(), nil
 }
 
-// PluginDirectory returns the directory a plugin would be installed in, if it
-// is installed
+// PluginDirectory returns the directory a plugin with a given name would be in
+// if it were installed
 func PluginDirectory(dataDir, pluginName string) string {
 	return filepath.Join(DataDirectory(dataDir), pluginName)
 }
 
-// DataDirectory return the plugin directory inside the data directory
+// DataDirectory returns the path to the plugin directory inside the data
+// directory
 func DataDirectory(dataDir string) string {
 	return filepath.Join(dataDir, dataDirPlugins)
 }
