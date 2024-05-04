@@ -19,7 +19,7 @@ tidy:
 audit: verify vet test
 
 test:
-	go test -coverprofile=/tmp/coverage.out  -bench= -v -race ./...
+	go test -coverprofile=/tmp/coverage.out  -bench= -race ./...
 
 cover: test
 	go tool cover -html=/tmp/coverage.out
