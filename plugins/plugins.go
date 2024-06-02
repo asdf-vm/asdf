@@ -9,7 +9,7 @@ import (
 	"regexp"
 
 	"asdf/config"
-	"asdf/plugins/git"
+	"asdf/git"
 )
 
 const (
@@ -43,7 +43,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 				var url string
 				var refString string
 				location := filepath.Join(pluginsDir, file.Name())
-				plugin := git.NewPlugin(location)
+				plugin := git.NewRepo(location)
 
 				// TODO: Improve these error messages
 				if err != nil {
@@ -105,7 +105,7 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		return fmt.Errorf("unable to create plugin directory: %w", err)
 	}
 
-	return git.NewPlugin(pluginDir).Clone(pluginURL)
+	return git.NewRepo(pluginDir).Clone(pluginURL)
 }
 
 // Remove uninstalls a plugin by removing it from the file system if installed
@@ -142,7 +142,7 @@ func Update(config config.Config, pluginName, ref string) (string, error) {
 
 	pluginDir := PluginDirectory(config.DataDir, pluginName)
 
-	plugin := git.NewPlugin(pluginDir)
+	plugin := git.NewRepo(pluginDir)
 
 	return plugin.Update(ref)
 }

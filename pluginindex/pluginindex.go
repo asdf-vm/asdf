@@ -3,15 +3,13 @@
 package pluginindex
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/config"
-	"github.com/go-git/go-git/v5/plumbing"
+	"asdf/git"
+
 	"gopkg.in/ini.v1"
 )
 
@@ -20,90 +18,22 @@ const (
 	repoUpdatedFilename = "repo-updated"
 )
 
-type repoer interface {
-	Install() error
-	Update() error
-}
-
-type gitRepoIndex struct {
-	directory string
-	URL       string
-}
-
-func (g *gitRepoIndex) Install() error {
-	opts := git.CloneOptions{
-		URL: g.URL,
-	}
-
-	if _, err := git.PlainClone(g.directory, false, &opts); err != nil {
-		return fmt.Errorf("unable to clone: %w", err)
-	}
-
-	return nil
-}
-
-func (g *gitRepoIndex) Update() error {
-	repo, err := git.PlainOpen(g.directory)
-	if err != nil {
-		return fmt.Errorf("unable to open plugin Git repository: %w", err)
-	}
-
-	var checkoutOptions git.CheckoutOptions
-
-	// If no ref is provided checkout latest commit on current branch
-	head, err := repo.Head()
-	if err != nil {
-		return fmt.Errorf("unable to get repo HEAD: %w", err)
-	}
-
-	if !head.Name().IsBranch() {
-		return fmt.Errorf("not on a branch, unable to update")
-	}
-
-	// If on a branch checkout the latest version of it from the remote
-	branch := head.Name()
-	ref := branch.String()
-	checkoutOptions = git.CheckoutOptions{Branch: branch, Force: true}
-
-	fetchOptions := git.FetchOptions{RemoteName: "origin", Force: true, RefSpecs: []config.RefSpec{
-		config.RefSpec(ref + ":" + ref),
-	}}
-
-	if err = repo.Fetch(&fetchOptions); err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
-		return fmt.Errorf("unable to fetch from remote: %w", err)
-	}
-
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return fmt.Errorf("unable to open worktree: %w", err)
-	}
-
-	err = worktree.Checkout(&checkoutOptions)
-	if err != nil {
-		return fmt.Errorf("unable to checkout commit: %w", err)
-	}
-
-	_, err = repo.ResolveRevision(plumbing.Revision("HEAD"))
-	if err != nil {
-		return fmt.Errorf("unable to get new HEAD: %w", err)
-	}
-	return nil
-}
-
 // PluginIndex is a struct representing the user's preferences for plugin index
 // and the plugin index on disk.
 type PluginIndex struct {
-	repo                  repoer
+	repo                  git.Repoer
 	directory             string
+	url                   string
 	disableUpdate         bool
 	updateDurationMinutes int
 }
 
 // New initializes a new PluginIndex instance with the options passed in.
-func New(directory string, disableUpdate bool, updateDurationMinutes int, repo repoer) PluginIndex {
+func New(directory, url string, disableUpdate bool, updateDurationMinutes int, repo git.Repoer) PluginIndex {
 	return PluginIndex{
 		repo:                  repo,
 		directory:             directory,
+		url:                   url,
 		disableUpdate:         disableUpdate,
 		updateDurationMinutes: updateDurationMinutes,
 	}
@@ -125,7 +55,7 @@ func (p PluginIndex) Refresh() (bool, error) {
 
 	if len(files) == 0 {
 		// directory empty, clone down repo
-		err := p.repo.Install()
+		err := p.repo.Clone(p.url)
 		if err != nil {
 			return false, err
 		}
@@ -150,7 +80,9 @@ func (p PluginIndex) Refresh() (bool, error) {
 }
 
 func (p PluginIndex) doUpdate() (bool, error) {
-	err := p.repo.Update()
+	// pass in empty string as we want the repo to figure out what the latest
+	// commit is
+	_, err := p.repo.Update("")
 	if err != nil {
 		return false, err
 	}

@@ -21,7 +21,7 @@ func TestPluginClone(t *testing.T) {
 		tempDir := t.TempDir()
 		directory := filepath.Join(tempDir, testPluginName)
 
-		plugin := NewPlugin(directory)
+		plugin := NewRepo(directory)
 		err := plugin.Clone("foobar")
 
 		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
@@ -31,7 +31,7 @@ func TestPluginClone(t *testing.T) {
 		tempDir := t.TempDir()
 		directory := filepath.Join(tempDir, testPluginName)
 
-		plugin := NewPlugin(directory)
+		plugin := NewRepo(directory)
 		err := plugin.Clone(testRepo)
 
 		assert.Nil(t, err)
@@ -50,7 +50,7 @@ func TestPluginHead(t *testing.T) {
 	tempDir := t.TempDir()
 	directory := filepath.Join(tempDir, testPluginName)
 
-	plugin := NewPlugin(directory)
+	plugin := NewRepo(directory)
 
 	err := plugin.Clone(testRepo)
 	assert.Nil(t, err)
@@ -64,7 +64,7 @@ func TestPluginRemoteURL(t *testing.T) {
 	tempDir := t.TempDir()
 	directory := filepath.Join(tempDir, testPluginName)
 
-	plugin := NewPlugin(directory)
+	plugin := NewRepo(directory)
 
 	err := plugin.Clone(testRepo)
 	assert.Nil(t, err)
@@ -78,14 +78,14 @@ func TestPluginUpdate(t *testing.T) {
 	tempDir := t.TempDir()
 	directory := filepath.Join(tempDir, testPluginName)
 
-	plugin := NewPlugin(directory)
+	plugin := NewRepo(directory)
 
 	err := plugin.Clone(testRepo)
 	assert.Nil(t, err)
 
 	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
 		nonexistantPath := filepath.Join(tempDir, "nonexistant")
-		nonexistantPlugin := NewPlugin(nonexistantPath)
+		nonexistantPlugin := NewRepo(nonexistantPath)
 		updatedToRef, err := nonexistantPlugin.Update("")
 
 		assert.NotNil(t, err)
@@ -100,7 +100,7 @@ func TestPluginUpdate(t *testing.T) {
 		err := os.MkdirAll(badPluginDir, 0o777)
 		assert.Nil(t, err)
 
-		badPlugin := NewPlugin(badPluginDir)
+		badPlugin := NewRepo(badPluginDir)
 
 		updatedToRef, err := badPlugin.Update("")
 
