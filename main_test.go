@@ -130,7 +130,7 @@ func TestBatsTests(t *testing.T) {
 //  cmd.Stderr = &stderr
 
 //  // Add dir to asdf test variables
-//  asdfTestHome := fmt.Sprintf("HOME=%s", dir)
+//  asdfTestHome := fmt.Sprintf("BASE_DIR=%s", dir)
 //  asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
 //  cmd.Env = []string{asdfBinPath, asdfTestHome}
 

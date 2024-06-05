@@ -10,12 +10,29 @@ import (
 
 	"asdf/config"
 	"asdf/git"
+	"asdf/pluginindex"
 )
 
+// NewPluginAlreadyExists generates a new PluginAlreadyExists error instance for
+// a particular plugin
+func NewPluginAlreadyExists(plugin string) PluginAlreadyExists {
+	return PluginAlreadyExists{plugin: plugin}
+}
+
+// PluginAlreadyExists is an error returned when the specified plugin already
+// exists
+type PluginAlreadyExists struct {
+	plugin string
+}
+
+func (e PluginAlreadyExists) Error() string {
+	return fmt.Sprintf(pluginAlreadyExistsMsg, e.plugin)
+}
+
 const (
-	dataDirPlugins       = "plugins"
-	invalidPluginNameMsg = "'%q' is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
-	pluginAlreadyExists  = "plugin named %q already added"
+	dataDirPlugins         = "plugins"
+	invalidPluginNameMsg   = "%s is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
+	pluginAlreadyExistsMsg = "Plugin named %s already added"
 )
 
 // Plugin struct represents an asdf plugin to all asdf code. The name and dir
@@ -96,13 +113,37 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 	}
 
 	if exists {
-		return fmt.Errorf(pluginAlreadyExists, pluginName)
+		return NewPluginAlreadyExists(pluginName)
 	}
 
 	pluginDir := PluginDirectory(config.DataDir, pluginName)
 
 	if err != nil {
 		return fmt.Errorf("unable to create plugin directory: %w", err)
+	}
+
+	if pluginURL == "" {
+		// Ignore error here as the default value is fine
+		disablePluginIndex, _ := config.DisablePluginShortNameRepository()
+
+		if disablePluginIndex {
+			return fmt.Errorf("Short-name plugin repository is disabled")
+		}
+
+		lastCheckDuration := 0
+		// We don't care about errors here as we can use the default value
+		checkDuration, _ := config.PluginRepositoryLastCheckDuration()
+
+		if !checkDuration.Never {
+			lastCheckDuration = checkDuration.Every
+		}
+
+		index := pluginindex.Build(config.DataDir, "https://github.com/asdf-vm/asdf-plugins.git", false, lastCheckDuration)
+		var err error
+		pluginURL, err = index.GetPluginSourceURL(pluginName)
+		if err != nil {
+			return fmt.Errorf("error fetching plugin URL: %s", err)
+		}
 	}
 
 	return git.NewRepo(pluginDir).Clone(pluginURL)

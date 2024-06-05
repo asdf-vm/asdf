@@ -107,7 +107,7 @@ func TestAdd(t *testing.T) {
 			t.Fatal("expected error got nil")
 		}
 
-		expectedErrMsg := "plugin named \"lua\" already added"
+		expectedErrMsg := "Plugin named lua already added"
 		if !strings.Contains(err.Error(), expectedErrMsg) {
 			t.Errorf("Expected an error with message %v", expectedErrMsg)
 		}
