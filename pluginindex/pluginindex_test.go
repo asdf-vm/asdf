@@ -114,7 +114,7 @@ func TestGetPluginSourceURL(t *testing.T) {
 		dir := t.TempDir()
 		pluginIndex := New(dir, realIndexURL, false, 10, &MockIndex{Directory: dir})
 		url, err := pluginIndex.GetPluginSourceURL("foobar")
-		assert.EqualError(t, err, "no such plugin found in plugin index: foobar")
+		assert.EqualError(t, err, "plugin foobar not found in repository")
 		assert.Equal(t, url, "")
 	})
 

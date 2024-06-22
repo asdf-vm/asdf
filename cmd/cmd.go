@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"errors"
 	"log"
 	"os"
 
@@ -115,17 +116,23 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 		// Maybe one day switch this to show the generated help
 		// cli.ShowSubcommandHelp(cCtx)
 		return cli.Exit("usage: asdf plugin add <name> [<git-url>]", 1)
-	} else if pluginRepo == "" {
-		// add from plugin repo
-		// TODO: implement
-		return cli.Exit("Not implemented yet", 1)
 	}
 
 	err := plugins.Add(conf, pluginName, pluginRepo)
 	if err != nil {
-		logger.Printf("error adding plugin: %s", err)
+		logger.Printf("%s", err)
+
+		var existsErr plugins.PluginAlreadyExists
+		if errors.As(err, &existsErr) {
+			os.Exit(0)
+			return nil
+		}
+
+		os.Exit(1)
+		return nil
 	}
 
+	os.Exit(0)
 	return nil
 }
 

@@ -28,6 +28,12 @@ type PluginIndex struct {
 	updateDurationMinutes int
 }
 
+// Build returns a complete PluginIndex struct with default values set
+func Build(dataDir string, URL string, disableUpdate bool, updateDurationMinutes int) PluginIndex {
+	directory := filepath.Join(dataDir, pluginIndexDir)
+	return New(directory, URL, disableUpdate, updateDurationMinutes, &git.Repo{Directory: directory})
+}
+
 // New initializes a new PluginIndex instance with the options passed in.
 func New(directory, url string, disableUpdate bool, updateDurationMinutes int, repo git.Repoer) PluginIndex {
 	return PluginIndex{
@@ -134,7 +140,7 @@ func readPlugin(dir, name string) (string, error) {
 
 	pluginInfo, err := ini.Load(filename)
 	if err != nil {
-		return "", fmt.Errorf("no such plugin found in plugin index: %s", name)
+		return "", fmt.Errorf("plugin %s not found in repository", name)
 	}
 
 	return pluginInfo.Section("").Key("repository").String(), nil
