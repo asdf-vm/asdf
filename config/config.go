@@ -32,6 +32,7 @@ var pluginRepoCheckDurationDefault = PluginRepoCheckDuration{Every: 60}
 // Settings is a struct that stores config values from the asdfrc file
 type Settings struct {
 	Loaded            bool
+	Raw               *ini.Section
 	LegacyVersionFile bool
 	// I don't think this setting should be supported in the Golang implementation
 	// UseReleaseCandidates bool
@@ -56,6 +57,7 @@ type Config struct {
 func defaultSettings() *Settings {
 	return &Settings{
 		Loaded:                            false,
+		Raw:                               nil,
 		LegacyVersionFile:                 false,
 		AlwaysKeepDownload:                false,
 		PluginRepositoryLastCheckDuration: pluginRepoCheckDurationDefault,
@@ -142,6 +144,16 @@ func (c *Config) DisablePluginShortNameRepository() (bool, error) {
 	return c.Settings.DisablePluginShortNameRepository, nil
 }
 
+// GetHook returns a hook command from config if it is there
+func (c *Config) GetHook(hook string) (string, error) {
+	err := c.loadSettings()
+	if err != nil {
+		return "", err
+	}
+
+	return c.Settings.Raw.Key(hook).String(), nil
+}
+
 func (c *Config) loadSettings() error {
 	if c.Settings.Loaded {
 		return nil
@@ -191,6 +203,7 @@ func loadSettings(asdfrcPath string) (Settings, error) {
 	mainConf := config.Section("")
 
 	settings := defaultSettings()
+	settings.Raw = mainConf
 
 	settings.Loaded = true
 	settings.PluginRepositoryLastCheckDuration = newPluginRepoCheckDuration(mainConf.Key("plugin_repository_last_check_duration").String())

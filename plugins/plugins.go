@@ -10,6 +10,7 @@ import (
 
 	"asdf/config"
 	"asdf/git"
+	"asdf/hook"
 	"asdf/pluginindex"
 )
 
@@ -146,7 +147,20 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		}
 	}
 
-	return git.NewRepo(pluginDir).Clone(pluginURL)
+	// Run pre hooks
+	hook.Run(config, "pre_asdf_plugin_add", []string{})
+	hook.Run(config, fmt.Sprintf("pre_asdf_plugin_add_%s", pluginName), []string{})
+
+	err = git.NewRepo(pluginDir).Clone(pluginURL)
+	if err != nil {
+		return err
+	}
+
+	// Run post hooks
+	hook.Run(config, "post_asdf_plugin_add", []string{})
+	hook.Run(config, fmt.Sprintf("post_asdf_plugin_add_%s", pluginName), []string{})
+
+	return nil
 }
 
 // Remove uninstalls a plugin by removing it from the file system if installed
