@@ -1,12 +1,7 @@
 # This is a test asdfrc file containing all possible values. Each field to set
 # to a value that is different than the default.
-legacy_version_file = yes
-use_release_candidates = yes
-always_keep_download = yes
-plugin_repository_last_check_duration = never
-disable_plugin_short_name_repository = yes
 
 # Hooks
 pre_asdf_plugin_add = echo Executing with args: $@
 pre_asdf_plugin_add_test =      echo Executing with args: $@
-pre_asdf_plugin_add_test2 = echo 'Executing' "with args: $@"
+pre_asdf_plugin_add_test2 = exit $0
