@@ -4,11 +4,13 @@ package plugins
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
 
 	"asdf/config"
+	"asdf/execute"
 	"asdf/git"
 	"asdf/hook"
 	"asdf/pluginindex"
@@ -30,10 +32,22 @@ func (e PluginAlreadyExists) Error() string {
 	return fmt.Sprintf(pluginAlreadyExistsMsg, e.plugin)
 }
 
+// NoCallbackError is an error returned by RunCallback when a callback with
+// particular name does not exist
+type NoCallbackError struct {
+	callback string
+	plugin   string
+}
+
+func (e NoCallbackError) Error() string {
+	return fmt.Sprintf(hasNoCallbackMsg, e.plugin, e.callback)
+}
+
 const (
 	dataDirPlugins         = "plugins"
 	invalidPluginNameMsg   = "%s is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 	pluginAlreadyExistsMsg = "Plugin named %s already added"
+	hasNoCallbackMsg       = "Plugin named %s does not have a callback named %s"
 )
 
 // Plugin struct represents an asdf plugin to all asdf code. The name and dir
@@ -44,6 +58,32 @@ type Plugin struct {
 	Dir  string
 	Ref  string
 	URL  string
+}
+
+// New takes config and a plugin name and returns a Plugin struct. It is
+// intended for functions that need to quickly initialize a plugin.
+func New(config config.Config, name string) Plugin {
+	pluginsDir := DataDirectory(config.DataDir)
+	dir := filepath.Join(pluginsDir, name)
+	return Plugin{Dir: dir, Name: name}
+}
+
+// RunCallback invokes a callback with the given name if it exists for the plugin
+func (p Plugin) RunCallback(name string, arguments []string, environment map[string]string, stdOut io.Writer, errOut io.Writer) error {
+	callback := filepath.Join(p.Dir, "bin", name)
+
+	_, err := os.Stat(callback)
+	if errors.Is(err, os.ErrNotExist) {
+		return NoCallbackError{callback: name, plugin: p.Name}
+	}
+
+	cmd := execute.New(fmt.Sprintf("'%s'", callback), arguments)
+	cmd.Env = environment
+
+	cmd.Stdout = stdOut
+	cmd.Stderr = errOut
+
+	return cmd.Run()
 }
 
 // List takes config and flags for what to return and builds a list of plugins
@@ -117,11 +157,7 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		return NewPluginAlreadyExists(pluginName)
 	}
 
-	pluginDir := PluginDirectory(config.DataDir, pluginName)
-
-	if err != nil {
-		return fmt.Errorf("unable to create plugin directory: %w", err)
-	}
+	plugin := New(config, pluginName)
 
 	if pluginURL == "" {
 		// Ignore error here as the default value is fine
@@ -147,18 +183,23 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		}
 	}
 
-	// Run pre hooks
-	hook.Run(config, "pre_asdf_plugin_add", []string{})
-	hook.Run(config, fmt.Sprintf("pre_asdf_plugin_add_%s", pluginName), []string{})
+	plugin.URL = pluginURL
 
-	err = git.NewRepo(pluginDir).Clone(pluginURL)
+	// Run pre hooks
+	hook.Run(config, "pre_asdf_plugin_add", []string{plugin.Name})
+	hook.Run(config, fmt.Sprintf("pre_asdf_plugin_add_%s", plugin.Name), []string{})
+
+	err = git.NewRepo(plugin.Dir).Clone(plugin.URL)
 	if err != nil {
 		return err
 	}
 
+	env := map[string]string{"ASDF_PLUGIN_SOURCE_URL": plugin.URL, "ASDF_PLUGIN_PATH": plugin.Dir}
+	plugin.RunCallback("post-plugin-add", []string{}, env, os.Stdout, os.Stderr)
+
 	// Run post hooks
-	hook.Run(config, "post_asdf_plugin_add", []string{})
-	hook.Run(config, fmt.Sprintf("post_asdf_plugin_add_%s", pluginName), []string{})
+	hook.Run(config, "post_asdf_plugin_add", []string{plugin.Name})
+	hook.Run(config, fmt.Sprintf("post_asdf_plugin_add_%s", plugin.Name), []string{})
 
 	return nil
 }

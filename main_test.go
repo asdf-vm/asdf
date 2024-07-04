@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os/exec"
+	"strings"
 	"testing"
 )
 
@@ -45,9 +47,9 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "list_command.bats")
 	//})
 
-	//t.Run("plugin_add_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "plugin_add_command.bats")
-	//})
+	t.Run("plugin_add_command", func(t *testing.T) {
+		runBatsFile(t, dir, "plugin_add_command.bats")
+	})
 
 	//t.Run("plugin_extension_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "plugin_extension_command.bats")
@@ -118,32 +120,32 @@ func TestBatsTests(t *testing.T) {
 	//})
 }
 
-// func runBatsFile(t *testing.T, dir, filename string) {
-//  t.Helper()
+func runBatsFile(t *testing.T, dir, filename string) {
+	t.Helper()
 
-//  cmd := exec.Command("bats", "--verbose-run", fmt.Sprintf("test/%s", filename))
+	cmd := exec.Command("bats", "--verbose-run", fmt.Sprintf("test/%s", filename))
 
-//  // Capture stdout and stderr
-//  var stdout strings.Builder
-//  var stderr strings.Builder
-//  cmd.Stdout = &stdout
-//  cmd.Stderr = &stderr
+	// Capture stdout and stderr
+	var stdout strings.Builder
+	var stderr strings.Builder
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 
-//  // Add dir to asdf test variables
-//  asdfTestHome := fmt.Sprintf("BASE_DIR=%s", dir)
-//  asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
-//  cmd.Env = []string{asdfBinPath, asdfTestHome}
+	// Add dir to asdf test variables
+	asdfTestHome := fmt.Sprintf("BASE_DIR=%s", dir)
+	asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
+	cmd.Env = []string{asdfBinPath, asdfTestHome}
 
-//  err := cmd.Run()
-//  if err != nil {
-//    // If command fails print both stderr and stdout
-//    fmt.Println("stdout:", stdout.String())
-//    fmt.Println("stderr:", stderr.String())
-//    t.Fatal("bats command failed to run test file successfully")
+	err := cmd.Run()
+	if err != nil {
+		// If command fails print both stderr and stdout
+		fmt.Println("stdout:", stdout.String())
+		fmt.Println("stderr:", stderr.String())
+		t.Fatal("bats command failed to run test file successfully")
 
-//    return
-//  }
-//}
+		return
+	}
+}
 
 func buildAsdf(t *testing.T, dir string) {
 	cmd := exec.Command("go", "build", "-o", dir)

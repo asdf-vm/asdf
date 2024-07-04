@@ -29,6 +29,14 @@ func TestRun(t *testing.T) {
 		assert.Equal(t, 123, err.(*exec.ExitError).ExitCode())
 	})
 
+	t.Run("passes arguments to command", func(t *testing.T) {
+		config, err := config.LoadConfig()
+		assert.Nil(t, err)
+
+		err = Run(config, "pre_asdf_plugin_add_test3", []string{"exit 123"})
+		assert.Equal(t, 123, err.(*exec.ExitError).ExitCode())
+	})
+
 	t.Run("does not return error when no such hook is defined in asdfrc", func(t *testing.T) {
 		config, err := config.LoadConfig()
 		assert.Nil(t, err)
