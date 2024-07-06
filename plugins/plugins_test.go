@@ -151,6 +151,19 @@ func TestAdd(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, 5, len(entries))
 	})
+
+	t.Run("when parameters are valid creates plugin download dir", func(t *testing.T) {
+		testDataDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir}
+
+		err := Add(conf, testPluginName, testRepo)
+		assert.Nil(t, err)
+
+		// Assert download dir exists
+		downloadDir := PluginDownloadDirectory(testDataDir, testPluginName)
+		_, err = os.Stat(downloadDir)
+		assert.Nil(t, err)
+	})
 }
 
 func TestRemove(t *testing.T) {
@@ -179,6 +192,19 @@ func TestRemove(t *testing.T) {
 
 		pluginDir := PluginDirectory(testDataDir, testPluginName)
 		_, err = os.Stat(pluginDir)
+		assert.NotNil(t, err)
+		assert.True(t, os.IsNotExist(err))
+	})
+
+	t.Run("removes plugin download dir when passed name of installed plugin", func(t *testing.T) {
+		err := Add(conf, testPluginName, testRepo)
+		assert.Nil(t, err)
+
+		err = Remove(conf, testPluginName)
+		assert.Nil(t, err)
+
+		downloadDir := PluginDownloadDirectory(testDataDir, testPluginName)
+		_, err = os.Stat(downloadDir)
 		assert.NotNil(t, err)
 		assert.True(t, os.IsNotExist(err))
 	})
