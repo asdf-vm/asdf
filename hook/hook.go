@@ -20,7 +20,7 @@ func Run(config config.Config, hookName string, arguments []string) error {
 		return nil
 	}
 
-	cmd := execute.New(hookCmd, arguments)
+	cmd := execute.NewExpression(hookCmd, arguments)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -73,6 +73,18 @@ func TestList(t *testing.T) {
 	})
 }
 
+func TestNew(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+
+	t.Run("returns Plugin struct with Dir and Name fields set correctly", func(t *testing.T) {
+		plugin := New(conf, "test-plugin")
+
+		assert.Equal(t, "test-plugin", plugin.Name)
+		assert.Equal(t, filepath.Join(testDataDir, "plugins", "test-plugin"), plugin.Dir)
+	})
+}
+
 func TestAdd(t *testing.T) {
 	testDataDir := t.TempDir()
 
@@ -300,7 +312,7 @@ func TestPluginDirectory(t *testing.T) {
 func TestValidatePluginName(t *testing.T) {
 	t.Run("returns no error when plugin name is valid", func(t *testing.T) {
 		err := validatePluginName(testPluginName)
-		refuteError(t, err)
+		assert.Nil(t, err)
 	})
 
 	invalids := []string{"plugin^name", "plugin%name", "plugin name", "PLUGIN_NAME"}
@@ -316,10 +328,55 @@ func TestValidatePluginName(t *testing.T) {
 	}
 }
 
-func refuteError(t *testing.T, err error) {
-	if err != nil {
-		t.Fatal("Returned unexpected error", err)
-	}
+func TestRunCallback(t *testing.T) {
+	emptyEnv := map[string]string{}
+
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	testRepo, err := installMockPluginRepo(testDataDir, testPluginName)
+	assert.Nil(t, err)
+
+	err = Add(conf, testPluginName, testRepo)
+	plugin := New(conf, testPluginName)
+
+	t.Run("returns NoCallback error when callback with name not found", func(t *testing.T) {
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err = plugin.RunCallback("non-existant", []string{}, emptyEnv, &stdout, &stderr)
+
+		assert.Equal(t, err.(NoCallbackError).Error(), "Plugin named lua does not have a callback named non-existant")
+	})
+
+	t.Run("passes argument to command", func(t *testing.T) {
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err = plugin.RunCallback("debug", []string{"123"}, emptyEnv, &stdout, &stderr)
+		assert.Nil(t, err)
+		assert.Equal(t, "123\n", stdout.String())
+		assert.Equal(t, "", stderr.String())
+	})
+
+	t.Run("passes arguments to command", func(t *testing.T) {
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err = plugin.RunCallback("debug", []string{"123", "test string"}, emptyEnv, &stdout, &stderr)
+		assert.Nil(t, err)
+		assert.Equal(t, "123 test string\n", stdout.String())
+		assert.Equal(t, "", stderr.String())
+	})
+
+	t.Run("passes env to command", func(t *testing.T) {
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err = plugin.RunCallback("post-plugin-update", []string{}, map[string]string{"ASDF_PLUGIN_PREV_REF": "TEST"}, &stdout, &stderr)
+		assert.Nil(t, err)
+		assert.Equal(t, "plugin updated path= old git-ref=TEST new git-ref=\n", stdout.String())
+		assert.Equal(t, "", stderr.String())
+	})
 }
 
 func touchFile(name string) error {

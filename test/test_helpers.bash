@@ -16,7 +16,7 @@ setup_asdf_dir() {
   mkdir "$BASE_DIR"
 
   # HOME is now defined by the Golang test code in main_test.go
-  HOME="$BASE_DIR/home"
+  HOME="$BASE_DIR"
   export HOME
   ASDF_DIR="$HOME/.asdf"
   mkdir -p "$ASDF_DIR/plugins"
