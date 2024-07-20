@@ -53,8 +53,12 @@ version_command() {
     fi
 
     if ! (check_if_version_exists "$plugin_name" "$version"); then
-      version_not_installed_text "$plugin_name" "$version" 1>&2
-      exit 1
+      closest_version=$(try_get_closest_version "$plugin_name" "$version")
+      if [[ ! $closest_version ]]; then
+        version_not_installed_text "$plugin_name" "$version" 1>&2
+        exit 1
+      fi
+      version="$closest_version"
     fi
 
     resolved_versions+=("$version")

@@ -204,6 +204,18 @@ teardown() {
   [ "$(cat "$HOME/.tool-versions")" = "dummy 1.1.0" ]
 }
 
+@test "global should create a global .tool-versions file when a close version is found" {
+  run asdf global "dummy" "1.1"
+  [ "$status" -eq 0 ]
+  [ "$(cat "$HOME/.tool-versions")" = "dummy 1.1.0" ]
+}
+
+@test "global should emit an error when a single close plugin version is found" {
+  run asdf global "dummy" "1"
+  [ "$status" -eq 1 ]
+  [ "$output" = "version 1 is not installed for dummy" ]
+}
+
 @test "[global - dummy_plugin] with latest should use the latest installed version" {
   run asdf global "dummy" "latest"
   [ "$status" -eq 0 ]
