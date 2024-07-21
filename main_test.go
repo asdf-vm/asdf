@@ -23,10 +23,6 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "current_command.bats")
 	//})
 
-	//t.Run("get_asdf_config_value", func(t *testing.T) {
-	//  runBatsFile(t, dir, "get_asdf_config_value.bats")
-	//})
-
 	//t.Run("help_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "help_command.bats")
 	//})
@@ -79,20 +75,12 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "reshim_command.bats")
 	//})
 
-	//t.Run("reshim_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "reshim_command.bats")
-	//})
-
 	//t.Run("shim_env_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "shim_env_command.bats")
 	//})
 
 	//t.Run("shim_exec", func(t *testing.T) {
 	//  runBatsFile(t, dir, "shim_exec.bats")
-	//})
-
-	//t.Run("shim_versions_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "shim_versions_command.bats")
 	//})
 
 	//t.Run("shim_versions_command", func(t *testing.T) {

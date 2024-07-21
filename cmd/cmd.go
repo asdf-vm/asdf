@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"asdf/config"
+	"asdf/internal/info"
 	"asdf/plugins"
 
 	"github.com/urfave/cli/v2"
@@ -19,7 +20,7 @@ Manage all your runtime versions with one tool!
 Complete documentation is available at https://asdf-vm.com/`
 
 // Execute defines the full CLI API and then runs it
-func Execute() {
+func Execute(version string) {
 	logger := log.New(os.Stderr, "", 0)
 	log.SetFlags(0)
 
@@ -37,11 +38,23 @@ func Execute() {
 		Usage:     "The multiple runtime version manager",
 		UsageText: usageText,
 		Commands: []*cli.Command{
-			// TODO: Flesh out all these commands
+			{
+				Name: "info",
+				Action: func(_ *cli.Context) error {
+					conf, err := config.LoadConfig()
+					if err != nil {
+						logger.Printf("error loading config: %s", err)
+						return err
+					}
+
+					return infoCommand(conf, version)
+				},
+			},
 			{
 				Name: "plugin",
 				Action: func(_ *cli.Context) error {
-					log.Print("Foobar")
+					logger.Println("Unknown command: `asdf plugin`")
+					os.Exit(1)
 					return nil
 				},
 				Subcommands: []*cli.Command{
@@ -182,6 +195,10 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 	}
 
 	return nil
+}
+
+func infoCommand(conf config.Config, version string) error {
+	return info.Print(conf, version)
 }
 
 func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref string) error {

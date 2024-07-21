@@ -194,6 +194,11 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		return err
 	}
 
+	err = os.MkdirAll(PluginDownloadDirectory(config.DataDir, plugin.Name), 0o777)
+	if err != nil {
+		return err
+	}
+
 	env := map[string]string{"ASDF_PLUGIN_SOURCE_URL": plugin.URL, "ASDF_PLUGIN_PATH": plugin.Dir}
 	plugin.RunCallback("post-plugin-add", []string{}, env, os.Stdout, os.Stderr)
 
@@ -221,8 +226,16 @@ func Remove(config config.Config, pluginName string) error {
 	}
 
 	pluginDir := PluginDirectory(config.DataDir, pluginName)
+	downloadDir := PluginDownloadDirectory(config.DataDir, pluginName)
 
-	return os.RemoveAll(pluginDir)
+	err = os.RemoveAll(downloadDir)
+	err2 := os.RemoveAll(pluginDir)
+
+	if err != nil {
+		return err
+	}
+
+	return err2
 }
 
 // Update a plugin to a specific ref, or if no ref provided update to latest
@@ -267,6 +280,12 @@ func directoryExists(dir string) (bool, error) {
 // if it were installed
 func PluginDirectory(dataDir, pluginName string) string {
 	return filepath.Join(DataDirectory(dataDir), pluginName)
+}
+
+// PluginDownloadDirectory returns the directory a plugin will be placing
+// downloads of version source code
+func PluginDownloadDirectory(dataDir, pluginName string) string {
+	return filepath.Join(dataDir, "downloads", pluginName)
 }
 
 // DataDirectory returns the path to the plugin directory inside the data
