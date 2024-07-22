@@ -414,6 +414,68 @@ func TestRunCallback(t *testing.T) {
 	})
 }
 
+func TestLegacyFilenames(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	t.Run("returns list of filenames when list-legacy-filenames callback is present", func(t *testing.T) {
+		filenames, err := plugin.LegacyFilenames()
+		assert.Nil(t, err)
+		assert.Equal(t, filenames, []string{".dummy-version", ".dummyrc"})
+	})
+
+	t.Run("returns empty list when list-legacy-filenames callback not present", func(t *testing.T) {
+		testPluginName := "foobar"
+		_, err := repotest.InstallPlugin("dummy_plugin_no_download", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := New(conf, testPluginName)
+
+		filenames, err := plugin.LegacyFilenames()
+		assert.Nil(t, err)
+		assert.Equal(t, filenames, []string{})
+	})
+}
+
+func TestParseLegacyVersionFile(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	data := []byte("dummy-1.2.3")
+	currentDir := t.TempDir()
+	path := filepath.Join(currentDir, ".dummy-version")
+	err = os.WriteFile(path, data, 0o666)
+	assert.Nil(t, err)
+
+	t.Run("returns file contents unchanged when parse-legacy-file callback not present", func(t *testing.T) {
+		testPluginName := "foobar"
+		_, err := repotest.InstallPlugin("dummy_plugin_no_download", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := New(conf, testPluginName)
+
+		versions, err := plugin.ParseLegacyVersionFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, versions, []string{"dummy-1.2.3"})
+	})
+
+	t.Run("returns file contents parsed by parse-legacy-file callback when it is present", func(t *testing.T) {
+		versions, err := plugin.ParseLegacyVersionFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, versions, []string{"1.2.3"})
+	})
+
+	t.Run("returns error when passed file that doesn't exist", func(t *testing.T) {
+		versions, err := plugin.ParseLegacyVersionFile("non-existant-file")
+		assert.Error(t, err)
+		assert.Empty(t, versions)
+	})
+}
+
 func touchFile(name string) error {
 	file, err := os.OpenFile(name, os.O_RDONLY|os.O_CREATE, 0o644)
 	if err != nil {

@@ -31,15 +31,28 @@ func Setup(asdfDataDir string) error {
 	return nil
 }
 
-// GeneratePlugin copies in the specified plugin fixture into a test directory
-// and initializes a Git repo for it so it can be installed by asdf.
-func GeneratePlugin(fixtureName, asdfDataDir, pluginName string) (string, error) {
+// InstallPlugin copies in the specified plugin fixture into the asdfDataDir's
+// plugin directory and initializes a Git repo for it so asdf treats it as
+// installed.
+func InstallPlugin(fixtureName, asdfDataDir, pluginName string) (string, error) {
 	root, err := getModuleRoot()
 	if err != nil {
 		return "", err
 	}
 
-	fixturesDir := filepath.Join(asdfDataDir, fixturesDir)
+	destDir := filepath.Join(asdfDataDir, "plugins")
+	return generatePluginInDir(root, fixtureName, destDir, pluginName)
+}
+
+// GeneratePlugin copies in the specified plugin fixture into a test directory
+// and initializes a Git repo for it so it can be installed by asdf.
+func GeneratePlugin(fixtureName, dir, pluginName string) (string, error) {
+	root, err := getModuleRoot()
+	if err != nil {
+		return "", err
+	}
+
+	fixturesDir := filepath.Join(dir, fixturesDir)
 	return generatePluginInDir(root, fixtureName, fixturesDir, pluginName)
 }
 

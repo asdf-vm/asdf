@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"asdf/config"
 	"asdf/execute"
@@ -66,6 +67,63 @@ func New(config config.Config, name string) Plugin {
 	pluginsDir := DataDirectory(config.DataDir)
 	dir := filepath.Join(pluginsDir, name)
 	return Plugin{Dir: dir, Name: name}
+}
+
+// LegacyFilenames returns a slice of filenames if the plugin contains the
+// list-legacy-filenames callback.
+func (p Plugin) LegacyFilenames() (filenames []string, err error) {
+	var stdOut strings.Builder
+	var stdErr strings.Builder
+	err = p.RunCallback("list-legacy-filenames", []string{}, map[string]string{}, &stdOut, &stdErr)
+	if err != nil {
+		_, ok := err.(NoCallbackError)
+		if ok {
+			return []string{}, nil
+		}
+
+		return []string{}, err
+	}
+
+	for _, filename := range strings.Split(stdOut.String(), " ") {
+		filenames = append(filenames, strings.TrimSpace(filename))
+	}
+	return filenames, nil
+}
+
+// ParseLegacyVersionFile takes a file and uses the parse-legacy-file callback
+// script to parse it if the script is present. Otherwise just reads the file
+// directly. In either case the returned string is split on spaces and a slice
+// of versions is returned.
+func (p Plugin) ParseLegacyVersionFile(path string) (versions []string, err error) {
+	parseLegacyFileName := "parse-legacy-file"
+	parseCallbackPath := filepath.Join(p.Dir, "bin", parseLegacyFileName)
+
+	var rawVersions string
+
+	if _, err := os.Stat(parseCallbackPath); err == nil {
+		var stdOut strings.Builder
+		var stdErr strings.Builder
+
+		err = p.RunCallback(parseLegacyFileName, []string{path}, map[string]string{}, &stdOut, &stdErr)
+		if err != nil {
+			return versions, err
+		}
+
+		rawVersions = stdOut.String()
+	} else {
+		bytes, err := os.ReadFile(path)
+		if err != nil {
+			return versions, err
+		}
+
+		rawVersions = string(bytes)
+	}
+
+	for _, version := range strings.Split(rawVersions, " ") {
+		versions = append(versions, strings.TrimSpace(version))
+	}
+
+	return versions, err
 }
 
 // RunCallback invokes a callback with the given name if it exists for the plugin
