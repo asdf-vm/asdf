@@ -210,7 +210,7 @@ teardown() {
   [ "$(cat "$HOME/.tool-versions")" = "dummy 1.1.0" ]
 }
 
-@test "global should emit an error when a single close plugin version is found" {
+@test "global should emit an error when a single close plugin version is not found" {
   run asdf global "dummy" "1"
   [ "$status" -eq 1 ]
   [ "$output" = "version 1 is not installed for dummy" ]
