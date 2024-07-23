@@ -35,7 +35,7 @@ asdfの動作には`git`および`curl`が必要です。以下の表は、 _あ
 <!-- x-release-please-start-version -->
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 ```
 
