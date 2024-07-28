@@ -39,7 +39,7 @@ _asdf() {
     COMPREPLY=($(compgen -W "$available_plugins" -- "$cur"))
     ;;
   install | list | list-all | help)
-    if [[ "$plugins" == *"$prev"* ]]; then
+    if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list-all "$prev" 2>/dev/null)
       # shellcheck disable=SC2207
@@ -54,7 +54,7 @@ _asdf() {
     COMPREPLY=($(compgen -W "--head" -- "$cur"))
     ;;
   uninstall | where | reshim)
-    if [[ "$plugins" == *"$prev"* ]]; then
+    if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list "$prev" 2>/dev/null)
       # shellcheck disable=SC2207
@@ -65,7 +65,7 @@ _asdf() {
     fi
     ;;
   local | global | shell)
-    if [[ "$plugins" == *"$prev"* ]]; then
+    if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list "$prev" 2>/dev/null)
       versions+=" system"
