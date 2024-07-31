@@ -63,7 +63,7 @@ func (p PluginIndex) Refresh() (bool, error) {
 		// directory empty, clone down repo
 		err := p.repo.Clone(p.url)
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf("unable to initialize index: %w", err)
 		}
 
 		return touchFS(p.directory)
@@ -90,7 +90,7 @@ func (p PluginIndex) doUpdate() (bool, error) {
 	// commit is
 	_, err := p.repo.Update("")
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("unable to update plugin index: %w", err)
 	}
 
 	// Touch update file

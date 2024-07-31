@@ -5,35 +5,27 @@ import (
 	"path/filepath"
 	"testing"
 
+	"asdf/repotest"
+
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: Switch to local repo so tests don't go over the network
-const (
-	testRepo       = "https://github.com/Stratus3D/asdf-lua"
-	testPluginName = "lua"
-)
-
 func TestPluginClone(t *testing.T) {
 	t.Run("when plugin name is valid but URL is invalid prints an error", func(t *testing.T) {
-		tempDir := t.TempDir()
-		directory := filepath.Join(tempDir, testPluginName)
-
-		plugin := NewRepo(directory)
+		plugin := NewRepo(t.TempDir())
 		err := plugin.Clone("foobar")
 
 		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
 	})
 
 	t.Run("clones provided Git URL to plugin directory when URL is valid", func(t *testing.T) {
-		tempDir := t.TempDir()
-		directory := filepath.Join(tempDir, testPluginName)
-
+		repoDir := generateRepo(t)
+		directory := t.TempDir()
 		plugin := NewRepo(directory)
-		err := plugin.Clone(testRepo)
 
+		err := plugin.Clone(repoDir)
 		assert.Nil(t, err)
 
 		// Assert plugin directory contains Git repo with bin directory
@@ -42,17 +34,17 @@ func TestPluginClone(t *testing.T) {
 
 		entries, err := os.ReadDir(directory + "/bin")
 		assert.Nil(t, err)
-		assert.Equal(t, 5, len(entries))
+		assert.Equal(t, 12, len(entries))
 	})
 }
 
 func TestPluginHead(t *testing.T) {
-	tempDir := t.TempDir()
-	directory := filepath.Join(tempDir, testPluginName)
+	repoDir := generateRepo(t)
+	directory := t.TempDir()
 
 	plugin := NewRepo(directory)
 
-	err := plugin.Clone(testRepo)
+	err := plugin.Clone(repoDir)
 	assert.Nil(t, err)
 
 	head, err := plugin.Head()
@@ -61,12 +53,12 @@ func TestPluginHead(t *testing.T) {
 }
 
 func TestPluginRemoteURL(t *testing.T) {
-	tempDir := t.TempDir()
-	directory := filepath.Join(tempDir, testPluginName)
+	repoDir := generateRepo(t)
+	directory := t.TempDir()
 
 	plugin := NewRepo(directory)
 
-	err := plugin.Clone(testRepo)
+	err := plugin.Clone(repoDir)
 	assert.Nil(t, err)
 
 	url, err := plugin.RemoteURL()
@@ -75,16 +67,16 @@ func TestPluginRemoteURL(t *testing.T) {
 }
 
 func TestPluginUpdate(t *testing.T) {
-	tempDir := t.TempDir()
-	directory := filepath.Join(tempDir, testPluginName)
+	repoDir := generateRepo(t)
+	directory := t.TempDir()
 
 	plugin := NewRepo(directory)
 
-	err := plugin.Clone(testRepo)
+	err := plugin.Clone(repoDir)
 	assert.Nil(t, err)
 
 	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
-		nonexistantPath := filepath.Join(tempDir, "nonexistant")
+		nonexistantPath := filepath.Join(directory, "nonexistant")
 		nonexistantPlugin := NewRepo(nonexistantPath)
 		updatedToRef, err := nonexistantPlugin.Update("")
 
@@ -96,7 +88,7 @@ func TestPluginUpdate(t *testing.T) {
 
 	t.Run("returns error when plugin repo does not exist", func(t *testing.T) {
 		badPluginName := "badplugin"
-		badPluginDir := filepath.Join(tempDir, badPluginName)
+		badPluginDir := filepath.Join(directory, badPluginName)
 		err := os.MkdirAll(badPluginDir, 0o777)
 		assert.Nil(t, err)
 
@@ -197,4 +189,13 @@ func checkoutPreviousCommit(path string) (string, error) {
 	}
 
 	return previousHash.String(), nil
+}
+
+func generateRepo(t *testing.T) string {
+	t.Helper()
+	tempDir := t.TempDir()
+	path, err := repotest.GeneratePlugin("dummy_plugin", tempDir, "lua")
+
+	assert.Nil(t, err)
+	return path
 }

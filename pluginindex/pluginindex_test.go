@@ -9,13 +9,15 @@ import (
 	"time"
 
 	"asdf/git"
+	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
 )
 
 const (
-	realIndexURL    = "https://github.com/asdf-vm/asdf-plugins.git"
+	mockIndexURL    = "https://github.com/asdf-vm/asdf-plugins.git"
 	badIndexURL     = "http://asdf-vm.com/non-existent"
+	fooPluginURL    = "http://example.com/foo"
 	elixirPluginURL = "https://github.com/asdf-vm/asdf-elixir.git"
 	erlangPluginURL = "https://github.com/asdf-vm/asdf-erlang.git"
 )
@@ -84,15 +86,22 @@ func writeMockPluginFile(dir, pluginName, pluginURL string) error {
 func TestGetPluginSourceURL(t *testing.T) {
 	t.Run("with Git returns a plugin url when provided name of existing plugin", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, true, 0, &git.Repo{Directory: dir})
-		url, err := pluginIndex.GetPluginSourceURL("elixir")
+		indexDir := filepath.Join(dir, "index")
+		err := os.Mkdir(indexDir, 0o777)
 		assert.Nil(t, err)
-		assert.Equal(t, url, elixirPluginURL)
+
+		repoPath, err := repotest.GeneratePluginIndex(dir)
+		assert.Nil(t, err)
+
+		pluginIndex := New(indexDir, repoPath, true, 0, &git.Repo{Directory: indexDir})
+		url, err := pluginIndex.GetPluginSourceURL("foo")
+		assert.Nil(t, err)
+		assert.Equal(t, url, fooPluginURL)
 	})
 
 	t.Run("returns a plugin url when provided name of existing plugin", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, true, 0, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, true, 0, &MockIndex{Directory: dir})
 		url, err := pluginIndex.GetPluginSourceURL("elixir")
 		assert.Nil(t, err)
 		assert.Equal(t, url, elixirPluginURL)
@@ -100,7 +109,7 @@ func TestGetPluginSourceURL(t *testing.T) {
 
 	t.Run("returns a plugin url when provided name of existing plugin when loading from cache", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 10, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, false, 10, &MockIndex{Directory: dir})
 		url, err := pluginIndex.GetPluginSourceURL("elixir")
 		assert.Nil(t, err)
 		assert.Equal(t, url, elixirPluginURL)
@@ -112,7 +121,7 @@ func TestGetPluginSourceURL(t *testing.T) {
 
 	t.Run("returns an error when given a name that isn't in the index", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 10, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, false, 10, &MockIndex{Directory: dir})
 		url, err := pluginIndex.GetPluginSourceURL("foobar")
 		assert.EqualError(t, err, "plugin foobar not found in repository")
 		assert.Equal(t, url, "")
@@ -130,7 +139,7 @@ func TestGetPluginSourceURL(t *testing.T) {
 		pluginIndex := New(dir, badIndexURL, false, 10, &repo)
 
 		url, err := pluginIndex.GetPluginSourceURL("lua")
-		assert.EqualError(t, err, "unable to clone: repository not found")
+		assert.EqualError(t, err, "unable to update plugin index: unable to clone: repository not found")
 		assert.Equal(t, url, "")
 	})
 
@@ -138,7 +147,7 @@ func TestGetPluginSourceURL(t *testing.T) {
 		dir := t.TempDir()
 		pluginIndex := New(dir, badIndexURL, false, 10, &MockIndex{Directory: dir})
 		url, err := pluginIndex.GetPluginSourceURL("lua")
-		assert.EqualError(t, err, "unable to clone: repository not found")
+		assert.EqualError(t, err, "unable to initialize index: unable to clone: repository not found")
 		assert.Equal(t, url, "")
 	})
 }
@@ -146,10 +155,17 @@ func TestGetPluginSourceURL(t *testing.T) {
 func TestRefresh(t *testing.T) {
 	t.Run("with Git updates repo when called once", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 0, &git.Repo{Directory: dir})
-		url, err := pluginIndex.GetPluginSourceURL("elixir")
+		indexDir := filepath.Join(dir, "index")
+		err := os.Mkdir(indexDir, 0o777)
 		assert.Nil(t, err)
-		assert.Equal(t, url, elixirPluginURL)
+
+		repoPath, err := repotest.GeneratePluginIndex(dir)
+		assert.Nil(t, err)
+
+		pluginIndex := New(indexDir, repoPath, false, 0, &git.Repo{Directory: indexDir})
+		url, err := pluginIndex.GetPluginSourceURL("foo")
+		assert.Nil(t, err)
+		assert.Equal(t, url, fooPluginURL)
 
 		updated, err := pluginIndex.Refresh()
 		assert.Nil(t, err)
@@ -158,7 +174,7 @@ func TestRefresh(t *testing.T) {
 
 	t.Run("updates repo when called once", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 0, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, false, 0, &MockIndex{Directory: dir})
 
 		updated, err := pluginIndex.Refresh()
 		assert.Nil(t, err)
@@ -171,7 +187,7 @@ func TestRefresh(t *testing.T) {
 
 	t.Run("does not update index when time has not elaspsed", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 10, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, false, 10, &MockIndex{Directory: dir})
 
 		// Call Refresh twice, the second call should not perform an update
 		updated, err := pluginIndex.Refresh()
@@ -185,7 +201,7 @@ func TestRefresh(t *testing.T) {
 
 	t.Run("updates plugin index when time has elaspsed", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, realIndexURL, false, 0, &MockIndex{Directory: dir})
+		pluginIndex := New(dir, mockIndexURL, false, 0, &MockIndex{Directory: dir})
 
 		// Call Refresh twice, the second call should perform an update
 		updated, err := pluginIndex.Refresh()
@@ -200,10 +216,10 @@ func TestRefresh(t *testing.T) {
 
 	t.Run("returns error when plugin index repo doesn't exist", func(t *testing.T) {
 		dir := t.TempDir()
-		pluginIndex := New(dir, badIndexURL, false, 0, &MockIndex{Directory: dir})
 
+		pluginIndex := New(dir, badIndexURL, false, 0, &MockIndex{Directory: dir})
 		updated, err := pluginIndex.Refresh()
-		assert.EqualError(t, err, "unable to clone: repository not found")
+		assert.EqualError(t, err, "unable to initialize index: unable to clone: repository not found")
 		assert.False(t, updated)
 	})
 }
