@@ -4,6 +4,7 @@ package config
 
 import (
 	"context"
+	"io/fs"
 	"strconv"
 	"strings"
 
@@ -29,6 +30,19 @@ type PluginRepoCheckDuration struct {
 
 var pluginRepoCheckDurationDefault = PluginRepoCheckDuration{Every: 60}
 
+// Config is the primary value this package builds and returns
+type Config struct {
+	Home                        string
+	ConfigFile                  string `env:"ASDF_CONFIG_FILE, overwrite"`
+	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
+	// Unclear if this value will be needed with the golang implementation.
+	// AsdfDir string
+	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
+	ForcePrepend bool   `env:"ASDF_FORCE_PREPEND, overwrite"`
+	// Field that stores the settings struct if it is loaded
+	Settings Settings
+}
+
 // Settings is a struct that stores config values from the asdfrc file
 type Settings struct {
 	Loaded            bool
@@ -41,17 +55,13 @@ type Settings struct {
 	DisablePluginShortNameRepository  bool
 }
 
-// Config is the primary value this package builds and returns
-type Config struct {
-	Home                        string
-	ConfigFile                  string `env:"ASDF_CONFIG_FILE, overwrite"`
-	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
-	// Unclear if this value will be needed with the golang implementation.
-	// AsdfDir string
-	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
-	ForcePrepend bool   `env:"ASDF_FORCE_PREPEND, overwrite"`
-	// Field that stores the settings struct if it is loaded
-	Settings Settings
+func defaultConfig(dataDir, configFile string) *Config {
+	return &Config{
+		ForcePrepend:                forcePrependDefault,
+		DataDir:                     dataDir,
+		ConfigFile:                  configFile,
+		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
+	}
 }
 
 func defaultSettings() *Settings {
@@ -151,7 +161,11 @@ func (c *Config) GetHook(hook string) (string, error) {
 		return "", err
 	}
 
-	return c.Settings.Raw.Key(hook).String(), nil
+	if c.Settings.Raw != nil {
+		return c.Settings.Raw.Key(hook).String(), nil
+	}
+
+	return "", nil
 }
 
 func (c *Config) loadSettings() error {
@@ -160,11 +174,17 @@ func (c *Config) loadSettings() error {
 	}
 
 	settings, err := loadSettings(c.ConfigFile)
-	if err != nil {
-		return err
-	}
 
 	c.Settings = settings
+
+	if err != nil {
+		_, ok := err.(*fs.PathError)
+		if ok {
+			return nil
+		}
+
+		return err
+	}
 
 	return nil
 }
@@ -180,29 +200,25 @@ func loadConfigEnv() (Config, error) {
 		return Config{}, err
 	}
 
-	config := Config{
-		ForcePrepend:                forcePrependDefault,
-		DataDir:                     dataDir,
-		ConfigFile:                  configFile,
-		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
-	}
+	config := defaultConfig(dataDir, configFile)
 
 	context := context.Background()
-	err = envconfig.Process(context, &config)
+	err = envconfig.Process(context, config)
 
-	return config, err
+	return *config, err
 }
 
 func loadSettings(asdfrcPath string) (Settings, error) {
+	settings := defaultSettings()
+
 	// asdfrc is effectively formatted as ini
 	config, err := ini.Load(asdfrcPath)
 	if err != nil {
-		return Settings{}, err
+		return *settings, err
 	}
 
 	mainConf := config.Section("")
 
-	settings := defaultSettings()
 	settings.Raw = mainConf
 
 	settings.Loaded = true
