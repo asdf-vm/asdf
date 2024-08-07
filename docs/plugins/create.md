@@ -874,6 +874,25 @@ os:
   - osx
 ```
 
+### GitLab Config
+
+A simple GitLab pipeline would look something like:
+
+```
+stages:
+  - test
+
+plugin:
+  stage: test
+  image: ubuntu:latest
+  script:
+    - apt-get -qq update
+    - apt-get install -qq -y git curl
+    - git clone https://github.com/asdf-vm/asdf.git asdf
+    - source asdf/asdf.sh
+    - asdf plugin test <MY TOOL> "$CI_REPOSITORY_URL" --asdf-plugin-gitref "$CI_COMMIT_REF_NAME" '<MY TOOL> --version'
+```
+
 ::: tip NOTE
 
 When using another CI you may need to pass a relative path to the plugin
