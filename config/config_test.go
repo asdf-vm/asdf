@@ -92,6 +92,30 @@ func TestConfigMethods(t *testing.T) {
 		assert.Nil(t, err, "Returned error when loading settings")
 		assert.True(t, DisablePluginShortNameRepository, "Expected DisablePluginShortNameRepository to be set")
 	})
+
+	t.Run("When file does not exist returns settings struct with defaults", func(t *testing.T) {
+		config := Config{ConfigFile: "non-existant"}
+
+		legacy, err := config.LegacyVersionFile()
+		assert.Nil(t, err)
+		assert.False(t, legacy)
+
+		keepDownload, err := config.AlwaysKeepDownload()
+		assert.Nil(t, err)
+		assert.False(t, keepDownload)
+
+		lastCheck, err := config.PluginRepositoryLastCheckDuration()
+		assert.Nil(t, err)
+		assert.False(t, lastCheck.Never)
+
+		checkDuration, err := config.PluginRepositoryLastCheckDuration()
+		assert.Nil(t, err)
+		assert.Equal(t, checkDuration.Every, 60)
+
+		shortName, err := config.DisablePluginShortNameRepository()
+		assert.Nil(t, err)
+		assert.False(t, shortName)
+	})
 }
 
 func TestConfigGetHook(t *testing.T) {
@@ -123,5 +147,13 @@ func TestConfigGetHook(t *testing.T) {
 		hookCmd, err := config.GetHook("pre_asdf_plugin_add_test2")
 		assert.Nil(t, err)
 		assert.Equal(t, hookCmd, "echo 'Executing' \"with args: $@\"")
+	})
+
+	t.Run("works if no config file", func(t *testing.T) {
+		config := Config{}
+
+		hookCmd, err := config.GetHook("some_hook")
+		assert.Nil(t, err)
+		assert.Empty(t, hookCmd)
 	})
 }
