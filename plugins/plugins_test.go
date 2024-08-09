@@ -285,6 +285,26 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
+func TestExists(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+
+	existingPlugin := New(conf, testPluginName)
+
+	t.Run("returns nil if plugin exists", func(t *testing.T) {
+		err := existingPlugin.Exists()
+		assert.Nil(t, err)
+	})
+
+	t.Run("returns PluginMissing error when plugin missing", func(t *testing.T) {
+		missingPlugin := New(conf, "non-existent")
+		err := missingPlugin.Exists()
+		assert.Equal(t, err, PluginMissing{plugin: "non-existent"})
+	})
+}
+
 func TestPluginExists(t *testing.T) {
 	testDataDir := t.TempDir()
 	pluginDir := PluginDirectory(testDataDir, testPluginName)
@@ -368,10 +388,9 @@ func TestRunCallback(t *testing.T) {
 
 	testDataDir := t.TempDir()
 	conf := config.Config{DataDir: testDataDir}
-	testRepo, err := repotest.GeneratePlugin("dummy_plugin", testDataDir, testPluginName)
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)
 
-	err = Add(conf, testPluginName, testRepo)
 	plugin := New(conf, testPluginName)
 
 	t.Run("returns NoCallback error when callback with name not found", func(t *testing.T) {
