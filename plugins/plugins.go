@@ -33,6 +33,16 @@ func (e PluginAlreadyExists) Error() string {
 	return fmt.Sprintf(pluginAlreadyExistsMsg, e.plugin)
 }
 
+// PluginMissing is the error returned when Plugin.Exists is call and the plugin
+// doesn't exist on disk.
+type PluginMissing struct {
+	plugin string
+}
+
+func (e PluginMissing) Error() string {
+	return fmt.Sprintf(pluginMissingMsg, e.plugin)
+}
+
 // NoCallbackError is an error returned by RunCallback when a callback with
 // particular name does not exist
 type NoCallbackError struct {
@@ -48,6 +58,7 @@ const (
 	dataDirPlugins         = "plugins"
 	invalidPluginNameMsg   = "%s is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 	pluginAlreadyExistsMsg = "Plugin named %s already added"
+	pluginMissingMsg       = "Plugin named %s not installed"
 	hasNoCallbackMsg       = "Plugin named %s does not have a callback named %s"
 )
 
@@ -124,6 +135,20 @@ func (p Plugin) ParseLegacyVersionFile(path string) (versions []string, err erro
 	}
 
 	return versions, err
+}
+
+// Exists returns a boolean indicating whether or not the plugin exists on disk.
+func (p Plugin) Exists() error {
+	exists, err := directoryExists(p.Dir)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		return PluginMissing{plugin: p.Name}
+	}
+
+	return nil
 }
 
 // RunCallback invokes a callback with the given name if it exists for the plugin
