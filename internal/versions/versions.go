@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"asdf/config"
@@ -21,6 +22,9 @@ const (
 	uninstallableVersionMsg = "uninstallable version: system"
 	dataDirDownloads        = "downloads"
 	dataDirInstalls         = "installs"
+	defaultQuery            = "[0-9]"
+	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
+	noLatestVersionErrMsg   = "no latest version found"
 )
 
 // UninstallableVersion is an error returned if someone tries to install the
@@ -50,8 +54,16 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	}
 
 	if version == latestVersion {
-		// TODO: Implement this
-		return errors.New("not implemented")
+		versions, err := Latest(plugin, "")
+		if err != nil {
+			return err
+		}
+
+		if len(versions) < 1 {
+			return errors.New(noLatestVersionErrMsg)
+		}
+
+		version = versions[0]
 	}
 
 	downloadDir := downloadPath(conf, plugin, version)
@@ -107,12 +119,92 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	return nil
 }
 
-func downloadPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
+// Latest invokes the plugin's latest-stable callback if it exists and returns
+// the version it returns. If the callback is missing it invokes the list-all
+// callback and returns the last version matching the query, if a query is
+// provided.
+func Latest(plugin plugins.Plugin, query string) (versions []string, err error) {
+	if query == "" {
+		query = defaultQuery
+	}
+
+	var stdOut strings.Builder
+	var stdErr strings.Builder
+
+	err = plugin.RunCallback("latest-stable", []string{query}, map[string]string{}, &stdOut, &stdErr)
+	if err != nil {
+		if _, ok := err.(plugins.NoCallbackError); !ok {
+			return versions, err
+		}
+
+		allVersions, err := AllVersionsFiltered(plugin, query)
+		if err != nil {
+			return versions, err
+		}
+
+		versions = filterByRegex(allVersions, latestFilterRegex, false)
+
+		if len(versions) < 1 {
+			return versions, nil
+		}
+
+		return []string{versions[len(versions)-1]}, nil
+	}
+
+	// parse stdOut and return version
+	versions = parseVersions(stdOut.String())
+	return versions, nil
 }
 
-func installPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name, version)
+// AllVersions returns a slice of all available versions for the tool managed by
+// the given plugin by invoking the plugin's list-all callback
+func AllVersions(plugin plugins.Plugin) (versions []string, err error) {
+	var stdout strings.Builder
+	var stderr strings.Builder
+
+	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+	if err != nil {
+		return versions, err
+	}
+
+	versions = parseVersions(stdout.String())
+
+	return versions, err
+}
+
+// AllVersionsFiltered returns a list of existing versions that match a regex
+// query provided by the user.
+func AllVersionsFiltered(plugin plugins.Plugin, query string) (versions []string, err error) {
+	all, err := AllVersions(plugin)
+	if err != nil {
+		return versions, err
+	}
+
+	return filterByRegex(all, query, true), err
+}
+
+func filterByRegex(allVersions []string, pattern string, include bool) (versions []string) {
+	for _, version := range allVersions {
+		match, _ := regexp.MatchString(pattern, version)
+		if match && include || !match && !include {
+			versions = append(versions, version)
+		}
+	}
+
+	return versions
+}
+
+// future refactoring opportunity: this function is an exact copy of
+// resolve.parseVersion
+func parseVersions(rawVersions string) []string {
+	var versions []string
+	for _, version := range strings.Split(rawVersions, " ") {
+		version = strings.TrimSpace(version)
+		if len(version) > 0 {
+			versions = append(versions, version)
+		}
+	}
+	return versions
 }
 
 // ParseString parses a version string into versionType and version components
@@ -123,4 +215,12 @@ func ParseString(version string) (string, string) {
 	}
 
 	return "version", version
+}
+
+func downloadPath(conf config.Config, plugin plugins.Plugin, version string) string {
+	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
+}
+
+func installPath(conf config.Config, plugin plugins.Plugin, version string) string {
+	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name, version)
 }
