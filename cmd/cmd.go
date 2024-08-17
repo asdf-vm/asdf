@@ -3,11 +3,14 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"asdf/config"
 	"asdf/internal/info"
+	"asdf/internal/versions"
 	"asdf/plugins"
 
 	"github.com/urfave/cli/v2"
@@ -48,6 +51,13 @@ func Execute(version string) {
 					}
 
 					return infoCommand(conf, version)
+				},
+			},
+			{
+				Name: "install",
+				Action: func(cCtx *cli.Context) error {
+					args := cCtx.Args()
+					return installCommand(logger, args.Get(0), args.Get(1))
 				},
 			},
 			{
@@ -241,4 +251,65 @@ func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err
 	}
 
 	logger.Printf("updated %s to ref %s\n", pluginName, updatedToRef)
+}
+
+func installCommand(logger *log.Logger, toolName, version string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	dir, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("unable to fetch current directory: %w", err)
+	}
+
+	if toolName == "" {
+		// Install all versions
+		errs := versions.InstallAll(conf, dir, os.Stdout, os.Stderr)
+		if len(errs) > 0 {
+			for _, err := range errs {
+				// write error stderr
+				os.Stderr.Write([]byte(err.Error()))
+				os.Stderr.Write([]byte("\n"))
+			}
+
+			return errs[0]
+		}
+	} else {
+		// Install specific version
+		plugin := plugins.New(conf, toolName)
+
+		if version == "" {
+			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
+			if err != nil {
+				return err
+			}
+		} else {
+			parsedVersion, query := parseInstallVersion(version)
+
+			if parsedVersion == "latest" {
+				err = versions.InstallVersion(conf, plugin, version, query, os.Stdout, os.Stderr)
+			} else {
+				err = versions.InstallOneVersion(conf, plugin, version, os.Stdout, os.Stderr)
+			}
+
+			if err != nil {
+				logger.Printf("error installing version: %s", err)
+			}
+		}
+	}
+
+	return err
+}
+
+func parseInstallVersion(version string) (string, string) {
+	segments := strings.Split(version, ":")
+	if len(segments) > 1 && segments[0] == "latest" {
+		// Must be latest with filter
+		return "latest", segments[1]
+	}
+
+	return version, ""
 }
