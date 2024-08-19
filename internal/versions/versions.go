@@ -13,6 +13,7 @@ import (
 
 	"asdf/config"
 	"asdf/hook"
+	"asdf/internal/resolve"
 	"asdf/plugins"
 )
 
@@ -35,26 +36,69 @@ func (e UninstallableVersion) Error() string {
 	return fmt.Sprint(uninstallableVersionMsg)
 }
 
-// TODO: Implement these functions
-//func InstallAll() {
-//}
+// InstallAll installs all specified versions of every tool for the current
+// directory. Typically this will just be a single version, if not already
+// installed, but it may be multiple versions if multiple versions for the tool
+// are specified in the .tool-versions file.
+func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writer) (failures []error) {
+	plugins, err := plugins.List(conf, false, false)
+	if err != nil {
+		return []error{fmt.Errorf("unable to list plugins: %w", err)}
+	}
 
-//func InstallOne() {
-//}
+	// Ideally we should install these in the order they are specified in the
+	// closest .tool-versions file, but for now that is too complicated to
+	// implement.
+	for _, plugin := range plugins {
+		err := Install(conf, plugin, dir, stdOut, stdErr)
+		if err != nil {
+			failures = append(failures, err)
+		}
+	}
 
-// InstallOneVersion installs a specific version of a specific tool
-func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string, _ bool, stdOut io.Writer, stdErr io.Writer) error {
+	return failures
+}
+
+// Install installs all specified versions of a tool for the current directory.
+// Typically this will just be a single version, if not already installed, but
+// it may be multiple versions if multiple versions for the tool are specified
+// in the .tool-versions file.
+func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Writer, stdErr io.Writer) error {
 	err := plugin.Exists()
 	if err != nil {
 		return err
 	}
 
-	if version == systemVersion {
-		return UninstallableVersion{}
+	versions, found, err := resolve.Version(conf, plugin, dir)
+	if err != nil {
+		return err
+	}
+
+	if !found || len(versions.Versions) == 0 {
+		return errors.New("no version set")
+	}
+
+	for _, version := range versions.Versions {
+		err := InstallOneVersion(conf, plugin, version, stdOut, stdErr)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// InstallVersion installs a version of a specific tool, the version may be an
+// exact version, or it may be `latest` or `latest` a regex query in order to
+// select the latest version matching the provided pattern.
+func InstallVersion(conf config.Config, plugin plugins.Plugin, version string, pattern string, stdOut io.Writer, stdErr io.Writer) error {
+	err := plugin.Exists()
+	if err != nil {
+		return err
 	}
 
 	if version == latestVersion {
-		versions, err := Latest(plugin, "")
+		versions, err := Latest(plugin, pattern)
 		if err != nil {
 			return err
 		}
@@ -64,6 +108,20 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		}
 
 		version = versions[0]
+	}
+
+	return InstallOneVersion(conf, plugin, version, stdOut, stdErr)
+}
+
+// InstallOneVersion installs a specific version of a specific tool
+func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string, stdOut io.Writer, stdErr io.Writer) error {
+	err := plugin.Exists()
+	if err != nil {
+		return err
+	}
+
+	if version == systemVersion {
+		return UninstallableVersion{}
 	}
 
 	downloadDir := downloadPath(conf, plugin, version)
