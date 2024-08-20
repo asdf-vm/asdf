@@ -50,7 +50,7 @@ teardown() {
 
 @test "[latest_command - dummy_legacy_plugin] No stable version should return an error" {
   run asdf latest legacy-dummy 3
-  [ -z "$output" ]
+  [ "No compatible versions available (legacy-dummy 3)" = "$output" ]
   [ "$status" -eq 1 ]
 }
 

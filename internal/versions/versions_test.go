@@ -263,6 +263,20 @@ func TestInstallOneVersion(t *testing.T) {
 	})
 }
 
+func TestInstalled(t *testing.T) {
+	conf, plugin := generateConfig(t)
+	stdout, stderr := buildOutputs()
+	err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+	assert.Nil(t, err)
+
+	t.Run("returns false when not installed", func(t *testing.T) {
+		assert.False(t, Installed(conf, plugin, "4.0.0"))
+	})
+	t.Run("returns true when installed", func(t *testing.T) {
+		assert.True(t, Installed(conf, plugin, "1.0.0"))
+	})
+}
+
 func TestLatest(t *testing.T) {
 	pluginName := "latest_test"
 	conf, _ := generateConfig(t)
@@ -276,27 +290,27 @@ func TestLatest(t *testing.T) {
 		assert.Nil(t, err)
 		plugin := plugins.New(conf, pluginName)
 
-		versions, err := Latest(plugin, "")
+		version, err := Latest(plugin, "")
 		assert.Nil(t, err)
-		assert.Equal(t, []string{"2.0.0"}, versions)
+		assert.Equal(t, "2.0.0", version)
 	})
 
 	t.Run("when given query matching no versions return empty slice of versions", func(t *testing.T) {
-		versions, err := Latest(plugin, "impossible-to-satisfy-query")
-		assert.Nil(t, err)
-		assert.Empty(t, versions)
+		version, err := Latest(plugin, "impossible-to-satisfy-query")
+		assert.Error(t, err, "no latest version found")
+		assert.Equal(t, version, "")
 	})
 
 	t.Run("when given no query returns latest version of plugin", func(t *testing.T) {
-		versions, err := Latest(plugin, "")
+		version, err := Latest(plugin, "")
 		assert.Nil(t, err)
-		assert.Equal(t, []string{"5.1.0"}, versions)
+		assert.Equal(t, "5.1.0", version)
 	})
 
 	t.Run("when given no query returns latest version of plugin", func(t *testing.T) {
-		versions, err := Latest(plugin, "^4")
+		version, err := Latest(plugin, "4")
 		assert.Nil(t, err)
-		assert.Equal(t, []string{"4.0.0"}, versions)
+		assert.Equal(t, "4.0.0", version)
 	})
 }
 

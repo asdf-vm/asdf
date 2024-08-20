@@ -23,7 +23,6 @@ const (
 	uninstallableVersionMsg = "uninstallable version: system"
 	dataDirDownloads        = "downloads"
 	dataDirInstalls         = "installs"
-	defaultQuery            = "[0-9]"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
 	noLatestVersionErrMsg   = "no latest version found"
 )
@@ -98,16 +97,10 @@ func InstallVersion(conf config.Config, plugin plugins.Plugin, version string, p
 	}
 
 	if version == latestVersion {
-		versions, err := Latest(plugin, pattern)
+		version, err = Latest(plugin, pattern)
 		if err != nil {
 			return err
 		}
-
-		if len(versions) < 1 {
-			return errors.New(noLatestVersionErrMsg)
-		}
-
-		version = versions[0]
 	}
 
 	return InstallOneVersion(conf, plugin, version, stdOut, stdErr)
@@ -128,8 +121,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	installDir := installPath(conf, plugin, version)
 	versionType, version := ParseString(version)
 
-	// Check if version already installed
-	if _, err = os.Stat(installDir); !os.IsNotExist(err) {
+	if Installed(conf, plugin, version) {
 		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
 	}
 
@@ -177,41 +169,50 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	return nil
 }
 
+// Installed checks if a specific version of a tool is installed
+func Installed(conf config.Config, plugin plugins.Plugin, version string) bool {
+	installDir := installPath(conf, plugin, version)
+
+	// Check if version already installed
+	_, err := os.Stat(installDir)
+	return !os.IsNotExist(err)
+}
+
 // Latest invokes the plugin's latest-stable callback if it exists and returns
 // the version it returns. If the callback is missing it invokes the list-all
 // callback and returns the last version matching the query, if a query is
 // provided.
-func Latest(plugin plugins.Plugin, query string) (versions []string, err error) {
-	if query == "" {
-		query = defaultQuery
-	}
-
+func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
 
 	err = plugin.RunCallback("latest-stable", []string{query}, map[string]string{}, &stdOut, &stdErr)
 	if err != nil {
 		if _, ok := err.(plugins.NoCallbackError); !ok {
-			return versions, err
+			return version, err
 		}
 
 		allVersions, err := AllVersionsFiltered(plugin, query)
 		if err != nil {
-			return versions, err
+			return version, err
 		}
 
-		versions = filterByRegex(allVersions, latestFilterRegex, false)
+		versions := filterOutByRegex(allVersions, latestFilterRegex)
 
 		if len(versions) < 1 {
-			return versions, nil
+			return version, errors.New(noLatestVersionErrMsg)
 		}
 
-		return []string{versions[len(versions)-1]}, nil
+		return versions[len(versions)-1], nil
 	}
 
 	// parse stdOut and return version
-	versions = parseVersions(stdOut.String())
-	return versions, nil
+	allVersions := parseVersions(stdOut.String())
+	versions := filterOutByRegex(allVersions, latestFilterRegex)
+	if len(versions) < 1 {
+		return version, errors.New(noLatestVersionErrMsg)
+	}
+	return versions[len(versions)-1], nil
 }
 
 // AllVersions returns a slice of all available versions for the tool managed by
@@ -238,13 +239,23 @@ func AllVersionsFiltered(plugin plugins.Plugin, query string) (versions []string
 		return versions, err
 	}
 
-	return filterByRegex(all, query, true), err
+	return filterByExactMatch(all, query), err
 }
 
-func filterByRegex(allVersions []string, pattern string, include bool) (versions []string) {
+func filterByExactMatch(allVersions []string, pattern string) (versions []string) {
+	for _, version := range allVersions {
+		if strings.HasPrefix(version, pattern) {
+			versions = append(versions, version)
+		}
+	}
+
+	return versions
+}
+
+func filterOutByRegex(allVersions []string, pattern string) (versions []string) {
 	for _, version := range allVersions {
 		match, _ := regexp.MatchString(pattern, version)
-		if match && include || !match && !include {
+		if !match {
 			versions = append(versions, version)
 		}
 	}
