@@ -184,7 +184,8 @@ func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) 
 
 	err = plugins.Remove(conf, pluginName)
 	if err != nil {
-		logger.Printf("error removing plugin: %s", err)
+		// Needed to match output of old version
+		logger.Printf("%s", err)
 	}
 	return err
 }
@@ -348,7 +349,7 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 
 	plugins, err := plugins.List(conf, false, false)
 	if err != nil {
-		logger.Printf("error loading plugin list: %s", err, false)
+		logger.Printf("error loading plugin list: %s", err)
 		return err
 	}
 

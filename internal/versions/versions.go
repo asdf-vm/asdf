@@ -27,12 +27,25 @@ const (
 	noLatestVersionErrMsg   = "no latest version found"
 )
 
-// UninstallableVersion is an error returned if someone tries to install the
+// UninstallableVersionError is an error returned if someone tries to install the
 // system version.
-type UninstallableVersion struct{}
+type UninstallableVersionError struct{}
 
-func (e UninstallableVersion) Error() string {
+func (e UninstallableVersionError) Error() string {
 	return fmt.Sprint(uninstallableVersionMsg)
+}
+
+// NoVersionSetError is returned whenever an operation that requires a version
+// is not able to resolve one.
+type NoVersionSetError struct {
+	toolName string
+}
+
+func (e NoVersionSetError) Error() string {
+	// Eventually switch this to a more friendly error message, BATS tests fail
+	// with this improvement
+	// return fmt.Sprintf("no version set for plugin %s", e.toolName)
+	return "no version set"
 }
 
 // InstallAll installs all specified versions of every tool for the current
@@ -74,7 +87,7 @@ func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Wr
 	}
 
 	if !found || len(versions.Versions) == 0 {
-		return errors.New("no version set")
+		return NoVersionSetError{toolName: plugin.Name}
 	}
 
 	for _, version := range versions.Versions {
@@ -114,7 +127,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	}
 
 	if version == systemVersion {
-		return UninstallableVersion{}
+		return UninstallableVersionError{}
 	}
 
 	downloadDir := downloadPath(conf, plugin, version)
@@ -130,6 +143,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		"ASDF_INSTALL_VERSION": version,
 		"ASDF_INSTALL_PATH":    installDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
+		"ASDF_CONCURRENCY":     asdfConcurrency(conf),
 	}
 
 	err = os.MkdirAll(downloadDir, 0o777)
@@ -167,6 +181,21 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return fmt.Errorf("failed to run post-install hook: %w", err)
 	}
 	return nil
+}
+
+func asdfConcurrency(conf config.Config) string {
+	val, ok := os.LookupEnv("ASDF_CONCURRENCY")
+
+	if !ok {
+		val, err := conf.Concurrency()
+		if err != nil {
+			return "1"
+		}
+
+		return val
+	}
+
+	return val
 }
 
 // Installed checks if a specific version of a tool is installed
