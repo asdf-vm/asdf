@@ -61,6 +61,22 @@ func Execute(version string) {
 				},
 			},
 			{
+				Name: "latest",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "all",
+						Usage: "Show latest version of all tools",
+					},
+				},
+				Action: func(cCtx *cli.Context) error {
+					tool := cCtx.Args().Get(0)
+					pattern := cCtx.Args().Get(1)
+					all := cCtx.Bool("all")
+
+					return latestCommand(logger, all, tool, pattern)
+				},
+			},
+			{
 				Name: "plugin",
 				Action: func(_ *cli.Context) error {
 					logger.Println("Unknown command: `asdf plugin`")
@@ -312,4 +328,73 @@ func parseInstallVersion(version string) (string, string) {
 	}
 
 	return version, ""
+}
+
+func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err error) {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	if !all {
+		err = latestForPlugin(conf, toolName, pattern, false)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		return err
+	}
+
+	plugins, err := plugins.List(conf, false, false)
+	if err != nil {
+		logger.Printf("error loading plugin list: %s", err, false)
+		return err
+	}
+
+	var maybeErr error
+	// loop over all plugins and show latest for each one.
+	for _, plugin := range plugins {
+		maybeErr = latestForPlugin(conf, plugin.Name, "", true)
+		if maybeErr != nil {
+			err = maybeErr
+		}
+	}
+
+	if err != nil {
+		os.Exit(1)
+		return maybeErr
+	}
+	return nil
+}
+
+func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
+	// show single plugin
+	plugin := plugins.New(conf, toolName)
+	latest, err := versions.Latest(plugin, pattern)
+	if err != nil && err.Error() != "no latest version found" {
+		fmt.Printf("unable to load latest version: %s\n", err)
+		return err
+	}
+
+	if latest == "" {
+		err := fmt.Errorf("No compatible versions available (%s %s)", toolName, pattern)
+		fmt.Println(err.Error())
+		return err
+	}
+
+	if showStatus {
+		installed := versions.Installed(conf, plugin, latest)
+		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
+	} else {
+		fmt.Printf("%s\n", latest)
+	}
+	return nil
+}
+
+func installedStatus(installed bool) string {
+	if installed {
+		return "installed"
+	}
+	return "missing"
 }

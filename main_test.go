@@ -27,17 +27,17 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "help_command.bats")
 	//})
 
-	//t.Run("info_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "info_command.bats")
-	//})
+	t.Run("info_command", func(t *testing.T) {
+		runBatsFile(t, dir, "info_command.bats")
+	})
 
 	//t.Run("install_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "install_command.bats")
 	//})
 
-	//t.Run("latest_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "latest_command.bats")
-	//})
+	t.Run("latest_command", func(t *testing.T) {
+		runBatsFile(t, dir, "latest_command.bats")
+	})
 
 	//t.Run("list_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "list_command.bats")
