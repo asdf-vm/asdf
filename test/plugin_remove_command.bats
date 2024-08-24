@@ -16,13 +16,13 @@ teardown() {
   [ "$status" -eq 0 ]
   [ -d "$ASDF_DIR/downloads/dummy" ]
 
-  run asdf plugin-remove "dummy"
+  run asdf plugin remove "dummy"
   [ "$status" -eq 0 ]
   [ ! -d "$ASDF_DIR/downloads/dummy" ]
 }
 
 @test "plugin_remove command fails if the plugin doesn't exist" {
-  run asdf plugin-remove "does-not-exist"
+  run asdf plugin remove "does-not-exist"
   [ "$status" -eq 1 ]
   echo "$output" | grep "No such plugin: does-not-exist"
 }

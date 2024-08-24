@@ -305,7 +305,7 @@ func Remove(config config.Config, pluginName string) error {
 	}
 
 	if !exists {
-		return fmt.Errorf("no such plugin: %s", pluginName)
+		return fmt.Errorf("No such plugin: %s", pluginName)
 	}
 
 	pluginDir := PluginDirectory(config.DataDir, pluginName)

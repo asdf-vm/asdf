@@ -53,6 +53,7 @@ type Settings struct {
 	AlwaysKeepDownload                bool
 	PluginRepositoryLastCheckDuration PluginRepoCheckDuration
 	DisablePluginShortNameRepository  bool
+	Concurrency                       string
 }
 
 func defaultConfig(dataDir, configFile string) *Config {
@@ -154,6 +155,16 @@ func (c *Config) DisablePluginShortNameRepository() (bool, error) {
 	return c.Settings.DisablePluginShortNameRepository, nil
 }
 
+// Concurrency returns concurrency setting from asdfrc file
+func (c *Config) Concurrency() (string, error) {
+	err := c.loadSettings()
+	if err != nil {
+		return "", err
+	}
+
+	return c.Settings.Concurrency, nil
+}
+
 // GetHook returns a hook command from config if it is there
 func (c *Config) GetHook(hook string) (string, error) {
 	err := c.loadSettings()
@@ -227,6 +238,7 @@ func loadSettings(asdfrcPath string) (Settings, error) {
 	boolOverride(&settings.LegacyVersionFile, mainConf, "legacy_version_file")
 	boolOverride(&settings.AlwaysKeepDownload, mainConf, "always_keep_download")
 	boolOverride(&settings.DisablePluginShortNameRepository, mainConf, "disable_plugin_short_name_repository")
+	settings.Concurrency = strings.ToLower(mainConf.Key("concurrency").String())
 
 	return *settings, nil
 }

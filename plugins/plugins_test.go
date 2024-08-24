@@ -182,7 +182,7 @@ func TestRemove(t *testing.T) {
 	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
 		err := Remove(conf, "nonexistant")
 		assert.NotNil(t, err)
-		assert.ErrorContains(t, err, "no such plugin")
+		assert.ErrorContains(t, err, "No such plugin")
 	})
 
 	t.Run("returns error when invalid plugin name is given", func(t *testing.T) {
