@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/asdf-vm/asdf/compare/v0.14.0...v0.14.1) (2024-08-15)
+
+
+### Patches
+
+* Only display the "can't keep downloads" warning when asked to keep downloads ([#1756](https://github.com/asdf-vm/asdf/issues/1756)) ([44f3efb](https://github.com/asdf-vm/asdf/commit/44f3efb63b7517520f4610d504d30783a85c9d79))
+
 ## [0.14.0](https://github.com/asdf-vm/asdf/compare/v0.13.1...v0.14.0) (2024-01-19)
 
 
