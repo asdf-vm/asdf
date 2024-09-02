@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -46,6 +47,29 @@ func (e NoVersionSetError) Error() string {
 	// with this improvement
 	// return fmt.Sprintf("no version set for plugin %s", e.toolName)
 	return "no version set"
+}
+
+// Installed returns a slice of all installed versions for a given plugin
+func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, err error) {
+	installDirectory := pluginInstallPath(conf, plugin)
+	files, err := os.ReadDir(installDirectory)
+	if err != nil {
+		if _, ok := err.(*fs.PathError); ok {
+			return versions, nil
+		}
+
+		return versions, err
+	}
+
+	for _, file := range files {
+		if !file.IsDir() {
+			continue
+		}
+
+		versions = append(versions, file.Name())
+	}
+
+	return versions, err
 }
 
 // InstallAll installs all specified versions of every tool for the current
@@ -134,7 +158,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	installDir := InstallPath(conf, plugin, version)
 	versionType, version := ParseString(version)
 
-	if Installed(conf, plugin, version) {
+	if IsInstalled(conf, plugin, version) {
 		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
 	}
 
@@ -198,8 +222,8 @@ func asdfConcurrency(conf config.Config) string {
 	return val
 }
 
-// Installed checks if a specific version of a tool is installed
-func Installed(conf config.Config, plugin plugins.Plugin, version string) bool {
+// IsInstalled checks if a specific version of a tool is installed
+func IsInstalled(conf config.Config, plugin plugins.Plugin, version string) bool {
 	installDir := InstallPath(conf, plugin, version)
 
 	// Check if version already installed
@@ -321,5 +345,9 @@ func downloadPath(conf config.Config, plugin plugins.Plugin, version string) str
 
 // InstallPath returns the path to a tool installation
 func InstallPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name, version)
+	return filepath.Join(pluginInstallPath(conf, plugin), version)
+}
+
+func pluginInstallPath(conf config.Config, plugin plugins.Plugin) string {
+	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name)
 }
