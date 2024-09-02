@@ -131,7 +131,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	}
 
 	downloadDir := downloadPath(conf, plugin, version)
-	installDir := installPath(conf, plugin, version)
+	installDir := InstallPath(conf, plugin, version)
 	versionType, version := ParseString(version)
 
 	if Installed(conf, plugin, version) {
@@ -200,7 +200,7 @@ func asdfConcurrency(conf config.Config) string {
 
 // Installed checks if a specific version of a tool is installed
 func Installed(conf config.Config, plugin plugins.Plugin, version string) bool {
-	installDir := installPath(conf, plugin, version)
+	installDir := InstallPath(conf, plugin, version)
 
 	// Check if version already installed
 	_, err := os.Stat(installDir)
@@ -319,6 +319,7 @@ func downloadPath(conf config.Config, plugin plugins.Plugin, version string) str
 	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
 }
 
-func installPath(conf config.Config, plugin plugins.Plugin, version string) string {
+// InstallPath returns the path to a tool installation
+func InstallPath(conf config.Config, plugin plugins.Plugin, version string) string {
 	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name, version)
 }

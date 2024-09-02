@@ -51,6 +51,37 @@ func TestFindToolVersions(t *testing.T) {
 	})
 }
 
+func TestUnique(t *testing.T) {
+	t.Run("returns unique slice of tool versions when tool appears multiple times in slice", func(t *testing.T) {
+		got := Unique([]ToolVersions{
+			{Name: "foo", Versions: []string{"1"}},
+			{Name: "foo", Versions: []string{"2"}},
+		})
+
+		want := []ToolVersions{
+			{Name: "foo", Versions: []string{"1", "2"}},
+		}
+
+		assert.Equal(t, got, want)
+	})
+
+	t.Run("returns unique slice of tool versions when given slice with multiple tools", func(t *testing.T) {
+		got := Unique([]ToolVersions{
+			{Name: "foo", Versions: []string{"1"}},
+			{Name: "bar", Versions: []string{"2"}},
+			{Name: "foo", Versions: []string{"2"}},
+			{Name: "bar", Versions: []string{"2"}},
+		})
+
+		want := []ToolVersions{
+			{Name: "foo", Versions: []string{"1", "2"}},
+			{Name: "bar", Versions: []string{"2"}},
+		}
+
+		assert.Equal(t, got, want)
+	})
+}
+
 func TestfindToolVersionsInContent(t *testing.T) {
 	t.Run("returns empty list with found false when empty content", func(t *testing.T) {
 		versions, found := findToolVersionsInContent("", "ruby")

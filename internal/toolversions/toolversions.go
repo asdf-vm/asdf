@@ -4,6 +4,7 @@ package toolversions
 
 import (
 	"os"
+	"slices"
 	"strings"
 )
 
@@ -25,17 +26,6 @@ func FindToolVersions(filepath, toolName string) (versions []string, found bool,
 	return versions, found, nil
 }
 
-func findToolVersionsInContent(content, toolName string) (versions []string, found bool) {
-	toolVersions := getAllToolsAndVersionsInContent(content)
-	for _, tool := range toolVersions {
-		if tool.Name == toolName {
-			return tool.Versions, true
-		}
-	}
-
-	return versions, found
-}
-
 // GetAllToolsAndVersions returns a list of all tools and associated versions
 // contained in a .tool-versions file
 func GetAllToolsAndVersions(filepath string) (toolVersions []ToolVersions, err error) {
@@ -48,14 +38,34 @@ func GetAllToolsAndVersions(filepath string) (toolVersions []ToolVersions, err e
 	return toolVersions, nil
 }
 
-func getAllToolsAndVersionsInContent(content string) (toolVersions []ToolVersions) {
-	for _, line := range readLines(content) {
-		tokens := parseLine(line)
-		newTool := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
-		toolVersions = append(toolVersions, newTool)
+// Unique takes a slice of ToolVersions and returns a slice of unique tools and
+// versions.
+func Unique(versions []ToolVersions) (uniques []ToolVersions) {
+	for _, version := range versions {
+		var found bool
+
+		for index, unique := range uniques {
+			if unique.Name == version.Name {
+				// Duplicate name, check versions
+				for _, versionNumber := range version.Versions {
+					if !slices.Contains(unique.Versions, versionNumber) {
+						unique.Versions = append(unique.Versions, versionNumber)
+					}
+				}
+
+				uniques[index] = unique
+				found = true
+				break
+			}
+		}
+
+		// None with name found, add
+		if !found {
+			uniques = append(uniques, version)
+		}
 	}
 
-	return toolVersions
+	return uniques
 }
 
 // readLines reads all the lines in a given file
@@ -69,6 +79,27 @@ func readLines(content string) (lines []string) {
 		}
 	}
 	return
+}
+
+func findToolVersionsInContent(content, toolName string) (versions []string, found bool) {
+	toolVersions := getAllToolsAndVersionsInContent(content)
+	for _, tool := range toolVersions {
+		if tool.Name == toolName {
+			return tool.Versions, true
+		}
+	}
+
+	return versions, found
+}
+
+func getAllToolsAndVersionsInContent(content string) (toolVersions []ToolVersions) {
+	for _, line := range readLines(content) {
+		tokens := parseLine(line)
+		newTool := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
+		toolVersions = append(toolVersions, newTool)
+	}
+
+	return toolVersions
 }
 
 func parseLine(line string) (tokens []string) {
