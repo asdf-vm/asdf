@@ -1,6 +1,8 @@
 package shims
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,6 +18,93 @@ import (
 )
 
 const testPluginName = "lua"
+
+func TestRemoveAll(t *testing.T) {
+	version := "1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, version)
+	assert.Nil(t, err)
+	stdout, stderr := buildOutputs()
+
+	t.Run("removes all files in shim directory", func(t *testing.T) {
+		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+		assert.Nil(t, RemoveAll(conf))
+
+		// check for generated shims
+		for _, executable := range executables {
+			_, err := os.Stat(Path(conf, filepath.Base(executable)))
+			assert.True(t, errors.Is(err, os.ErrNotExist))
+		}
+	})
+}
+
+func TestGenerateAll(t *testing.T) {
+	version := "1.1.0"
+	version2 := "2.0.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	installPlugin(t, conf, "dummy_plugin", "ruby")
+	installVersion(t, conf, plugin, version2)
+	executables, err := ToolExecutables(conf, plugin, version)
+	assert.Nil(t, err)
+	stdout, stderr := buildOutputs()
+
+	t.Run("generates shim script for every executable in every version of every tool", func(t *testing.T) {
+		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+
+		// check for generated shims
+		for _, executable := range executables {
+			shimName := filepath.Base(executable)
+			shimPath := Path(conf, shimName)
+			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+
+			// shim exists and has expected contents
+			content, err := os.ReadFile(shimPath)
+			assert.Nil(t, err)
+			want := fmt.Sprintf("#!/usr/bin/env bash\n# asdf-plugin: lua 2.0.0\n# asdf-plugin: lua 1.1.0\nexec asdf exec \"%s\" \"$@\"", shimName)
+			assert.Equal(t, want, string(content))
+		}
+	})
+}
+
+func TestGenerateForPluginVersions(t *testing.T) {
+	t.Setenv("ASDF_CONFIG_FILE", "testdata/asdfrc")
+	version := "1.1.0"
+	version2 := "2.0.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	installVersion(t, conf, plugin, version2)
+	executables, err := ToolExecutables(conf, plugin, version)
+	assert.Nil(t, err)
+	stdout, stderr := buildOutputs()
+
+	t.Run("generates shim script for every executable in every version the tool", func(t *testing.T) {
+		assert.Nil(t, GenerateForPluginVersions(conf, plugin, &stdout, &stderr))
+
+		// check for generated shims
+		for _, executable := range executables {
+			shimName := filepath.Base(executable)
+			shimPath := Path(conf, shimName)
+			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+
+			// shim exists and has expected contents
+			content, err := os.ReadFile(shimPath)
+			assert.Nil(t, err)
+
+			want := fmt.Sprintf("#!/usr/bin/env bash\n# asdf-plugin: lua 2.0.0\n# asdf-plugin: lua 1.1.0\nexec asdf exec \"%s\" \"$@\"", shimName)
+			assert.Equal(t, want, string(content))
+		}
+	})
+
+	t.Run("runs pre and post reshim hooks", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		assert.Nil(t, GenerateForPluginVersions(conf, plugin, &stdout, &stderr))
+
+		want := "pre_reshim 1.1.0\npost_reshim 1.1.0\npre_reshim 2.0.0\npost_reshim 2.0.0\n"
+		assert.Equal(t, want, stdout.String())
+	})
+}
 
 func TestGenerateForVersion(t *testing.T) {
 	version := "1.1.0"
@@ -125,7 +214,7 @@ func TestToolExecutables(t *testing.T) {
 			filenames = append(filenames, filepath.Base(executablePath))
 		}
 
-		assert.Equal(t, filenames, []string{"dummy", "other_bin"})
+		assert.Equal(t, filenames, []string{"dummy"})
 	})
 }
 
@@ -165,10 +254,14 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
 
-	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
+}
+
+func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string) plugins.Plugin {
+	_, err := repotest.InstallPlugin(fixture, conf.DataDir, pluginName)
 	assert.Nil(t, err)
 
-	return conf, plugins.New(conf, testPluginName)
+	return plugins.New(conf, testPluginName)
 }
 
 func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, version string) {

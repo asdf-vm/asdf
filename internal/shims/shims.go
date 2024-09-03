@@ -3,17 +3,79 @@ package shims
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
 	"asdf/config"
+	"asdf/hook"
 	"asdf/internal/toolversions"
 	"asdf/internal/versions"
 	"asdf/plugins"
 
 	"golang.org/x/sys/unix"
 )
+
+const shimDirName = "shims"
+
+// RemoveAll removes all shim scripts
+func RemoveAll(conf config.Config) error {
+	shimDir := filepath.Join(conf.DataDir, shimDirName)
+	entries, err := os.ReadDir(shimDir)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		os.RemoveAll(path.Join(shimDir, entry.Name()))
+	}
+
+	return nil
+}
+
+// GenerateAll generates shims for all executables of every version of every
+// plugin.
+func GenerateAll(conf config.Config, stdOut io.Writer, stdErr io.Writer) error {
+	plugins, err := plugins.List(conf, false, false)
+	if err != nil {
+		return err
+	}
+
+	for _, plugin := range plugins {
+		err := GenerateForPluginVersions(conf, plugin, stdOut, stdErr)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// GenerateForPluginVersions generates all shims for all installed versions of
+// a tool.
+func GenerateForPluginVersions(conf config.Config, plugin plugins.Plugin, stdOut io.Writer, stdErr io.Writer) error {
+	installedVersions, err := versions.Installed(conf, plugin)
+	if err != nil {
+		return err
+	}
+
+	for _, version := range installedVersions {
+		err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
+		if err != nil {
+			return err
+		}
+
+		GenerateForVersion(conf, plugin, version)
+
+		err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 // GenerateForVersion loops over all the executable files found for a tool and
 // generates a shim for each one
@@ -59,11 +121,11 @@ func Write(conf config.Config, plugin plugins.Plugin, version, executablePath st
 
 // Path returns the path for a shim script
 func Path(conf config.Config, shimName string) string {
-	return filepath.Join(conf.DataDir, "shims", shimName)
+	return filepath.Join(conf.DataDir, shimDirName, shimName)
 }
 
 func ensureShimDirExists(conf config.Config) error {
-	return os.MkdirAll(filepath.Join(conf.DataDir, "shims"), 0o777)
+	return os.MkdirAll(filepath.Join(conf.DataDir, shimDirName), 0o777)
 }
 
 // ToolExecutables returns a slice of executables for a given tool version
@@ -77,20 +139,20 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version string) 
 	paths := dirsToPaths(dirs, installPath)
 
 	for _, path := range paths {
-		// Walk the directory and any sub directories
-		err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-
+		entries, err := os.ReadDir(path)
+		if err != nil {
+			return executables, err
+		}
+		for _, entry := range entries {
 			// If entry is dir or cannot be executed by the current user ignore it
-			if info.IsDir() || unix.Access(path, unix.X_OK) != nil {
-				return nil
+			filePath := filepath.Join(path, entry.Name())
+			if entry.IsDir() || unix.Access(filePath, unix.X_OK) != nil {
+				return executables, nil
 			}
 
-			executables = append(executables, path)
-			return nil
-		})
+			executables = append(executables, filePath)
+			return executables, nil
+		}
 		if err != nil {
 			return executables, err
 		}

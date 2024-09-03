@@ -10,6 +10,7 @@ import (
 
 	"asdf/config"
 	"asdf/internal/info"
+	"asdf/internal/shims"
 	"asdf/internal/versions"
 	"asdf/plugins"
 
@@ -133,6 +134,12 @@ func Execute(version string) {
 							return pluginUpdateCommand(cCtx, logger, args.Get(0), args.Get(1))
 						},
 					},
+				},
+			},
+			{
+				Name: "reshim",
+				Action: func(_ *cli.Context) error {
+					return reshimCommand(logger)
 				},
 			},
 		},
@@ -287,12 +294,15 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 		errs := versions.InstallAll(conf, dir, os.Stdout, os.Stderr)
 		if len(errs) > 0 {
 			for _, err := range errs {
-				// write error stderr
 				os.Stderr.Write([]byte(err.Error()))
 				os.Stderr.Write([]byte("\n"))
 			}
 
-			return errs[0]
+			filtered := filterInstallErrors(errs)
+			if len(filtered) > 0 {
+				return filtered[0]
+			}
+			return nil
 		}
 	} else {
 		// Install specific version
@@ -319,6 +329,16 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 	}
 
 	return err
+}
+
+func filterInstallErrors(errs []error) []error {
+	var filtered []error
+	for _, err := range errs {
+		if _, ok := err.(versions.NoVersionSetError); !ok {
+			filtered = append(filtered, err)
+		}
+	}
+	return filtered
 }
 
 func parseInstallVersion(version string) (string, string) {
@@ -369,6 +389,26 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	return nil
 }
 
+func reshimCommand(logger *log.Logger) (err error) {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	err = shims.RemoveAll(conf)
+	if err != nil {
+		return err
+	}
+
+	err = shims.GenerateAll(conf, os.Stdout, os.Stderr)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
 	// show single plugin
 	plugin := plugins.New(conf, toolName)
@@ -385,7 +425,7 @@ func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bo
 	}
 
 	if showStatus {
-		installed := versions.Installed(conf, plugin, latest)
+		installed := versions.IsInstalled(conf, plugin, latest)
 		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
 	} else {
 		fmt.Printf("%s\n", latest)

@@ -16,6 +16,30 @@ import (
 
 const testPluginName = "lua"
 
+func TestInstalled(t *testing.T) {
+	conf, plugin := generateConfig(t)
+	//stdout, stderr := buildOutputs()
+	//currentDir := t.TempDir()
+	//secondPlugin := installPlugin(t, conf, "dummy_plugin", "another")
+	//version := "1.0.0"
+
+	t.Run("returns empty slice for newly installed plugin", func(t *testing.T) {
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+		assert.Empty(t, installedVersions)
+	})
+
+	t.Run("returns slice of all installed versions for a tool", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+		assert.Equal(t, installedVersions, []string{"1.0.0"})
+	})
+}
+
 func TestInstallAll(t *testing.T) {
 	t.Run("installs multiple tools when multiple tool versions are specified", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
@@ -263,17 +287,17 @@ func TestInstallOneVersion(t *testing.T) {
 	})
 }
 
-func TestInstalled(t *testing.T) {
+func TestIsInstalled(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	stdout, stderr := buildOutputs()
 	err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
 	assert.Nil(t, err)
 
 	t.Run("returns false when not installed", func(t *testing.T) {
-		assert.False(t, Installed(conf, plugin, "4.0.0"))
+		assert.False(t, IsInstalled(conf, plugin, "4.0.0"))
 	})
 	t.Run("returns true when installed", func(t *testing.T) {
-		assert.True(t, Installed(conf, plugin, "1.0.0"))
+		assert.True(t, IsInstalled(conf, plugin, "1.0.0"))
 	})
 }
 
