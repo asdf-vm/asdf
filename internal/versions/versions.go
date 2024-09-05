@@ -6,14 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 
 	"asdf/internal/config"
 	"asdf/internal/hook"
+	"asdf/internal/installs"
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
 )
@@ -22,8 +21,6 @@ const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
 	uninstallableVersionMsg = "uninstallable version: system"
-	dataDirDownloads        = "downloads"
-	dataDirInstalls         = "installs"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
 	noLatestVersionErrMsg   = "no latest version found"
 )
@@ -47,29 +44,6 @@ func (e NoVersionSetError) Error() string {
 	// with this improvement
 	// return fmt.Sprintf("no version set for plugin %s", e.toolName)
 	return "no version set"
-}
-
-// Installed returns a slice of all installed versions for a given plugin
-func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, err error) {
-	installDirectory := pluginInstallPath(conf, plugin)
-	files, err := os.ReadDir(installDirectory)
-	if err != nil {
-		if _, ok := err.(*fs.PathError); ok {
-			return versions, nil
-		}
-
-		return versions, err
-	}
-
-	for _, file := range files {
-		if !file.IsDir() {
-			continue
-		}
-
-		versions = append(versions, file.Name())
-	}
-
-	return versions, err
 }
 
 // InstallAll installs all specified versions of every tool for the current
@@ -154,11 +128,11 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return UninstallableVersionError{}
 	}
 
-	downloadDir := downloadPath(conf, plugin, version)
-	installDir := InstallPath(conf, plugin, version)
+	downloadDir := installs.DownloadPath(conf, plugin, version)
+	installDir := installs.InstallPath(conf, plugin, version)
 	versionType, version := ParseString(version)
 
-	if IsInstalled(conf, plugin, version) {
+	if installs.IsInstalled(conf, plugin, version) {
 		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
 	}
 
@@ -220,15 +194,6 @@ func asdfConcurrency(conf config.Config) string {
 	}
 
 	return val
-}
-
-// IsInstalled checks if a specific version of a tool is installed
-func IsInstalled(conf config.Config, plugin plugins.Plugin, version string) bool {
-	installDir := InstallPath(conf, plugin, version)
-
-	// Check if version already installed
-	_, err := os.Stat(installDir)
-	return !os.IsNotExist(err)
 }
 
 // Latest invokes the plugin's latest-stable callback if it exists and returns
@@ -337,17 +302,4 @@ func ParseString(version string) (string, string) {
 	}
 
 	return "version", version
-}
-
-func downloadPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
-}
-
-// InstallPath returns the path to a tool installation
-func InstallPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(pluginInstallPath(conf, plugin), version)
-}
-
-func pluginInstallPath(conf config.Config, plugin plugins.Plugin) string {
-	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name)
 }

@@ -11,9 +11,9 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/hook"
+	"asdf/internal/installs"
 	"asdf/internal/plugins"
 	"asdf/internal/toolversions"
-	"asdf/internal/versions"
 
 	"golang.org/x/sys/unix"
 )
@@ -56,7 +56,7 @@ func GenerateAll(conf config.Config, stdOut io.Writer, stdErr io.Writer) error {
 // GenerateForPluginVersions generates all shims for all installed versions of
 // a tool.
 func GenerateForPluginVersions(conf config.Config, plugin plugins.Plugin, stdOut io.Writer, stdErr io.Writer) error {
-	installedVersions, err := versions.Installed(conf, plugin)
+	installedVersions, err := installs.Installed(conf, plugin)
 	if err != nil {
 		return err
 	}
@@ -135,7 +135,7 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version string) 
 		return executables, err
 	}
 
-	installPath := versions.InstallPath(conf, plugin, version)
+	installPath := installs.InstallPath(conf, plugin, version)
 	paths := dirsToPaths(dirs, installPath)
 
 	for _, path := range paths {
