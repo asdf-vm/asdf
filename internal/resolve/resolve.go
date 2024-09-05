@@ -8,9 +8,9 @@ import (
 	"path"
 	"strings"
 
-	"asdf/config"
+	"asdf/internal/config"
+	"asdf/internal/plugins"
 	"asdf/internal/toolversions"
-	"asdf/plugins"
 )
 
 // ToolVersions represents a tool along with versions specified for it

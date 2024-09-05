@@ -7,9 +7,9 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"asdf/config"
-	"asdf/execute"
-	"asdf/plugins"
+	"asdf/internal/config"
+	"asdf/internal/execute"
+	"asdf/internal/plugins"
 )
 
 // Print info output to STDOUT

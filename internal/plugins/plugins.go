@@ -10,11 +10,11 @@ import (
 	"regexp"
 	"strings"
 
-	"asdf/config"
-	"asdf/execute"
-	"asdf/git"
-	"asdf/hook"
-	"asdf/pluginindex"
+	"asdf/internal/config"
+	"asdf/internal/execute"
+	"asdf/internal/git"
+	"asdf/internal/hook"
+	"asdf/internal/pluginindex"
 )
 
 // NewPluginAlreadyExists generates a new PluginAlreadyExists error instance for
