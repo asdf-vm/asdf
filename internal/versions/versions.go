@@ -12,10 +12,10 @@ import (
 	"regexp"
 	"strings"
 
-	"asdf/config"
-	"asdf/hook"
+	"asdf/internal/config"
+	"asdf/internal/hook"
+	"asdf/internal/plugins"
 	"asdf/internal/resolve"
-	"asdf/plugins"
 )
 
 const (

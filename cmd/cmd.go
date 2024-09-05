@@ -8,11 +8,11 @@ import (
 	"os"
 	"strings"
 
-	"asdf/config"
+	"asdf/internal/config"
 	"asdf/internal/info"
+	"asdf/internal/plugins"
 	"asdf/internal/shims"
 	"asdf/internal/versions"
-	"asdf/plugins"
 
 	"github.com/urfave/cli/v2"
 )

@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"asdf/config"
+	"asdf/internal/config"
 
 	"github.com/stretchr/testify/assert"
 )

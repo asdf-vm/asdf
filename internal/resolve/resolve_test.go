@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"asdf/config"
-	"asdf/plugins"
+	"asdf/internal/config"
+	"asdf/internal/plugins"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"

@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"asdf/config"
-	"asdf/hook"
+	"asdf/internal/config"
+	"asdf/internal/hook"
+	"asdf/internal/plugins"
 	"asdf/internal/toolversions"
 	"asdf/internal/versions"
-	"asdf/plugins"
 
 	"golang.org/x/sys/unix"
 )
