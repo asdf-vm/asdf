@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"asdf/internal/config"
+	"asdf/internal/installtest"
 	"asdf/internal/plugins"
-	"asdf/internal/versions"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
@@ -266,7 +266,6 @@ func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string)
 
 func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, version string) {
 	t.Helper()
-	stdout, stderr := buildOutputs()
-	err := versions.InstallOneVersion(conf, plugin, version, &stdout, &stderr)
+	err := installtest.InstallOneVersion(conf, plugin, "version", version)
 	assert.Nil(t, err)
 }

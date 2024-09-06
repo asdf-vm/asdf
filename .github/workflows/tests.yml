@@ -52,7 +52,7 @@ jobs:
       - name: Install dependencies
         run: go get .
       - name: Run Go tests
-        run: go test
+        run: go test -coverprofile=/tmp/coverage.out  -bench= -race ./...
 
   # Because I changed the test helper code Bash tests now fail. I removed them
   # from here to get passing checks. They can be added back at a later time if

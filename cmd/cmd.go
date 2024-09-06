@@ -10,6 +10,7 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/info"
+	"asdf/internal/installs"
 	"asdf/internal/plugins"
 	"asdf/internal/shims"
 	"asdf/internal/versions"
@@ -425,7 +426,7 @@ func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bo
 	}
 
 	if showStatus {
-		installed := versions.IsInstalled(conf, plugin, latest)
+		installed := installs.IsInstalled(conf, plugin, latest)
 		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
 	} else {
 		fmt.Printf("%s\n", latest)

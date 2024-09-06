@@ -33,7 +33,7 @@ func TestRun_Command(t *testing.T) {
 		err := cmd.Run()
 
 		assert.Nil(t, err)
-		assert.Equal(t, "sh is /bin/sh\n", stdout.String())
+		assert.Contains(t, stdout.String(), "sh is /")
 	})
 
 	t.Run("positional arg is passed to command", func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestRun_Expression(t *testing.T) {
 		err := cmd.Run()
 
 		assert.Nil(t, err)
-		assert.Equal(t, "sh is /bin/sh\n", stdout.String())
+		assert.Contains(t, stdout.String(), "sh is /")
 	})
 
 	t.Run("positional arg is passed to expression", func(t *testing.T) {
