@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"asdf/internal/config"
+	"asdf/internal/installs"
 	"asdf/internal/installtest"
 	"asdf/internal/plugins"
 	"asdf/repotest"
@@ -23,7 +24,7 @@ func TestRemoveAll(t *testing.T) {
 	version := "1.1.0"
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
-	executables, err := ToolExecutables(conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, "version", version)
 	assert.Nil(t, err)
 	stdout, stderr := buildOutputs()
 
@@ -46,7 +47,7 @@ func TestGenerateAll(t *testing.T) {
 	installVersion(t, conf, plugin, version)
 	installPlugin(t, conf, "dummy_plugin", "ruby")
 	installVersion(t, conf, plugin, version2)
-	executables, err := ToolExecutables(conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, "version", version)
 	assert.Nil(t, err)
 	stdout, stderr := buildOutputs()
 
@@ -75,7 +76,7 @@ func TestGenerateForPluginVersions(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
 	installVersion(t, conf, plugin, version2)
-	executables, err := ToolExecutables(conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, "version", version)
 	assert.Nil(t, err)
 	stdout, stderr := buildOutputs()
 
@@ -112,11 +113,12 @@ func TestGenerateForVersion(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
 	installVersion(t, conf, plugin, version2)
-	executables, err := ToolExecutables(conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, "version", version)
 	assert.Nil(t, err)
 
 	t.Run("generates shim script for every executable in version", func(t *testing.T) {
-		assert.Nil(t, GenerateForVersion(conf, plugin, version))
+		stdout, stderr := buildOutputs()
+		assert.Nil(t, GenerateForVersion(conf, plugin, "version", version, &stdout, &stderr))
 
 		// check for generated shims
 		for _, executable := range executables {
@@ -127,8 +129,9 @@ func TestGenerateForVersion(t *testing.T) {
 	})
 
 	t.Run("updates existing shims for every executable in version", func(t *testing.T) {
-		assert.Nil(t, GenerateForVersion(conf, plugin, version))
-		assert.Nil(t, GenerateForVersion(conf, plugin, version2))
+		stdout, stderr := buildOutputs()
+		assert.Nil(t, GenerateForVersion(conf, plugin, "version", version, &stdout, &stderr))
+		assert.Nil(t, GenerateForVersion(conf, plugin, "version", version2, &stdout, &stderr))
 
 		// check for generated shims
 		for _, executable := range executables {
@@ -145,7 +148,7 @@ func TestWrite(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
 	installVersion(t, conf, plugin, version2)
-	executables, err := ToolExecutables(conf, plugin, version)
+	executables, err := ToolExecutables(conf, plugin, "version", version)
 	executable := executables[0]
 	assert.Nil(t, err)
 
@@ -205,7 +208,22 @@ func TestToolExecutables(t *testing.T) {
 	installVersion(t, conf, plugin, version)
 
 	t.Run("returns list of executables for plugin", func(t *testing.T) {
-		executables, err := ToolExecutables(conf, plugin, version)
+		executables, err := ToolExecutables(conf, plugin, "version", version)
+		assert.Nil(t, err)
+
+		var filenames []string
+		for _, executablePath := range executables {
+			assert.True(t, strings.HasPrefix(executablePath, conf.DataDir))
+			filenames = append(filenames, filepath.Base(executablePath))
+		}
+
+		assert.Equal(t, filenames, []string{"dummy"})
+	})
+
+	t.Run("returns list of executables for version installed in arbitrary directory", func(t *testing.T) {
+		// Reference regular install by path to validate this behavior
+		path := installs.InstallPath(conf, plugin, "version", version)
+		executables, err := ToolExecutables(conf, plugin, "path", path)
 		assert.Nil(t, err)
 
 		var filenames []string

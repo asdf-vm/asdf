@@ -164,6 +164,14 @@ func TestInstallOneVersion(t *testing.T) {
 		assert.IsType(t, plugins.PluginMissing{}, err)
 	})
 
+	t.Run("returns error when passed a path version", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		err := InstallOneVersion(conf, plugin, "path:/foo/bar", &stdout, &stderr)
+
+		assert.ErrorContains(t, err, "uninstallable version: path")
+	})
+
 	t.Run("returns error when plugin version is 'system'", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
