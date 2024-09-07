@@ -15,22 +15,25 @@ import (
 	"asdf/internal/installs"
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
+	"asdf/internal/shims"
 )
 
 const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
-	uninstallableVersionMsg = "uninstallable version: system"
+	uninstallableVersionMsg = "uninstallable version: %s"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
 	noLatestVersionErrMsg   = "no latest version found"
 )
 
 // UninstallableVersionError is an error returned if someone tries to install the
 // system version.
-type UninstallableVersionError struct{}
+type UninstallableVersionError struct {
+	versionType string
+}
 
 func (e UninstallableVersionError) Error() string {
-	return fmt.Sprint(uninstallableVersionMsg)
+	return fmt.Sprintf(uninstallableVersionMsg, e.versionType)
 }
 
 // NoVersionSetError is returned whenever an operation that requires a version
@@ -125,14 +128,18 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	}
 
 	if version == systemVersion {
-		return UninstallableVersionError{}
+		return UninstallableVersionError{versionType: "system"}
 	}
 
-	downloadDir := installs.DownloadPath(conf, plugin, version)
-	installDir := installs.InstallPath(conf, plugin, version)
 	versionType, version := ParseString(version)
 
-	if installs.IsInstalled(conf, plugin, version) {
+	if versionType == "path" {
+		return UninstallableVersionError{versionType: "path"}
+	}
+	downloadDir := installs.DownloadPath(conf, plugin, versionType, version)
+	installDir := installs.InstallPath(conf, plugin, versionType, version)
+
+	if installs.IsInstalled(conf, plugin, versionType, version) {
 		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
 	}
 
@@ -172,6 +179,12 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
 		return fmt.Errorf("failed to run install callback: %w", err)
+	}
+
+	// Reshim
+	err = shims.GenerateAll(conf, stdOut, stdErr)
+	if err != nil {
+		return fmt.Errorf("unable to generate shims post-install: %w", err)
 	}
 
 	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_install_%s", plugin.Name), []string{version}, stdOut, stdErr)
@@ -297,8 +310,20 @@ func parseVersions(rawVersions string) []string {
 // ParseString parses a version string into versionType and version components
 func ParseString(version string) (string, string) {
 	segments := strings.Split(version, ":")
-	if len(segments) >= 1 && segments[0] == "ref" {
-		return "ref", strings.Join(segments[1:], ":")
+	if len(segments) >= 1 {
+		remainder := strings.Join(segments[1:], ":")
+		switch segments[0] {
+		case "ref":
+			return "ref", remainder
+		case "path":
+			// This is for people who have the local source already compiled
+			// Like those who work on the language, etc
+			// We'll allow specifying path:/foo/bar/project in .tool-versions
+			// And then use the binaries there
+			return "path", remainder
+		default:
+			return "version", version
+		}
 	}
 
 	return "version", version

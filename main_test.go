@@ -71,9 +71,9 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "remove_command.bats")
 	//})
 
-	//t.Run("reshim_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "reshim_command.bats")
-	//})
+	t.Run("reshim_command", func(t *testing.T) {
+		runBatsFile(t, dir, "reshim_command.bats")
+	})
 
 	//t.Run("shim_env_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "shim_env_command.bats")
@@ -89,10 +89,6 @@ func TestBatsTests(t *testing.T) {
 
 	//t.Run("uninstall_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "uninstall_command.bats")
-	//})
-
-	//t.Run("update_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "update_command.bats")
 	//})
 
 	//t.Run("version_commands", func(t *testing.T) {

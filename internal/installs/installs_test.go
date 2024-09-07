@@ -2,6 +2,7 @@ package installs
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"asdf/internal/config"
@@ -13,6 +14,34 @@ import (
 )
 
 const testPluginName = "lua"
+
+func TestDownloadPath(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("returns empty string when given path version", func(t *testing.T) {
+		path := DownloadPath(conf, plugin, "path", "foo/bar")
+		assert.Empty(t, path)
+	})
+
+	t.Run("returns empty string when given path version", func(t *testing.T) {
+		path := DownloadPath(conf, plugin, "version", "1.2.3")
+		assert.Equal(t, path, filepath.Join(conf.DataDir, "downloads", "lua", "1.2.3"))
+	})
+}
+
+func TestInstallPath(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("returns empty string when given path version", func(t *testing.T) {
+		path := InstallPath(conf, plugin, "path", "foo/bar")
+		assert.Equal(t, path, "foo/bar")
+	})
+
+	t.Run("returns install path when given regular version as version", func(t *testing.T) {
+		path := InstallPath(conf, plugin, "version", "1.2.3")
+		assert.Equal(t, path, filepath.Join(conf.DataDir, "installs", "lua", "1.2.3"))
+	})
+}
 
 func TestInstalled(t *testing.T) {
 	conf, plugin := generateConfig(t)
@@ -37,10 +66,10 @@ func TestIsInstalled(t *testing.T) {
 	installVersion(t, conf, plugin, "1.0.0")
 
 	t.Run("returns false when not installed", func(t *testing.T) {
-		assert.False(t, IsInstalled(conf, plugin, "4.0.0"))
+		assert.False(t, IsInstalled(conf, plugin, "version", "4.0.0"))
 	})
 	t.Run("returns true when installed", func(t *testing.T) {
-		assert.True(t, IsInstalled(conf, plugin, "1.0.0"))
+		assert.True(t, IsInstalled(conf, plugin, "version", "1.0.0"))
 	})
 }
 
@@ -60,7 +89,7 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 
 func mockInstall(t *testing.T, conf config.Config, plugin plugins.Plugin, version string) {
 	t.Helper()
-	path := InstallPath(conf, plugin, version)
+	path := InstallPath(conf, plugin, "version", version)
 	err := os.MkdirAll(path, os.ModePerm)
 	assert.Nil(t, err)
 }

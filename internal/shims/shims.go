@@ -62,27 +62,25 @@ func GenerateForPluginVersions(conf config.Config, plugin plugins.Plugin, stdOut
 	}
 
 	for _, version := range installedVersions {
-		err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
-		if err != nil {
-			return err
-		}
-
-		GenerateForVersion(conf, plugin, version)
-
-		err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
-		if err != nil {
-			return err
-		}
+		GenerateForVersion(conf, plugin, "version", version, stdOut, stdErr)
 	}
 	return nil
 }
 
 // GenerateForVersion loops over all the executable files found for a tool and
 // generates a shim for each one
-func GenerateForVersion(conf config.Config, plugin plugins.Plugin, version string) error {
-	executables, err := ToolExecutables(conf, plugin, version)
+func GenerateForVersion(conf config.Config, plugin plugins.Plugin, versionType, version string, stdOut io.Writer, stdErr io.Writer) error {
+	err := hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
 	if err != nil {
 		return err
+	}
+	executables, err := ToolExecutables(conf, plugin, versionType, version)
+	if err != nil {
+		return err
+	}
+
+	if versionType == "path" {
+		version = fmt.Sprintf("path:%s", version)
 	}
 
 	for _, executablePath := range executables {
@@ -92,6 +90,10 @@ func GenerateForVersion(conf config.Config, plugin plugins.Plugin, version strin
 		}
 	}
 
+	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_reshim_%s", plugin.Name), []string{version}, stdOut, stdErr)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -129,13 +131,13 @@ func ensureShimDirExists(conf config.Config) error {
 }
 
 // ToolExecutables returns a slice of executables for a given tool version
-func ToolExecutables(conf config.Config, plugin plugins.Plugin, version string) (executables []string, err error) {
+func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, version string) (executables []string, err error) {
 	dirs, err := ExecutableDirs(plugin)
 	if err != nil {
 		return executables, err
 	}
 
-	installPath := installs.InstallPath(conf, plugin, version)
+	installPath := installs.InstallPath(conf, plugin, versionType, version)
 	paths := dirsToPaths(dirs, installPath)
 
 	for _, path := range paths {

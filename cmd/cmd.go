@@ -4,6 +4,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -139,8 +140,9 @@ func Execute(version string) {
 			},
 			{
 				Name: "reshim",
-				Action: func(_ *cli.Context) error {
-					return reshimCommand(logger)
+				Action: func(cCtx *cli.Context) error {
+					args := cCtx.Args()
+					return reshimCommand(logger, args.Get(0), args.Get(1))
 				},
 			},
 		},
@@ -390,24 +392,32 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	return nil
 }
 
-func reshimCommand(logger *log.Logger) (err error) {
+func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
 		return err
 	}
 
-	err = shims.RemoveAll(conf)
-	if err != nil {
-		return err
+	// if either tool or version are missing just regenerate all shims. This is
+	// fast enough now.
+	if tool == "" || version == "" {
+		err = shims.RemoveAll(conf)
+		if err != nil {
+			return err
+		}
+
+		return shims.GenerateAll(conf, os.Stdout, os.Stderr)
 	}
 
-	err = shims.GenerateAll(conf, os.Stdout, os.Stderr)
-	if err != nil {
-		return err
-	}
+	// If provided a specific version it could be something special like a path
+	// version so we need to generate it manually
+	return reshimToolVersion(conf, tool, version, os.Stdout, os.Stderr)
+}
 
-	return err
+func reshimToolVersion(conf config.Config, tool, version string, out io.Writer, errOut io.Writer) error {
+	versionType, version := versions.ParseString(version)
+	return shims.GenerateForVersion(conf, plugins.New(conf, tool), versionType, version, out, errOut)
 }
 
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
@@ -426,7 +436,7 @@ func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bo
 	}
 
 	if showStatus {
-		installed := installs.IsInstalled(conf, plugin, latest)
+		installed := installs.IsInstalled(conf, plugin, "version", latest)
 		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
 	} else {
 		fmt.Printf("%s\n", latest)
