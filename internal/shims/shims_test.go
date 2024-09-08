@@ -20,6 +20,60 @@ import (
 
 const testPluginName = "lua"
 
+func TestFindExecutable(t *testing.T) {
+	version := "1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	stdout, stderr := buildOutputs()
+	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+	currentDir := t.TempDir()
+
+	t.Run("returns error when shim with name does not exist", func(t *testing.T) {
+		executable, found, err := FindExecutable(conf, "foo", currentDir)
+		assert.Empty(t, executable)
+		assert.False(t, found)
+		assert.Equal(t, err.(UnknownCommandError).Error(), "unknown command: foo")
+	})
+
+	t.Run("returns error when shim is present but no version is set", func(t *testing.T) {
+		executable, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Empty(t, executable)
+		assert.False(t, found)
+		assert.Equal(t, err.(NoVersionSetError).Error(), "no versions set for dummy")
+	})
+
+	t.Run("returns string containing path to executable when found", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua 1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
+		assert.Equal(t, filepath.Base(executable), "dummy")
+		assert.True(t, found)
+		assert.Nil(t, err)
+	})
+
+	t.Run("returns string containing path to system executable when system version set", func(t *testing.T) {
+		// Create dummy `ls` executable
+		path := filepath.Join(installs.InstallPath(conf, plugin, "version", version), "bin", "ls")
+		assert.Nil(t, os.WriteFile(path, []byte("echo 'I'm ls'"), 0o777))
+
+		// write system version to version file
+		toolpath := filepath.Join(currentDir, ".tool-versions")
+		assert.Nil(t, os.WriteFile(toolpath, []byte("lua system\n"), 0o666))
+		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+
+		executable, found, err := FindExecutable(conf, "ls", currentDir)
+		assert.True(t, found)
+		assert.Nil(t, err)
+
+		// see that it actually returns path to system ls
+		assert.Equal(t, filepath.Base(executable), "ls")
+		assert.NotEqual(t, executable, path)
+	})
+}
+
 func TestRemoveAll(t *testing.T) {
 	version := "1.1.0"
 	conf, plugin := generateConfig(t)

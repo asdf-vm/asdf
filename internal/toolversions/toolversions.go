@@ -38,6 +38,19 @@ func GetAllToolsAndVersions(filepath string) (toolVersions []ToolVersions, err e
 	return toolVersions, nil
 }
 
+// Intersect takes two slices of versions and returns a new slice containing
+// only the versions found in both.
+func Intersect(versions1 []string, versions2 []string) (versions []string) {
+	for _, version1 := range versions1 {
+		for _, version2 := range versions2 {
+			if version2 == version1 {
+				versions = append(versions, version1)
+			}
+		}
+	}
+	return versions
+}
+
 // Unique takes a slice of ToolVersions and returns a slice of unique tools and
 // versions.
 func Unique(versions []ToolVersions) (uniques []ToolVersions) {
