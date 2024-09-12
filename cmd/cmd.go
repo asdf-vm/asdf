@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"asdf/internal/config"
+	"asdf/internal/exec"
 	"asdf/internal/info"
 	"asdf/internal/installs"
 	"asdf/internal/plugins"
@@ -44,6 +45,15 @@ func Execute(version string) {
 		Usage:     "The multiple runtime version manager",
 		UsageText: usageText,
 		Commands: []*cli.Command{
+			{
+				Name: "exec",
+				Action: func(cCtx *cli.Context) error {
+					command := cCtx.Args().Get(0)
+					args := cCtx.Args().Slice()
+
+					return execCommand(logger, command, args)
+				},
+			},
 			{
 				Name: "info",
 				Action: func(_ *cli.Context) error {
@@ -157,6 +167,43 @@ func Execute(version string) {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func execCommand(logger *log.Logger, command string, args []string) error {
+	if command == "" {
+		logger.Printf("no command specified")
+		return fmt.Errorf("no command specified")
+	}
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return err
+	}
+
+	executable, found, err := shims.FindExecutable(conf, command, currentDir)
+	if err != nil {
+		logger.Printf("executable not found due to reason: %s", err.Error())
+		return err
+	}
+
+	if !found {
+		logger.Print("executable not found")
+		return fmt.Errorf("executable not found")
+	}
+	if len(args) > 1 {
+		args = args[1:]
+	} else {
+		args = []string{}
+	}
+
+	return exec.Exec(executable, args, os.Environ())
 }
 
 func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
