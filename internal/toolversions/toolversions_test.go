@@ -51,6 +51,28 @@ func TestFindToolVersions(t *testing.T) {
 	})
 }
 
+func TestIntersect(t *testing.T) {
+	t.Run("when provided two empty ToolVersions returns empty ToolVersions", func(t *testing.T) {
+		got := Intersect([]string{}, []string{})
+		want := []string(nil)
+
+		assert.Equal(t, got, want)
+	})
+
+	t.Run("when provided ToolVersions with no matching versions return empty ToolVersions", func(t *testing.T) {
+		got := Intersect([]string{"1", "2"}, []string{"3", "4"})
+
+		assert.Equal(t, got, []string(nil))
+	})
+
+	t.Run("when provided ToolVersions with different versions return new ToolVersions only containing versions in both", func(t *testing.T) {
+		got := Intersect([]string{"1", "2"}, []string{"2", "3"})
+		want := []string{"2"}
+
+		assert.Equal(t, got, want)
+	})
+}
+
 func TestUnique(t *testing.T) {
 	t.Run("returns unique slice of tool versions when tool appears multiple times in slice", func(t *testing.T) {
 		got := Unique([]ToolVersions{

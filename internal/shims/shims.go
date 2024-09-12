@@ -5,20 +5,152 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"asdf/internal/config"
 	"asdf/internal/hook"
 	"asdf/internal/installs"
+	"asdf/internal/paths"
 	"asdf/internal/plugins"
+	"asdf/internal/resolve"
 	"asdf/internal/toolversions"
 
 	"golang.org/x/sys/unix"
 )
 
 const shimDirName = "shims"
+
+// UnknownCommandError is an error returned when a shim is not found
+type UnknownCommandError struct {
+	shim string
+}
+
+func (e UnknownCommandError) Error() string {
+	return fmt.Sprintf("unknown command: %s", e.shim)
+}
+
+// NoVersionSetError is returned when shim is found but no version matches
+type NoVersionSetError struct {
+	shim string
+}
+
+func (e NoVersionSetError) Error() string {
+	return fmt.Sprintf("no versions set for %s", e.shim)
+}
+
+// NoExecutableForPluginError is returned when a compatible version is found
+// but no executable matching the name is located.
+type NoExecutableForPluginError struct {
+	shim string
+}
+
+func (e NoExecutableForPluginError) Error() string {
+	return fmt.Sprintf("no %s executable for plugin %s", e.shim, "")
+}
+
+// FindExecutable takes a shim name and a current directory and returns the path
+// to the executable that the shim resolves to.
+func FindExecutable(conf config.Config, shimName, currentDirectory string) (string, bool, error) {
+	shimPath := Path(conf, shimName)
+
+	if _, err := os.Stat(shimPath); err != nil {
+		return "", false, UnknownCommandError{shim: shimName}
+	}
+
+	toolVersions, err := getToolsAndVersionsFromShimFile(shimPath)
+	if err != nil {
+		return "", false, err
+	}
+
+	existingPluginToolVersions := make(map[plugins.Plugin]resolve.ToolVersions)
+
+	// loop over tools and check if the plugin for them still exists
+	for _, shimToolVersion := range toolVersions {
+		plugin := plugins.New(conf, shimToolVersion.Name)
+		if plugin.Exists() == nil {
+
+			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
+			if err != nil {
+				return "", false, nil
+			}
+
+			if found {
+				tempVersions := toolversions.Intersect(shimToolVersion.Versions, versions.Versions)
+				if slices.Contains(versions.Versions, "system") {
+					tempVersions = append(tempVersions, "system")
+				}
+
+				versions.Versions = tempVersions
+				existingPluginToolVersions[plugin] = versions
+			}
+		}
+	}
+
+	if len(existingPluginToolVersions) == 0 {
+		return "", false, NoVersionSetError{shim: shimName}
+	}
+
+	for plugin, toolVersions := range existingPluginToolVersions {
+		for _, version := range toolVersions.Versions {
+			if version == "system" {
+				if executablePath, found := FindSystemExecutable(conf, shimName); found {
+					return executablePath, true, nil
+				}
+
+				break
+			}
+			executablePath, err := GetExecutablePath(conf, plugin, shimName, version)
+			if err == nil {
+				return executablePath, true, nil
+			}
+		}
+	}
+
+	return "", false, NoExecutableForPluginError{shim: shimName}
+}
+
+// FindSystemExecutable returns the path to the system
+// executable if found
+func FindSystemExecutable(conf config.Config, executableName string) (string, bool) {
+	currentPath := os.Getenv("PATH")
+	defer os.Setenv("PATH", currentPath)
+	os.Setenv("PATH", paths.RemoveFromPath(currentPath, shimsDirectory(conf)))
+	executablePath, err := exec.LookPath(executableName)
+	return executablePath, err == nil
+}
+
+// GetExecutablePath returns the path of the executable
+func GetExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, version string) (string, error) {
+	executables, err := ToolExecutables(conf, plugin, "version", version)
+	if err != nil {
+		return "", err
+	}
+
+	for _, executablePath := range executables {
+		executableName := filepath.Base(executablePath)
+		if executableName == shimName {
+			return executablePath, nil
+		}
+	}
+
+	return "", fmt.Errorf("executable not found")
+}
+
+func getToolsAndVersionsFromShimFile(shimPath string) (versions []toolversions.ToolVersions, err error) {
+	contents, err := os.ReadFile(shimPath)
+	if err != nil {
+		return versions, err
+	}
+
+	versions = parse(string(contents))
+	versions = toolversions.Unique(versions)
+
+	return versions, err
+}
 
 // RemoveAll removes all shim scripts
 func RemoveAll(conf config.Config) error {
@@ -109,12 +241,10 @@ func Write(conf config.Config, plugin plugins.Plugin, version, executablePath st
 	versions := []toolversions.ToolVersions{{Name: plugin.Name, Versions: []string{version}}}
 
 	if _, err := os.Stat(shimPath); err == nil {
-		contents, err := os.ReadFile(shimPath)
+		oldVersions, err := getToolsAndVersionsFromShimFile(shimPath)
 		if err != nil {
 			return err
 		}
-
-		oldVersions := parse(string(contents))
 		versions = toolversions.Unique(append(versions, oldVersions...))
 	}
 
@@ -124,6 +254,10 @@ func Write(conf config.Config, plugin plugins.Plugin, version, executablePath st
 // Path returns the path for a shim script
 func Path(conf config.Config, shimName string) string {
 	return filepath.Join(conf.DataDir, shimDirName, shimName)
+}
+
+func shimsDirectory(conf config.Config) string {
+	return filepath.Join(conf.DataDir, shimDirName)
 }
 
 func ensureShimDirExists(conf config.Config) error {
@@ -153,7 +287,6 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 			}
 
 			executables = append(executables, filePath)
-			return executables, nil
 		}
 		if err != nil {
 			return executables, err
