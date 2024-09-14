@@ -7,13 +7,16 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
+	"text/tabwriter"
 
 	"asdf/internal/config"
 	"asdf/internal/exec"
 	"asdf/internal/info"
 	"asdf/internal/installs"
 	"asdf/internal/plugins"
+	"asdf/internal/resolve"
 	"asdf/internal/shims"
 	"asdf/internal/versions"
 
@@ -45,6 +48,14 @@ func Execute(version string) {
 		Usage:     "The multiple runtime version manager",
 		UsageText: usageText,
 		Commands: []*cli.Command{
+			{
+				Name: "current",
+				Action: func(cCtx *cli.Context) error {
+					tool := cCtx.Args().Get(0)
+
+					return currentCommand(logger, tool)
+				},
+			},
 			{
 				Name: "exec",
 				Action: func(cCtx *cli.Context) error {
@@ -169,10 +180,114 @@ func Execute(version string) {
 	}
 }
 
+// This function is a whole mess and needs to be refactored
+func currentCommand(logger *log.Logger, tool string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return err
+	}
+
+	// settings here to match legacy implementation
+	w := tabwriter.NewWriter(os.Stdout, 16, 0, 1, ' ', 0)
+
+	if tool == "" {
+		// show all
+		allPlugins, err := plugins.List(conf, false, false)
+		if err != nil {
+			return err
+		}
+
+		if len(allPlugins) < 1 {
+			fmt.Println("No plugins installed")
+			return nil
+		}
+
+		for _, plugin := range allPlugins {
+			toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin, currentDir)
+			formatCurrentVersionLine(w, plugin, toolversion, versionFound, versionInstalled, err)
+		}
+		w.Flush()
+		return nil
+	}
+
+	// show single tool
+	plugin := plugins.New(conf, tool)
+
+	err = plugin.Exists()
+	_, ok := err.(plugins.PluginMissing)
+	pluginExists := !ok
+
+	if pluginExists {
+		toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin, currentDir)
+		formatCurrentVersionLine(w, plugin, toolversion, versionFound, versionInstalled, err)
+		w.Flush()
+		if !versionFound {
+			os.Exit(126)
+		}
+
+		if !versionInstalled {
+			os.Exit(1)
+		}
+	} else {
+		fmt.Printf("No such plugin: %s\n", tool)
+		return err
+	}
+
+	return nil
+}
+
+func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string) (resolve.ToolVersions, bool, bool) {
+	toolversion, found, _ := resolve.Version(conf, plugin, currentDir)
+	installed := false
+	if found {
+		firstVersion := toolversion.Versions[0]
+		versionType, version := versions.ParseString(firstVersion)
+		installed = installs.IsInstalled(conf, plugin, versionType, version)
+	}
+	return toolversion, found, installed
+}
+
+func formatCurrentVersionLine(w *tabwriter.Writer, plugin plugins.Plugin, toolversion resolve.ToolVersions, found bool, installed bool, err error) error {
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintf(w, "%s\t%s\t%s\n", plugin.Name, formatVersions(toolversion.Versions), formatSource(toolversion, plugin, found, installed))
+	return nil
+}
+
+func formatSource(toolversion resolve.ToolVersions, plugin plugins.Plugin, found bool, installed bool) string {
+	if found {
+		if !installed {
+			return fmt.Sprintf("Not installed. Run \"asdf install %s %s\"", plugin.Name, toolversion.Versions[0])
+		}
+		return filepath.Join(toolversion.Directory, toolversion.Source)
+	}
+	return fmt.Sprintf("No version is set. Run \"asdf <global|shell|local> %s <version>\"", plugin.Name)
+}
+
+func formatVersions(versions []string) string {
+	switch len(versions) {
+	case 0:
+		return "______"
+	case 1:
+		return versions[0]
+	default:
+		return strings.Join(versions, " ")
+	}
+}
+
 func execCommand(logger *log.Logger, command string, args []string) error {
 	if command == "" {
-		logger.Printf("no command specified")
-		return fmt.Errorf("no command specified")
+		logger.Printf("usage: asdf exec <command>")
+		return fmt.Errorf("usage: asdf exec <command>")
 	}
 
 	conf, err := config.LoadConfig()
