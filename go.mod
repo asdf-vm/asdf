@@ -6,6 +6,7 @@ require (
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/otiai10/copy v1.14.0
+	github.com/rogpeppe/go-internal v1.11.0
 	github.com/sethvargo/go-envconfig v1.0.0
 	github.com/stretchr/testify v1.8.4
 	github.com/urfave/cli/v2 v2.27.1
