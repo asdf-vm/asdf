@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -175,6 +176,10 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 	pluginsDir := DataDirectory(config.DataDir)
 	files, err := os.ReadDir(pluginsDir)
 	if err != nil {
+		if _, ok := err.(*fs.PathError); ok {
+			return []Plugin{}, nil
+		}
+
 		return plugins, err
 	}
 

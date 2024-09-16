@@ -19,9 +19,9 @@ func TestBatsTests(t *testing.T) {
 	// Run tests with the asdf binary in the temp directory
 
 	// Uncomment these as they are implemented
-	//t.Run("current_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "current_command.bats")
-	//})
+	t.Run("current_command", func(t *testing.T) {
+		runBatsFile(t, dir, "current_command.bats")
+	})
 
 	//t.Run("help_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "help_command.bats")

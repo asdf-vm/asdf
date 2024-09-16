@@ -88,7 +88,7 @@ teardown() {
 
 @test "should output all plugins when no plugin passed" {
 
-  install_dummy_plugin
+  #install_dummy_plugin
   install_dummy_version "1.1.0"
 
   install_mock_plugin "foobar"
@@ -109,7 +109,7 @@ foobar          1.0.0           $PROJECT_DIR/.tool-versions"
 }
 
 @test "should always match the tool name exactly" {
-  install_dummy_plugin
+  #install_dummy_plugin
   install_dummy_version "1.1.0"
 
   install_mock_plugin "y"
