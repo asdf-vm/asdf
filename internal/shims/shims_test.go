@@ -74,6 +74,34 @@ func TestFindExecutable(t *testing.T) {
 	})
 }
 
+func TestGetExecutablePath(t *testing.T) {
+	version := "1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+
+	t.Run("returns path to executable", func(t *testing.T) {
+		path, err := GetExecutablePath(conf, plugin, "dummy", version)
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path), "dummy")
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(path))), version)
+	})
+
+	t.Run("returns error when executable with name not found", func(t *testing.T) {
+		path, err := GetExecutablePath(conf, plugin, "foo", version)
+		assert.ErrorContains(t, err, "executable not found")
+		assert.Equal(t, path, "")
+	})
+
+	t.Run("returns custom path when plugin has exec-path callback", func(t *testing.T) {
+		// Create exec-path callback
+		installDummyExecPathScript(t, conf, plugin, version, "dummy")
+
+		path, err := GetExecutablePath(conf, plugin, "dummy", version)
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(filepath.Dir(path)), "custom")
+	})
+}
+
 func TestRemoveAll(t *testing.T) {
 	version := "1.1.0"
 	conf, plugin := generateConfig(t)
@@ -327,6 +355,21 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	conf.DataDir = testDataDir
 
 	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
+}
+
+func installDummyExecPathScript(t *testing.T, conf config.Config, plugin plugins.Plugin, version, name string) {
+	t.Helper()
+	execPath := filepath.Join(plugin.Dir, "bin", "exec-path")
+	contents := fmt.Sprintf("#!/usr/bin/env bash\necho 'bin/custom/%s'", name)
+	err := os.WriteFile(execPath, []byte(contents), 0o777)
+	assert.Nil(t, err)
+
+	installPath := installs.InstallPath(conf, plugin, "version", version)
+	err = os.MkdirAll(filepath.Join(installPath, "bin", "custom"), 0o777)
+	assert.Nil(t, err)
+
+	err = os.WriteFile(filepath.Join(installPath, "bin", "custom", name), []byte{}, 0o777)
+	assert.Nil(t, err)
 }
 
 func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string) plugins.Plugin {
