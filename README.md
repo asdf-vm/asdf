@@ -26,6 +26,7 @@ asdf is a CLI tool that can manage multiple language runtime versions on a per-p
 - [asdf GitHub Actions](https://github.com/asdf-vm/actions)
 
 ## Contributing
+[![Open in DevZero](https://assets.devzero.io/open-in-devzero.svg)](https://www.devzero.io/dashboard/recipes/new?repo-url=https://github.com/asdf-vm/asdf)
 
 See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CONTRIBUTING.md) or the [Contributing section on the docs site](http://asdf-vm.com/contribute/core.html#initial-setup).
 
