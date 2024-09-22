@@ -13,7 +13,6 @@ func execit() int {
 	// Exec only works with absolute path
 	cmdPath, _ := exec.LookPath(os.Args[1])
 	err := Exec(cmdPath, os.Args[2:], os.Environ())
-
 	if err != nil {
 		fmt.Printf("Err: %#+v\n", err.Error())
 	}

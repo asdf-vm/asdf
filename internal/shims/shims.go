@@ -45,11 +45,13 @@ func (e NoVersionSetError) Error() string {
 // NoExecutableForPluginError is returned when a compatible version is found
 // but no executable matching the name is located.
 type NoExecutableForPluginError struct {
-	shim string
+	shim     string
+	tools    []string
+	versions []string
 }
 
 func (e NoExecutableForPluginError) Error() string {
-	return fmt.Sprintf("no %s executable for plugin %s", e.shim, "")
+	return fmt.Sprintf("No %s executable found for %s %s", e.shim, strings.Join(e.tools, ", "), strings.Join(e.versions, ", "))
 }
 
 // FindExecutable takes a shim name and a current directory and returns the path
@@ -110,7 +112,14 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 		}
 	}
 
-	return "", false, NoExecutableForPluginError{shim: shimName}
+	tools := []string{}
+	versions := []string{}
+	for plugin := range existingPluginToolVersions {
+		tools = append(tools, plugin.Name)
+		versions = append(versions, existingPluginToolVersions[plugin].Versions...)
+	}
+
+	return "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
 }
 
 // FindSystemExecutable returns the path to the system
@@ -125,6 +134,11 @@ func FindSystemExecutable(conf config.Config, executableName string) (string, bo
 
 // GetExecutablePath returns the path of the executable
 func GetExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, version string) (string, error) {
+	path, err := getCustomExecutablePath(conf, plugin, shimName, version)
+	if err == nil {
+		return path, err
+	}
+
 	executables, err := ToolExecutables(conf, plugin, "version", version)
 	if err != nil {
 		return "", err
@@ -138,6 +152,21 @@ func GetExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, vers
 	}
 
 	return "", fmt.Errorf("executable not found")
+}
+
+func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, version string) (string, error) {
+	var stdOut strings.Builder
+	var stdErr strings.Builder
+
+	installPath := installs.InstallPath(conf, plugin, "version", version)
+	env := map[string]string{"ASDF_INSTALL_TYPE": "version"}
+
+	err := plugin.RunCallback("exec-path", []string{installPath, shimName}, env, &stdOut, &stdErr)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(installPath, stdOut.String()), err
 }
 
 func getToolsAndVersionsFromShimFile(shimPath string) (versions []toolversions.ToolVersions, err error) {
@@ -283,7 +312,7 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 			// If entry is dir or cannot be executed by the current user ignore it
 			filePath := filepath.Join(path, entry.Name())
 			if entry.IsDir() || unix.Access(filePath, unix.X_OK) != nil {
-				return executables, nil
+				continue
 			}
 
 			executables = append(executables, filePath)

@@ -166,6 +166,14 @@ func Execute(version string) {
 					return reshimCommand(logger, args.Get(0), args.Get(1))
 				},
 			},
+			{
+				Name: "which",
+				Action: func(cCtx *cli.Context) error {
+					tool := cCtx.Args().Get(0)
+
+					return whichCommand(logger, tool)
+				},
+			},
 		},
 		Action: func(_ *cli.Context) error {
 			// TODO: flesh this out
@@ -575,6 +583,45 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 	// If provided a specific version it could be something special like a path
 	// version so we need to generate it manually
 	return reshimToolVersion(conf, tool, version, os.Stdout, os.Stderr)
+}
+
+// This function is a whole mess and needs to be refactored
+func whichCommand(logger *log.Logger, command string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return err
+	}
+
+	if command == "" {
+		fmt.Println("usage: asdf which <command>")
+		return errors.New("must provide command")
+	}
+
+	path, _, err := shims.FindExecutable(conf, command, currentDir)
+	if _, ok := err.(shims.UnknownCommandError); ok {
+		logger.Printf("unknown command: %s. Perhaps you have to reshim?", command)
+		return errors.New("command not found")
+	}
+
+	if _, ok := err.(shims.NoExecutableForPluginError); ok {
+		logger.Printf("%s", err.Error())
+		return errors.New("no executable for tool version")
+	}
+
+	if err != nil {
+		fmt.Printf("unexpected error: %s\n", err.Error())
+		return err
+	}
+
+	fmt.Printf("%s\n", path)
+	return nil
 }
 
 func reshimToolVersion(conf config.Config, tool, version string, out io.Writer, errOut io.Writer) error {
