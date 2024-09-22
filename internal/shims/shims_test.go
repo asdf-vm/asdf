@@ -376,7 +376,7 @@ func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string)
 	_, err := repotest.InstallPlugin(fixture, conf.DataDir, pluginName)
 	assert.Nil(t, err)
 
-	return plugins.New(conf, testPluginName)
+	return plugins.New(conf, pluginName)
 }
 
 func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, version string) {

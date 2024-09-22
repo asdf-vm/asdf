@@ -1,6 +1,7 @@
 package resolve
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -205,4 +206,30 @@ func TestFindVersionsInEnv(t *testing.T) {
 		assert.Equal(t, envVariableName, "ASDF_LUA_VERSION")
 		os.Unsetenv("ASDF_LUA_VERSION")
 	})
+}
+
+func TestVariableVersionName(t *testing.T) {
+	tests := []struct {
+		input  string
+		output string
+	}{
+		{
+			input:  "ruby",
+			output: "ASDF_RUBY_VERSION",
+		},
+		{
+			input:  "lua",
+			output: "ASDF_LUA_VERSION",
+		},
+		{
+			input:  "foo-bar",
+			output: "ASDF_FOO-BAR_VERSION",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("input: %s, output: %s", tt.input, tt.output), func(t *testing.T) {
+			assert.Equal(t, tt.output, variableVersionName(tt.input))
+		})
+	}
 }

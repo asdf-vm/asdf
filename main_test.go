@@ -23,9 +23,9 @@ func TestBatsTests(t *testing.T) {
 		runBatsFile(t, dir, "current_command.bats")
 	})
 
-	//t.Run("help_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "help_command.bats")
-	//})
+	t.Run("help_command", func(t *testing.T) {
+		runBatsFile(t, dir, "help_command.bats")
+	})
 
 	t.Run("info_command", func(t *testing.T) {
 		runBatsFile(t, dir, "info_command.bats")
