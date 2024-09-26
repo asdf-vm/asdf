@@ -13,6 +13,7 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/exec"
+	"asdf/internal/help"
 	"asdf/internal/info"
 	"asdf/internal/installs"
 	"asdf/internal/plugins"
@@ -63,6 +64,14 @@ func Execute(version string) {
 					args := cCtx.Args().Slice()
 
 					return execCommand(logger, command, args)
+				},
+			},
+			{
+				Name: "help",
+				Action: func(cCtx *cli.Context) error {
+					toolName := cCtx.Args().Get(0)
+					toolVersion := cCtx.Args().Get(1)
+					return helpCommand(logger, version, toolName, toolVersion)
 				},
 			},
 			{
@@ -406,6 +415,36 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 
 func infoCommand(conf config.Config, version string) error {
 	return info.Print(conf, version)
+}
+
+func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	if tool != "" {
+		if version != "" {
+			err := help.PrintToolVersion(conf, tool, version)
+			if err != nil {
+				os.Exit(1)
+			}
+			return err
+		}
+
+		err := help.PrintTool(conf, tool)
+		if err != nil {
+			os.Exit(1)
+		}
+		return err
+	}
+
+	err = help.Print(asdfVersion)
+	if err != nil {
+		os.Exit(1)
+	}
+	return err
 }
 
 func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref string) error {

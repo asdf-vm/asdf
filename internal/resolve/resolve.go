@@ -4,6 +4,7 @@
 package resolve
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
@@ -72,7 +73,7 @@ func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory stri
 
 // findVersionsInEnv returns the version from the environment if present
 func findVersionsInEnv(pluginName string) ([]string, string, bool) {
-	envVariableName := "ASDF_" + strings.ToUpper(pluginName) + "_VERSION"
+	envVariableName := variableVersionName(pluginName)
 	versionString := os.Getenv(envVariableName)
 	if versionString == "" {
 		return []string{}, envVariableName, false
@@ -117,4 +118,8 @@ func parseVersion(rawVersions string) []string {
 		}
 	}
 	return versions
+}
+
+func variableVersionName(toolName string) string {
+	return fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(toolName))
 }
