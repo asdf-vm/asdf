@@ -16,6 +16,7 @@ import (
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
 	"asdf/internal/shims"
+	"asdf/internal/toolversions"
 )
 
 const (
@@ -131,7 +132,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return UninstallableVersionError{versionType: "system"}
 	}
 
-	versionType, version := ParseString(version)
+	versionType, version := toolversions.Parse(version)
 
 	if versionType == "path" {
 		return UninstallableVersionError{versionType: "path"}
@@ -305,26 +306,4 @@ func parseVersions(rawVersions string) []string {
 		}
 	}
 	return versions
-}
-
-// ParseString parses a version string into versionType and version components
-func ParseString(version string) (string, string) {
-	segments := strings.Split(version, ":")
-	if len(segments) >= 1 {
-		remainder := strings.Join(segments[1:], ":")
-		switch segments[0] {
-		case "ref":
-			return "ref", remainder
-		case "path":
-			// This is for people who have the local source already compiled
-			// Like those who work on the language, etc
-			// We'll allow specifying path:/foo/bar/project in .tool-versions
-			// And then use the binaries there
-			return "path", remainder
-		default:
-			return "version", version
-		}
-	}
-
-	return "version", version
 }

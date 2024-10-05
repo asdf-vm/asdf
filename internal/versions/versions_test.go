@@ -308,26 +308,6 @@ func TestLatest(t *testing.T) {
 	})
 }
 
-func TestParseString(t *testing.T) {
-	t.Run("returns 'version', and unmodified version when passed semantic version", func(t *testing.T) {
-		versionType, version := ParseString("1.2.3")
-		assert.Equal(t, versionType, "version")
-		assert.Equal(t, version, "1.2.3")
-	})
-
-	t.Run("returns 'ref' and reference version when passed a ref version", func(t *testing.T) {
-		versionType, version := ParseString("ref:abc123")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "abc123")
-	})
-
-	t.Run("returns 'ref' and empty string when passed 'ref:'", func(t *testing.T) {
-		versionType, version := ParseString("ref:")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "")
-	})
-}
-
 func TestAllVersions(t *testing.T) {
 	pluginName := "list-all-test"
 	conf, _ := generateConfig(t)

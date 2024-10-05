@@ -157,3 +157,33 @@ func TestgetAllToolsAndVersionsInContent(t *testing.T) {
 		})
 	}
 }
+
+func TestParse(t *testing.T) {
+	t.Run("returns 'version', and unmodified version when passed semantic version", func(t *testing.T) {
+		versionType, version := Parse("1.2.3")
+		assert.Equal(t, versionType, "version")
+		assert.Equal(t, version, "1.2.3")
+	})
+
+	t.Run("returns 'ref' and reference version when passed a ref version", func(t *testing.T) {
+		versionType, version := Parse("ref:abc123")
+		assert.Equal(t, versionType, "ref")
+		assert.Equal(t, version, "abc123")
+	})
+
+	t.Run("returns 'ref' and empty string when passed 'ref:'", func(t *testing.T) {
+		versionType, version := Parse("ref:")
+		assert.Equal(t, versionType, "ref")
+		assert.Equal(t, version, "")
+	})
+}
+
+func TestFormatForFS(t *testing.T) {
+	t.Run("returns version when version type is not ref", func(t *testing.T) {
+		assert.Equal(t, FormatForFS("version", "foobar"), "foobar")
+	})
+
+	t.Run("returns version prefixed with 'ref-' when version type is ref", func(t *testing.T) {
+		assert.Equal(t, FormatForFS("ref", "foobar"), "ref-foobar")
+	})
+}

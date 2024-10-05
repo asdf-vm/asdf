@@ -95,9 +95,9 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "version_commands.bats")
 	//})
 
-	//t.Run("where_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "where_command.bats")
-	//})
+	t.Run("where_command", func(t *testing.T) {
+		runBatsFile(t, dir, "where_command.bats")
+	})
 
 	t.Run("which_command", func(t *testing.T) {
 		runBatsFile(t, dir, "which_command.bats")
