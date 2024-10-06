@@ -38,7 +38,21 @@ A helper command to print the OS, Shell and `asdf` debug information. Share this
 asdf reshim <name> <version>
 ```
 
-This recreates the shims for the current version of a package. By default, shims are created by plugins during installation of a tool. Some tools like the [npm CLI](https://docs.npmjs.com/cli/) allow global installation of executables, for example, installing [Yarn](https://yarnpkg.com/) via `npm install -g yarn`. Since this executable was not installed via the plugin lifecycle, no shim exists for it yet. `asdf reshim nodejs <version>` will force recalculation of shims for any new executables, like `yarn`, for `<version>` of `nodejs` .
+This recreates the shims for the current version of a package. By default, shims are created by `asdf` plugins during the installation of a tool. However, when using package managers like `yarn` or `pnpm` to globally install executables (for example, installing [serve](https://github.com/vercel/serve) via `yarn add global serve`), these packages are not installed during the asdf plugin lifecycle. As a result, shims for these executables are not automatically created.
+
+For example, after installing serve globally with yarn:
+
+```shell
+yarn add global serve
+```
+You may notice that the serve command is not immediately available in your terminal. This is because the executable was installed outside of the `asdf` plugin lifecycle, so no shim exists for it.
+
+To ensure `asdf` recognizes the new serve executable, run:
+
+```shell
+asdf reshim nodejs <version>
+```
+This will force the recalculation of shims for any new globally installed executables, like serve, which were installed by a package manager like `yarn` or `pnpm`, outside of `asdf` plugin lifecycle, for the specified `<version>` of `nodejs`.
 
 ## Shim-versions
 
