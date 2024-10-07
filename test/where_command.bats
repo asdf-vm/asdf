@@ -8,6 +8,7 @@ setup() {
   install_dummy_version 1.0
   install_dummy_version 2.1
   install_dummy_version ref-master
+  cd "$HOME" || exit
 }
 
 teardown() {

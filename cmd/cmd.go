@@ -19,6 +19,7 @@ import (
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
 	"asdf/internal/shims"
+	"asdf/internal/toolversions"
 	"asdf/internal/versions"
 
 	"github.com/urfave/cli/v2"
@@ -176,6 +177,15 @@ func Execute(version string) {
 				},
 			},
 			{
+				Name: "where",
+				Action: func(cCtx *cli.Context) error {
+					tool := cCtx.Args().Get(0)
+					version := cCtx.Args().Get(1)
+
+					return whereCommand(logger, tool, version)
+				},
+			},
+			{
 				Name: "which",
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
@@ -265,7 +275,7 @@ func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string
 	installed := false
 	if found {
 		firstVersion := toolversion.Versions[0]
-		versionType, version := versions.ParseString(firstVersion)
+		versionType, version := toolversions.Parse(firstVersion)
 		installed = installs.IsInstalled(conf, plugin, versionType, version)
 	}
 	return toolversion, found, installed
@@ -663,8 +673,68 @@ func whichCommand(logger *log.Logger, command string) error {
 	return nil
 }
 
+func whereCommand(logger *log.Logger, tool, version string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return err
+	}
+
+	plugin := plugins.New(conf, tool)
+	err = plugin.Exists()
+	if err != nil {
+		if _, ok := err.(plugins.PluginMissing); ok {
+			logger.Printf("No such plugin: %s", tool)
+		}
+		return err
+	}
+
+	versionType, parsedVersion := toolversions.Parse(version)
+
+	if version == "" {
+		// resolve version
+		toolversions, found, err := resolve.Version(conf, plugin, currentDir)
+		if err != nil {
+			fmt.Printf("err %#+v\n", err)
+			return err
+		}
+
+		if found && len(toolversions.Versions) > 0 && installs.IsInstalled(conf, plugin, "version", toolversions.Versions[0]) {
+			installPath := installs.InstallPath(conf, plugin, "version", toolversions.Versions[0])
+			logger.Printf("%s", installPath)
+			return nil
+		}
+
+		// not found
+		msg := fmt.Sprintf("No version is set for %s; please run `asdf <global | shell | local> %s <version>`", tool, tool)
+		logger.Print(msg)
+		return errors.New(msg)
+	}
+
+	if version == "system" {
+		logger.Printf("System version is selected")
+		return errors.New("System version is selected")
+	}
+
+	if !installs.IsInstalled(conf, plugin, versionType, parsedVersion) {
+		logger.Printf("Version not installed")
+		return errors.New("Version not installed")
+	}
+
+	installPath := installs.InstallPath(conf, plugin, versionType, parsedVersion)
+	logger.Printf("%s", installPath)
+
+	return nil
+}
+
 func reshimToolVersion(conf config.Config, tool, version string, out io.Writer, errOut io.Writer) error {
-	versionType, version := versions.ParseString(version)
+	versionType, version := toolversions.Parse(version)
 	return shims.GenerateForVersion(conf, plugins.New(conf, tool), versionType, version, out, errOut)
 }
 

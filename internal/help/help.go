@@ -10,7 +10,7 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/plugins"
-	"asdf/internal/versions"
+	"asdf/internal/toolversions"
 )
 
 //go:embed help.txt
@@ -80,7 +80,7 @@ func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io
 	}
 
 	if toolVersion != "" {
-		versionType, version := versions.ParseString(toolVersion)
+		versionType, version := toolversions.Parse(toolVersion)
 		env["ASDF_INSTALL_VERSION"] = version
 		env["ASDF_INSTALL_TYPE"] = versionType
 	}

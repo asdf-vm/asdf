@@ -1,8 +1,10 @@
 // Package toolversions handles reading and writing tools and versions from
-// asdf's .tool-versions files
+// asdf's .tool-versions files. It also handles parsing version strings from
+// .tool-versions files and command line arguments.
 package toolversions
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -79,6 +81,39 @@ func Unique(versions []ToolVersions) (uniques []ToolVersions) {
 	}
 
 	return uniques
+}
+
+// Parse parses a version string into versionType and version components
+func Parse(version string) (string, string) {
+	segments := strings.Split(version, ":")
+	if len(segments) >= 1 {
+		remainder := strings.Join(segments[1:], ":")
+		switch segments[0] {
+		case "ref":
+			return "ref", remainder
+		case "path":
+			// This is for people who have the local source already compiled
+			// Like those who work on the language, etc
+			// We'll allow specifying path:/foo/bar/project in .tool-versions
+			// And then use the binaries there
+			return "path", remainder
+		default:
+			return "version", version
+		}
+	}
+
+	return "version", version
+}
+
+// FormatForFS takes a versionType and version strings and generate a version
+// string suitable for the file system
+func FormatForFS(versionType, version string) string {
+	switch versionType {
+	case "ref":
+		return fmt.Sprintf("ref-%s", version)
+	default:
+		return version
+	}
 }
 
 // readLines reads all the lines in a given file

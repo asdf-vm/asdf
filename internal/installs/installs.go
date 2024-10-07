@@ -10,6 +10,7 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/plugins"
+	"asdf/internal/toolversions"
 )
 
 const (
@@ -45,7 +46,8 @@ func InstallPath(conf config.Config, plugin plugins.Plugin, versionType, version
 	if versionType == "path" {
 		return version
 	}
-	return filepath.Join(pluginInstallPath(conf, plugin), version)
+
+	return filepath.Join(pluginInstallPath(conf, plugin), toolversions.FormatForFS(versionType, version))
 }
 
 // DownloadPath returns the download path for a particular plugin and version
@@ -53,7 +55,8 @@ func DownloadPath(conf config.Config, plugin plugins.Plugin, versionType, versio
 	if versionType == "path" {
 		return ""
 	}
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
+
+	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, toolversions.FormatForFS(versionType, version))
 }
 
 // IsInstalled checks if a specific version of a tool is installed
