@@ -274,6 +274,50 @@ func AllVersionsFiltered(plugin plugins.Plugin, query string) (versions []string
 	return filterByExactMatch(all, query), err
 }
 
+// Uninstall uninstalls a specific tool version. It invokes pre and
+// post-uninstall hooks if set, and runs the plugin's uninstall callback if
+// defined.
+func Uninstall(conf config.Config, plugin plugins.Plugin, rawVersion string, stdout, stderr io.Writer) error {
+	versionType, version := toolversions.ParseFromCliArg(rawVersion)
+
+	if versionType == "latest" {
+		return errors.New("'latest' is a special version value that cannot be used for uninstall command")
+	}
+
+	if !installs.IsInstalled(conf, plugin, versionType, version) {
+		return errors.New("No such version")
+	}
+
+	err := hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_uninstall_%s", plugin.Name), []string{version}, stdout, stderr)
+	if err != nil {
+		return err
+	}
+
+	// invoke uninstall callback if available
+	installDir := installs.InstallPath(conf, plugin, versionType, version)
+	env := map[string]string{
+		"ASDF_INSTALL_TYPE":    versionType,
+		"ASDF_INSTALL_VERSION": version,
+		"ASDF_INSTALL_PATH":    installDir,
+	}
+	err = plugin.RunCallback("uninstall", []string{}, env, stdout, stderr)
+	if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
+		return err
+	}
+
+	err = os.RemoveAll(installDir)
+	if err != nil {
+		return err
+	}
+
+	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_uninstall_%s", plugin.Name), []string{version}, stdout, stderr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func filterByExactMatch(allVersions []string, pattern string) (versions []string) {
 	for _, version := range allVersions {
 		if strings.HasPrefix(version, pattern) {

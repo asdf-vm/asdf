@@ -333,6 +333,62 @@ func TestAllVersions(t *testing.T) {
 	})
 }
 
+func TestUninstall(t *testing.T) {
+	t.Setenv("ASDF_CONFIG_FILE", "testdata/uninstall-asdfrc")
+	pluginName := "uninstall-test"
+	conf, _ := generateConfig(t)
+	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, pluginName)
+	assert.Nil(t, err)
+	plugin := plugins.New(conf, pluginName)
+	stdout, stderr := buildOutputs()
+
+	t.Run("returns error when version is 'latest'", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		err := Uninstall(conf, plugin, "latest", &stdout, &stderr)
+		assert.Error(t, err, "'latest' is a special version value that cannot be used for uninstall command")
+	})
+
+	t.Run("returns an error when version not installed", func(t *testing.T) {
+		err := Uninstall(conf, plugin, "4.0.0", &stdout, &stderr)
+		assert.Error(t, err, "No such version")
+	})
+
+	t.Run("uninstalls successfully when plugin and version are installed", func(t *testing.T) {
+		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+
+		err := Uninstall(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+		assertNotInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+	})
+
+	t.Run("runs pre and post-uninstall hooks", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+
+		err := Uninstall(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+		want := "pre_asdf_uninstall_test 1.0.0\npost_asdf_uninstall_test 1.0.0\n"
+		assert.Equal(t, want, stdout.String())
+	})
+
+	t.Run("invokes uninstall callback when present", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+
+		data := []byte("echo custom uninstall")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "uninstall"), data, 0o755)
+		assert.Nil(t, err)
+
+		err = Uninstall(conf, plugin, "1.0.0", &stdout, &stderr)
+		assert.Nil(t, err)
+		want := "pre_asdf_uninstall_test 1.0.0\ncustom uninstall\npost_asdf_uninstall_test 1.0.0\n"
+		assert.Equal(t, want, stdout.String())
+	})
+}
+
 // Helper functions
 func buildOutputs() (strings.Builder, strings.Builder) {
 	var stdout strings.Builder

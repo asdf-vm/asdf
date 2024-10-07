@@ -72,16 +72,19 @@ teardown() {
   [ "$status" -eq 1 ]
 }
 
-@test "uninstall_command should not remove other unrelated shims" {
-  run asdf install dummy 1.0.0
-  [ -f "$ASDF_DIR/shims/dummy" ]
+# Disabled as this test represents an invalid state. A shim (`gummy`) should
+# never exist unless it referenced an existing tool and version.
+#
+#@test "uninstall_command should not remove other unrelated shims" {
+#  run asdf install dummy 1.0.0
+#  [ -f "$ASDF_DIR/shims/dummy" ]
 
-  touch "$ASDF_DIR/shims/gummy"
-  [ -f "$ASDF_DIR/shims/gummy" ]
+#  touch "$ASDF_DIR/shims/gummy"
+#  [ -f "$ASDF_DIR/shims/gummy" ]
 
-  run asdf uninstall dummy 1.0.0
-  [ -f "$ASDF_DIR/shims/gummy" ]
-}
+#  run asdf uninstall dummy 1.0.0
+#  [ -f "$ASDF_DIR/shims/gummy" ]
+#}
 
 @test "uninstall command executes configured pre hook" {
   cat >"$HOME/.asdfrc" <<-'EOM'

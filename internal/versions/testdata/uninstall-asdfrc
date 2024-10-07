@@ -1,0 +1,2 @@
+pre_asdf_uninstall_uninstall-test = echo pre_asdf_uninstall_test $@
+post_asdf_uninstall_uninstall-test = echo post_asdf_uninstall_test $@
