@@ -177,6 +177,15 @@ func Execute(version string) {
 				},
 			},
 			{
+				Name: "uninstall",
+				Action: func(cCtx *cli.Context) error {
+					tool := cCtx.Args().Get(0)
+					version := cCtx.Args().Get(1)
+
+					return uninstallCommand(logger, tool, version)
+				},
+			},
+			{
 				Name: "where",
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
@@ -536,7 +545,7 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 				return err
 			}
 		} else {
-			parsedVersion, query := parseInstallVersion(version)
+			parsedVersion, query := toolversions.ParseFromCliArg(version)
 
 			if parsedVersion == "latest" {
 				err = versions.InstallVersion(conf, plugin, version, query, os.Stdout, os.Stderr)
@@ -561,16 +570,6 @@ func filterInstallErrors(errs []error) []error {
 		}
 	}
 	return filtered
-}
-
-func parseInstallVersion(version string) (string, string) {
-	segments := strings.Split(version, ":")
-	if len(segments) > 1 && segments[0] == "latest" {
-		// Must be latest with filter
-		return "latest", segments[1]
-	}
-
-	return version, ""
 }
 
 func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err error) {
@@ -671,6 +670,40 @@ func whichCommand(logger *log.Logger, command string) error {
 
 	fmt.Printf("%s\n", path)
 	return nil
+}
+
+func uninstallCommand(logger *log.Logger, tool, version string) error {
+	if tool == "" || version == "" {
+		logger.Print("No plugin given")
+		os.Exit(1)
+		return nil
+	}
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		os.Exit(1)
+		return err
+	}
+
+	plugin := plugins.New(conf, tool)
+	err = versions.Uninstall(conf, plugin, version, os.Stdout, os.Stderr)
+	if err != nil {
+		logger.Printf("%s", err)
+		os.Exit(1)
+		return err
+	}
+
+	// This feels a little hacky but it works, to re-generate shims we delete them
+	// all and generate them again.
+	err = shims.RemoveAll(conf)
+	if err != nil {
+		logger.Printf("%s", err)
+		os.Exit(1)
+		return err
+	}
+
+	return shims.GenerateAll(conf, os.Stdout, os.Stderr)
 }
 
 func whereCommand(logger *log.Logger, tool, version string) error {

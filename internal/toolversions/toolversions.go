@@ -83,6 +83,22 @@ func Unique(versions []ToolVersions) (uniques []ToolVersions) {
 	return uniques
 }
 
+// ParseFromCliArg parses a string that is passed in as an argument to one of
+// the asdf subcommands. Some subcommands allow the special version `latest` to
+// be used, with an optional filter string.
+func ParseFromCliArg(version string) (string, string) {
+	segments := strings.Split(version, ":")
+	if len(segments) > 0 && segments[0] == "latest" {
+		if len(segments) > 1 {
+			// Must be latest with filter
+			return "latest", segments[1]
+		}
+		return "latest", ""
+	}
+
+	return Parse(version)
+}
+
 // Parse parses a version string into versionType and version components
 func Parse(version string) (string, string) {
 	segments := strings.Split(version, ":")

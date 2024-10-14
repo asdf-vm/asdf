@@ -178,6 +178,38 @@ func TestParse(t *testing.T) {
 	})
 }
 
+func TestParseFromCliArg(t *testing.T) {
+	t.Run("returns 'latest' as version type when passed string 'latest'", func(t *testing.T) {
+		versionType, version := ParseFromCliArg("latest")
+		assert.Equal(t, versionType, "latest")
+		assert.Equal(t, version, "")
+	})
+
+	t.Run("returns 'latest' and unmodified filter string when passed a latest version", func(t *testing.T) {
+		versionType, version := ParseFromCliArg("latest:1.2")
+		assert.Equal(t, versionType, "latest")
+		assert.Equal(t, version, "1.2")
+	})
+
+	t.Run("returns 'version', and unmodified version when passed semantic version", func(t *testing.T) {
+		versionType, version := ParseFromCliArg("1.2.3")
+		assert.Equal(t, versionType, "version")
+		assert.Equal(t, version, "1.2.3")
+	})
+
+	t.Run("returns 'ref' and reference version when passed a ref version", func(t *testing.T) {
+		versionType, version := ParseFromCliArg("ref:abc123")
+		assert.Equal(t, versionType, "ref")
+		assert.Equal(t, version, "abc123")
+	})
+
+	t.Run("returns 'ref' and empty string when passed 'ref:'", func(t *testing.T) {
+		versionType, version := ParseFromCliArg("ref:")
+		assert.Equal(t, versionType, "ref")
+		assert.Equal(t, version, "")
+	})
+}
+
 func TestFormatForFS(t *testing.T) {
 	t.Run("returns version when version type is not ref", func(t *testing.T) {
 		assert.Equal(t, FormatForFS("version", "foobar"), "foobar")
