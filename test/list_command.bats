@@ -76,36 +76,36 @@ teardown() {
 }
 
 @test "list_all_command lists available versions" {
-  run asdf list-all dummy
+  run asdf list all dummy
   [ $'1.0.0\n1.1.0\n2.0.0' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "list_all_command with version filters available versions" {
-  run asdf list-all dummy 1
+  run asdf list all dummy 1
   [ $'1.0.0\n1.1.0' = "$output" ]
   [ "$status" -eq 0 ]
 }
 
 @test "list_all_command with an invalid version should return an error" {
-  run asdf list-all dummy 3
+  run asdf list all dummy 3
   [ "No compatible versions available (dummy 3)" = "$output" ]
   [ "$status" -eq 1 ]
 }
 
 @test "list_all_command fails when list-all script exits with non-zero code" {
-  run asdf list-all dummy-broken
+  run asdf list all dummy-broken
   [ "$status" -eq 1 ]
   [[ "$output" == "Plugin dummy-broken's list-all callback script failed with output:"* ]]
 }
 
 @test "list_all_command displays stderr then stdout when failing" {
-  run asdf list-all dummy-broken
+  run asdf list all dummy-broken
   [[ "$output" == *"List-all failed!"* ]]
   [[ "$output" == *"Attempting to list versions" ]]
 }
 
 @test "list_all_command ignores stderr when completing successfully" {
-  run asdf list-all dummy
+  run asdf list all dummy
   [[ "$output" != *"ignore this error"* ]]
 }

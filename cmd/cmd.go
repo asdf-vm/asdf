@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"text/tabwriter"
 
@@ -108,6 +109,13 @@ func Execute(version string) {
 					all := cCtx.Bool("all")
 
 					return latestCommand(logger, all, tool, pattern)
+				},
+			},
+			{
+				Name: "list",
+				Action: func(cCtx *cli.Context) error {
+					args := cCtx.Args()
+					return listCommand(logger, args.Get(0), args.Get(1), args.Get(2))
 				},
 			},
 			{
@@ -607,6 +615,142 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 		os.Exit(1)
 		return maybeErr
 	}
+	return nil
+}
+
+func listCommand(logger *log.Logger, first, second, third string) (err error) {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	// Both listAllCommand and listLocalCommand need to be refactored and extracted
+	// out into another package.
+	if first == "all" {
+		return listAllCommand(logger, conf, second, third)
+	}
+
+	return listLocalCommand(logger, conf, first, second)
+}
+
+func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter string) error {
+	if toolName == "" {
+		logger.Print("No plugin given")
+		os.Exit(1)
+		return nil
+	}
+
+	plugin := plugins.New(conf, toolName)
+	var stdout strings.Builder
+	var stderr strings.Builder
+
+	err := plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+
+	if err != nil {
+		fmt.Printf("Plugin %s's list-all callback script failed with output:\n", plugin.Name)
+		// Print to stderr
+		os.Stderr.WriteString(stderr.String())
+		os.Stderr.WriteString(stdout.String())
+
+		os.Exit(1)
+		return err
+	}
+
+	versions := strings.Split(stdout.String(), " ")
+
+	if filter != "" {
+		versions = filterByExactMatch(versions, filter)
+	}
+
+	if len(versions) == 0 {
+		logger.Printf("No compatible versions available (%s %s)", plugin.Name, filter)
+		os.Exit(1)
+		return nil
+	}
+
+	for _, version := range versions {
+		fmt.Printf("%s\n", version)
+	}
+
+	return nil
+}
+
+func filterByExactMatch(allVersions []string, pattern string) (versions []string) {
+	for _, version := range allVersions {
+		if strings.HasPrefix(version, pattern) {
+			versions = append(versions, version)
+		}
+	}
+
+	return versions
+}
+
+func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter string) error {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return err
+	}
+
+	if pluginName != "" {
+		plugin := plugins.New(conf, pluginName)
+		versions, _ := installs.Installed(conf, plugin)
+
+		if filter != "" {
+			versions = filterByExactMatch(versions, filter)
+		}
+
+		if len(versions) == 0 {
+			logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
+			os.Exit(1)
+			return nil
+		}
+
+		currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
+		if err != nil {
+			os.Exit(1)
+			return err
+		}
+
+		for _, version := range versions {
+			if slices.Contains(currentVersions.Versions, version) {
+				fmt.Printf(" *%s\n", version)
+			} else {
+				fmt.Printf("  %s\n", version)
+			}
+		}
+		return nil
+	}
+
+	allPlugins, err := plugins.List(conf, false, false)
+	if err != nil {
+		logger.Printf("unable to list plugins due to error: %s", err)
+		return err
+	}
+
+	for _, plugin := range allPlugins {
+		fmt.Printf("%s\n", plugin.Name)
+		versions, _ := installs.Installed(conf, plugin)
+
+		if len(versions) > 0 {
+			currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
+			if err != nil {
+				os.Exit(1)
+				return err
+			}
+			for _, version := range versions {
+				if slices.Contains(currentVersions.Versions, version) {
+					fmt.Printf(" *%s\n", version)
+				} else {
+					fmt.Printf("  %s\n", version)
+				}
+			}
+		} else {
+			fmt.Print("  No versions installed\n")
+		}
+	}
+
 	return nil
 }
 

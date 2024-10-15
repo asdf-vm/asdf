@@ -39,9 +39,9 @@ func TestBatsTests(t *testing.T) {
 		runBatsFile(t, dir, "latest_command.bats")
 	})
 
-	//t.Run("list_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "list_command.bats")
-	//})
+	t.Run("list_command", func(t *testing.T) {
+		runBatsFile(t, dir, "list_command.bats")
+	})
 
 	t.Run("plugin_add_command", func(t *testing.T) {
 		runBatsFile(t, dir, "plugin_add_command.bats")
