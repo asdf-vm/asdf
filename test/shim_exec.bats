@@ -141,6 +141,19 @@ teardown() {
   echo "$output" | grep -q "This is Dummy 3.0! hello world" 2>/dev/null
 }
 
+@test "shim exec should respect 'latest:' in .tool-versions" {
+  run asdf install dummy 1.0.0
+  run asdf install dummy 1.1.0
+  run asdf install dummy 2.0.0
+
+  echo "dummy latest:1.1" >"$PROJECT_DIR/.tool-versions"
+
+  run "$ASDF_DIR/shims/dummy" world hello
+  [ "$status" -eq 0 ]
+
+  echo "$output" | grep -q "This is Dummy 1.1.0! hello world" 2>/dev/null
+}
+
 @test "shim exec should only use the first version found for a plugin" {
   run asdf install dummy 3.0
 

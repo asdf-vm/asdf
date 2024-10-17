@@ -47,6 +47,16 @@ teardown() {
   [ "$output" = "$expected" ]
 }
 
+@test "current should not error on version specifications like 'latest:'" {
+  cd "$PROJECT_DIR"
+  echo "dummy 1.2.0 latest:1.1" >>"$PROJECT_DIR/.tool-versions"
+  expected="dummy           1.2.0 latest:1.1 $PROJECT_DIR/.tool-versions"
+
+  run asdf current "dummy"
+  [ "$status" -eq 0 ]
+  [ "$output" = "$expected" ]
+}
+
 @test "current should derive from the legacy file if enabled" {
   cd "$PROJECT_DIR"
   echo 'legacy_version_file = yes' >"$HOME/.asdfrc"

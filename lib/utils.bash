@@ -736,7 +736,8 @@ select_version() {
     version_and_path=$(find_versions "$plugin_name" "$search_path")
     IFS='|' read -r version_string _path <<<"$version_and_path"
     IFS=' ' read -r -a usable_plugin_versions <<<"$version_string"
-    for plugin_version in "${usable_plugin_versions[@]}"; do
+    for version_spec in "${usable_plugin_versions[@]}"; do
+      plugin_version="$(resolve_version_spec "$version_spec")"
       for plugin_and_version in "${shim_versions[@]}"; do
         local plugin_shim_name
         local plugin_shim_version
