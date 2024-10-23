@@ -618,6 +618,9 @@ plugin_executables() {
   for bin_path in "${all_bin_paths[@]}"; do
     for executable_file in "$bin_path"/*; do
       if is_executable "$executable_file"; then
+        if [[ "$executable_file" == *".exe" ]]; then
+          executable_file=${executable_file::-4}
+        fi
         printf "%s\n" "$executable_file"
       fi
     done

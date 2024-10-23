@@ -78,7 +78,7 @@ write_shim_script() {
   local version=$2
   local executable_path=$3
 
-  if ! is_executable "$executable_path"; then
+  if ! is_executable "$executable_path" && ! is_executable "$executable_path.exe"; then
     return 0
   fi
 
@@ -106,6 +106,32 @@ EOF
 $(sort -u <"$temp_versions_path")
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
+
+  if [ "$OSTYPE" == "msys" ] || [ "$OSTYPE" == "win32" ]; then
+    cat <<EOF >"$shim_path.bat"
+@ECHO OFF
+$(sort -u <"$temp_versions_path" | sed -En "s/# /REM /p")
+
+IF "%1"=="" (
+    GOTO NO_ARGS
+) ELSE (
+    GOTO ARGS_EXIST
+)
+
+:NO_ARGS
+bash "$HOME/.asdf/shims/${executable_name}"
+GOTO EXIT
+
+:ARGS_EXIST
+SET ARGUMENTS=%*
+SET ARGUMENTS=%ARGUMENTS:\\=\\\\%
+bash "$HOME/.asdf/shims/${executable_name}" %ARGUMENTS%
+GOTO EXIT
+
+:EXIT
+
+EOF
+  fi
 
   rm "$temp_versions_path"
 
