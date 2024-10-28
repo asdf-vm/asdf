@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"asdf/internal/config"
+	"asdf/internal/data"
 	"asdf/internal/execute"
 	"asdf/internal/git"
 	"asdf/internal/hook"
@@ -76,9 +77,8 @@ type Plugin struct {
 // New takes config and a plugin name and returns a Plugin struct. It is
 // intended for functions that need to quickly initialize a plugin.
 func New(config config.Config, name string) Plugin {
-	pluginsDir := DataDirectory(config.DataDir)
-	dir := filepath.Join(pluginsDir, name)
-	return Plugin{Dir: dir, Name: name}
+	pluginsDir := data.PluginDirectory(config.DataDir, name)
+	return Plugin{Dir: pluginsDir, Name: name}
 }
 
 // LegacyFilenames returns a slice of filenames if the plugin contains the
@@ -173,7 +173,7 @@ func (p Plugin) RunCallback(name string, arguments []string, environment map[str
 // List takes config and flags for what to return and builds a list of plugins
 // representing the currently installed plugins on the system.
 func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
-	pluginsDir := DataDirectory(config.DataDir)
+	pluginsDir := data.PluginsDirectory(config.DataDir)
 	files, err := os.ReadDir(pluginsDir)
 	if err != nil {
 		if _, ok := err.(*fs.PathError); ok {
@@ -282,7 +282,7 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 		return err
 	}
 
-	err = os.MkdirAll(PluginDownloadDirectory(config.DataDir, plugin.Name), 0o777)
+	err = os.MkdirAll(data.DownloadDirectory(config.DataDir, plugin.Name), 0o777)
 	if err != nil {
 		return err
 	}
@@ -298,11 +298,13 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 }
 
 // Remove uninstalls a plugin by removing it from the file system if installed
-func Remove(config config.Config, pluginName string) error {
+func Remove(config config.Config, pluginName string, stdout, stderr io.Writer) error {
 	err := validatePluginName(pluginName)
 	if err != nil {
 		return err
 	}
+
+	plugin := New(config, pluginName)
 
 	exists, err := PluginExists(config.DataDir, pluginName)
 	if err != nil {
@@ -313,17 +315,35 @@ func Remove(config config.Config, pluginName string) error {
 		return fmt.Errorf("No such plugin: %s", pluginName)
 	}
 
-	pluginDir := PluginDirectory(config.DataDir, pluginName)
-	downloadDir := PluginDownloadDirectory(config.DataDir, pluginName)
+	hook.Run(config, "pre_asdf_plugin_remove", []string{plugin.Name})
+	hook.Run(config, fmt.Sprintf("pre_asdf_plugin_remove_%s", plugin.Name), []string{})
+
+	env := map[string]string{
+		"ASDF_PLUGIN_PATH":       plugin.Dir,
+		"ASDF_PLUGIN_SOURCE_URL": plugin.URL,
+	}
+	plugin.RunCallback("pre-plugin-remove", []string{}, env, stdout, stderr)
+
+	pluginDir := data.PluginDirectory(config.DataDir, pluginName)
+	downloadDir := data.DownloadDirectory(config.DataDir, pluginName)
+	installDir := data.InstallDirectory(config.DataDir, pluginName)
 
 	err = os.RemoveAll(downloadDir)
 	err2 := os.RemoveAll(pluginDir)
+	err3 := os.RemoveAll(installDir)
 
 	if err != nil {
 		return err
 	}
 
-	return err2
+	if err2 != nil {
+		return err2
+	}
+
+	hook.Run(config, "post_asdf_plugin_remove", []string{plugin.Name})
+	hook.Run(config, fmt.Sprintf("post_asdf_plugin_remove_%s", plugin.Name), []string{})
+
+	return err3
 }
 
 // Update a plugin to a specific ref, or if no ref provided update to latest
@@ -337,7 +357,7 @@ func Update(config config.Config, pluginName, ref string) (string, error) {
 		return "", fmt.Errorf("no such plugin: %s", pluginName)
 	}
 
-	pluginDir := PluginDirectory(config.DataDir, pluginName)
+	pluginDir := data.PluginDirectory(config.DataDir, pluginName)
 
 	plugin := git.NewRepo(pluginDir)
 
@@ -347,7 +367,7 @@ func Update(config config.Config, pluginName, ref string) (string, error) {
 // PluginExists returns a boolean indicating whether or not a plugin with the
 // provided name is currently installed
 func PluginExists(dataDir, pluginName string) (bool, error) {
-	pluginDir := PluginDirectory(dataDir, pluginName)
+	pluginDir := data.PluginDirectory(dataDir, pluginName)
 	return directoryExists(pluginDir)
 }
 
@@ -362,24 +382,6 @@ func directoryExists(dir string) (bool, error) {
 	}
 
 	return fileInfo.IsDir(), nil
-}
-
-// PluginDirectory returns the directory a plugin with a given name would be in
-// if it were installed
-func PluginDirectory(dataDir, pluginName string) string {
-	return filepath.Join(DataDirectory(dataDir), pluginName)
-}
-
-// PluginDownloadDirectory returns the directory a plugin will be placing
-// downloads of version source code
-func PluginDownloadDirectory(dataDir, pluginName string) string {
-	return filepath.Join(dataDir, "downloads", pluginName)
-}
-
-// DataDirectory returns the path to the plugin directory inside the data
-// directory
-func DataDirectory(dataDir string) string {
-	return filepath.Join(dataDir, dataDirPlugins)
 }
 
 func validatePluginName(name string) error {

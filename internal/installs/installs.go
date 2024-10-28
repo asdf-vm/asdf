@@ -9,18 +9,14 @@ import (
 	"path/filepath"
 
 	"asdf/internal/config"
+	"asdf/internal/data"
 	"asdf/internal/plugins"
 	"asdf/internal/toolversions"
 )
 
-const (
-	dataDirInstalls  = "installs"
-	dataDirDownloads = "downloads"
-)
-
 // Installed returns a slice of all installed versions for a given plugin
 func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, err error) {
-	installDirectory := pluginInstallPath(conf, plugin)
+	installDirectory := data.InstallDirectory(conf.DataDir, plugin.Name)
 	files, err := os.ReadDir(installDirectory)
 	if err != nil {
 		if _, ok := err.(*fs.PathError); ok {
@@ -47,7 +43,7 @@ func InstallPath(conf config.Config, plugin plugins.Plugin, versionType, version
 		return version
 	}
 
-	return filepath.Join(pluginInstallPath(conf, plugin), toolversions.FormatForFS(versionType, version))
+	return filepath.Join(data.InstallDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(versionType, version))
 }
 
 // DownloadPath returns the download path for a particular plugin and version
@@ -56,7 +52,7 @@ func DownloadPath(conf config.Config, plugin plugins.Plugin, versionType, versio
 		return ""
 	}
 
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, toolversions.FormatForFS(versionType, version))
+	return filepath.Join(data.DownloadDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(versionType, version))
 }
 
 // IsInstalled checks if a specific version of a tool is installed
@@ -66,8 +62,4 @@ func IsInstalled(conf config.Config, plugin plugins.Plugin, versionType, version
 	// Check if version already installed
 	_, err := os.Stat(installDir)
 	return !os.IsNotExist(err)
-}
-
-func pluginInstallPath(conf config.Config, plugin plugins.Plugin) string {
-	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name)
 }

@@ -392,17 +392,34 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 }
 
 func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) error {
+	if pluginName == "" {
+		logger.Print("No plugin given")
+		os.Exit(1)
+		return nil
+	}
+
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
 		return err
 	}
 
-	err = plugins.Remove(conf, pluginName)
+	err = plugins.Remove(conf, pluginName, os.Stdout, os.Stderr)
 	if err != nil {
 		// Needed to match output of old version
 		logger.Printf("%s", err)
 	}
+
+	// This feels a little hacky but it works, to re-generate shims we delete them
+	// all and generate them again.
+	err2 := shims.RemoveAll(conf)
+	if err2 != nil {
+		logger.Printf("%s", err2)
+		os.Exit(1)
+		return err2
+	}
+
+	shims.GenerateAll(conf, os.Stdout, os.Stderr)
 	return err
 }
 
@@ -646,7 +663,6 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 	var stderr strings.Builder
 
 	err := plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
-
 	if err != nil {
 		fmt.Printf("Plugin %s's list-all callback script failed with output:\n", plugin.Name)
 		// Print to stderr

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"asdf/internal/config"
+	"asdf/internal/data"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
@@ -142,7 +143,7 @@ func TestAdd(t *testing.T) {
 		assert.Nil(t, err, "Expected to be able to add plugin")
 
 		// Assert plugin directory contains Git repo with bin directory
-		pluginDir := PluginDirectory(testDataDir, testPluginName)
+		pluginDir := data.PluginDirectory(testDataDir, testPluginName)
 
 		_, err = os.ReadDir(pluginDir + "/.git")
 		assert.Nil(t, err)
@@ -163,7 +164,7 @@ func TestAdd(t *testing.T) {
 		assert.Nil(t, err)
 
 		// Assert download dir exists
-		downloadDir := PluginDownloadDirectory(testDataDir, testPluginName)
+		downloadDir := data.DownloadDirectory(testDataDir, testPluginName)
 		_, err = os.Stat(downloadDir)
 		assert.Nil(t, err)
 	})
@@ -180,36 +181,44 @@ func TestRemove(t *testing.T) {
 	assert.Nil(t, err)
 
 	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
-		err := Remove(conf, "nonexistant")
+		var stdout strings.Builder
+		var stderr strings.Builder
+		err := Remove(conf, "nonexistant", &stdout, &stderr)
 		assert.NotNil(t, err)
 		assert.ErrorContains(t, err, "No such plugin")
 	})
 
 	t.Run("returns error when invalid plugin name is given", func(t *testing.T) {
-		err := Remove(conf, "foo/bar/baz")
+		var stdout strings.Builder
+		var stderr strings.Builder
+		err := Remove(conf, "foo/bar/baz", &stdout, &stderr)
 		assert.NotNil(t, err)
 		expectedErrMsg := "is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
 	t.Run("removes plugin when passed name of installed plugin", func(t *testing.T) {
-		err := Remove(conf, testPluginName)
+		var stdout strings.Builder
+		var stderr strings.Builder
+		err := Remove(conf, testPluginName, &stdout, &stderr)
 		assert.Nil(t, err)
 
-		pluginDir := PluginDirectory(testDataDir, testPluginName)
+		pluginDir := data.PluginDirectory(testDataDir, testPluginName)
 		_, err = os.Stat(pluginDir)
 		assert.NotNil(t, err)
 		assert.True(t, os.IsNotExist(err))
 	})
 
 	t.Run("removes plugin download dir when passed name of installed plugin", func(t *testing.T) {
+		var stdout strings.Builder
+		var stderr strings.Builder
 		err := Add(conf, testPluginName, repoPath)
 		assert.Nil(t, err)
 
-		err = Remove(conf, testPluginName)
+		err = Remove(conf, testPluginName, &stdout, &stderr)
 		assert.Nil(t, err)
 
-		downloadDir := PluginDownloadDirectory(testDataDir, testPluginName)
+		downloadDir := data.DownloadDirectory(testDataDir, testPluginName)
 		_, err = os.Stat(downloadDir)
 		assert.NotNil(t, err)
 		assert.True(t, os.IsNotExist(err))
@@ -227,7 +236,7 @@ func TestUpdate(t *testing.T) {
 	assert.Nil(t, err)
 
 	badPluginName := "badplugin"
-	badRepo := PluginDirectory(testDataDir, badPluginName)
+	badRepo := data.PluginDirectory(testDataDir, badPluginName)
 	err = os.MkdirAll(badRepo, 0o777)
 	assert.Nil(t, err)
 
@@ -307,7 +316,7 @@ func TestExists(t *testing.T) {
 
 func TestPluginExists(t *testing.T) {
 	testDataDir := t.TempDir()
-	pluginDir := PluginDirectory(testDataDir, testPluginName)
+	pluginDir := data.PluginDirectory(testDataDir, testPluginName)
 	err := os.MkdirAll(pluginDir, 0o777)
 	if err != nil {
 		t.Errorf("got %v, expected nil", err)
@@ -326,7 +335,7 @@ func TestPluginExists(t *testing.T) {
 
 	t.Run("returns false when plugin path is file and not dir", func(t *testing.T) {
 		pluginName := "file"
-		pluginDir := PluginDirectory(testDataDir, pluginName)
+		pluginDir := data.PluginDirectory(testDataDir, pluginName)
 		err := touchFile(pluginDir)
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
@@ -350,16 +359,6 @@ func TestPluginExists(t *testing.T) {
 
 		if exists != false {
 			t.Error("got false, expected true")
-		}
-	})
-}
-
-func TestPluginDirectory(t *testing.T) {
-	t.Run("returns new path with plugin name as last segment", func(t *testing.T) {
-		pluginDir := PluginDirectory("~/.asdf/", testPluginName)
-		expected := "~/.asdf/plugins/lua"
-		if pluginDir != expected {
-			t.Errorf("got %v, expected %v", pluginDir, expected)
 		}
 	})
 }
