@@ -43,6 +43,19 @@ not an executable. The new rewrite removes all shell code from asdf, and it is
 now a binary rather than a shell function, so setting environment variables
 directly in the shell is no longer possible.
 
+### Executables Shims Resolve to Must Runnable by `syscall.Exec`
+
+The most obvious example of this breaking change are scripts that lack a proper
+shebang line. asdf 0.14.1 and older were implemented in Bash, so as long it was
+an executable that could be executed with Bash it would run. This mean that
+scripts lacking a shebang could still be run by `asdf exec`. With asdf 0.15.x
+implemented in Go we now invoke executables via Go's `syscall.Exec` function,
+which cannot handle scripts lacking a shebang.
+
+In practice this isn't much of a problem. Most shell scripts DO contain a
+shebang line. If a tool managed by asdf provides scripts that don't have a
+shebang line one will need to be added to them.
+
 ## Installation
 
 Installation of version 0.15.0 is much simpler than previous versions of asdf. It's just three steps:

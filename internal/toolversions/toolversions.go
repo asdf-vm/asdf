@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+// Version struct represents a single version in asdf.
+type Version struct {
+	Type  string // Must be one of: version, ref, path, system, latest
+	Value string // Any string
+}
+
 // ToolVersions represents a tool along with versions specified for it
 type ToolVersions struct {
 	Name     string
@@ -86,49 +92,52 @@ func Unique(versions []ToolVersions) (uniques []ToolVersions) {
 // ParseFromCliArg parses a string that is passed in as an argument to one of
 // the asdf subcommands. Some subcommands allow the special version `latest` to
 // be used, with an optional filter string.
-func ParseFromCliArg(version string) (string, string) {
+func ParseFromCliArg(version string) Version {
 	segments := strings.Split(version, ":")
 	if len(segments) > 0 && segments[0] == "latest" {
 		if len(segments) > 1 {
 			// Must be latest with filter
-			return "latest", segments[1]
+			return Version{Type: "latest", Value: segments[1]}
 		}
-		return "latest", ""
+		return Version{Type: "latest", Value: ""}
 	}
 
 	return Parse(version)
 }
 
 // Parse parses a version string into versionType and version components
-func Parse(version string) (string, string) {
+func Parse(version string) Version {
 	segments := strings.Split(version, ":")
 	if len(segments) >= 1 {
 		remainder := strings.Join(segments[1:], ":")
 		switch segments[0] {
 		case "ref":
-			return "ref", remainder
+			return Version{Type: "ref", Value: remainder}
 		case "path":
 			// This is for people who have the local source already compiled
 			// Like those who work on the language, etc
 			// We'll allow specifying path:/foo/bar/project in .tool-versions
 			// And then use the binaries there
-			return "path", remainder
+			return Version{Type: "path", Value: remainder}
 		default:
-			return "version", version
 		}
 	}
 
-	return "version", version
+	if version == "system" {
+		return Version{Type: "system"}
+	}
+
+	return Version{Type: "version", Value: version}
 }
 
 // FormatForFS takes a versionType and version strings and generate a version
 // string suitable for the file system
-func FormatForFS(versionType, version string) string {
-	switch versionType {
+func FormatForFS(version Version) string {
+	switch version.Type {
 	case "ref":
-		return fmt.Sprintf("ref-%s", version)
+		return fmt.Sprintf("ref-%s", version.Value)
 	default:
-		return version
+		return version.Value
 	}
 }
 
