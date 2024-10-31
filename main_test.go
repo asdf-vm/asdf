@@ -83,9 +83,9 @@ func TestBatsTests(t *testing.T) {
 	//  runBatsFile(t, dir, "shim_exec.bats")
 	//})
 
-	//t.Run("shim_versions_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "shim_versions_command.bats")
-	//})
+	t.Run("shim_versions_command", func(t *testing.T) {
+		runBatsFile(t, dir, "shim_versions_command.bats")
+	})
 
 	t.Run("uninstall_command", func(t *testing.T) {
 		runBatsFile(t, dir, "uninstall_command.bats")
