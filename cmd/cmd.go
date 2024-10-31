@@ -185,6 +185,13 @@ func Execute(version string) {
 				},
 			},
 			{
+				Name: "shimversions",
+				Action: func(cCtx *cli.Context) error {
+					args := cCtx.Args()
+					return shimVersionsCommand(logger, args.Get(0))
+				},
+			},
+			{
 				Name: "uninstall",
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
@@ -791,6 +798,23 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 	// If provided a specific version it could be something special like a path
 	// version so we need to generate it manually
 	return reshimToolVersion(conf, tool, version, os.Stdout, os.Stderr)
+}
+
+func shimVersionsCommand(logger *log.Logger, shimName string) error {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	shimPath := shims.Path(conf, shimName)
+	toolVersions, err := shims.GetToolsAndVersionsFromShimFile(shimPath)
+	for _, toolVersion := range toolVersions {
+		for _, version := range toolVersion.Versions {
+			fmt.Printf("%s %s", toolVersion.Name, version)
+		}
+	}
+	return err
 }
 
 // This function is a whole mess and needs to be refactored

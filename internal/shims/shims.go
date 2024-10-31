@@ -63,7 +63,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 		return "", false, UnknownCommandError{shim: shimName}
 	}
 
-	toolVersions, err := getToolsAndVersionsFromShimFile(shimPath)
+	toolVersions, err := GetToolsAndVersionsFromShimFile(shimPath)
 	if err != nil {
 		return "", false, err
 	}
@@ -154,6 +154,21 @@ func GetExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, vers
 	return "", fmt.Errorf("executable not found")
 }
 
+// GetToolsAndVersionsFromShimFile takes a file path and parses out the tools
+// and versions present in it and returns them as a slice containing info in
+// ToolVersions structs.
+func GetToolsAndVersionsFromShimFile(shimPath string) (versions []toolversions.ToolVersions, err error) {
+	contents, err := os.ReadFile(shimPath)
+	if err != nil {
+		return versions, err
+	}
+
+	versions = parse(string(contents))
+	versions = toolversions.Unique(versions)
+
+	return versions, err
+}
+
 func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName, version string) (string, error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
@@ -167,18 +182,6 @@ func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName
 	}
 
 	return filepath.Join(installPath, stdOut.String()), err
-}
-
-func getToolsAndVersionsFromShimFile(shimPath string) (versions []toolversions.ToolVersions, err error) {
-	contents, err := os.ReadFile(shimPath)
-	if err != nil {
-		return versions, err
-	}
-
-	versions = parse(string(contents))
-	versions = toolversions.Unique(versions)
-
-	return versions, err
 }
 
 // RemoveAll removes all shim scripts
@@ -270,7 +273,7 @@ func Write(conf config.Config, plugin plugins.Plugin, version, executablePath st
 	versions := []toolversions.ToolVersions{{Name: plugin.Name, Versions: []string{version}}}
 
 	if _, err := os.Stat(shimPath); err == nil {
-		oldVersions, err := getToolsAndVersionsFromShimFile(shimPath)
+		oldVersions, err := GetToolsAndVersionsFromShimFile(shimPath)
 		if err != nil {
 			return err
 		}
