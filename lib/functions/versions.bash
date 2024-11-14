@@ -20,7 +20,7 @@ version_command() {
   file_name="$(asdf_tool_versions_filename)"
 
   if [ "$cmd" = "global" ]; then
-    file="$HOME/$file_name"
+    file="$file_name"
   elif [ "$cmd" = "local-tree" ]; then
     file=$(find_tool_versions)
   else # cmd = local
