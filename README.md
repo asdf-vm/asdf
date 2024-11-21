@@ -66,9 +66,9 @@ See [CONTRIBUTING.md in the repo](https://github.com/asdf-vm/asdf/blob/master/CO
 
 <figure>
   <blockquote>
-  This was the mail I wrote to a few friends to tell them about the project. Thanks to <a href="https://x.com/roshanvid" target="_blank" rel="noreferrer">Roshan Vid roshanvid</a> for suggesting that this go into the readme
+  This was the mail I wrote to a few friends to tell them about the project. Thanks to <a href="https://x.com/roshanvid" target="_blank" rel="noreferrer">Roshan Vid @roshanvid</a> for suggesting that this go into the readme
   </blockquote>
   <figcaption>
-    <a href="https://github.com/HashNuke" target="_blank" rel="noreferrer">Akash Manohar HashNuke</a>
+    <a href="https://github.com/HashNuke" target="_blank" rel="noreferrer">Akash Manohar @HashNuke</a>
   </figcaption>
 </figure>
