@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Unofficial Bash "strict mode"
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+#ORIGINAL_IFS=$IFS
+IFS=$'\t\n' # Stricter IFS settings
+
+# Simpler helper script to extract the current version out of the source in the
+# asdf Git repository.
+
+asdf_version() {
+  local version git_rev
+  root_dir="$(dirname "$(dirname "$(realpath "$0")")")"
+  version="v$(cat "${root_dir}/version.txt")"
+  git_rev="$(git --git-dir "${root_dir}/.git" rev-parse --short HEAD)"
+  printf "%s-%s\n" "$version" "$git_rev"
+}
+
+asdf_version

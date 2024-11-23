@@ -35,7 +35,7 @@ func PrintToolVersion(conf config.Config, toolName, toolVersion string) error {
 
 // Write help output to an io.Writer
 func Write(asdfVersion string, writer io.Writer) error {
-	_, err := writer.Write([]byte(fmt.Sprintf("version: %s", asdfVersion)))
+	_, err := writer.Write([]byte(fmt.Sprintf("version: %s\n\n", asdfVersion)))
 	if err != nil {
 		return err
 	}

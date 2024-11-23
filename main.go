@@ -5,7 +5,8 @@ import (
 	"asdf/cmd"
 )
 
-var version = "v0.15.0"
+// Replaced with the real version during a typical build
+var version = "v-dev"
 
 // Placeholder for the real code
 func main() {
