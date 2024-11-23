@@ -101,7 +101,7 @@ jobs:
       - name: Compute asdf version
         id: asdf-version
         shell: bash
-        run: './scripts/asdf-version'
+        run: 'echo "name=version::$(./scripts/asdf-version)"'
       - name: Build Go binaries
         uses: wangyoucao577/go-release-action@v1
         with:
@@ -112,4 +112,4 @@ jobs:
           binary_name: "asdf"
           release_tag: ${{ needs.generate-release-tag.outputs.tag }}
           release_name: ${{ needs.generate-release-tag.outputs.tag }}
-          ldflags: '-s -X main.version=${{ steps.asdf-version.outputs.stdout }}'
+          ldflags: '-s -X main.version=${{ steps.asdf-version.outputs.version }}'
