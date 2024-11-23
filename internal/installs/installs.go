@@ -38,26 +38,26 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 }
 
 // InstallPath returns the path to a tool installation
-func InstallPath(conf config.Config, plugin plugins.Plugin, versionType, version string) string {
-	if versionType == "path" {
-		return version
+func InstallPath(conf config.Config, plugin plugins.Plugin, version toolversions.Version) string {
+	if version.Type == "path" {
+		return version.Value
 	}
 
-	return filepath.Join(data.InstallDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(versionType, version))
+	return filepath.Join(data.InstallDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(version))
 }
 
 // DownloadPath returns the download path for a particular plugin and version
-func DownloadPath(conf config.Config, plugin plugins.Plugin, versionType, version string) string {
-	if versionType == "path" {
+func DownloadPath(conf config.Config, plugin plugins.Plugin, version toolversions.Version) string {
+	if version.Type == "path" {
 		return ""
 	}
 
-	return filepath.Join(data.DownloadDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(versionType, version))
+	return filepath.Join(data.DownloadDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(version))
 }
 
 // IsInstalled checks if a specific version of a tool is installed
-func IsInstalled(conf config.Config, plugin plugins.Plugin, versionType, version string) bool {
-	installDir := InstallPath(conf, plugin, versionType, version)
+func IsInstalled(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
+	installDir := InstallPath(conf, plugin, version)
 
 	// Check if version already installed
 	_, err := os.Stat(installDir)

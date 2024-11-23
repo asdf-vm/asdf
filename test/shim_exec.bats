@@ -61,7 +61,8 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
 
-  echo "tr [:lower:] [:upper:]" >"$ASDF_DIR/installs/dummy/1.0/bin/upper"
+  echo "#!/usr/bin/env bash
+  tr [:lower:] [:upper:]" >"$ASDF_DIR/installs/dummy/1.0/bin/upper"
   chmod +x "$ASDF_DIR/installs/dummy/1.0/bin/upper"
 
   run asdf reshim dummy 1.0
@@ -114,20 +115,22 @@ teardown() {
   echo "$output" | grep -q "mummy 3.0" 2>/dev/null
 }
 
-@test "shim exec should suggest to install missing version" {
-  run asdf install dummy 1.0
+# No longer possible for shim to specify version that isn't installed because
+# shims are re-generated after every install and uninstall.
+#@test "shim exec should suggest to install missing version" {
+#  run asdf install dummy 1.0
 
-  echo "dummy 2.0.0 1.3" >"$PROJECT_DIR/.tool-versions"
+#  echo "dummy 2.0.0 1.3" >"$PROJECT_DIR/.tool-versions"
 
-  run "$ASDF_DIR/shims/dummy" world hello
-  [ "$status" -eq 126 ]
-  echo "$output" | grep -q "No preset version installed for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Please install a version by running one of the following:" 2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 2.0.0" 2>/dev/null
-  echo "$output" | grep -q "asdf install dummy 1.3" 2>/dev/null
-  echo "$output" | grep -q "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
-}
+#  run "$ASDF_DIR/shims/dummy" world hello
+#  [ "$status" -eq 126 ]
+#  echo "$output" | grep -q "No preset version installed for command dummy" 2>/dev/null
+#  echo "$output" | grep -q "Please install a version by running one of the following:" 2>/dev/null
+#  echo "$output" | grep -q "asdf install dummy 2.0.0" 2>/dev/null
+#  echo "$output" | grep -q "asdf install dummy 1.3" 2>/dev/null
+#  echo "$output" | grep -q "or add one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+#  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
+#}
 
 @test "shim exec should execute first plugin that is installed and set" {
   run asdf install dummy 2.0.0
@@ -199,7 +202,8 @@ teardown() {
   echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
   mkdir "$PROJECT_DIR/foo/"
-  echo "echo System" >"$PROJECT_DIR/foo/dummy"
+  echo "#!/usr/bin/env bash
+  echo System" >"$PROJECT_DIR/foo/dummy"
   chmod +x "$PROJECT_DIR/foo/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/foo" "$ASDF_DIR/shims/dummy" hello
@@ -214,7 +218,8 @@ teardown() {
   CUSTOM_DUMMY_PATH="$PROJECT_DIR/foo"
   CUSTOM_DUMMY_BIN_PATH="$CUSTOM_DUMMY_PATH/bin"
   mkdir -p "$CUSTOM_DUMMY_BIN_PATH"
-  echo "echo System" >"$CUSTOM_DUMMY_BIN_PATH/dummy"
+  echo "#!/usr/bin/env bash
+  echo System" >"$CUSTOM_DUMMY_BIN_PATH/dummy"
   chmod +x "$CUSTOM_DUMMY_BIN_PATH/dummy"
 
   echo "dummy path:$CUSTOM_DUMMY_PATH" >"$PROJECT_DIR/.tool-versions"
@@ -230,7 +235,8 @@ teardown() {
   echo "dummy 2.0.0" >>"$PROJECT_DIR/.tool-versions"
 
   mkdir "$PROJECT_DIR/foo/"
-  echo "echo System" >"$PROJECT_DIR/foo/dummy"
+  echo "#!/usr/bin/env bash
+  echo System" >"$PROJECT_DIR/foo/dummy"
   chmod +x "$PROJECT_DIR/foo/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/foo" "$ASDF_DIR/shims/dummy" hello

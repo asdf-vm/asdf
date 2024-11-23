@@ -159,63 +159,75 @@ func TestgetAllToolsAndVersionsInContent(t *testing.T) {
 }
 
 func TestParse(t *testing.T) {
-	t.Run("returns 'version', and unmodified version when passed semantic version", func(t *testing.T) {
-		versionType, version := Parse("1.2.3")
-		assert.Equal(t, versionType, "version")
-		assert.Equal(t, version, "1.2.3")
+	t.Run("when passed version string returns struct with type of 'version' and version as value", func(t *testing.T) {
+		version := Parse("1.2.3")
+		assert.Equal(t, version.Type, "version")
+		assert.Equal(t, version.Value, "1.2.3")
 	})
 
-	t.Run("returns 'ref' and reference version when passed a ref version", func(t *testing.T) {
-		versionType, version := Parse("ref:abc123")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "abc123")
+	t.Run("when passed ref and version returns struct with type of 'ref' and version as value", func(t *testing.T) {
+		version := Parse("ref:abc123")
+		assert.Equal(t, version.Type, "ref")
+		assert.Equal(t, version.Value, "abc123")
 	})
 
-	t.Run("returns 'ref' and empty string when passed 'ref:'", func(t *testing.T) {
-		versionType, version := Parse("ref:")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "")
+	t.Run("when passed 'ref:' returns struct with type of 'ref' and empty value", func(t *testing.T) {
+		version := Parse("ref:")
+		assert.Equal(t, version.Type, "ref")
+		assert.Equal(t, version.Value, "")
+	})
+
+	t.Run("when passed 'system' returns struct with type of 'system'", func(t *testing.T) {
+		version := Parse("system")
+		assert.Equal(t, version.Type, "system")
+		assert.Equal(t, version.Value, "")
 	})
 }
 
 func TestParseFromCliArg(t *testing.T) {
-	t.Run("returns 'latest' as version type when passed string 'latest'", func(t *testing.T) {
-		versionType, version := ParseFromCliArg("latest")
-		assert.Equal(t, versionType, "latest")
-		assert.Equal(t, version, "")
+	t.Run("when passed 'latest' returns struct with type of 'latest'", func(t *testing.T) {
+		version := ParseFromCliArg("latest")
+		assert.Equal(t, version.Type, "latest")
+		assert.Equal(t, version.Value, "")
 	})
 
-	t.Run("returns 'latest' and unmodified filter string when passed a latest version", func(t *testing.T) {
-		versionType, version := ParseFromCliArg("latest:1.2")
-		assert.Equal(t, versionType, "latest")
-		assert.Equal(t, version, "1.2")
+	t.Run("when passed latest with filter returns struct with type of 'latest' and unmodified filter string as value", func(t *testing.T) {
+		version := ParseFromCliArg("latest:1.2")
+		assert.Equal(t, version.Type, "latest")
+		assert.Equal(t, version.Value, "1.2")
 	})
 
-	t.Run("returns 'version', and unmodified version when passed semantic version", func(t *testing.T) {
-		versionType, version := ParseFromCliArg("1.2.3")
-		assert.Equal(t, versionType, "version")
-		assert.Equal(t, version, "1.2.3")
+	t.Run("when passed version string returns struct with type of 'version' and version as value", func(t *testing.T) {
+		version := ParseFromCliArg("1.2.3")
+		assert.Equal(t, version.Type, "version")
+		assert.Equal(t, version.Value, "1.2.3")
 	})
 
-	t.Run("returns 'ref' and reference version when passed a ref version", func(t *testing.T) {
-		versionType, version := ParseFromCliArg("ref:abc123")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "abc123")
+	t.Run("when passed ref and version returns struct with type of 'ref' and version as value", func(t *testing.T) {
+		version := ParseFromCliArg("ref:abc123")
+		assert.Equal(t, version.Type, "ref")
+		assert.Equal(t, version.Value, "abc123")
 	})
 
-	t.Run("returns 'ref' and empty string when passed 'ref:'", func(t *testing.T) {
-		versionType, version := ParseFromCliArg("ref:")
-		assert.Equal(t, versionType, "ref")
-		assert.Equal(t, version, "")
+	t.Run("when passed 'ref:' returns struct with type of 'ref' and empty value", func(t *testing.T) {
+		version := ParseFromCliArg("ref:")
+		assert.Equal(t, version.Type, "ref")
+		assert.Equal(t, version.Value, "")
+	})
+
+	t.Run("when passed 'system' returns struct with type of 'system'", func(t *testing.T) {
+		version := ParseFromCliArg("system")
+		assert.Equal(t, version.Type, "system")
+		assert.Equal(t, version.Value, "")
 	})
 }
 
 func TestFormatForFS(t *testing.T) {
 	t.Run("returns version when version type is not ref", func(t *testing.T) {
-		assert.Equal(t, FormatForFS("version", "foobar"), "foobar")
+		assert.Equal(t, FormatForFS(Version{Type: "version", Value: "foobar"}), "foobar")
 	})
 
 	t.Run("returns version prefixed with 'ref-' when version type is ref", func(t *testing.T) {
-		assert.Equal(t, FormatForFS("ref", "foobar"), "ref-foobar")
+		assert.Equal(t, FormatForFS(Version{Type: "ref", Value: "foobar"}), "ref-foobar")
 	})
 }

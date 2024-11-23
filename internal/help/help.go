@@ -80,9 +80,9 @@ func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io
 	}
 
 	if toolVersion != "" {
-		versionType, version := toolversions.Parse(toolVersion)
-		env["ASDF_INSTALL_VERSION"] = version
-		env["ASDF_INSTALL_TYPE"] = versionType
+		version := toolversions.Parse(toolVersion)
+		env["ASDF_INSTALL_VERSION"] = version.Value
+		env["ASDF_INSTALL_TYPE"] = version.Type
 	}
 
 	if err := plugin.Exists(); err != nil {

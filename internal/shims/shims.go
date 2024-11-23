@@ -173,7 +173,7 @@ func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName
 	var stdOut strings.Builder
 	var stdErr strings.Builder
 
-	installPath := installs.InstallPath(conf, plugin, "version", version)
+	installPath := installs.InstallPath(conf, plugin, toolversions.Version{Type: "version", Value: version})
 	env := map[string]string{"ASDF_INSTALL_TYPE": "version"}
 
 	err := plugin.RunCallback("exec-path", []string{installPath, shimName}, env, &stdOut, &stdErr)
@@ -303,7 +303,7 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 		return executables, err
 	}
 
-	installPath := installs.InstallPath(conf, plugin, versionType, version)
+	installPath := installs.InstallPath(conf, plugin, toolversions.Version{Type: versionType, Value: version})
 	paths := dirsToPaths(dirs, installPath)
 
 	for _, path := range paths {

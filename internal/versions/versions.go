@@ -122,31 +122,31 @@ func InstallVersion(conf config.Config, plugin plugins.Plugin, version string, p
 }
 
 // InstallOneVersion installs a specific version of a specific tool
-func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string, stdOut io.Writer, stdErr io.Writer) error {
+func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr string, stdOut io.Writer, stdErr io.Writer) error {
 	err := plugin.Exists()
 	if err != nil {
 		return err
 	}
 
-	if version == systemVersion {
-		return UninstallableVersionError{versionType: "system"}
+	if versionStr == systemVersion {
+		return UninstallableVersionError{versionType: systemVersion}
 	}
 
-	versionType, version := toolversions.Parse(version)
+	version := toolversions.Parse(versionStr)
 
-	if versionType == "path" {
+	if version.Type == "path" {
 		return UninstallableVersionError{versionType: "path"}
 	}
-	downloadDir := installs.DownloadPath(conf, plugin, versionType, version)
-	installDir := installs.InstallPath(conf, plugin, versionType, version)
+	downloadDir := installs.DownloadPath(conf, plugin, version)
+	installDir := installs.InstallPath(conf, plugin, version)
 
-	if installs.IsInstalled(conf, plugin, versionType, version) {
+	if installs.IsInstalled(conf, plugin, version) {
 		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
 	}
 
 	env := map[string]string{
-		"ASDF_INSTALL_TYPE":    versionType,
-		"ASDF_INSTALL_VERSION": version,
+		"ASDF_INSTALL_TYPE":    version.Type,
+		"ASDF_INSTALL_VERSION": version.Value,
 		"ASDF_INSTALL_PATH":    installDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
 		"ASDF_CONCURRENCY":     asdfConcurrency(conf),
@@ -157,7 +157,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return fmt.Errorf("unable to create download dir: %w", err)
 	}
 
-	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_download_%s", plugin.Name), []string{version}, stdOut, stdErr)
+	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_download_%s", plugin.Name), []string{version.Value}, stdOut, stdErr)
 	if err != nil {
 		return fmt.Errorf("failed to run pre-download hook: %w", err)
 	}
@@ -167,7 +167,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return fmt.Errorf("failed to run download callback: %w", err)
 	}
 
-	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_install_%s", plugin.Name), []string{version}, stdOut, stdErr)
+	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_install_%s", plugin.Name), []string{version.Value}, stdOut, stdErr)
 	if err != nil {
 		return fmt.Errorf("failed to run pre-install hook: %w", err)
 	}
@@ -188,7 +188,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, version string
 		return fmt.Errorf("unable to generate shims post-install: %w", err)
 	}
 
-	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_install_%s", plugin.Name), []string{version}, stdOut, stdErr)
+	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_install_%s", plugin.Name), []string{version.Value}, stdOut, stdErr)
 	if err != nil {
 		return fmt.Errorf("failed to run post-install hook: %w", err)
 	}
@@ -278,26 +278,26 @@ func AllVersionsFiltered(plugin plugins.Plugin, query string) (versions []string
 // post-uninstall hooks if set, and runs the plugin's uninstall callback if
 // defined.
 func Uninstall(conf config.Config, plugin plugins.Plugin, rawVersion string, stdout, stderr io.Writer) error {
-	versionType, version := toolversions.ParseFromCliArg(rawVersion)
+	version := toolversions.ParseFromCliArg(rawVersion)
 
-	if versionType == "latest" {
+	if version.Type == "latest" {
 		return errors.New("'latest' is a special version value that cannot be used for uninstall command")
 	}
 
-	if !installs.IsInstalled(conf, plugin, versionType, version) {
+	if !installs.IsInstalled(conf, plugin, version) {
 		return errors.New("No such version")
 	}
 
-	err := hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_uninstall_%s", plugin.Name), []string{version}, stdout, stderr)
+	err := hook.RunWithOutput(conf, fmt.Sprintf("pre_asdf_uninstall_%s", plugin.Name), []string{version.Value}, stdout, stderr)
 	if err != nil {
 		return err
 	}
 
 	// invoke uninstall callback if available
-	installDir := installs.InstallPath(conf, plugin, versionType, version)
+	installDir := installs.InstallPath(conf, plugin, version)
 	env := map[string]string{
-		"ASDF_INSTALL_TYPE":    versionType,
-		"ASDF_INSTALL_VERSION": version,
+		"ASDF_INSTALL_TYPE":    version.Type,
+		"ASDF_INSTALL_VERSION": version.Value,
 		"ASDF_INSTALL_PATH":    installDir,
 	}
 	err = plugin.RunCallback("uninstall", []string{}, env, stdout, stderr)
@@ -310,7 +310,7 @@ func Uninstall(conf config.Config, plugin plugins.Plugin, rawVersion string, std
 		return err
 	}
 
-	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_uninstall_%s", plugin.Name), []string{version}, stdout, stderr)
+	err = hook.RunWithOutput(conf, fmt.Sprintf("post_asdf_uninstall_%s", plugin.Name), []string{version.Value}, stdout, stderr)
 	if err != nil {
 		return err
 	}

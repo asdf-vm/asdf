@@ -299,8 +299,8 @@ func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string
 	installed := false
 	if found {
 		firstVersion := toolversion.Versions[0]
-		versionType, version := toolversions.Parse(firstVersion)
-		installed = installs.IsInstalled(conf, plugin, versionType, version)
+		version := toolversions.Parse(firstVersion)
+		installed = installs.IsInstalled(conf, plugin, version)
 	}
 	return toolversion, found, installed
 }
@@ -354,13 +354,41 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	executable, found, err := shims.FindExecutable(conf, command, currentDir)
+
 	if err != nil {
-		logger.Printf("executable not found due to reason: %s", err.Error())
+
+		shimPath := shims.Path(conf, command)
+		toolVersions, _ := shims.GetToolsAndVersionsFromShimFile(shimPath)
+
+		if len(toolVersions) > 0 {
+			if anyInstalled(conf, toolVersions) {
+				logger.Printf("No version is set for command %s", command)
+				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+			} else {
+				logger.Printf("No preset version installed for command %s", command)
+				for _, toolVersion := range toolVersions {
+					for _, version := range toolVersion.Versions {
+						fmt.Printf("asdf install %s %s\n", toolVersion.Name, version)
+					}
+				}
+
+				fmt.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+			}
+
+			for _, toolVersion := range toolVersions {
+				for _, version := range toolVersion.Versions {
+					fmt.Printf("%s %s", toolVersion.Name, version)
+				}
+			}
+		}
+
+		os.Exit(126)
 		return err
 	}
 
 	if !found {
 		logger.Print("executable not found")
+		os.Exit(126)
 		return fmt.Errorf("executable not found")
 	}
 	if len(args) > 1 {
@@ -370,6 +398,19 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	return exec.Exec(executable, args, os.Environ())
+}
+
+func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) bool {
+	for _, toolVersion := range toolVersions {
+		for _, version := range toolVersion.Versions {
+			version := toolversions.Parse(version)
+			plugin := plugins.New(conf, toolVersion.Name)
+			if installs.IsInstalled(conf, plugin, version) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
@@ -577,10 +618,10 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 				return err
 			}
 		} else {
-			parsedVersion, query := toolversions.ParseFromCliArg(version)
+			parsedVersion := toolversions.ParseFromCliArg(version)
 
-			if parsedVersion == "latest" {
-				err = versions.InstallVersion(conf, plugin, version, query, os.Stdout, os.Stderr)
+			if parsedVersion.Type == "latest" {
+				err = versions.InstallVersion(conf, plugin, version, parsedVersion.Value, os.Stdout, os.Stderr)
 			} else {
 				err = versions.InstallOneVersion(conf, plugin, version, os.Stdout, os.Stderr)
 			}
@@ -890,7 +931,7 @@ func uninstallCommand(logger *log.Logger, tool, version string) error {
 	return shims.GenerateAll(conf, os.Stdout, os.Stderr)
 }
 
-func whereCommand(logger *log.Logger, tool, version string) error {
+func whereCommand(logger *log.Logger, tool, versionStr string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -912,20 +953,28 @@ func whereCommand(logger *log.Logger, tool, version string) error {
 		return err
 	}
 
-	versionType, parsedVersion := toolversions.Parse(version)
+	version := toolversions.Parse(versionStr)
 
-	if version == "" {
+	if version.Type == "system" {
+		logger.Printf("System version is selected")
+		return errors.New("System version is selected")
+	}
+
+	if version.Value == "" {
 		// resolve version
-		toolversions, found, err := resolve.Version(conf, plugin, currentDir)
+		versions, found, err := resolve.Version(conf, plugin, currentDir)
 		if err != nil {
 			fmt.Printf("err %#+v\n", err)
 			return err
 		}
 
-		if found && len(toolversions.Versions) > 0 && installs.IsInstalled(conf, plugin, "version", toolversions.Versions[0]) {
-			installPath := installs.InstallPath(conf, plugin, "version", toolversions.Versions[0])
-			logger.Printf("%s", installPath)
-			return nil
+		if found && len(versions.Versions) > 0 {
+			versionStruct := toolversions.Version{Type: "version", Value: versions.Versions[0]}
+			if installs.IsInstalled(conf, plugin, versionStruct) {
+				installPath := installs.InstallPath(conf, plugin, versionStruct)
+				logger.Printf("%s", installPath)
+				return nil
+			}
 		}
 
 		// not found
@@ -934,25 +983,20 @@ func whereCommand(logger *log.Logger, tool, version string) error {
 		return errors.New(msg)
 	}
 
-	if version == "system" {
-		logger.Printf("System version is selected")
-		return errors.New("System version is selected")
-	}
-
-	if !installs.IsInstalled(conf, plugin, versionType, parsedVersion) {
+	if !installs.IsInstalled(conf, plugin, version) {
 		logger.Printf("Version not installed")
 		return errors.New("Version not installed")
 	}
 
-	installPath := installs.InstallPath(conf, plugin, versionType, parsedVersion)
+	installPath := installs.InstallPath(conf, plugin, version)
 	logger.Printf("%s", installPath)
 
 	return nil
 }
 
-func reshimToolVersion(conf config.Config, tool, version string, out io.Writer, errOut io.Writer) error {
-	versionType, version := toolversions.Parse(version)
-	return shims.GenerateForVersion(conf, plugins.New(conf, tool), versionType, version, out, errOut)
+func reshimToolVersion(conf config.Config, tool, versionStr string, out io.Writer, errOut io.Writer) error {
+	version := toolversions.Parse(versionStr)
+	return shims.GenerateForVersion(conf, plugins.New(conf, tool), version.Type, version.Value, out, errOut)
 }
 
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
@@ -971,7 +1015,7 @@ func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bo
 	}
 
 	if showStatus {
-		installed := installs.IsInstalled(conf, plugin, "version", latest)
+		installed := installs.IsInstalled(conf, plugin, toolversions.Version{Type: "version", Value: latest})
 		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
 	} else {
 		fmt.Printf("%s\n", latest)

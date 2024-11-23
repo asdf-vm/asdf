@@ -8,6 +8,7 @@ import (
 	"asdf/internal/config"
 	"asdf/internal/installtest"
 	"asdf/internal/plugins"
+	"asdf/internal/toolversions"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
@@ -19,12 +20,14 @@ func TestDownloadPath(t *testing.T) {
 	conf, plugin := generateConfig(t)
 
 	t.Run("returns empty string when given path version", func(t *testing.T) {
-		path := DownloadPath(conf, plugin, "path", "foo/bar")
+		version := toolversions.Version{Type: "path", Value: "foo/bar"}
+		path := DownloadPath(conf, plugin, version)
 		assert.Empty(t, path)
 	})
 
 	t.Run("returns empty string when given path version", func(t *testing.T) {
-		path := DownloadPath(conf, plugin, "version", "1.2.3")
+		version := toolversions.Version{Type: "version", Value: "1.2.3"}
+		path := DownloadPath(conf, plugin, version)
 		assert.Equal(t, path, filepath.Join(conf.DataDir, "downloads", "lua", "1.2.3"))
 	})
 }
@@ -33,12 +36,14 @@ func TestInstallPath(t *testing.T) {
 	conf, plugin := generateConfig(t)
 
 	t.Run("returns empty string when given path version", func(t *testing.T) {
-		path := InstallPath(conf, plugin, "path", "foo/bar")
+		version := toolversions.Version{Type: "path", Value: "foo/bar"}
+		path := InstallPath(conf, plugin, version)
 		assert.Equal(t, path, "foo/bar")
 	})
 
 	t.Run("returns install path when given regular version as version", func(t *testing.T) {
-		path := InstallPath(conf, plugin, "version", "1.2.3")
+		version := toolversions.Version{Type: "version", Value: "1.2.3"}
+		path := InstallPath(conf, plugin, version)
 		assert.Equal(t, path, filepath.Join(conf.DataDir, "installs", "lua", "1.2.3"))
 	})
 }
@@ -66,10 +71,12 @@ func TestIsInstalled(t *testing.T) {
 	installVersion(t, conf, plugin, "1.0.0")
 
 	t.Run("returns false when not installed", func(t *testing.T) {
-		assert.False(t, IsInstalled(conf, plugin, "version", "4.0.0"))
+		version := toolversions.Version{Type: "version", Value: "4.0.0"}
+		assert.False(t, IsInstalled(conf, plugin, version))
 	})
 	t.Run("returns true when installed", func(t *testing.T) {
-		assert.True(t, IsInstalled(conf, plugin, "version", "1.0.0"))
+		version := toolversions.Version{Type: "version", Value: "1.0.0"}
+		assert.True(t, IsInstalled(conf, plugin, version))
 	})
 }
 
@@ -87,9 +94,10 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	return conf, plugins.New(conf, testPluginName)
 }
 
-func mockInstall(t *testing.T, conf config.Config, plugin plugins.Plugin, version string) {
+func mockInstall(t *testing.T, conf config.Config, plugin plugins.Plugin, versionStr string) {
 	t.Helper()
-	path := InstallPath(conf, plugin, "version", version)
+	version := toolversions.Version{Type: "version", Value: versionStr}
+	path := InstallPath(conf, plugin, version)
 	err := os.MkdirAll(path, os.ModePerm)
 	assert.Nil(t, err)
 }

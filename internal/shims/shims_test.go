@@ -12,6 +12,7 @@ import (
 	"asdf/internal/installs"
 	"asdf/internal/installtest"
 	"asdf/internal/plugins"
+	"asdf/internal/toolversions"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
@@ -56,7 +57,8 @@ func TestFindExecutable(t *testing.T) {
 
 	t.Run("returns string containing path to system executable when system version set", func(t *testing.T) {
 		// Create dummy `ls` executable
-		path := filepath.Join(installs.InstallPath(conf, plugin, "version", version), "bin", "ls")
+		versionStruct := toolversions.Version{Type: "version", Value: version}
+		path := filepath.Join(installs.InstallPath(conf, plugin, versionStruct), "bin", "ls")
 		assert.Nil(t, os.WriteFile(path, []byte("echo 'I'm ls'"), 0o777))
 
 		// write system version to version file
@@ -75,19 +77,19 @@ func TestFindExecutable(t *testing.T) {
 }
 
 func TestGetExecutablePath(t *testing.T) {
-	version := "1.1.0"
+	version := toolversions.Version{Type: "version", Value: "1.1.0"}
 	conf, plugin := generateConfig(t)
-	installVersion(t, conf, plugin, version)
+	installVersion(t, conf, plugin, version.Value)
 
 	t.Run("returns path to executable", func(t *testing.T) {
-		path, err := GetExecutablePath(conf, plugin, "dummy", version)
+		path, err := GetExecutablePath(conf, plugin, "dummy", version.Value)
 		assert.Nil(t, err)
 		assert.Equal(t, filepath.Base(path), "dummy")
-		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(path))), version)
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(path))), version.Value)
 	})
 
 	t.Run("returns error when executable with name not found", func(t *testing.T) {
-		path, err := GetExecutablePath(conf, plugin, "foo", version)
+		path, err := GetExecutablePath(conf, plugin, "foo", version.Value)
 		assert.ErrorContains(t, err, "executable not found")
 		assert.Equal(t, path, "")
 	})
@@ -96,7 +98,7 @@ func TestGetExecutablePath(t *testing.T) {
 		// Create exec-path callback
 		installDummyExecPathScript(t, conf, plugin, version, "dummy")
 
-		path, err := GetExecutablePath(conf, plugin, "dummy", version)
+		path, err := GetExecutablePath(conf, plugin, "dummy", version.Value)
 		assert.Nil(t, err)
 		assert.Equal(t, filepath.Base(filepath.Dir(path)), "custom")
 	})
@@ -285,12 +287,12 @@ func TestWrite(t *testing.T) {
 }
 
 func TestToolExecutables(t *testing.T) {
-	version := "1.1.0"
+	version := toolversions.Version{Type: "version", Value: "1.1.0"}
 	conf, plugin := generateConfig(t)
-	installVersion(t, conf, plugin, version)
+	installVersion(t, conf, plugin, version.Value)
 
 	t.Run("returns list of executables for plugin", func(t *testing.T) {
-		executables, err := ToolExecutables(conf, plugin, "version", version)
+		executables, err := ToolExecutables(conf, plugin, "version", version.Value)
 		assert.Nil(t, err)
 
 		var filenames []string
@@ -304,7 +306,7 @@ func TestToolExecutables(t *testing.T) {
 
 	t.Run("returns list of executables for version installed in arbitrary directory", func(t *testing.T) {
 		// Reference regular install by path to validate this behavior
-		path := installs.InstallPath(conf, plugin, "version", version)
+		path := installs.InstallPath(conf, plugin, version)
 		executables, err := ToolExecutables(conf, plugin, "path", path)
 		assert.Nil(t, err)
 
@@ -357,14 +359,14 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
 }
 
-func installDummyExecPathScript(t *testing.T, conf config.Config, plugin plugins.Plugin, version, name string) {
+func installDummyExecPathScript(t *testing.T, conf config.Config, plugin plugins.Plugin, version toolversions.Version, name string) {
 	t.Helper()
 	execPath := filepath.Join(plugin.Dir, "bin", "exec-path")
 	contents := fmt.Sprintf("#!/usr/bin/env bash\necho 'bin/custom/%s'", name)
 	err := os.WriteFile(execPath, []byte(contents), 0o777)
 	assert.Nil(t, err)
 
-	installPath := installs.InstallPath(conf, plugin, "version", version)
+	installPath := installs.InstallPath(conf, plugin, version)
 	err = os.MkdirAll(filepath.Join(installPath, "bin", "custom"), 0o777)
 	assert.Nil(t, err)
 
