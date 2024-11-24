@@ -154,11 +154,9 @@ func (p Plugin) Exists() error {
 
 // RunCallback invokes a callback with the given name if it exists for the plugin
 func (p Plugin) RunCallback(name string, arguments []string, environment map[string]string, stdOut io.Writer, errOut io.Writer) error {
-	callback := filepath.Join(p.Dir, "bin", name)
-
-	_, err := os.Stat(callback)
-	if errors.Is(err, os.ErrNotExist) {
-		return NoCallbackError{callback: name, plugin: p.Name}
+	callback, err := p.CallbackPath(name)
+	if err != nil {
+		return err
 	}
 
 	cmd := execute.New(fmt.Sprintf("'%s'", callback), arguments)
@@ -168,6 +166,17 @@ func (p Plugin) RunCallback(name string, arguments []string, environment map[str
 	cmd.Stderr = errOut
 
 	return cmd.Run()
+}
+
+// CallbackPath returns the full file path to a callback script
+func (p Plugin) CallbackPath(name string) (string, error) {
+	path := filepath.Join(p.Dir, "bin", name)
+	_, err := os.Stat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", NoCallbackError{callback: name, plugin: p.Name}
+	}
+
+	return path, nil
 }
 
 // List takes config and flags for what to return and builds a list of plugins

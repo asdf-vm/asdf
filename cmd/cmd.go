@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	osexec "os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -14,9 +15,12 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/exec"
+	"asdf/internal/execenv"
+	"asdf/internal/execute"
 	"asdf/internal/help"
 	"asdf/internal/info"
 	"asdf/internal/installs"
+	"asdf/internal/paths"
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
 	"asdf/internal/shims"
@@ -57,6 +61,15 @@ func Execute(version string) {
 					tool := cCtx.Args().Get(0)
 
 					return currentCommand(logger, tool)
+				},
+			},
+			{
+				Name: "env",
+				Action: func(cCtx *cli.Context) error {
+					shimmedCommand := cCtx.Args().Get(0)
+					args := cCtx.Args().Slice()
+
+					return envCommand(logger, shimmedCommand, args)
 				},
 			},
 			{
@@ -335,6 +348,83 @@ func formatVersions(versions []string) string {
 	}
 }
 
+func envCommand(logger *log.Logger, shimmedCommand string, args []string) error {
+	command := "env"
+
+	if shimmedCommand == "" {
+		logger.Printf("usage: asdf env <command>")
+		return fmt.Errorf("usage: asdf env <command>")
+	}
+
+	if len(args) >= 2 {
+		command = args[1]
+	}
+
+	realArgs := []string{}
+	if len(args) > 2 {
+		realArgs = args[2:]
+	}
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	_, plugin, version, err := getExecutable(logger, conf, shimmedCommand)
+	if err != nil {
+		return err
+	}
+
+	parsedVersion := toolversions.Parse(version)
+	execPaths, err := shims.ExecutablePaths(conf, plugin, parsedVersion)
+	if err != nil {
+		return err
+	}
+	callbackEnv := map[string]string{
+		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
+		"ASDF_INSTALL_VERSION": parsedVersion.Value,
+		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
+		"PATH":                 setPath(conf, execPaths),
+	}
+
+	var env map[string]string
+	var fname string
+
+	if parsedVersion.Type == "system" {
+		env = execute.SliceToMap(os.Environ())
+		newPath := paths.RemoveFromPath(env["PATH"], shims.Directory(conf))
+		env["PATH"] = newPath
+		var found bool
+		fname, found = shims.FindSystemExecutable(conf, command)
+		if !found {
+			fmt.Println("not found")
+			return err
+		}
+	} else {
+		env, err = execenv.Generate(plugin, callbackEnv)
+		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
+			return err
+		}
+
+		fname, err = osexec.LookPath(command)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = exec.Exec(fname, realArgs, execute.MapToSlice(env))
+	if err != nil {
+		fmt.Printf("err %#+v\n", err.Error())
+	}
+	return err
+}
+
+func setPath(conf config.Config, pathes []string) string {
+	currentPath := os.Getenv("PATH")
+	return strings.Join(pathes, ":") + ":" + paths.RemoveFromPath(currentPath, shims.Directory(conf))
+}
+
 func execCommand(logger *log.Logger, command string, args []string) error {
 	if command == "" {
 		logger.Printf("usage: asdf exec <command>")
@@ -347,16 +437,51 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		return err
 	}
 
-	currentDir, err := os.Getwd()
+	executable, plugin, version, err := getExecutable(logger, conf, command)
+	fmt.Printf("version %#+v\n", version)
+	fmt.Println("here")
 	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
 		return err
 	}
 
-	executable, found, err := shims.FindExecutable(conf, command, currentDir)
+	if len(args) > 1 {
+		args = args[1:]
+	} else {
+		args = []string{}
+	}
 
+	parsedVersion := toolversions.Parse(version)
+	fmt.Printf("parsedVersion %#+v\n", parsedVersion)
+	paths, err := shims.ExecutablePaths(conf, plugin, parsedVersion)
+	if err != nil {
+		return err
+	}
+	callbackEnv := map[string]string{
+		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
+		"ASDF_INSTALL_VERSION": parsedVersion.Value,
+		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
+		"PATH":                 setPath(conf, paths),
+	}
+
+	env, _ := execenv.Generate(plugin, callbackEnv)
+	return exec.Exec(executable, args, execute.MapToSlice(env))
+}
+
+func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		logger.Printf("unable to get current directory: %s", err)
+		return "", plugins.Plugin{}, "", err
+	}
+
+	executable, plugin, version, found, err := shims.FindExecutable(conf, command, currentDir)
 	if err != nil {
 
+		if _, ok := err.(shims.NoExecutableForPluginError); ok {
+			logger.Printf("No executable %s found for current version. Please select a different version or install %s manually for the current version", command, command)
+			os.Exit(1)
+			return "", plugin, version, err
+		}
 		shimPath := shims.Path(conf, command)
 		toolVersions, _ := shims.GetToolsAndVersionsFromShimFile(shimPath)
 
@@ -383,21 +508,16 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		}
 
 		os.Exit(126)
-		return err
+		return executable, plugins.Plugin{}, "", err
 	}
 
 	if !found {
 		logger.Print("executable not found")
 		os.Exit(126)
-		return fmt.Errorf("executable not found")
-	}
-	if len(args) > 1 {
-		args = args[1:]
-	} else {
-		args = []string{}
+		return executable, plugins.Plugin{}, "", fmt.Errorf("executable not found")
 	}
 
-	return exec.Exec(executable, args, os.Environ())
+	return executable, plugin, version, nil
 }
 
 func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) bool {
@@ -842,6 +962,11 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 }
 
 func shimVersionsCommand(logger *log.Logger, shimName string) error {
+	if shimName == "" {
+		logger.Printf("usage: asdf shimversions <command>")
+		return fmt.Errorf("usage: asdf shimversions <command>")
+	}
+
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -852,7 +977,7 @@ func shimVersionsCommand(logger *log.Logger, shimName string) error {
 	toolVersions, err := shims.GetToolsAndVersionsFromShimFile(shimPath)
 	for _, toolVersion := range toolVersions {
 		for _, version := range toolVersion.Versions {
-			fmt.Printf("%s %s", toolVersion.Name, version)
+			fmt.Printf("%s %s\n", toolVersion.Name, version)
 		}
 	}
 	return err
@@ -877,7 +1002,7 @@ func whichCommand(logger *log.Logger, command string) error {
 		return errors.New("must provide command")
 	}
 
-	path, _, err := shims.FindExecutable(conf, command, currentDir)
+	path, _, _, _, err := shims.FindExecutable(conf, command, currentDir)
 	if _, ok := err.(shims.UnknownCommandError); ok {
 		logger.Printf("unknown command: %s. Perhaps you have to reshim?", command)
 		return errors.New("command not found")

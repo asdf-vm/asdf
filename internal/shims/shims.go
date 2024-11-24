@@ -56,16 +56,16 @@ func (e NoExecutableForPluginError) Error() string {
 
 // FindExecutable takes a shim name and a current directory and returns the path
 // to the executable that the shim resolves to.
-func FindExecutable(conf config.Config, shimName, currentDirectory string) (string, bool, error) {
+func FindExecutable(conf config.Config, shimName, currentDirectory string) (string, plugins.Plugin, string, bool, error) {
 	shimPath := Path(conf, shimName)
 
 	if _, err := os.Stat(shimPath); err != nil {
-		return "", false, UnknownCommandError{shim: shimName}
+		return "", plugins.Plugin{}, "", false, UnknownCommandError{shim: shimName}
 	}
 
 	toolVersions, err := GetToolsAndVersionsFromShimFile(shimPath)
 	if err != nil {
-		return "", false, err
+		return "", plugins.Plugin{}, "", false, err
 	}
 
 	existingPluginToolVersions := make(map[plugins.Plugin]resolve.ToolVersions)
@@ -77,7 +77,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 
 			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
 			if err != nil {
-				return "", false, nil
+				return "", plugins.Plugin{}, "", false, nil
 			}
 
 			if found {
@@ -93,21 +93,21 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 	}
 
 	if len(existingPluginToolVersions) == 0 {
-		return "", false, NoVersionSetError{shim: shimName}
+		return "", plugins.Plugin{}, "", false, NoVersionSetError{shim: shimName}
 	}
 
 	for plugin, toolVersions := range existingPluginToolVersions {
 		for _, version := range toolVersions.Versions {
 			if version == "system" {
 				if executablePath, found := FindSystemExecutable(conf, shimName); found {
-					return executablePath, true, nil
+					return executablePath, plugin, version, true, nil
 				}
 
 				break
 			}
 			executablePath, err := GetExecutablePath(conf, plugin, shimName, version)
 			if err == nil {
-				return executablePath, true, nil
+				return executablePath, plugin, version, true, nil
 			}
 		}
 	}
@@ -119,7 +119,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 		versions = append(versions, existingPluginToolVersions[plugin].Versions...)
 	}
 
-	return "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
+	return "", plugins.Plugin{}, "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
 }
 
 // FindSystemExecutable returns the path to the system
@@ -127,7 +127,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 func FindSystemExecutable(conf config.Config, executableName string) (string, bool) {
 	currentPath := os.Getenv("PATH")
 	defer os.Setenv("PATH", currentPath)
-	os.Setenv("PATH", paths.RemoveFromPath(currentPath, shimsDirectory(conf)))
+	os.Setenv("PATH", paths.RemoveFromPath(currentPath, Directory(conf)))
 	executablePath, err := exec.LookPath(executableName)
 	return executablePath, err == nil
 }
@@ -288,7 +288,9 @@ func Path(conf config.Config, shimName string) string {
 	return filepath.Join(conf.DataDir, shimDirName, shimName)
 }
 
-func shimsDirectory(conf config.Config) string {
+// Directory returns the path to the shims directory for the current
+// configuration.
+func Directory(conf config.Config) string {
 	return filepath.Join(conf.DataDir, shimDirName)
 }
 
@@ -298,13 +300,10 @@ func ensureShimDirExists(conf config.Config) error {
 
 // ToolExecutables returns a slice of executables for a given tool version
 func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, version string) (executables []string, err error) {
-	dirs, err := ExecutableDirs(plugin)
+	paths, err := ExecutablePaths(conf, plugin, toolversions.Version{Type: versionType, Value: version})
 	if err != nil {
-		return executables, err
+		return []string{}, err
 	}
-
-	installPath := installs.InstallPath(conf, plugin, toolversions.Version{Type: versionType, Value: version})
-	paths := dirsToPaths(dirs, installPath)
 
 	for _, path := range paths {
 		entries, err := os.ReadDir(path)
@@ -323,6 +322,18 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 		}
 	}
 	return executables, err
+}
+
+// ExecutablePaths returns a slice of absolute directory paths that tool
+// executables are contained in.
+func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) ([]string, error) {
+	dirs, err := ExecutableDirs(plugin)
+	if err != nil {
+		return []string{}, err
+	}
+
+	installPath := installs.InstallPath(conf, plugin, version)
+	return dirsToPaths(dirs, installPath), nil
 }
 
 // ExecutableDirs returns a slice of directory names that tool executables are

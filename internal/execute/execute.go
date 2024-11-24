@@ -47,7 +47,7 @@ func (c Command) Run() error {
 
 	cmd := exec.Command("bash", "-c", command)
 
-	cmd.Env = mapToSlice(c.Env)
+	cmd.Env = MapToSlice(c.Env)
 	cmd.Stdin = c.Stdin
 
 	// Capture stdout and stderr
@@ -57,18 +57,33 @@ func (c Command) Run() error {
 	return cmd.Run()
 }
 
+// MapToSlice converts an env map to env slice suitable for syscall.Exec
+func MapToSlice(env map[string]string) (slice []string) {
+	for key, value := range env {
+		slice = append(slice, fmt.Sprintf("%s=%s", key, value))
+	}
+
+	return slice
+}
+
+// SliceToMap converts an env map to env slice suitable for syscall.Exec
+func SliceToMap(env []string) map[string]string {
+	envMap := map[string]string{}
+
+	for _, envVar := range env {
+		varValue := strings.Split(envVar, "=")
+		if len(varValue) == 2 {
+			envMap[varValue[0]] = varValue[1]
+		}
+	}
+
+	return envMap
+}
+
 func formatArgString(args []string) string {
 	var newArgs []string
 	for _, str := range args {
 		newArgs = append(newArgs, fmt.Sprintf("\"%s\"", str))
 	}
 	return strings.Join(newArgs, " ")
-}
-
-func mapToSlice(env map[string]string) (slice []string) {
-	for key, value := range env {
-		slice = append(slice, fmt.Sprintf("%s=%s", key, value))
-	}
-
-	return slice
 }
