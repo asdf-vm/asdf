@@ -308,9 +308,10 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 
 	for _, path := range paths {
 		entries, err := os.ReadDir(path)
-		if err != nil {
+		if _, ok := err.(*os.PathError); err != nil && !ok {
 			return executables, err
 		}
+
 		for _, entry := range entries {
 			// If entry is dir or cannot be executed by the current user ignore it
 			filePath := filepath.Join(path, entry.Name())
@@ -319,9 +320,6 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, versionType, ver
 			}
 
 			executables = append(executables, filePath)
-		}
-		if err != nil {
-			return executables, err
 		}
 	}
 	return executables, err

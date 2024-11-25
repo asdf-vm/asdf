@@ -31,6 +31,11 @@ func Setup(asdfDataDir string) error {
 	return nil
 }
 
+// WritePluginCallback is for creating new plugin callbacks on the fly.
+func WritePluginCallback(pluginDir, callbackName, script string) error {
+	return os.WriteFile(filepath.Join(pluginDir, "bin", callbackName), []byte(script), 0o777)
+}
+
 // InstallPlugin copies in the specified plugin fixture into the asdfDataDir's
 // plugin directory and initializes a Git repo for it so asdf treats it as
 // installed.
