@@ -318,6 +318,22 @@ func TestToolExecutables(t *testing.T) {
 
 		assert.Equal(t, filenames, []string{"dummy"})
 	})
+
+	t.Run("returns list of executables even when one directory printed by list-bin-paths doesn't exist", func(t *testing.T) {
+		// foo is first in list returned by list-bin-paths but doesn't exist, do
+		// we still get the executables in the bin/ dir?
+		repotest.WritePluginCallback(plugin.Dir, "list-bin-paths", "#!/usr/bin/env bash\necho 'foo bin'")
+		executables, err := ToolExecutables(conf, plugin, "version", version.Value)
+		assert.Nil(t, err)
+
+		var filenames []string
+		for _, executablePath := range executables {
+			assert.True(t, strings.HasPrefix(executablePath, conf.DataDir))
+			filenames = append(filenames, filepath.Base(executablePath))
+		}
+
+		assert.Equal(t, filenames, []string{"dummy"})
+	})
 }
 
 func TestExecutableDirs(t *testing.T) {
