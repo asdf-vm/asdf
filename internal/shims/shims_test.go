@@ -30,16 +30,18 @@ func TestFindExecutable(t *testing.T) {
 	currentDir := t.TempDir()
 
 	t.Run("returns error when shim with name does not exist", func(t *testing.T) {
-		executable, found, err := FindExecutable(conf, "foo", currentDir)
+		executable, _, version, found, err := FindExecutable(conf, "foo", currentDir)
 		assert.Empty(t, executable)
 		assert.False(t, found)
+		assert.Empty(t, version)
 		assert.Equal(t, err.(UnknownCommandError).Error(), "unknown command: foo")
 	})
 
 	t.Run("returns error when shim is present but no version is set", func(t *testing.T) {
-		executable, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, _, version, found, err := FindExecutable(conf, "dummy", currentDir)
 		assert.Empty(t, executable)
 		assert.False(t, found)
+		assert.Empty(t, version)
 		assert.Equal(t, err.(NoVersionSetError).Error(), "no versions set for dummy")
 	})
 
@@ -48,9 +50,11 @@ func TestFindExecutable(t *testing.T) {
 		data := []byte("lua 1.1.0")
 		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
 
-		executable, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
 		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
 		assert.Equal(t, filepath.Base(executable), "dummy")
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, version, "1.1.0")
 		assert.True(t, found)
 		assert.Nil(t, err)
 	})
@@ -66,7 +70,9 @@ func TestFindExecutable(t *testing.T) {
 		assert.Nil(t, os.WriteFile(toolpath, []byte("lua system\n"), 0o666))
 		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
 
-		executable, found, err := FindExecutable(conf, "ls", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "ls", currentDir)
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, version, "system")
 		assert.True(t, found)
 		assert.Nil(t, err)
 
@@ -333,6 +339,32 @@ func TestToolExecutables(t *testing.T) {
 		}
 
 		assert.Equal(t, filenames, []string{"dummy"})
+	})
+}
+
+func TestExecutablePaths(t *testing.T) {
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, "1.2.3")
+
+	t.Run("returns list only containing 'bin' when list-bin-paths callback missing", func(t *testing.T) {
+		executables, err := ExecutablePaths(conf, plugin, toolversions.Version{Type: "version", Value: "1.2.3"})
+		path := executables[0]
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(filepath.Dir(path)), "1.2.3")
+		assert.Equal(t, filepath.Base(path), "bin")
+	})
+
+	t.Run("returns list of executable paths for tool version", func(t *testing.T) {
+		data := []byte("echo 'foo bar'")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
+		assert.Nil(t, err)
+
+		executables, err := ExecutablePaths(conf, plugin, toolversions.Version{Type: "version", Value: "1.2.3"})
+		path1 := executables[0]
+		path2 := executables[1]
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path1), "foo")
+		assert.Equal(t, filepath.Base(path2), "bar")
 	})
 }
 

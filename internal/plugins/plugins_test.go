@@ -183,7 +183,7 @@ func TestRemove(t *testing.T) {
 	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
 		var stdout strings.Builder
 		var stderr strings.Builder
-		err := Remove(conf, "nonexistant", &stdout, &stderr)
+		err := Remove(conf, "nonexistent", &stdout, &stderr)
 		assert.NotNil(t, err)
 		assert.ErrorContains(t, err, "No such plugin")
 	})
@@ -251,10 +251,10 @@ func TestUpdate(t *testing.T) {
 		{
 			desc:        "returns error when plugin with name does not exist",
 			givenConf:   conf,
-			givenName:   "nonexistant",
+			givenName:   "nonexistent",
 			givenRef:    "",
 			wantSomeRef: false,
-			wantErrMsg:  "no such plugin: nonexistant",
+			wantErrMsg:  "no such plugin: nonexistent",
 		},
 		{
 			desc:        "returns error when plugin repo does not exist",
@@ -352,7 +352,7 @@ func TestPluginExists(t *testing.T) {
 	})
 
 	t.Run("returns false when plugin dir does not exist", func(t *testing.T) {
-		exists, err := PluginExists(testDataDir, "non-existant")
+		exists, err := PluginExists(testDataDir, "non-existent")
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}
@@ -396,9 +396,9 @@ func TestRunCallback(t *testing.T) {
 		var stdout strings.Builder
 		var stderr strings.Builder
 
-		err = plugin.RunCallback("non-existant", []string{}, emptyEnv, &stdout, &stderr)
+		err = plugin.RunCallback("non-existent", []string{}, emptyEnv, &stdout, &stderr)
 
-		assert.Equal(t, err.(NoCallbackError).Error(), "Plugin named lua does not have a callback named non-existant")
+		assert.Equal(t, err.(NoCallbackError).Error(), "Plugin named lua does not have a callback named non-existent")
 	})
 
 	t.Run("passes argument to command", func(t *testing.T) {
@@ -429,6 +429,28 @@ func TestRunCallback(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "plugin updated path= old git-ref=TEST new git-ref=\n", stdout.String())
 		assert.Equal(t, "", stderr.String())
+	})
+}
+
+func TestCallbackPath(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	t.Run("returns callback path when callback exists", func(t *testing.T) {
+		path, err := plugin.CallbackPath("install")
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path), "install")
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(path))), plugin.Name)
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(filepath.Dir(path)))), "plugins")
+	})
+
+	t.Run("returns error when callback does not exist", func(t *testing.T) {
+		path, err := plugin.CallbackPath("non-existent")
+		assert.Equal(t, err.(NoCallbackError).Error(), "Plugin named lua does not have a callback named non-existent")
+		assert.Equal(t, path, "")
 	})
 }
 
@@ -488,7 +510,7 @@ func TestParseLegacyVersionFile(t *testing.T) {
 	})
 
 	t.Run("returns error when passed file that doesn't exist", func(t *testing.T) {
-		versions, err := plugin.ParseLegacyVersionFile("non-existant-file")
+		versions, err := plugin.ParseLegacyVersionFile("non-existent-file")
 		assert.Error(t, err)
 		assert.Empty(t, versions)
 	})

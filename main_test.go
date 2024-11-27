@@ -75,9 +75,9 @@ func TestBatsTests(t *testing.T) {
 		runBatsFile(t, dir, "reshim_command.bats")
 	})
 
-	//t.Run("shim_env_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "shim_env_command.bats")
-	//})
+	t.Run("shim_env_command", func(t *testing.T) {
+		runBatsFile(t, dir, "shim_env_command.bats")
+	})
 
 	//t.Run("shim_exec", func(t *testing.T) {
 	//  runBatsFile(t, dir, "shim_exec.bats")
