@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"os"
-	osexec "os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -20,7 +19,6 @@ import (
 	"asdf/internal/help"
 	"asdf/internal/info"
 	"asdf/internal/installs"
-	"asdf/internal/paths"
 	"asdf/internal/plugins"
 	"asdf/internal/resolve"
 	"asdf/internal/shims"
@@ -381,36 +379,23 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 	if err != nil {
 		return err
 	}
-	callbackEnv := map[string]string{
+	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
 		"ASDF_INSTALL_VERSION": parsedVersion.Value,
 		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
-		"PATH":                 setPath(conf, execPaths),
+		"PATH":                 setPath(execPaths),
 	}
 
-	var env map[string]string
-	var fname string
-
-	if parsedVersion.Type == "system" {
-		env = execute.SliceToMap(os.Environ())
-		newPath := paths.RemoveFromPath(env["PATH"], shims.Directory(conf))
-		env["PATH"] = newPath
-		var found bool
-		fname, found = shims.FindSystemExecutable(conf, command)
-		if !found {
-			fmt.Println("not found")
-			return err
-		}
-	} else {
-		env, err = execenv.Generate(plugin, callbackEnv)
+	if parsedVersion.Type != "system" {
+		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
 			return err
 		}
+	}
 
-		fname, err = osexec.LookPath(command)
-		if err != nil {
-			return err
-		}
+	fname, err := shims.ExecutableOnPath(env["PATH"], command)
+	if err != nil {
+		return err
 	}
 
 	err = exec.Exec(fname, realArgs, execute.MapToSlice(env))
@@ -420,9 +405,8 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 	return err
 }
 
-func setPath(conf config.Config, pathes []string) string {
-	currentPath := os.Getenv("PATH")
-	return strings.Join(pathes, ":") + ":" + paths.RemoveFromPath(currentPath, shims.Directory(conf))
+func setPath(paths []string) string {
+	return strings.Join(paths, ":") + ":" + os.Getenv("PATH")
 }
 
 func execCommand(logger *log.Logger, command string, args []string) error {
@@ -438,8 +422,6 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	executable, plugin, version, err := getExecutable(logger, conf, command)
-	fmt.Printf("version %#+v\n", version)
-	fmt.Println("here")
 	if err != nil {
 		return err
 	}
@@ -451,19 +433,26 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	parsedVersion := toolversions.Parse(version)
-	fmt.Printf("parsedVersion %#+v\n", parsedVersion)
-	paths, err := shims.ExecutablePaths(conf, plugin, parsedVersion)
+	execPaths, err := shims.ExecutablePaths(conf, plugin, parsedVersion)
 	if err != nil {
 		return err
 	}
-	callbackEnv := map[string]string{
+	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
 		"ASDF_INSTALL_VERSION": parsedVersion.Value,
 		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
-		"PATH":                 setPath(conf, paths),
+		"PATH":                 setPath(execPaths),
 	}
 
-	env, _ := execenv.Generate(plugin, callbackEnv)
+	if parsedVersion.Type != "system" {
+		env, err = execenv.Generate(plugin, env)
+		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
+			return err
+		}
+	}
+
+	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
 	return exec.Exec(executable, args, execute.MapToSlice(env))
 }
 

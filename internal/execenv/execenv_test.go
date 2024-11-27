@@ -15,6 +15,39 @@ const (
 	testPluginName2 = "ruby"
 )
 
+func TestCurrentEnv(t *testing.T) {
+	t.Run("returns map of current environment", func(t *testing.T) {
+		envMap := CurrentEnv()
+		path, found := envMap["PATH"]
+		assert.True(t, found)
+		assert.NotEmpty(t, path)
+	})
+}
+
+func TestMergeEnv(t *testing.T) {
+	t.Run("merges two maps", func(t *testing.T) {
+		map1 := map[string]string{"Key": "value"}
+		map2 := map[string]string{"Key2": "value2"}
+		map3 := MergeEnv(map1, map2)
+		assert.Equal(t, map3["Key"], "value")
+		assert.Equal(t, map3["Key2"], "value2")
+	})
+
+	t.Run("doesn't change original map", func(t *testing.T) {
+		map1 := map[string]string{"Key": "value"}
+		map2 := map[string]string{"Key2": "value2"}
+		_ = MergeEnv(map1, map2)
+		assert.Equal(t, map1["Key2"], "value2")
+	})
+
+	t.Run("second map overwrites values in first", func(t *testing.T) {
+		map1 := map[string]string{"Key": "value"}
+		map2 := map[string]string{"Key": "value2"}
+		map3 := MergeEnv(map1, map2)
+		assert.Equal(t, map3["Key"], "value2")
+	})
+}
+
 func TestGenerate(t *testing.T) {
 	testDataDir := t.TempDir()
 
