@@ -66,20 +66,6 @@ func MapToSlice(env map[string]string) (slice []string) {
 	return slice
 }
 
-// SliceToMap converts an env map to env slice suitable for syscall.Exec
-func SliceToMap(env []string) map[string]string {
-	envMap := map[string]string{}
-
-	for _, envVar := range env {
-		varValue := strings.Split(envVar, "=")
-		if len(varValue) == 2 {
-			envMap[varValue[0]] = varValue[1]
-		}
-	}
-
-	return envMap
-}
-
 func formatArgString(args []string) string {
 	var newArgs []string
 	for _, str := range args {

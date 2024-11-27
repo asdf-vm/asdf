@@ -99,7 +99,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 	for plugin, toolVersions := range existingPluginToolVersions {
 		for _, version := range toolVersions.Versions {
 			if version == "system" {
-				if executablePath, found := FindSystemExecutable(conf, shimName); found {
+				if executablePath, found := SystemExecutableOnPath(conf, shimName); found {
 					return executablePath, plugin, version, true, nil
 				}
 
@@ -122,14 +122,22 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 	return "", plugins.Plugin{}, "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
 }
 
-// FindSystemExecutable returns the path to the system
-// executable if found
-func FindSystemExecutable(conf config.Config, executableName string) (string, bool) {
+// SystemExecutableOnPath returns the path to the system executable if found,
+// removes asdf shim directory from search
+func SystemExecutableOnPath(conf config.Config, executableName string) (string, bool) {
+	currentPath := os.Getenv("PATH")
+	executablePath, err := ExecutableOnPath(paths.RemoveFromPath(currentPath, Directory(conf)), executableName)
+	return executablePath, err == nil
+}
+
+// ExecutableOnPath returns the path to an executable if one is found on the
+// provided paths. `path` must be in the same format as the `PATH` environment
+// variable.
+func ExecutableOnPath(path, command string) (string, error) {
 	currentPath := os.Getenv("PATH")
 	defer os.Setenv("PATH", currentPath)
-	os.Setenv("PATH", paths.RemoveFromPath(currentPath, Directory(conf)))
-	executablePath, err := exec.LookPath(executableName)
-	return executablePath, err == nil
+	os.Setenv("PATH", path)
+	return exec.LookPath(command)
 }
 
 // GetExecutablePath returns the path of the executable
