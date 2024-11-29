@@ -1110,7 +1110,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 
 func reshimToolVersion(conf config.Config, tool, versionStr string, out io.Writer, errOut io.Writer) error {
 	version := toolversions.Parse(versionStr)
-	return shims.GenerateForVersion(conf, plugins.New(conf, tool), version.Type, version.Value, out, errOut)
+	return shims.GenerateForVersion(conf, plugins.New(conf, tool), version, out, errOut)
 }
 
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {

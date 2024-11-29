@@ -222,6 +222,59 @@ func TestParseFromCliArg(t *testing.T) {
 	})
 }
 
+func TestParseSlice(t *testing.T) {
+	t.Run("returns slice of parsed tool versions", func(t *testing.T) {
+		versions := ParseSlice([]string{"1.2.3"})
+		assert.Equal(t, []Version{{Type: "version", Value: "1.2.3"}}, versions)
+	})
+
+	t.Run("returns empty slice when empty slice provided", func(t *testing.T) {
+		versions := ParseSlice([]string{})
+		assert.Empty(t, versions)
+	})
+
+	t.Run("parses special versions", func(t *testing.T) {
+		versions := ParseSlice([]string{"ref:foo", "system", "path:/foo/bar"})
+		assert.Equal(t, []Version{{Type: "ref", Value: "foo"}, {Type: "system"}, {Type: "path", Value: "/foo/bar"}}, versions)
+	})
+}
+
+func TestFormat(t *testing.T) {
+	tests := []struct {
+		desc   string
+		input  Version
+		output string
+	}{
+		{
+			desc:   "with regular version",
+			input:  Version{Type: "version", Value: "foobar"},
+			output: "foobar",
+		},
+		{
+			desc:   "with ref version",
+			input:  Version{Type: "ref", Value: "foobar"},
+			output: "foobar",
+		},
+		{
+			desc:   "with system version",
+			input:  Version{Type: "system", Value: "system"},
+			output: "system",
+		},
+		{
+			desc:   "with system version",
+			input:  Version{Type: "path", Value: "/foo/bar"},
+			output: "path:/foo/bar",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got := Format(tt.input)
+			assert.Equal(t, got, tt.output)
+		})
+	}
+}
+
 func TestFormatForFS(t *testing.T) {
 	t.Run("returns version when version type is not ref", func(t *testing.T) {
 		assert.Equal(t, FormatForFS(Version{Type: "version", Value: "foobar"}), "foobar")
