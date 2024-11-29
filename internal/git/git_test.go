@@ -5,8 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"asdf/repotest"
-
+	"github.com/asdf-vm/asdf/repotest"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/stretchr/testify/assert"

@@ -9,8 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"asdf/internal/git"
-
+	"github.com/asdf-vm/asdf/internal/git"
 	"gopkg.in/ini.v1"
 )
 

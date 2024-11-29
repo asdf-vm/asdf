@@ -7,10 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"asdf/internal/config"
-	"asdf/internal/plugins"
-	"asdf/repotest"
-
+	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/repotest"
 	"github.com/stretchr/testify/assert"
 )
 

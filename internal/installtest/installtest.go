@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"asdf/internal/config"
-	"asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/plugins"
 )
 
 const (
