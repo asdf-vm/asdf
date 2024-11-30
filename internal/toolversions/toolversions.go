@@ -130,6 +130,26 @@ func Parse(version string) Version {
 	return Version{Type: "version", Value: version}
 }
 
+// ParseSlice takes a slice of strings and returns a slice of parsed versions.
+func ParseSlice(versions []string) (parsedVersions []Version) {
+	for _, version := range versions {
+		parsedVersions = append(parsedVersions, Parse(version))
+	}
+	return parsedVersions
+}
+
+// Format takes a Version struct and formats it as a string
+func Format(version Version) string {
+	switch version.Type {
+	case "system":
+		return "system"
+	case "path":
+		return fmt.Sprintf("path:%s", version.Value)
+	default:
+		return version.Value
+	}
+}
+
 // FormatForFS takes a versionType and version strings and generate a version
 // string suitable for the file system
 func FormatForFS(version Version) string {
