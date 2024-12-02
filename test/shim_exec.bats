@@ -243,91 +243,96 @@ teardown() {
   [ "$output" = "System" ]
 }
 
-@test "shim exec should use custom exec-env for tool" {
-  run asdf install dummy 2.0.0
-  echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
-  mkdir "$ASDF_DIR/plugins/dummy/shims"
-  echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
-  run asdf reshim dummy 2.0.0
+# These tests are disabled because the custom shims templates feature is no
+# longer supported.
+#
+#@test "shim exec should use custom exec-env for tool" {
+#  run asdf install dummy 2.0.0
+#  echo '#!/usr/bin/env bash
+#  export FOO=sourced' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+#  mkdir "$ASDF_DIR/plugins/dummy/shims"
+#  echo '#!/usr/bin/env bash
+#  echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
+#  run asdf reshim dummy 2.0.0
 
-  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
-  run "$ASDF_DIR/shims/foo"
-  [ "$output" = "sourced custom" ]
-}
+#  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
+#  run "$ASDF_DIR/shims/foo"
+#  [ "$output" = "sourced custom" ]
+#}
 
-@test "shim exec with custom exec-env using ASDF_INSTALL_PATH" {
-  run asdf install dummy 2.0.0
-  echo 'export FOO=$ASDF_INSTALL_PATH/foo' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
-  mkdir "$ASDF_DIR/plugins/dummy/shims"
-  echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
-  run asdf reshim dummy 2.0.0
+#@test "shim exec with custom exec-env using ASDF_INSTALL_PATH" {
+#  run asdf install dummy 2.0.0
+#  echo 'export FOO=$ASDF_INSTALL_PATH/foo' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+#  mkdir "$ASDF_DIR/plugins/dummy/shims"
+#  echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
+#  run asdf reshim dummy 2.0.0
 
-  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
-  run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/foo custom" ]
-}
+#  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
+#  run "$ASDF_DIR/shims/foo"
+#  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/foo custom" ]
+#}
 
-@test "shim exec doest not use custom exec-env for system version" {
-  run asdf install dummy 2.0.0
-  echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
-  mkdir "$ASDF_DIR/plugins/dummy/shims"
-  echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
-  run asdf reshim dummy 2.0.0
+#@test "shim exec doest not use custom exec-env for system version" {
+#  run asdf install dummy 2.0.0
+#  echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+#  mkdir "$ASDF_DIR/plugins/dummy/shims"
+#  echo 'echo $FOO custom' >"$ASDF_DIR/plugins/dummy/shims/foo"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
+#  run asdf reshim dummy 2.0.0
 
-  echo "dummy system" >"$PROJECT_DIR/.tool-versions"
+#  echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
-  mkdir "$PROJECT_DIR/sys/"
-  echo 'echo x$FOO System' >"$PROJECT_DIR/sys/foo"
-  chmod +x "$PROJECT_DIR/sys/foo"
+#  mkdir "$PROJECT_DIR/sys/"
+#  echo 'echo x$FOO System' >"$PROJECT_DIR/sys/foo"
+#  chmod +x "$PROJECT_DIR/sys/foo"
 
-  run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/foo"
-  [ "$output" = "x System" ]
-}
+#  run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/foo"
+#  [ "$output" = "x System" ]
+#}
 
-@test "shim exec should prepend the plugin paths on execution" {
-  run asdf install dummy 2.0.0
+#@test "shim exec should prepend the plugin paths on execution" {
+#  run asdf install dummy 2.0.0
 
-  mkdir "$ASDF_DIR/plugins/dummy/shims"
-  echo 'which dummy' >"$ASDF_DIR/plugins/dummy/shims/foo"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
-  run asdf reshim dummy 2.0.0
+#  mkdir "$ASDF_DIR/plugins/dummy/shims"
+#  echo 'which dummy' >"$ASDF_DIR/plugins/dummy/shims/foo"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
+#  run asdf reshim dummy 2.0.0
 
-  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
+#  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
 
-  run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
-}
+#  run "$ASDF_DIR/shims/foo"
+#  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
+#}
 
-@test "shim exec should be able to find other shims in path" {
-  cp -rf "$ASDF_DIR/plugins/dummy" "$ASDF_DIR/plugins/gummy"
+#@test "shim exec should be able to find other shims in path" {
+#  cp -rf "$ASDF_DIR/plugins/dummy" "$ASDF_DIR/plugins/gummy"
 
-  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
-  echo "gummy 2.0.0" >>"$PROJECT_DIR/.tool-versions"
+#  echo "dummy 2.0.0" >"$PROJECT_DIR/.tool-versions"
+#  echo "gummy 2.0.0" >>"$PROJECT_DIR/.tool-versions"
 
-  run asdf install
+#  run asdf install
 
-  mkdir "$ASDF_DIR/plugins/"{dummy,gummy}/shims
+#  mkdir "$ASDF_DIR/plugins/"{dummy,gummy}/shims
 
-  echo 'which dummy' >"$ASDF_DIR/plugins/dummy/shims/foo"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
+#  echo 'which dummy' >"$ASDF_DIR/plugins/dummy/shims/foo"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/foo"
 
-  echo 'which gummy' >"$ASDF_DIR/plugins/dummy/shims/bar"
-  chmod +x "$ASDF_DIR/plugins/dummy/shims/bar"
+#  echo 'which gummy' >"$ASDF_DIR/plugins/dummy/shims/bar"
+#  chmod +x "$ASDF_DIR/plugins/dummy/shims/bar"
 
-  touch "$ASDF_DIR/plugins/gummy/shims/gummy"
-  chmod +x "$ASDF_DIR/plugins/gummy/shims/gummy"
+#  touch "$ASDF_DIR/plugins/gummy/shims/gummy"
+#  chmod +x "$ASDF_DIR/plugins/gummy/shims/gummy"
 
-  run asdf reshim
+#  run asdf reshim
 
-  run "$ASDF_DIR/shims/foo"
-  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
+#  run "$ASDF_DIR/shims/foo"
+#  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/bin/dummy" ]
 
-  run "$ASDF_DIR/shims/bar"
-  [ "$output" = "$ASDF_DIR/shims/gummy" ]
-}
+#  run "$ASDF_DIR/shims/bar"
+#  [ "$output" = "$ASDF_DIR/shims/gummy" ]
+#}
 
 @test "shim exec should remove shim_path from path on system version execution" {
   run asdf install dummy 2.0.0
@@ -335,7 +340,8 @@ teardown() {
   echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
   mkdir "$PROJECT_DIR/sys/"
-  echo 'which dummy' >"$PROJECT_DIR/sys/dummy"
+  echo '#!/usr/bin/env bash
+  which dummy' >"$PROJECT_DIR/sys/dummy"
   chmod +x "$PROJECT_DIR/sys/dummy"
 
   run env "PATH=$PATH:$PROJECT_DIR/sys" "$ASDF_DIR/shims/dummy"
@@ -369,7 +375,8 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
 
   mkdir "$custom_path"
-  echo "echo CUSTOM" >"$custom_path/foo"
+  echo '#!/usr/bin/env bash
+  echo CUSTOM' >"$custom_path/foo"
   chmod +x "$custom_path/foo"
 
   run asdf reshim dummy 1.0
@@ -384,11 +391,13 @@ teardown() {
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
   custom_dummy="$ASDF_DIR/installs/dummy/1.0/custom/dummy"
 
-  echo "echo custom/dummy" >"$exec_path"
+  echo '#!/usr/bin/env bash
+  echo custom/dummy' >"$exec_path"
   chmod +x "$exec_path"
 
   mkdir "$(dirname "$custom_dummy")"
-  echo "echo CUSTOM" >"$custom_dummy"
+  echo '#!/usr/bin/env bash
+  echo CUSTOM' >"$custom_dummy"
   chmod +x "$custom_dummy"
 
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
@@ -401,7 +410,8 @@ teardown() {
   run asdf install dummy 1.0
 
   exec_path="$ASDF_DIR/plugins/dummy/bin/exec-path"
-  echo 'echo $3 # always same path' >"$exec_path"
+  echo '#!/usr/bin/env bash
+  echo "$3" # always same path' >"$exec_path"
   chmod +x "$exec_path"
 
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
@@ -415,12 +425,12 @@ teardown() {
   echo dummy 1.0 >"$PROJECT_DIR/.tool-versions"
 
   cat >"$HOME/.asdfrc" <<-'EOM'
-pre_dummy_dummy = echo PRE $version $1 $2
+pre_dummy_dummy = echo PRE $1 $2
 EOM
 
   run "$ASDF_DIR/shims/dummy" hello world
   [ "$status" -eq 0 ]
-  echo "$output" | grep "PRE 1.0 hello world"
+  echo "$output" | grep "PRE hello world"
   echo "$output" | grep "This is Dummy 1.0! world hello"
 }
 
@@ -430,15 +440,16 @@ EOM
 
   mkdir "$HOME/hook"
   pre_cmd="$HOME/hook/pre"
-  echo 'echo $* && false' >"$pre_cmd"
+  echo '#!/usr/bin/env bash
+  echo $* && false' >"$pre_cmd"
   chmod +x "$pre_cmd"
 
   cat >"$HOME/.asdfrc" <<'EOM'
-pre_dummy_dummy = pre $1 no $plugin_name $2
+pre_dummy_dummy = pre $1 $2
 EOM
 
   run env PATH="$PATH:$HOME/hook" "$ASDF_DIR/shims/dummy" hello world
-  [ "$output" = "hello no dummy world" ]
+  [ "$output" = "hello world" ]
   [ "$status" -eq 1 ]
 }
 

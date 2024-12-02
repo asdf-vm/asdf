@@ -17,6 +17,7 @@ import (
 	"asdf/internal/execenv"
 	"asdf/internal/execute"
 	"asdf/internal/help"
+	"asdf/internal/hook"
 	"asdf/internal/info"
 	"asdf/internal/installs"
 	"asdf/internal/plugins"
@@ -452,6 +453,12 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
+	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
+	if err != nil {
+		os.Exit(1)
+		return err
+	}
 
 	return exec.Exec(executable, args, execute.MapToSlice(env))
 }

@@ -121,11 +121,26 @@ func TestGetExecutablePath(t *testing.T) {
 
 	t.Run("returns custom path when plugin has exec-path callback", func(t *testing.T) {
 		// Create exec-path callback
-		installDummyExecPathScript(t, conf, plugin, version, "dummy")
+		installDummyExecPathScript(t, conf, plugin, version, "dummy", "echo 'bin/custom/dummy'")
 
 		path, err := GetExecutablePath(conf, plugin, "dummy", version)
 		assert.Nil(t, err)
 		assert.Equal(t, filepath.Base(filepath.Dir(path)), "custom")
+		// Doesn't contain any trailing whitespace (newlines as the last char are common)
+		assert.Equal(t, path, strings.TrimSpace(path))
+	})
+
+	t.Run("returns default path when plugin has exec-path callback that prints third argument", func(t *testing.T) {
+		// Create exec-path callback
+		installDummyExecPathScript(t, conf, plugin, version, "dummy", "echo \"$3\"")
+
+		path, err := GetExecutablePath(conf, plugin, "dummy", version)
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path), "dummy")
+		assert.Equal(t, filepath.Base(filepath.Dir(path)), "bin")
+
+		// Doesn't contain any trailing whitespace (newlines as the last char are common)
+		assert.Equal(t, path, strings.TrimSpace(path))
 	})
 }
 
@@ -426,10 +441,10 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
 }
 
-func installDummyExecPathScript(t *testing.T, conf config.Config, plugin plugins.Plugin, version toolversions.Version, name string) {
+func installDummyExecPathScript(t *testing.T, conf config.Config, plugin plugins.Plugin, version toolversions.Version, name, script string) {
 	t.Helper()
 	execPath := filepath.Join(plugin.Dir, "bin", "exec-path")
-	contents := fmt.Sprintf("#!/usr/bin/env bash\necho 'bin/custom/%s'", name)
+	contents := fmt.Sprintf("#!/usr/bin/env bash\n%s\n", script)
 	err := os.WriteFile(execPath, []byte(contents), 0o777)
 	assert.Nil(t, err)
 
