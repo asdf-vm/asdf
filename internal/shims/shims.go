@@ -160,21 +160,26 @@ func ExecutableOnPath(path, command string) (string, error) {
 
 // GetExecutablePath returns the path of the executable
 func GetExecutablePath(conf config.Config, plugin plugins.Plugin, shimName string, version toolversions.Version) (string, error) {
-	path, err := getCustomExecutablePath(conf, plugin, shimName, version)
-	if err == nil {
-		return path, err
-	}
-
 	executables, err := ToolExecutables(conf, plugin, version)
 	if err != nil {
 		return "", err
 	}
 
+	executable := ""
+
 	for _, executablePath := range executables {
-		executableName := filepath.Base(executablePath)
-		if executableName == shimName {
-			return executablePath, nil
+		if filepath.Base(executablePath) == shimName {
+			executable = executablePath
 		}
+	}
+
+	path, err := getCustomExecutablePath(conf, plugin, shimName, version, executable)
+	if err == nil {
+		return path, err
+	}
+
+	if executable != "" {
+		return executable, nil
 	}
 
 	return "", fmt.Errorf("executable not found")
@@ -195,19 +200,24 @@ func GetToolsAndVersionsFromShimFile(shimPath string) (versions []toolversions.T
 	return versions, err
 }
 
-func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName string, version toolversions.Version) (string, error) {
+func getCustomExecutablePath(conf config.Config, plugin plugins.Plugin, shimName string, version toolversions.Version, executablePath string) (string, error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
 
 	installPath := installs.InstallPath(conf, plugin, version)
 	env := map[string]string{"ASDF_INSTALL_TYPE": "version"}
 
-	err := plugin.RunCallback("exec-path", []string{installPath, shimName}, env, &stdOut, &stdErr)
+	relativePath, err := filepath.Rel(installPath, executablePath)
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(installPath, stdOut.String()), err
+	err = plugin.RunCallback("exec-path", []string{installPath, shimName, relativePath}, env, &stdOut, &stdErr)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(installPath, strings.TrimSpace(stdOut.String())), err
 }
 
 // RemoveAll removes all shim scripts

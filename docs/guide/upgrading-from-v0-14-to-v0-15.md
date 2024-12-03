@@ -57,6 +57,17 @@ In practice this isn't much of a problem. Most shell scripts DO contain a
 shebang line. If a tool managed by asdf provides scripts that don't have a
 shebang line one will need to be added to them.
 
+### Custom shim templates are no longer supported
+
+This was a rarely used feature. The only plugin maintained by the core team
+that used it was the Elixir plugin, and it no longer needs it. This feature
+was originally added so that shim that get evaluated by a program rather than
+executed contain code that is suitable for evaluation by a particular program
+(in the case of Elixir this was the `iex` shell). Upon further investigation
+it seems this feature only exists because the `PATH` for executables was
+sometimes improperly set to include the **shims** rather than the other
+**executables** for the selected version(s).
+
 ## Installation
 
 Installation of version 0.15.0 is much simpler than previous versions of asdf. It's just three steps:
