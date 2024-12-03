@@ -93,7 +93,7 @@ func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Wr
 	}
 
 	for _, version := range versions.Versions {
-		err := InstallOneVersion(conf, plugin, version, stdOut, stdErr)
+		err := InstallOneVersion(conf, plugin, version, false, stdOut, stdErr)
 		if err != nil {
 			return err
 		}
@@ -105,24 +105,25 @@ func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Wr
 // InstallVersion installs a version of a specific tool, the version may be an
 // exact version, or it may be `latest` or `latest` a regex query in order to
 // select the latest version matching the provided pattern.
-func InstallVersion(conf config.Config, plugin plugins.Plugin, version string, pattern string, stdOut io.Writer, stdErr io.Writer) error {
+func InstallVersion(conf config.Config, plugin plugins.Plugin, version toolversions.Version, stdOut io.Writer, stdErr io.Writer) error {
 	err := plugin.Exists()
 	if err != nil {
 		return err
 	}
 
-	if version == latestVersion {
-		version, err = Latest(plugin, pattern)
+	resolvedVersion := ""
+	if version.Type == latestVersion {
+		resolvedVersion, err = Latest(plugin, version.Value)
 		if err != nil {
 			return err
 		}
 	}
 
-	return InstallOneVersion(conf, plugin, version, stdOut, stdErr)
+	return InstallOneVersion(conf, plugin, resolvedVersion, false, stdOut, stdErr)
 }
 
 // InstallOneVersion installs a specific version of a specific tool
-func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr string, stdOut io.Writer, stdErr io.Writer) error {
+func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr string, keepDownload bool, stdOut io.Writer, stdErr io.Writer) error {
 	err := plugin.Exists()
 	if err != nil {
 		return err
@@ -192,6 +193,22 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	if err != nil {
 		return fmt.Errorf("failed to run post-install hook: %w", err)
 	}
+
+	// delete download dir
+	keep, err := conf.AlwaysKeepDownload()
+	if err != nil {
+		return err
+	}
+
+	if keep || keepDownload {
+		return nil
+	}
+
+	err = os.RemoveAll(downloadDir)
+	if err != nil {
+		return fmt.Errorf("failed to remove download dir: %w", err)
+	}
+
 	return nil
 }
 

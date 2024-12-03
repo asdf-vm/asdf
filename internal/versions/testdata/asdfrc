@@ -1,3 +1,4 @@
 pre_asdf_download_lua = echo pre_asdf_download_lua $@
 pre_asdf_install_lua = echo pre_asdf_install_lua $@
 post_asdf_install_lua = echo post_asdf_install_lua $@
+always_keep_download = yes

@@ -9,6 +9,7 @@ import (
 
 	"asdf/internal/config"
 	"asdf/internal/plugins"
+	"asdf/internal/toolversions"
 	"asdf/repotest"
 
 	"github.com/stretchr/testify/assert"
@@ -130,14 +131,16 @@ func TestInstallVersion(t *testing.T) {
 	t.Run("returns error when plugin doesn't exist", func(t *testing.T) {
 		conf, _ := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallVersion(conf, plugins.New(conf, "non-existent"), "1.2.3", "", &stdout, &stderr)
+		version := toolversions.Version{Type: "version", Value: "1.2.3"}
+		err := InstallVersion(conf, plugins.New(conf, "non-existent"), version, &stdout, &stderr)
 		assert.IsType(t, plugins.PluginMissing{}, err)
 	})
 
 	t.Run("installs latest version of tool when version is 'latest'", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallVersion(conf, plugin, "latest", "", &stdout, &stderr)
+		version := toolversions.Version{Type: "latest", Value: ""}
+		err := InstallVersion(conf, plugin, version, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
@@ -147,7 +150,8 @@ func TestInstallVersion(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
 
-		err := InstallVersion(conf, plugin, "latest", "^1.", &stdout, &stderr)
+		version := toolversions.Version{Type: "latest", Value: "^1."}
+		err := InstallVersion(conf, plugin, version, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.1.0")
@@ -160,14 +164,14 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("returns error when plugin doesn't exist", func(t *testing.T) {
 		conf, _ := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugins.New(conf, "non-existent"), "1.2.3", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugins.New(conf, "non-existent"), "1.2.3", false, &stdout, &stderr)
 		assert.IsType(t, plugins.PluginMissing{}, err)
 	})
 
 	t.Run("returns error when passed a path version", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "path:/foo/bar", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "path:/foo/bar", false, &stdout, &stderr)
 
 		assert.ErrorContains(t, err, "uninstallable version: path")
 	})
@@ -175,7 +179,7 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("returns error when plugin version is 'system'", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "system", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "system", false, &stdout, &stderr)
 		assert.IsType(t, UninstallableVersionError{}, err)
 	})
 
@@ -183,7 +187,7 @@ func TestInstallOneVersion(t *testing.T) {
 		version := "other-dummy"
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, version, &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, version, false, &stdout, &stderr)
 		assert.Errorf(t, err, "failed to run install callback: exit status 1")
 
 		want := "pre_asdf_download_lua other-dummy\npre_asdf_install_lua other-dummy\nDummy couldn't install version: other-dummy (on purpose)\n"
@@ -195,19 +199,19 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("returns error when version already installed", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
 
 		// Install a second time
-		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("creates download directory", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		downloadPath := filepath.Join(conf.DataDir, "downloads", plugin.Name, "1.0.0")
@@ -219,7 +223,7 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("creates install directory", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		installPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0")
@@ -231,7 +235,7 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("runs pre-download, pre-install and post-install hooks when installation successful", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 		assert.Equal(t, "", stderr.String())
 		want := "pre_asdf_download_lua 1.0.0\npre_asdf_install_lua 1.0.0\npost_asdf_install_lua 1.0.0\n"
@@ -241,7 +245,7 @@ func TestInstallOneVersion(t *testing.T) {
 	t.Run("installs successfully when plugin exists but version does not", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		// Check download directory
@@ -263,7 +267,7 @@ func TestInstallOneVersion(t *testing.T) {
 		assert.Nil(t, err)
 		plugin := plugins.New(conf, testPluginName)
 
-		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		// no-download install script prints 'install'
@@ -354,7 +358,7 @@ func TestUninstall(t *testing.T) {
 	})
 
 	t.Run("uninstalls successfully when plugin and version are installed", func(t *testing.T) {
-		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		err := Uninstall(conf, plugin, "1.0.0", &stdout, &stderr)
@@ -364,7 +368,7 @@ func TestUninstall(t *testing.T) {
 
 	t.Run("runs pre and post-uninstall hooks", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
-		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		err := Uninstall(conf, plugin, "1.0.0", &stdout, &stderr)
@@ -375,7 +379,7 @@ func TestUninstall(t *testing.T) {
 
 	t.Run("invokes uninstall callback when present", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
-		err = InstallOneVersion(conf, plugin, "1.0.0", &stdout, &stderr)
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		data := []byte("echo custom uninstall")
