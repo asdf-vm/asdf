@@ -8,6 +8,11 @@ rather than a set of scripts.
 
 ## Breaking Changes
 
+### `download` is now a required callback for plugins
+
+Previously `download` was optional, now it is required. If a plugin lacks this
+callback any installs of any version of that plugin will fail.
+
 ### Hyphenated commands have been removed
 
 asdf version 0.14.1 and earlier supported by hyphenated and non-hyphenated

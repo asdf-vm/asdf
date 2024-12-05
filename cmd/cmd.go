@@ -102,9 +102,16 @@ func Execute(version string) {
 			},
 			{
 				Name: "install",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "keep-download",
+						Usage: "Whether or not to keep download directory after successful install",
+					},
+				},
 				Action: func(cCtx *cli.Context) error {
 					args := cCtx.Args()
-					return installCommand(logger, args.Get(0), args.Get(1))
+					keepDownload := cCtx.Bool("keep-download")
+					return installCommand(logger, args.Get(0), args.Get(1), keepDownload)
 				},
 			},
 			{
@@ -697,7 +704,7 @@ func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err
 	logger.Printf("updated %s to ref %s\n", pluginName, updatedToRef)
 }
 
-func installCommand(logger *log.Logger, toolName, version string) error {
+func installCommand(logger *log.Logger, toolName, version string, keepDownload bool) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -714,8 +721,12 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 		errs := versions.InstallAll(conf, dir, os.Stdout, os.Stderr)
 		if len(errs) > 0 {
 			for _, err := range errs {
-				os.Stderr.Write([]byte(err.Error()))
-				os.Stderr.Write([]byte("\n"))
+				// Don't print error if no version set, this just means the current
+				// dir doesn't use a particular plugin that is installed.
+				if _, ok := err.(versions.NoVersionSetError); !ok {
+					os.Stderr.Write([]byte(err.Error()))
+					os.Stderr.Write([]byte("\n"))
+				}
 			}
 
 			filtered := filterInstallErrors(errs)
@@ -731,15 +742,23 @@ func installCommand(logger *log.Logger, toolName, version string) error {
 		if version == "" {
 			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
 			if err != nil {
+				if _, ok := err.(versions.NoVersionSetError); ok {
+					logger.Printf("No versions specified for %s in config files or environment", toolName)
+					os.Exit(1)
+				}
+
 				return err
 			}
 		} else {
 			parsedVersion := toolversions.ParseFromCliArg(version)
 
 			if parsedVersion.Type == "latest" {
-				err = versions.InstallVersion(conf, plugin, version, parsedVersion.Value, os.Stdout, os.Stderr)
+				err = versions.InstallVersion(conf, plugin, parsedVersion, os.Stdout, os.Stderr)
 			} else {
-				err = versions.InstallOneVersion(conf, plugin, version, os.Stdout, os.Stderr)
+				// Adding this here to get tests passing. The other versions.Install*
+				// calls here could have a keepDownload argument added as well. PR
+				// welcome!
+				err = versions.InstallOneVersion(conf, plugin, version, keepDownload, os.Stdout, os.Stderr)
 			}
 
 			if err != nil {
