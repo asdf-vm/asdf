@@ -70,12 +70,13 @@ install_mock_plugin_repo() {
 
 init_git_repo() {
   location="$1"
+  remote="${2:-"https://asdf-vm.com/fake-repo"}"
   git -C "${location}" init -q
   git -C "${location}" config user.name "Test"
   git -C "${location}" config user.email "test@example.com"
   git -C "${location}" add -A
   git -C "${location}" commit -q -m "asdf ${plugin_name} plugin"
-  git -C "${location}" remote add origin "https://asdf-vm.com/fake-repo"
+  git -C "${location}" remote add origin "$remote"
 }
 
 install_mock_plugin_version() {
@@ -127,6 +128,9 @@ clean_asdf_dir() {
 }
 
 setup_repo() {
-  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/repository"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/plugin-index"
+  cp -r "$BATS_TEST_DIRNAME/fixtures/dummy_plugins_repo" "$ASDF_DIR/plugin-index-2"
+  init_git_repo "$ASDF_DIR/plugin-index-2"
+  init_git_repo "$ASDF_DIR/plugin-index" "$ASDF_DIR/plugin-index-2"
   touch "$(asdf_dir)/tmp/repo-updated"
 }

@@ -4,6 +4,7 @@ package pluginindex
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
@@ -28,6 +29,12 @@ type PluginIndex struct {
 	updateDurationMinutes int
 }
 
+// Plugin represents a plugin listed on a plugin index.
+type Plugin struct {
+	Name string
+	URL  string
+}
+
 // Build returns a complete PluginIndex struct with default values set
 func Build(dataDir string, URL string, disableUpdate bool, updateDurationMinutes int) PluginIndex {
 	directory := filepath.Join(dataDir, pluginIndexDir)
@@ -43,6 +50,16 @@ func New(directory, url string, disableUpdate bool, updateDurationMinutes int, r
 		disableUpdate:         disableUpdate,
 		updateDurationMinutes: updateDurationMinutes,
 	}
+}
+
+// Get returns a slice of all available plugins
+func (p PluginIndex) Get() (plugins []Plugin, err error) {
+	_, err = p.Refresh()
+	if err != nil {
+		return plugins, err
+	}
+
+	return getPlugins(p.directory)
 }
 
 // Refresh may update the plugin repo if it hasn't been updated in longer
@@ -144,4 +161,24 @@ func readPlugin(dir, name string) (string, error) {
 	}
 
 	return pluginInfo.Section("").Key("repository").String(), nil
+}
+
+func getPlugins(dir string) (plugins []Plugin, err error) {
+	files, err := os.ReadDir(filepath.Join(dir, "plugins"))
+	if _, ok := err.(*fs.PathError); ok {
+		return plugins, nil
+	}
+
+	for _, file := range files {
+		if !file.IsDir() {
+			url, err := readPlugin(dir, file.Name())
+			if err != nil {
+				return plugins, err
+			}
+
+			plugins = append(plugins, Plugin{Name: file.Name(), URL: url})
+		}
+	}
+
+	return plugins, err
 }

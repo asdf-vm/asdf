@@ -272,7 +272,7 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 			lastCheckDuration = checkDuration.Every
 		}
 
-		index := pluginindex.Build(config.DataDir, "https://github.com/asdf-vm/asdf-plugins.git", false, lastCheckDuration)
+		index := pluginindex.Build(config.DataDir, config.PluginIndexURL, false, lastCheckDuration)
 		var err error
 		pluginURL, err = index.GetPluginSourceURL(pluginName)
 		if err != nil {

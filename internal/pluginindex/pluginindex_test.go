@@ -83,6 +83,17 @@ func writeMockPluginFile(dir, pluginName, pluginURL string) error {
 	return nil
 }
 
+func TestGet(t *testing.T) {
+	t.Run("returns populated slice of plugins when plugins exist in directory", func(t *testing.T) {
+		dir := t.TempDir()
+
+		pluginIndex := New(dir, mockIndexURL, true, 0, &MockIndex{Directory: dir})
+		plugins, err := pluginIndex.Get()
+		assert.Nil(t, err)
+		assert.Equal(t, plugins, []Plugin{{Name: "elixir", URL: "https://github.com/asdf-vm/asdf-elixir.git"}})
+	})
+}
+
 func TestGetPluginSourceURL(t *testing.T) {
 	t.Run("with Git returns a plugin url when provided name of existing plugin", func(t *testing.T) {
 		dir := t.TempDir()
