@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"asdf/internal/config"
 	"asdf/internal/plugins"
@@ -19,8 +20,8 @@ var helpText string
 const quote = "\"Late but latest\"\n-- Rajinikanth"
 
 // Print help output to STDOUT
-func Print(asdfVersion string) error {
-	return Write(asdfVersion, os.Stdout)
+func Print(asdfVersion string, plugins []plugins.Plugin) error {
+	return Write(asdfVersion, plugins, os.Stdout)
 }
 
 // PrintTool write tool help output to STDOUT
@@ -34,13 +35,29 @@ func PrintToolVersion(conf config.Config, toolName, toolVersion string) error {
 }
 
 // Write help output to an io.Writer
-func Write(asdfVersion string, writer io.Writer) error {
+func Write(asdfVersion string, allPlugins []plugins.Plugin, writer io.Writer) error {
 	_, err := writer.Write([]byte(fmt.Sprintf("version: %s\n\n", asdfVersion)))
 	if err != nil {
 		return err
 	}
 
 	_, err = writer.Write([]byte(helpText))
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write([]byte("\n"))
+	if err != nil {
+		return err
+	}
+
+	extensionCommandHelp, err := pluginExtensionCommands(allPlugins)
+	if err != nil {
+		fmt.Printf("err %#+v\n", err)
+		return err
+	}
+
+	_, err = writer.Write([]byte(extensionCommandHelp))
 	if err != nil {
 		return err
 	}
@@ -117,4 +134,27 @@ func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io
 	}
 
 	return nil
+}
+
+func pluginExtensionCommands(plugins []plugins.Plugin) (string, error) {
+	var output strings.Builder
+
+	for _, plugin := range plugins {
+		commands, err := plugin.GetExtensionCommands()
+		if err != nil {
+			return output.String(), err
+		}
+		if len(commands) > 0 {
+			output.WriteString(fmt.Sprintf("PLUGIN %s\n", plugin.Name))
+			for _, command := range commands {
+				if command == "" {
+					// must be default command
+					output.WriteString(fmt.Sprintf("  asdf %s\n", plugin.Name))
+				} else {
+					output.WriteString(fmt.Sprintf("  asdf %s %s\n", plugin.Name, command))
+				}
+			}
+		}
+	}
+	return output.String(), nil
 }

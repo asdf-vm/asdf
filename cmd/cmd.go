@@ -56,6 +56,14 @@ func Execute(version string) {
 		UsageText: usageText,
 		Commands: []*cli.Command{
 			{
+				Name: "cmd",
+				Action: func(cCtx *cli.Context) error {
+					args := cCtx.Args().Slice()
+
+					return extensionCommand(logger, args)
+				},
+			},
+			{
 				Name: "current",
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
@@ -247,9 +255,7 @@ func Execute(version string) {
 			},
 		},
 		Action: func(_ *cli.Context) error {
-			// TODO: flesh this out
-			log.Print("Late but latest -- Rajinikanth")
-			return nil
+			return helpCommand(logger, version, "", "")
 		},
 	}
 
@@ -477,6 +483,50 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	}
 
 	return exec.Exec(executable, args, execute.MapToSlice(env))
+}
+
+func extensionCommand(logger *log.Logger, args []string) error {
+	if len(args) < 1 {
+		err := errors.New("no plugin name specified")
+		logger.Printf("%s", err.Error())
+		return err
+	}
+
+	conf, err := config.LoadConfig()
+	if err != nil {
+		logger.Printf("error loading config: %s", err)
+		return err
+	}
+
+	pluginName := args[0]
+	plugin := plugins.New(conf, pluginName)
+
+	err = runExtensionCommand(plugin, args[1:], execenv.SliceToMap(os.Environ()))
+	logger.Printf("error running extension command: %s", err.Error())
+	return err
+}
+
+func runExtensionCommand(plugin plugins.Plugin, args []string, environment map[string]string) (err error) {
+	path := ""
+	if len(args) > 0 {
+		path, err = plugin.ExtensionCommandPath(args[0])
+
+		if err != nil {
+			path, err = plugin.ExtensionCommandPath("")
+			if err != nil {
+				return err
+			}
+		} else {
+			args = args[1:]
+		}
+	} else {
+		path, err = plugin.ExtensionCommandPath("")
+		if err != nil {
+			return err
+		}
+	}
+
+	return exec.Exec(path, args, execute.MapToSlice(environment))
 }
 
 func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
@@ -726,10 +776,16 @@ func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
 		return err
 	}
 
-	err = help.Print(asdfVersion)
+	allPlugins, err := plugins.List(conf, false, false)
 	if err != nil {
 		os.Exit(1)
 	}
+
+	err = help.Print(asdfVersion, allPlugins)
+	if err != nil {
+		os.Exit(1)
+	}
+
 	return err
 }
 

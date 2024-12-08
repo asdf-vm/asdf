@@ -1,6 +1,7 @@
 package plugins
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -452,6 +453,78 @@ func TestCallbackPath(t *testing.T) {
 		assert.Equal(t, err.(NoCallbackError).Error(), "Plugin named lua does not have a callback named non-existent")
 		assert.Equal(t, path, "")
 	})
+}
+
+func TestGetExtensionCommands(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	t.Run("returns empty slice when no extension commands defined", func(t *testing.T) {
+		commands, err := plugin.GetExtensionCommands()
+		assert.Nil(t, err)
+		assert.Empty(t, commands)
+	})
+
+	t.Run("returns slice of with default extension command if it is present", func(t *testing.T) {
+		assert.Nil(t, writeExtensionCommand(t, plugin, "", "#!/usr/bin/env bash\necho $1"))
+		commands, err := plugin.GetExtensionCommands()
+		assert.Nil(t, err)
+		assert.Equal(t, commands, []string{""})
+	})
+
+	t.Run("returns slice of all extension commands when they are present", func(t *testing.T) {
+		assert.Nil(t, writeExtensionCommand(t, plugin, "", "#!/usr/bin/env bash\necho $1"))
+		assert.Nil(t, writeExtensionCommand(t, plugin, "foobar", "#!/usr/bin/env bash\necho $1"))
+
+		commands, err := plugin.GetExtensionCommands()
+		assert.Nil(t, err)
+		assert.Equal(t, commands, []string{"", "foobar"})
+	})
+}
+
+func TestExtensionCommandPath(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	t.Run("returns NoCallback error when callback with name not found", func(t *testing.T) {
+		path, err := plugin.ExtensionCommandPath("non-existent")
+
+		assert.Equal(t, err.(NoCommandError).Error(), "Plugin named lua does not have a extension command named non-existent")
+		assert.Equal(t, path, "")
+	})
+
+	t.Run("returns default extension command script when no name", func(t *testing.T) {
+		assert.Nil(t, writeExtensionCommand(t, plugin, "", "#!/usr/bin/env bash\necho $1"))
+		path, err := plugin.ExtensionCommandPath("")
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path), "command")
+	})
+
+	t.Run("passes arguments to command", func(t *testing.T) {
+		assert.Nil(t, writeExtensionCommand(t, plugin, "debug", "#!/usr/bin/env bash\necho $@"))
+		path, err := plugin.ExtensionCommandPath("debug")
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Base(path), "command-debug")
+	})
+}
+
+func writeExtensionCommand(t *testing.T, plugin Plugin, name, contents string) error {
+	t.Helper()
+	assert.Nil(t, os.MkdirAll(filepath.Join(plugin.Dir, "lib", "commands"), 0o777))
+	filename := "command"
+	if name != "" {
+		filename = fmt.Sprintf("command-%s", name)
+	}
+
+	path := filepath.Join(plugin.Dir, "lib", "commands", filename)
+	err := os.WriteFile(path, []byte(contents), 0o777)
+	return err
 }
 
 func TestLegacyFilenames(t *testing.T) {
