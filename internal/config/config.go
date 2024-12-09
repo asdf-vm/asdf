@@ -18,6 +18,7 @@ const (
 	dataDirDefault                     = "~/.asdf"
 	configFileDefault                  = "~/.asdfrc"
 	defaultToolVersionsFilenameDefault = ".tool-versions"
+	defaultPluginIndexURL              = "https://github.com/asdf-vm/asdf-plugins.git"
 )
 
 /* PluginRepoCheckDuration represents the remote plugin repo check duration
@@ -40,7 +41,8 @@ type Config struct {
 	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
 	ForcePrepend bool   `env:"ASDF_FORCE_PREPEND, overwrite"`
 	// Field that stores the settings struct if it is loaded
-	Settings Settings
+	Settings       Settings
+	PluginIndexURL string
 }
 
 // Settings is a struct that stores config values from the asdfrc file
@@ -62,6 +64,7 @@ func defaultConfig(dataDir, configFile string) *Config {
 		DataDir:                     dataDir,
 		ConfigFile:                  configFile,
 		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
+		PluginIndexURL:              defaultPluginIndexURL,
 	}
 }
 
