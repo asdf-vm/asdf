@@ -59,9 +59,9 @@ func TestBatsTests(t *testing.T) {
 		runBatsFile(t, dir, "plugin_remove_command.bats")
 	})
 
-	//t.Run("plugin_test_command", func(t *testing.T) {
-	//  runBatsFile(t, dir, "plugin_test_command.bats")
-	//})
+	t.Run("plugin_test_command", func(t *testing.T) {
+		runBatsFile(t, dir, "plugin_test_command.bats")
+	})
 
 	//t.Run("plugin_update_command", func(t *testing.T) {
 	//  runBatsFile(t, dir, "plugin_update_command.bats")

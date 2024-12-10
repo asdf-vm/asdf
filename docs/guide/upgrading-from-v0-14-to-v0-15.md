@@ -25,6 +25,7 @@ versions are supported. The affected commands:
 * `asdf plugin-list-all` -> `asdf plugin list all`
 * `asdf plugin-update` -> `asdf plugin update`
 * `asdf plugin-remove` -> `asdf plugin remove`
+* `asdf plugin-test` -> `asdf plugin test`
 * `asdf shim-versions` -> `asdf shimversions`
 
 ### `asdf global` and `asdf local` commands have been replaced by the `asdf set` command
