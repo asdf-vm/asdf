@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -209,6 +210,26 @@ func Execute(version string) {
 						Action: func(cCtx *cli.Context) error {
 							args := cCtx.Args()
 							return pluginUpdateCommand(cCtx, logger, args.Get(0), args.Get(1))
+						},
+					},
+					{
+						Name: "test",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:  "asdf-tool-version",
+								Usage: "The tool version to use during testing",
+							},
+							&cli.StringFlag{
+								Name:  "asdf-plugin-gitref",
+								Usage: "The plugin Git ref to test",
+							},
+						},
+						Action: func(cCtx *cli.Context) error {
+							toolVersion := cCtx.String("asdf-tool-version")
+							gitRef := cCtx.String("asdf-plugin-gitref")
+							args := cCtx.Args().Slice()
+							pluginTestCommand(logger, args, toolVersion, gitRef)
+							return nil
 						},
 					},
 				},
@@ -819,6 +840,97 @@ func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref 
 	updatedToRef, err := plugins.Update(conf, pluginName, ref)
 	formatUpdateResult(logger, pluginName, updatedToRef, err)
 	return err
+}
+
+func pluginTestCommand(l *log.Logger, args []string, _, _ string) {
+	conf, err := config.LoadConfig()
+	if err != nil {
+		l.Printf("error loading config: %s", err)
+		os.Exit(1)
+		return
+	}
+
+	if len(args) < 2 {
+		failTest(l, "please provide a plugin name and url")
+	}
+
+	name := args[0]
+	url := args[1]
+	testName := fmt.Sprintf("asdf-test-%s", name)
+
+	// Install plugin
+	err = plugins.Add(conf, testName, url)
+	if err != nil {
+		failTest(l, fmt.Sprintf("%s was not properly installed", name))
+	}
+
+	// Remove plugin
+	var blackhole strings.Builder
+	defer plugins.Remove(conf, testName, &blackhole, &blackhole)
+
+	// Assert callbacks are present
+	plugin := plugins.New(conf, testName)
+	files, err := os.ReadDir(filepath.Join(plugin.Dir, "bin"))
+	if _, ok := err.(*fs.PathError); ok {
+		failTest(l, "bin/ directory does not exist")
+	}
+
+	callbacks := []string{}
+	for _, file := range files {
+		callbacks = append(callbacks, file.Name())
+	}
+
+	for _, expectedCallback := range []string{"download", "install", "list-all"} {
+		if !slices.Contains(callbacks, expectedCallback) {
+			failTest(l, fmt.Sprintf("missing callback %s", expectedCallback))
+		}
+	}
+
+	allCallbacks := []string{"download", "install", "list-all", "latest-stable", "help.overview", "help.deps", "help.config", "help.links", "list-bin-paths", "exec-env", "exec-path", "uninstall", "list-legacy-filenames", "parse-legacy-file", "post-plugin-add", "post-plugin-update", "pre-plugin-remove"}
+
+	// Assert all callbacks present are executable
+	for _, file := range files {
+		// file is a callback...
+		if slices.Contains(allCallbacks, file.Name()) {
+			// check if it is executable
+			info, _ := file.Info()
+			if !(info.Mode()&0o111 != 0) {
+				failTest(l, fmt.Sprintf("callback lacks executable permission: %s", file.Name()))
+			}
+		}
+	}
+
+	// Assert has license
+	licensePath := filepath.Join(plugin.Dir, "LICENSE")
+	if _, err := os.Stat(licensePath); errors.Is(err, os.ErrNotExist) {
+		failTest(l, "LICENSE file must be present in the plugin repository")
+	}
+
+	bytes, err := os.ReadFile(licensePath)
+	if err != nil {
+		failTest(l, "LICENSE file must be present in the plugin repository")
+	}
+
+	// Validate license file not empty
+	if len(bytes) == 0 {
+		failTest(l, "LICENSE file in the plugin repository must not be empty")
+	}
+
+	// Validate it returns at least one available version
+	var output strings.Builder
+	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &output, &blackhole)
+	if err != nil {
+		failTest(l, "Unable to list available versions")
+	}
+
+	if len(strings.Split(output.String(), " ")) < 1 {
+		failTest(l, "list-all did not return any version")
+	}
+}
+
+func failTest(logger *log.Logger, msg string) {
+	logger.Printf("FAILED: %s", msg)
+	os.Exit(1)
 }
 
 func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err error) {
