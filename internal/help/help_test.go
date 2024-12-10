@@ -1,6 +1,7 @@
 package help
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,12 +21,19 @@ const (
 
 func TestWrite(t *testing.T) {
 	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
 	err := os.MkdirAll(filepath.Join(testDataDir, "plugins"), 0o777)
 	assert.Nil(t, err)
 
+	// install dummy plugin
+	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := plugins.New(conf, testPluginName)
+	writeExtensionCommand(t, plugin, "", "")
+
 	var stdout strings.Builder
 
-	err = Write(version, &stdout)
+	err = Write(version, []plugins.Plugin{plugin}, &stdout)
 	assert.Nil(t, err)
 	output := stdout.String()
 
@@ -35,6 +43,7 @@ func TestWrite(t *testing.T) {
 	assert.Contains(t, output, "MANAGE TOOLS\n")
 	assert.Contains(t, output, "UTILS\n")
 	assert.Contains(t, output, "RESOURCES\n")
+	assert.Contains(t, output, "PLUGIN lua\n")
 }
 
 func TestWriteToolHelp(t *testing.T) {
@@ -130,4 +139,17 @@ func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string)
 	assert.Nil(t, err)
 
 	return plugins.New(conf, pluginName)
+}
+
+func writeExtensionCommand(t *testing.T, plugin plugins.Plugin, name, contents string) error {
+	t.Helper()
+	assert.Nil(t, os.MkdirAll(filepath.Join(plugin.Dir, "lib", "commands"), 0o777))
+	filename := "command"
+	if name != "" {
+		filename = fmt.Sprintf("command-%s", name)
+	}
+
+	path := filepath.Join(plugin.Dir, "lib", "commands", filename)
+	err := os.WriteFile(path, []byte(contents), 0o777)
+	return err
 }

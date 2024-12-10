@@ -49,6 +49,63 @@ not an executable. The new rewrite removes all shell code from asdf, and it is
 now a binary rather than a shell function, so setting environment variables
 directly in the shell is no longer possible.
 
+### Plugin extension commands must now be prefixed with `cmd`
+
+Previously plugin extension commands could be run like this:
+
+```
+asdf nodejs nodebuild --version
+```
+
+Now they must be prefixed with `cmd` to avoid causing confusion with built-in
+commands:
+
+```
+asdf cmd nodejs nodebuild --version
+```
+
+### Extension commands have been redesigned
+
+There are a number of breaking changes for plugin extension commands:
+
+* They must be runnable by `exec` syscall. If your extension commands are shell
+scripts in order to be run with `exec` they must start with a proper shebang
+line.
+* They can now be binaries or scripts in any language. It no
+longer makes sense to require a `.bash` extension as it is misleading.
+* They must have executable permission set.
+* They are no longer sourced by asdf as Bash scripts when they lack executable
+permission.
+
+Additionally, only the first argument after plugin name is used to determine
+the extension command to run. This means effectively there is the default
+`command` extension command that asdf defaults to when no command matching the
+first argument after plugin name is found. For example:
+
+```
+foo/
+  lib/commands/
+    command
+    command-bar
+    command-bat-man
+```
+
+Previously these scripts would work like this:
+
+```
+$ asdf cmd foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command`
+$ asdf cmd foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bar`
+$ asdf cmd foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat-man`
+```
+
+Now:
+
+```
+$ asdf cmd foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command`
+$ asdf cmd foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bar`
+$ asdf cmd foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command bat man`
+```
+
 ### Executables Shims Resolve to Must Runnable by `syscall.Exec`
 
 The most obvious example of this breaking change are scripts that lack a proper

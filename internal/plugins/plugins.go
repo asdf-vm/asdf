@@ -56,12 +56,24 @@ func (e NoCallbackError) Error() string {
 	return fmt.Sprintf(hasNoCallbackMsg, e.plugin, e.callback)
 }
 
+// NoCommandError is an error returned by ExtensionCommandPath when an extension
+// command with the given name does not exist
+type NoCommandError struct {
+	command string
+	plugin  string
+}
+
+func (e NoCommandError) Error() string {
+	return fmt.Sprintf(hasNoCommandMsg, e.plugin, e.command)
+}
+
 const (
 	dataDirPlugins         = "plugins"
 	invalidPluginNameMsg   = "%s is invalid. Name may only contain lowercase letters, numbers, '_', and '-'"
 	pluginAlreadyExistsMsg = "Plugin named %s already added"
 	pluginMissingMsg       = "Plugin named %s not installed"
 	hasNoCallbackMsg       = "Plugin named %s does not have a callback named %s"
+	hasNoCommandMsg        = "Plugin named %s does not have a extension command named %s"
 )
 
 // Plugin struct represents an asdf plugin to all asdf code. The name and dir
@@ -174,6 +186,52 @@ func (p Plugin) CallbackPath(name string) (string, error) {
 	_, err := os.Stat(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return "", NoCallbackError{callback: name, plugin: p.Name}
+	}
+
+	return path, nil
+}
+
+// GetExtensionCommands returns a slice of strings representing all available
+// extension commands for the plugin.
+func (p Plugin) GetExtensionCommands() ([]string, error) {
+	commands := []string{}
+	files, err := os.ReadDir(filepath.Join(p.Dir, "lib/commands"))
+	if _, ok := err.(*fs.PathError); ok {
+		return commands, nil
+	}
+
+	if err != nil {
+		return commands, err
+	}
+
+	for _, file := range files {
+		if !file.IsDir() {
+			name := file.Name()
+			if name == "command" {
+				commands = append(commands, "")
+			} else {
+				if strings.HasPrefix(name, "command-") {
+					commands = append(commands, strings.TrimPrefix(name, "command-"))
+				}
+			}
+		}
+	}
+	return commands, nil
+}
+
+// ExtensionCommandPath returns the path to the plugin's extension command
+// script matching the name if it exists.
+func (p Plugin) ExtensionCommandPath(name string) (string, error) {
+	commandName := "command"
+
+	if name != "" {
+		commandName = fmt.Sprintf("command-%s", name)
+	}
+
+	path := filepath.Join(p.Dir, "lib", "commands", commandName)
+	_, err := os.Stat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return "", NoCommandError{command: name, plugin: p.Name}
 	}
 
 	return path, nil
