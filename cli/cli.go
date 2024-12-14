@@ -324,7 +324,6 @@ func currentCommand(logger *log.Logger, tool string) error {
 
 	// show single tool
 	plugin := plugins.New(conf, tool)
-
 	err = plugin.Exists()
 	_, ok := err.(plugins.PluginMissing)
 	pluginExists := !ok
@@ -841,7 +840,7 @@ func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref 
 	return err
 }
 
-func pluginTestCommand(l *log.Logger, args []string, _, _ string) {
+func pluginTestCommand(l *log.Logger, args []string, toolVersion, _ string) {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		l.Printf("error loading config: %s", err)
@@ -922,8 +921,20 @@ func pluginTestCommand(l *log.Logger, args []string, _, _ string) {
 		failTest(l, "Unable to list available versions")
 	}
 
-	if len(strings.Split(output.String(), " ")) < 1 {
+	allVersions := strings.Fields(output.String())
+	if len(allVersions) < 1 {
 		failTest(l, "list-all did not return any version")
+	}
+
+	// grab first version returned by list-all callback if no version provided as
+	// a CLI argument
+	if toolVersion == "" {
+		toolVersion = allVersions[0]
+	}
+
+	err = versions.InstallOneVersion(conf, plugin, toolVersion, false, os.Stdout, os.Stderr)
+	if err != nil {
+		failTest(l, "install exited with an error")
 	}
 }
 
@@ -1079,11 +1090,16 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 		return nil
 	}
 
-	plugin := plugins.New(conf, toolName)
+	plugin, err := loadPlugin(logger, conf, toolName)
+	if err != nil {
+		os.Exit(1)
+		return err
+	}
+
 	var stdout strings.Builder
 	var stderr strings.Builder
 
-	err := plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
 	if err != nil {
 		fmt.Printf("Plugin %s's list-all callback script failed with output:\n", plugin.Name)
 		// Print to stderr
@@ -1131,7 +1147,11 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 	}
 
 	if pluginName != "" {
-		plugin := plugins.New(conf, pluginName)
+		plugin, err := loadPlugin(logger, conf, pluginName)
+		if err != nil {
+			os.Exit(1)
+			return err
+		}
 		versions, _ := installs.Installed(conf, plugin)
 
 		if filter != "" {
@@ -1370,6 +1390,17 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 	logger.Printf("%s", installPath)
 
 	return nil
+}
+
+func loadPlugin(logger *log.Logger, conf config.Config, pluginName string) (plugins.Plugin, error) {
+	plugin := plugins.New(conf, pluginName)
+	err := plugin.Exists()
+	if err != nil {
+		logger.Printf("No such plugin: %s", pluginName)
+		return plugin, err
+	}
+
+	return plugin, err
 }
 
 func reshimToolVersion(conf config.Config, tool, versionStr string, out io.Writer, errOut io.Writer) error {
