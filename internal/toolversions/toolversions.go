@@ -50,10 +50,8 @@ func GetAllToolsAndVersions(filepath string) (toolVersions []ToolVersions, err e
 // only the versions found in both.
 func Intersect(versions1 []string, versions2 []string) (versions []string) {
 	for _, version1 := range versions1 {
-		for _, version2 := range versions2 {
-			if version2 == version1 {
-				versions = append(versions, version1)
-			}
+		if slices.Contains(versions2, version1) {
+			versions = append(versions, version1)
 		}
 	}
 	return versions
@@ -63,26 +61,20 @@ func Intersect(versions1 []string, versions2 []string) (versions []string) {
 // versions.
 func Unique(versions []ToolVersions) (uniques []ToolVersions) {
 	for _, version := range versions {
-		var found bool
-
-		for index, unique := range uniques {
-			if unique.Name == version.Name {
-				// Duplicate name, check versions
-				for _, versionNumber := range version.Versions {
-					if !slices.Contains(unique.Versions, versionNumber) {
-						unique.Versions = append(unique.Versions, versionNumber)
-					}
-				}
-
-				uniques[index] = unique
-				found = true
-				break
-			}
+		index := slices.IndexFunc(
+			uniques,
+			func(v ToolVersions) bool { return v.Name == version.Name },
+		)
+		if index < 0 {
+			uniques = append(uniques, version)
+			continue
 		}
 
-		// None with name found, add
-		if !found {
-			uniques = append(uniques, version)
+		unique := &uniques[index]
+		for _, versionNumber := range version.Versions {
+			if !slices.Contains(unique.Versions, versionNumber) {
+				unique.Versions = append(unique.Versions, versionNumber)
+			}
 		}
 	}
 
@@ -165,7 +157,7 @@ func FormatForFS(version Version) string {
 // removing spaces and comments which are marked by '#'
 func readLines(content string) (lines []string) {
 	for _, line := range strings.Split(content, "\n") {
-		line = strings.SplitN(line, "#", 2)[0]
+		line, _, _ = strings.Cut(line, "#")
 		line = strings.TrimSpace(line)
 		if len(line) > 0 {
 			lines = append(lines, line)

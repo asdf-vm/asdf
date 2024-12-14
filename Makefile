@@ -1,4 +1,4 @@
-MAIN_PACKAGE_PATH := .
+MAIN_PACKAGE_PATH := ./cmd/asdf
 TARGET_DIR := .
 TARGET := asdf
 FULL_VERSION = $(shell ./scripts/asdf-version )
@@ -31,7 +31,7 @@ lint: fmt
 	revive -set_exit_status ./...
 
 vet: fmt
-	go vet .
+	go vet ./...
 
 run: build
 	${TARGET_DIR}/${TARGET}

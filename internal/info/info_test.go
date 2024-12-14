@@ -6,8 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"asdf/internal/config"
-
+	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/stretchr/testify/assert"
 )
 

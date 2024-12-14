@@ -111,7 +111,7 @@ func TestBatsTests(t *testing.T) {
 func runBatsFile(t *testing.T, dir, filename string) {
 	t.Helper()
 
-	cmd := exec.Command("bats", "--verbose-run", fmt.Sprintf("test/%s", filename))
+	cmd := exec.Command("bats", "--verbose-run", fmt.Sprintf("../../test/%s", filename))
 
 	// Capture stdout and stderr
 	var stdout strings.Builder
@@ -127,8 +127,8 @@ func runBatsFile(t *testing.T, dir, filename string) {
 	err := cmd.Run()
 	if err != nil {
 		// If command fails print both stderr and stdout
-		fmt.Println("stdout:", stdout.String())
-		fmt.Println("stderr:", stderr.String())
+		t.Log("stdout:", stdout.String())
+		t.Log("stderr:", stderr.String())
 		t.Fatal("bats command failed to run test file successfully")
 
 		return

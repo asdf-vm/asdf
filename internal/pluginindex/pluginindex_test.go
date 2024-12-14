@@ -8,9 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"asdf/internal/git"
-	"asdf/repotest"
-
+	"github.com/asdf-vm/asdf/internal/git"
+	"github.com/asdf-vm/asdf/repotest"
 	"github.com/stretchr/testify/assert"
 )
 

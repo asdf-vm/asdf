@@ -104,7 +104,7 @@ func TestUnique(t *testing.T) {
 	})
 }
 
-func TestfindToolVersionsInContent(t *testing.T) {
+func TestFindToolVersionsInContent(t *testing.T) {
 	t.Run("returns empty list with found false when empty content", func(t *testing.T) {
 		versions, found := findToolVersionsInContent("", "ruby")
 		assert.False(t, found)
@@ -124,7 +124,7 @@ func TestfindToolVersionsInContent(t *testing.T) {
 	})
 }
 
-func TestgetAllToolsAndVersionsInContent(t *testing.T) {
+func TestGetAllToolsAndVersionsInContent(t *testing.T) {
 	tests := []struct {
 		desc  string
 		input string
@@ -133,7 +133,7 @@ func TestgetAllToolsAndVersionsInContent(t *testing.T) {
 		{
 			desc:  "returns empty list with found true and no error when empty content",
 			input: "",
-			want:  []ToolVersions{},
+			want:  []ToolVersions(nil),
 		},
 		{
 			desc:  "returns list with one tool when single tool in content",
@@ -153,6 +153,10 @@ func TestgetAllToolsAndVersionsInContent(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
 			toolsAndVersions := getAllToolsAndVersionsInContent(tt.input)
+			if len(tt.want) == 0 {
+				assert.Empty(t, toolsAndVersions)
+				return
+			}
 			assert.Equal(t, tt.want, toolsAndVersions)
 		})
 	}
@@ -283,4 +287,17 @@ func TestFormatForFS(t *testing.T) {
 	t.Run("returns version prefixed with 'ref-' when version type is ref", func(t *testing.T) {
 		assert.Equal(t, FormatForFS(Version{Type: "ref", Value: "foobar"}), "ref-foobar")
 	})
+}
+
+func BenchmarkUnique(b *testing.B) {
+	versions := []ToolVersions{
+		{Name: "foo", Versions: []string{"1"}},
+		{Name: "bar", Versions: []string{"2"}},
+		{Name: "foo", Versions: []string{"2"}},
+		{Name: "bar", Versions: []string{"2"}},
+	}
+
+	for i := 0; i < b.N; i++ {
+		Unique(versions)
+	}
 }

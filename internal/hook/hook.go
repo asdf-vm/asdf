@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	"asdf/internal/config"
-	"asdf/internal/execute"
+	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/execute"
 )
 
 // Run gets a hook command from config and runs it with the provided arguments.

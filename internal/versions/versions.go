@@ -10,13 +10,13 @@ import (
 	"regexp"
 	"strings"
 
-	"asdf/internal/config"
-	"asdf/internal/hook"
-	"asdf/internal/installs"
-	"asdf/internal/plugins"
-	"asdf/internal/resolve"
-	"asdf/internal/shims"
-	"asdf/internal/toolversions"
+	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/hook"
+	"github.com/asdf-vm/asdf/internal/installs"
+	"github.com/asdf-vm/asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/internal/resolve"
+	"github.com/asdf-vm/asdf/internal/shims"
+	"github.com/asdf-vm/asdf/internal/toolversions"
 )
 
 const (

@@ -1,5 +1,5 @@
-// Package cmd contains the asdf CLI command code
-package cmd
+// Package cli contains the asdf CLI command code
+package cli
 
 import (
 	"errors"
@@ -13,21 +13,20 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"asdf/internal/config"
-	"asdf/internal/exec"
-	"asdf/internal/execenv"
-	"asdf/internal/execute"
-	"asdf/internal/help"
-	"asdf/internal/hook"
-	"asdf/internal/info"
-	"asdf/internal/installs"
-	"asdf/internal/pluginindex"
-	"asdf/internal/plugins"
-	"asdf/internal/resolve"
-	"asdf/internal/shims"
-	"asdf/internal/toolversions"
-	"asdf/internal/versions"
-
+	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/exec"
+	"github.com/asdf-vm/asdf/internal/execenv"
+	"github.com/asdf-vm/asdf/internal/execute"
+	"github.com/asdf-vm/asdf/internal/help"
+	"github.com/asdf-vm/asdf/internal/hook"
+	"github.com/asdf-vm/asdf/internal/info"
+	"github.com/asdf-vm/asdf/internal/installs"
+	"github.com/asdf-vm/asdf/internal/pluginindex"
+	"github.com/asdf-vm/asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/internal/resolve"
+	"github.com/asdf-vm/asdf/internal/shims"
+	"github.com/asdf-vm/asdf/internal/toolversions"
+	"github.com/asdf-vm/asdf/internal/versions"
 	"github.com/urfave/cli/v2"
 )
 
