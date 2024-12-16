@@ -18,9 +18,6 @@ asdf current                            Display current version set or being
                                         used for all packages
 asdf current <name>                     Display current version set or being
                                         used for package
-asdf global <name> <version>            Set the package global version
-asdf global <name> latest[:<version>]   Set the package global version to the
-                                        latest provided version
 asdf help <name> [<version>]            Output documentation for plugin and tool
 asdf install                            Install all the package versions listed
                                         in the .tool-versions file
@@ -38,9 +35,6 @@ asdf list <name> [version]              List installed versions of a package and
                                         optionally filter the versions
 asdf list all <name> [<version>]        List all versions of a package and
                                         optionally filter the returned versions
-asdf local <name> <version>             Set the package local version
-asdf local <name> latest[:<version>]    Set the package local version to the
-                                        latest provided version
 asdf shell <name> <version>             Set the package version to
                                         `ASDF_${LANG}_VERSION` in the current shell
 asdf uninstall <name> <version>         Remove a specific version of a package
@@ -58,8 +52,6 @@ asdf version                            Print the currently installed version of
 asdf reshim <name> <version>            Recreate shims for version of a package
 asdf shim-versions <command>            List the plugins and versions that
                                         provide a command
-asdf update                             Update asdf to the latest stable release
-asdf update --head                      Update asdf to the latest on the master branch
 
 RESOURCES
 GitHub: https://github.com/asdf-vm/asdf

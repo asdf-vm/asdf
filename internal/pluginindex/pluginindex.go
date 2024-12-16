@@ -77,7 +77,7 @@ func (p PluginIndex) Refresh() (bool, error) {
 
 	if len(files) == 0 {
 		// directory empty, clone down repo
-		err := p.repo.Clone(p.url)
+		err := p.repo.Clone(p.url, "")
 		if err != nil {
 			return false, fmt.Errorf("unable to initialize index: %w", err)
 		}
@@ -104,7 +104,7 @@ func (p PluginIndex) Refresh() (bool, error) {
 func (p PluginIndex) doUpdate() (bool, error) {
 	// pass in empty string as we want the repo to figure out what the latest
 	// commit is
-	_, err := p.repo.Update("")
+	_, _, _, err := p.repo.Update("")
 	if err != nil {
 		return false, fmt.Errorf("unable to update plugin index: %w", err)
 	}

@@ -31,7 +31,7 @@ type MockIndex struct {
 func (m *MockIndex) Head() (string, error)      { return "", nil }
 func (m *MockIndex) RemoteURL() (string, error) { return "", nil }
 
-func (m *MockIndex) Clone(URL string) error {
+func (m *MockIndex) Clone(URL, _ string) error {
 	m.URL = URL
 
 	if m.URL == badIndexURL {
@@ -46,18 +46,18 @@ func (m *MockIndex) Clone(URL string) error {
 	return nil
 }
 
-func (m *MockIndex) Update(_ string) (string, error) {
+func (m *MockIndex) Update(_ string) (string, string, string, error) {
 	if m.URL == badIndexURL {
-		return "", errors.New("unable to clone: repository not found")
+		return "", "", "", errors.New("unable to clone: repository not found")
 	}
 
 	// Write another plugin file to mimic update
 	err := writeMockPluginFile(m.Directory, "erlang", erlangPluginURL)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
-	return "", nil
+	return "", "", "", nil
 }
 
 func writeMockPluginFile(dir, pluginName, pluginURL string) error {
