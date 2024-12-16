@@ -65,10 +65,17 @@ func Execute(version string) {
 			},
 			{
 				Name: "current",
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  "no-header",
+						Usage: "Whether or not to print a header line",
+					},
+				},
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
 
-					return currentCommand(logger, tool)
+					noHeader := cCtx.Bool("no-header")
+					return currentCommand(logger, tool, noHeader)
 				},
 			},
 			{
@@ -286,7 +293,7 @@ func Execute(version string) {
 }
 
 // This function is a whole mess and needs to be refactored
-func currentCommand(logger *log.Logger, tool string) error {
+func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -301,6 +308,9 @@ func currentCommand(logger *log.Logger, tool string) error {
 
 	// settings here to match legacy implementation
 	w := tabwriter.NewWriter(os.Stdout, 16, 0, 1, ' ', 0)
+	if !noHeader {
+		writeHeader(w)
+	}
 
 	if tool == "" {
 		// show all
@@ -358,23 +368,38 @@ func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string
 	return toolversion, found, installed
 }
 
+func writeHeader(w *tabwriter.Writer) {
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", "Name", "Version", "Source", "Installed")
+}
+
 func formatCurrentVersionLine(w *tabwriter.Writer, plugin plugins.Plugin, toolversion resolve.ToolVersions, found bool, installed bool, err error) error {
 	if err != nil {
 		return err
 	}
 
-	fmt.Fprintf(w, "%s\t%s\t%s\n", plugin.Name, formatVersions(toolversion.Versions), formatSource(toolversion, plugin, found, installed))
+	// columns are: name, version, source, installed
+	version := formatVersions(toolversion.Versions)
+	source := formatSource(toolversion, found)
+	installedStatus := formatInstalled(toolversion, plugin.Name, found, installed)
+	fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", plugin.Name, version, source, installedStatus)
 	return nil
 }
 
-func formatSource(toolversion resolve.ToolVersions, plugin plugins.Plugin, found bool, installed bool) string {
+func formatInstalled(toolversion resolve.ToolVersions, name string, found, installed bool) string {
+	if !found {
+		return ""
+	}
+	if !installed {
+		return fmt.Sprintf("false - Run `asdf install %s %s`", name, toolversion.Versions[0])
+	}
+	return "true"
+}
+
+func formatSource(toolversion resolve.ToolVersions, found bool) string {
 	if found {
-		if !installed {
-			return fmt.Sprintf("Not installed. Run \"asdf install %s %s\"", plugin.Name, toolversion.Versions[0])
-		}
 		return filepath.Join(toolversion.Directory, toolversion.Source)
 	}
-	return fmt.Sprintf("No version is set. Run \"asdf <global|shell|local> %s <version>\"", plugin.Name)
+	return "______"
 }
 
 func formatVersions(versions []string) string {
@@ -693,13 +718,13 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 	// logic
 	for _, plugin := range plugins {
 		if urls && refs {
-			logger.Printf("%s\t\t%s\t%s\n", plugin.Name, plugin.URL, plugin.Ref)
+			fmt.Printf("%s\t\t%s\t%s\n", plugin.Name, plugin.URL, plugin.Ref)
 		} else if refs {
-			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.Ref)
+			fmt.Printf("%s\t\t%s\n", plugin.Name, plugin.Ref)
 		} else if urls {
-			logger.Printf("%s\t\t%s\n", plugin.Name, plugin.URL)
+			fmt.Printf("%s\t\t%s\n", plugin.Name, plugin.URL)
 		} else {
-			logger.Printf("%s\n", plugin.Name)
+			fmt.Printf("%s\n", plugin.Name)
 		}
 	}
 
@@ -1370,7 +1395,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 			versionStruct := toolversions.Version{Type: "version", Value: versions.Versions[0]}
 			if installs.IsInstalled(conf, plugin, versionStruct) {
 				installPath := installs.InstallPath(conf, plugin, versionStruct)
-				logger.Printf("%s", installPath)
+				fmt.Printf("%s", installPath)
 				return nil
 			}
 		}
@@ -1387,7 +1412,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 	}
 
 	installPath := installs.InstallPath(conf, plugin, version)
-	logger.Printf("%s", installPath)
+	fmt.Printf("%s", installPath)
 
 	return nil
 }

@@ -50,6 +50,16 @@ not an executable. The new rewrite removes all shell code from asdf, and it is
 now a binary rather than a shell function, so setting environment variables
 directly in the shell is no longer possible.
 
+### `asdf current` has changed
+
+Instead of three columns in the output, with the last being either the location
+the version is set or a suggested command that could be run to set or install a
+version. The third column has been split into two columns. The third column now
+only indicates the source of the version if it is set (typically either version
+file or environment variable) and the fourth is a boolean indicating whether
+the specified version is actually installed. If it is not installed, a
+suggested install command is shown.
+
 ### Plugin extension commands must now be prefixed with `cmd`
 
 Previously plugin extension commands could be run like this:
