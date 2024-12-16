@@ -106,7 +106,11 @@ cleaned_path() {
     pprint \$asdf~"
 
   [ "$status" -eq 0 ]
-  [[ "$output" =~ "<closure " ]]
+  if [ "$(uname)" = "Linux" ]; then
+    [[ "$output" =~ "<closure " ]]
+  else
+    [[ "$output" =~ ^'[^fn ' ]]
+  fi
 }
 
 @test "function calls asdf command" {
