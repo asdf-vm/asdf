@@ -237,6 +237,37 @@ func (p Plugin) ExtensionCommandPath(name string) (string, error) {
 	return path, nil
 }
 
+// Update a plugin to a specific ref, or if no ref provided update to latest
+func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (string, error) {
+	err := p.Exists()
+	if err != nil {
+		return "", fmt.Errorf("no such plugin: %s", p.Name)
+	}
+
+	repo := git.NewRepo(p.Dir)
+
+	hook.Run(conf, "pre_asdf_plugin_update", []string{p.Name})
+	hook.Run(conf, fmt.Sprintf("pre_asdf_plugin_update_%s", p.Name), []string{p.Name})
+
+	newRef, oldSHA, newSHA, err := repo.Update(ref)
+	if err != nil {
+		return newRef, err
+	}
+
+	env := map[string]string{
+		"ASDF_PLUGIN_PATH":     p.Dir,
+		"ASDF_PLUGIN_PREV_REF": oldSHA,
+		"ASDF_PLUGIN_POST_REF": newSHA,
+	}
+
+	err = p.RunCallback("post-plugin-update", []string{}, env, out, errout)
+
+	hook.Run(conf, "post_asdf_plugin_update", []string{p.Name})
+	hook.Run(conf, fmt.Sprintf("post_asdf_plugin_update_%s", p.Name), []string{})
+
+	return newRef, err
+}
+
 // List takes config and flags for what to return and builds a list of plugins
 // representing the currently installed plugins on the system.
 func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
@@ -256,7 +287,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 				var url string
 				var refString string
 				location := filepath.Join(pluginsDir, file.Name())
-				plugin := git.NewRepo(location)
+				repo := git.NewRepo(location)
 
 				// TODO: Improve these error messages
 				if err != nil {
@@ -264,14 +295,14 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 				}
 
 				if refs {
-					refString, err = plugin.Head()
+					refString, err = repo.Head()
 					if err != nil {
 						return plugins, err
 					}
 				}
 
 				if urls {
-					url, err = plugin.RemoteURL()
+					url, err = repo.RemoteURL()
 					if err != nil {
 						return plugins, err
 					}
@@ -297,7 +328,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 
 // Add takes plugin name and Git URL and installs the plugin if it isn't
 // already installed
-func Add(config config.Config, pluginName, pluginURL string) error {
+func Add(config config.Config, pluginName, pluginURL, ref string) error {
 	err := validatePluginName(pluginName)
 	if err != nil {
 		return err
@@ -344,7 +375,7 @@ func Add(config config.Config, pluginName, pluginURL string) error {
 	hook.Run(config, "pre_asdf_plugin_add", []string{plugin.Name})
 	hook.Run(config, fmt.Sprintf("pre_asdf_plugin_add_%s", plugin.Name), []string{})
 
-	err = git.NewRepo(plugin.Dir).Clone(plugin.URL)
+	err = git.NewRepo(plugin.Dir).Clone(plugin.URL, ref)
 	if err != nil {
 		return err
 	}
@@ -411,24 +442,6 @@ func Remove(config config.Config, pluginName string, stdout, stderr io.Writer) e
 	hook.Run(config, fmt.Sprintf("post_asdf_plugin_remove_%s", plugin.Name), []string{})
 
 	return err3
-}
-
-// Update a plugin to a specific ref, or if no ref provided update to latest
-func Update(config config.Config, pluginName, ref string) (string, error) {
-	exists, err := PluginExists(config.DataDir, pluginName)
-	if err != nil {
-		return "", fmt.Errorf("unable to check if plugin exists: %w", err)
-	}
-
-	if !exists {
-		return "", fmt.Errorf("no such plugin: %s", pluginName)
-	}
-
-	pluginDir := data.PluginDirectory(config.DataDir, pluginName)
-
-	plugin := git.NewRepo(pluginDir)
-
-	return plugin.Update(ref)
 }
 
 // PluginExists returns a boolean indicating whether or not a plugin with the

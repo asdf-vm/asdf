@@ -36,6 +36,14 @@ Manage all your runtime versions with one tool!
 
 Complete documentation is available at https://asdf-vm.com/`
 
+const updateCommandRemovedText = `
+Upgrading asdf via asdf update is no longer supported. Please use your OS
+package manager (Homebrew, APT, etc...) to upgrade asdf or download the
+latest asdf binary manually from the asdf website.
+
+Please visit https://asdf-vm.com/ or https://github.com/asdf-vm/asdf for more
+details.`
+
 // Execute defines the full CLI API and then runs it
 func Execute(version string) {
 	logger := log.New(os.Stderr, "", 0)
@@ -261,6 +269,13 @@ func Execute(version string) {
 					version := cCtx.Args().Get(1)
 
 					return uninstallCommand(logger, tool, version)
+				},
+			},
+			{
+				Name: "update",
+				Action: func(_ *cli.Context) error {
+					fmt.Println(updateCommandRemovedText)
+					return errors.New("command removed")
 				},
 			},
 			{
@@ -647,7 +662,7 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 		return cli.Exit("usage: asdf plugin add <name> [<git-url>]", 1)
 	}
 
-	err := plugins.Add(conf, pluginName, pluginRepo)
+	err := plugins.Add(conf, pluginName, pluginRepo, "")
 	if err != nil {
 		logger.Printf("%s", err)
 
@@ -853,19 +868,20 @@ func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref 
 		}
 
 		for _, plugin := range installedPlugins {
-			updatedToRef, err := plugins.Update(conf, plugin.Name, "")
+			updatedToRef, err := plugin.Update(conf, "", os.Stdout, os.Stderr)
 			formatUpdateResult(logger, plugin.Name, updatedToRef, err)
 		}
 
 		return nil
 	}
 
-	updatedToRef, err := plugins.Update(conf, pluginName, ref)
+	plugin := plugins.New(conf, pluginName)
+	updatedToRef, err := plugin.Update(conf, ref, os.Stdout, os.Stderr)
 	formatUpdateResult(logger, pluginName, updatedToRef, err)
 	return err
 }
 
-func pluginTestCommand(l *log.Logger, args []string, toolVersion, _ string) {
+func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		l.Printf("error loading config: %s", err)
@@ -882,7 +898,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, _ string) {
 	testName := fmt.Sprintf("asdf-test-%s", name)
 
 	// Install plugin
-	err = plugins.Add(conf, testName, url)
+	err = plugins.Add(conf, testName, url, ref)
 	if err != nil {
 		failTest(l, fmt.Sprintf("%s was not properly installed", name))
 	}

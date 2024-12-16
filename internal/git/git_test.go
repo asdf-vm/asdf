@@ -11,23 +11,50 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPluginClone(t *testing.T) {
-	t.Run("when plugin name is valid but URL is invalid prints an error", func(t *testing.T) {
-		plugin := NewRepo(t.TempDir())
-		err := plugin.Clone("foobar")
+func TestRepoClone(t *testing.T) {
+	t.Run("when repo name is valid but URL is invalid prints an error", func(t *testing.T) {
+		repo := NewRepo(t.TempDir())
+		err := repo.Clone("foobar", "")
 
 		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
 	})
 
-	t.Run("clones provided Git URL to plugin directory when URL is valid", func(t *testing.T) {
+	t.Run("clones provided Git URL to repo directory when URL is valid", func(t *testing.T) {
 		repoDir := generateRepo(t)
 		directory := t.TempDir()
-		plugin := NewRepo(directory)
+		repo := NewRepo(directory)
 
-		err := plugin.Clone(repoDir)
+		err := repo.Clone(repoDir, "")
 		assert.Nil(t, err)
 
-		// Assert plugin directory contains Git repo with bin directory
+		// Assert repo directory contains Git repo with bin directory
+		_, err = os.ReadDir(directory + "/.git")
+		assert.Nil(t, err)
+
+		entries, err := os.ReadDir(directory + "/bin")
+		assert.Nil(t, err)
+		assert.Equal(t, 12, len(entries))
+	})
+
+	t.Run("when repo name and URL are valid but ref is invalid prints an error", func(t *testing.T) {
+		repoDir := generateRepo(t)
+		directory := t.TempDir()
+		repo := NewRepo(directory)
+
+		err := repo.Clone(repoDir, "non-existent")
+
+		assert.ErrorContains(t, err, "unable to clone plugin: reference not found")
+	})
+
+	t.Run("clones a provided Git URL and checks out a specific ref when URL is valid and ref is provided", func(t *testing.T) {
+		repoDir := generateRepo(t)
+		directory := t.TempDir()
+		repo := NewRepo(directory)
+
+		err := repo.Clone(repoDir, "master")
+		assert.Nil(t, err)
+
+		// Assert repo directory contains Git repo with bin directory
 		_, err = os.ReadDir(directory + "/.git")
 		assert.Nil(t, err)
 
@@ -37,47 +64,47 @@ func TestPluginClone(t *testing.T) {
 	})
 }
 
-func TestPluginHead(t *testing.T) {
+func TestRepoHead(t *testing.T) {
 	repoDir := generateRepo(t)
 	directory := t.TempDir()
 
-	plugin := NewRepo(directory)
+	repo := NewRepo(directory)
 
-	err := plugin.Clone(repoDir)
+	err := repo.Clone(repoDir, "")
 	assert.Nil(t, err)
 
-	head, err := plugin.Head()
+	head, err := repo.Head()
 	assert.Nil(t, err)
 	assert.NotZero(t, head)
 }
 
-func TestPluginRemoteURL(t *testing.T) {
+func TestRepoRemoteURL(t *testing.T) {
 	repoDir := generateRepo(t)
 	directory := t.TempDir()
 
-	plugin := NewRepo(directory)
+	repo := NewRepo(directory)
 
-	err := plugin.Clone(repoDir)
+	err := repo.Clone(repoDir, "")
 	assert.Nil(t, err)
 
-	url, err := plugin.RemoteURL()
+	url, err := repo.RemoteURL()
 	assert.Nil(t, err)
 	assert.NotZero(t, url)
 }
 
-func TestPluginUpdate(t *testing.T) {
+func TestRepoUpdate(t *testing.T) {
 	repoDir := generateRepo(t)
 	directory := t.TempDir()
 
-	plugin := NewRepo(directory)
+	repo := NewRepo(directory)
 
-	err := plugin.Clone(repoDir)
+	err := repo.Clone(repoDir, "")
 	assert.Nil(t, err)
 
-	t.Run("returns error when plugin with name does not exist", func(t *testing.T) {
+	t.Run("returns error when repo with name does not exist", func(t *testing.T) {
 		nonexistantPath := filepath.Join(directory, "nonexistant")
-		nonexistantPlugin := NewRepo(nonexistantPath)
-		updatedToRef, err := nonexistantPlugin.Update("")
+		nonexistantRepo := NewRepo(nonexistantPath)
+		updatedToRef, _, _, err := nonexistantRepo.Update("")
 
 		assert.NotNil(t, err)
 		assert.Equal(t, updatedToRef, "")
@@ -85,15 +112,15 @@ func TestPluginUpdate(t *testing.T) {
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
-	t.Run("returns error when plugin repo does not exist", func(t *testing.T) {
-		badPluginName := "badplugin"
-		badPluginDir := filepath.Join(directory, badPluginName)
-		err := os.MkdirAll(badPluginDir, 0o777)
+	t.Run("returns error when repo repo does not exist", func(t *testing.T) {
+		badRepoName := "badrepo"
+		badRepoDir := filepath.Join(directory, badRepoName)
+		err := os.MkdirAll(badRepoDir, 0o777)
 		assert.Nil(t, err)
 
-		badPlugin := NewRepo(badPluginDir)
+		badRepo := NewRepo(badRepoDir)
 
-		updatedToRef, err := badPlugin.Update("")
+		updatedToRef, _, _, err := badRepo.Update("")
 
 		assert.NotNil(t, err)
 		assert.Equal(t, updatedToRef, "")
@@ -101,25 +128,25 @@ func TestPluginUpdate(t *testing.T) {
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
-	t.Run("does not return error when plugin is already updated", func(t *testing.T) {
-		// update plugin twice to test already updated case
-		updatedToRef, err := plugin.Update("")
+	t.Run("does not return error when repo is already updated", func(t *testing.T) {
+		// update repo twice to test already updated case
+		updatedToRef, _, _, err := repo.Update("")
 		assert.Nil(t, err)
-		updatedToRef2, err := plugin.Update("")
+		updatedToRef2, _, _, err := repo.Update("")
 		assert.Nil(t, err)
 		assert.Equal(t, updatedToRef, updatedToRef2)
 	})
 
-	t.Run("updates plugin when plugin when plugin exists", func(t *testing.T) {
+	t.Run("updates repo when repo when repo exists", func(t *testing.T) {
 		latestHash, err := getCurrentCommit(directory)
 		assert.Nil(t, err)
 
 		_, err = checkoutPreviousCommit(directory)
 		assert.Nil(t, err)
 
-		updatedToRef, err := plugin.Update("")
+		updatedToRef, _, _, err := repo.Update("")
 		assert.Nil(t, err)
-		assert.Equal(t, latestHash, updatedToRef)
+		assert.Equal(t, "refs/heads/master", updatedToRef)
 
 		currentHash, err := getCurrentCommit(directory)
 		assert.Nil(t, err)
@@ -128,26 +155,27 @@ func TestPluginUpdate(t *testing.T) {
 
 	t.Run("Returns error when specified ref does not exist", func(t *testing.T) {
 		ref := "non-existant"
-		updatedToRef, err := plugin.Update(ref)
+		updatedToRef, _, _, err := repo.Update(ref)
 		assert.Equal(t, updatedToRef, "")
 		expectedErrMsg := "couldn't find remote ref \"non-existant\""
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
-	t.Run("updates plugin to ref when plugin with name and ref exist", func(t *testing.T) {
+	t.Run("updates repo to ref when repo with name and ref exist", func(t *testing.T) {
 		ref := "master"
 
 		hash, err := getCommit(directory, ref)
 		assert.Nil(t, err)
 
-		updatedToRef, err := plugin.Update(ref)
+		updatedToRef, _, newHash, err := repo.Update(ref)
 		assert.Nil(t, err)
-		assert.Equal(t, hash, updatedToRef)
+		assert.Equal(t, "master", updatedToRef)
 
-		// Check that plugin was updated to ref
+		// Check that repo was updated to ref
 		latestHash, err := getCurrentCommit(directory)
 		assert.Nil(t, err)
 		assert.Equal(t, hash, latestHash)
+		assert.Equal(t, newHash, latestHash)
 	})
 }
 

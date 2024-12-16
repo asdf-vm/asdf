@@ -20,10 +20,10 @@ const DefaultRemoteName = "origin"
 // and upgrade plugins. If other approaches are supported this will be
 // extracted into the `plugins` module.
 type Repoer interface {
-	Clone(pluginURL string) error
+	Clone(pluginURL, ref string) error
 	Head() (string, error)
 	RemoteURL() (string, error)
-	Update(ref string) (string, error)
+	Update(ref string) (string, string, string, error)
 }
 
 // Repo is a struct to contain the Git repository details
@@ -38,10 +38,17 @@ func NewRepo(directory string) Repo {
 }
 
 // Clone installs a plugin via Git
-func (r Repo) Clone(pluginURL string) error {
-	_, err := git.PlainClone(r.Directory, false, &git.CloneOptions{
+func (r Repo) Clone(pluginURL, ref string) error {
+	options := git.CloneOptions{
 		URL: pluginURL,
-	})
+	}
+
+	// if ref is provided set it on CloneOptions
+	if ref != "" {
+		options.ReferenceName = plumbing.NewBranchReferenceName(ref)
+	}
+
+	_, err := git.PlainClone(r.Directory, false, &options)
 	if err != nil {
 		return fmt.Errorf("unable to clone plugin: %w", err)
 	}
@@ -81,10 +88,15 @@ func (r Repo) RemoteURL() (string, error) {
 
 // Update updates the plugin's Git repository to the ref if provided, or the
 // latest commit on the current branch
-func (r Repo) Update(ref string) (string, error) {
+func (r Repo) Update(ref string) (string, string, string, error) {
 	repo, err := gitOpen(r.Directory)
 	if err != nil {
-		return "", err
+		return "", "", "", err
+	}
+
+	oldHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
+	if err != nil {
+		return "", "", "", err
 	}
 
 	var checkoutOptions git.CheckoutOptions
@@ -93,11 +105,11 @@ func (r Repo) Update(ref string) (string, error) {
 		// If no ref is provided checkout latest commit on current branch
 		head, err := repo.Head()
 		if err != nil {
-			return "", err
+			return "", "", "", err
 		}
 
 		if !head.Name().IsBranch() {
-			return "", fmt.Errorf("not on a branch, unable to update")
+			return "", "", "", fmt.Errorf("not on a branch, unable to update")
 		}
 
 		// If on a branch checkout the latest version of it from the remote
@@ -116,21 +128,21 @@ func (r Repo) Update(ref string) (string, error) {
 	err = repo.Fetch(&fetchOptions)
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		return "", err
+		return "", "", "", err
 	}
 
 	worktree, err := repo.Worktree()
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
 	err = worktree.Checkout(&checkoutOptions)
 	if err != nil {
-		return "", err
+		return "", "", "", err
 	}
 
-	hash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
-	return hash.String(), err
+	newHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
+	return ref, oldHash.String(), newHash.String(), err
 }
 
 func gitOpen(directory string) (*git.Repository, error) {
