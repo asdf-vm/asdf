@@ -67,7 +67,7 @@ plugin_test_command() {
     set -- "${SHELL:-sh}" -c "$1"
   fi
 
-  TEST_DIR=$(mktemp -dt asdf.XXXX)
+  TEST_DIR=$(mktemp -dt asdf.XXXXXX)
   cp -R "$(asdf_dir)/bin" "$TEST_DIR"
   cp -R "$(asdf_dir)/lib" "$TEST_DIR"
   cp "$(asdf_dir)/asdf.sh" "$TEST_DIR"

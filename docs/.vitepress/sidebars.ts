@@ -110,6 +110,118 @@ const en = [
   { text: "Thanks", link: "/more/thanks" },
 ];
 
+const ko_kr = [
+  {
+    text: "가이드",
+    collapsed: false,
+    items: [
+      { text: "asdf이란?", link: "/ko-kr/guide/introduction" },
+      { text: "시작하기", link: "/ko-kr/guide/getting-started" },
+    ],
+  },
+  {
+    text: "사용방법",
+    collapsed: false,
+    items: [
+      { text: "코어", link: "/ko-kr/manage/core" },
+      { text: "플러그인", link: "/ko-kr/manage/plugins" },
+      { text: "버전", link: "/ko-kr/manage/versions" },
+    ],
+  },
+  {
+    text: "참고자료",
+    collapsed: false,
+    items: [
+      { text: "설정", link: "/ko-kr/manage/configuration" },
+      { text: "모든 명령어", link: "/ko-kr/manage/commands" },
+      {
+        text: "플러그인 Shortname 인덱스",
+        link: "https://github.com/asdf-vm/asdf-plugins",
+      },
+    ],
+  },
+  {
+    text: "플러그인",
+    collapsed: true,
+    items: [
+      {
+        text: "저자",
+        items: [
+          { text: "플러그인 만들기", link: "/ko-kr/plugins/create" },
+          {
+            text: "GitHub 플러그인 템플릿",
+            link: "https://github.com/asdf-vm/asdf-plugin-template",
+          },
+        ],
+      },
+      {
+        text: "공식 플러그인",
+        items: [
+          {
+            text: "Elixir",
+            link: "https://github.com/asdf-vm/asdf-elixir",
+          },
+          {
+            text: "Erlang",
+            link: "https://github.com/asdf-vm/asdf-erlang",
+          },
+          {
+            text: "Node.js",
+            link: "https://github.com/asdf-vm/asdf-nodejs",
+          },
+          {
+            text: "Ruby",
+            link: "https://github.com/asdf-vm/asdf-ruby",
+          },
+        ],
+      },
+      {
+        text: "커뮤니티 플러그인",
+        items: [
+          {
+            text: "asdf-community",
+            link: "https://github.com/asdf-community",
+          },
+          {
+            text: "GitHub 토픽 검색",
+            link: "https://github.com/topics/asdf-plugin",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    text: "질문",
+    collapsed: true,
+    items: [
+      { text: "자주 묻는 질문", link: "/ko-kr/more/faq" },
+      {
+        text: "GitHub 이슈",
+        link: "https://github.com/asdf-vm/asdf/issues",
+      },
+      {
+        text: "Stack Overflow 태그",
+        link: "https://stackoverflow.com/questions/tagged/asdf-vm",
+      },
+    ],
+  },
+  {
+    text: "기여하기",
+    collapsed: true,
+    items: [
+      { text: "코어 asdf", link: "/ko-kr/contribute/core" },
+      { text: "문서", link: "/ko-kr/contribute/documentation" },
+      {
+        text: "공식 플러그인",
+        link: "/ko-kr/contribute/first-party-plugins",
+      },
+      { text: "GitHub Actions", link: "/ko-kr/contribute/github-actions" },
+    ],
+  },
+  { text: "커뮤니티 프로젝트", link: "/ko-kr/more/community-projects" },
+  { text: "감사인사", link: "/ko-kr/more/thanks" },
+];
+
 const ja_jp = [
   {
     text: "ガイド",
@@ -446,4 +558,4 @@ const zh_hans = [
   { text: "致谢", link: "/zh-hans/more/thanks" },
 ];
 
-export { en, ja_jp, pt_br, zh_hans };
+export { en, ko_kr, ja_jp, pt_br, zh_hans };
