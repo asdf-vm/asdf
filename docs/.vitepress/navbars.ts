@@ -50,6 +50,24 @@ const ja_jp = [
   },
 ];
 
+const ko_kr = [
+  { text: "가이드", link: "/ko-kr/guide/getting-started" },
+  {
+    text: "참고자료",
+    link: "/ko-kr/manage/configuration",
+  },
+  {
+    text: getVersion(),
+    items: [
+      {
+        text: "변동사항",
+        link: "https://github.com/asdf-vm/asdf/blob/master/CHANGELOG.md",
+      },
+      { text: "기여하기", link: "/ko-kr/contribute/core" },
+    ],
+  },
+];
+
 const pt_br = [
   { text: "Guia", link: "/pt-br/guide/getting-started" },
   {
@@ -86,4 +104,4 @@ const zh_hans = [
   },
 ];
 
-export { en, ja_jp, pt_br, zh_hans };
+export { en, ko_kr, ja_jp, pt_br, zh_hans };

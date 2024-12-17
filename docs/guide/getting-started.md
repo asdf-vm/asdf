@@ -36,7 +36,7 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
 
 ```
 
