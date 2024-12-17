@@ -7,6 +7,7 @@ setup() {
   install_dummy_legacy_plugin
   install_dummy_plugin
   install_dummy_broken_plugin
+  install_dummy_plugin_no_download
 
   PROJECT_DIR="$HOME/project"
   mkdir -p "$PROJECT_DIR"
@@ -302,11 +303,24 @@ EOM
   [ "$output" = "Download failed!" ]
 }
 
-@test "install_command prints info message if plugin does not support preserving download data if configured" {
-  install_dummy_plugin_no_download
+@test "install_command prints info message if plugin does not support preserving download data if --keep-download flag is provided" {
+  run asdf install dummy-no-download 1.0.0 --keep-download
+  [ "$status" -eq 0 ]
 
+  [[ "$output" == *'asdf: Warn:'*'not be preserved'* ]]
+}
+
+@test "install_command prints info message if plugin does not support preserving download data if always_keep_download setting is true" {
+  echo 'always_keep_download = yes' >"$HOME/.asdfrc"
   run asdf install dummy-no-download 1.0.0
   [ "$status" -eq 0 ]
 
   [[ "$output" == *'asdf: Warn:'*'not be preserved'* ]]
+}
+
+@test "install_command does not print info message if --keep-download flag is not provided and always_keep_download setting is false" {
+  run asdf install dummy-no-download 1.0.0
+  [ "$status" -eq 0 ]
+
+  [[ "$output" != *'asdf: Warn:'*'not be preserved'* ]]
 }
