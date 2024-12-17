@@ -22,12 +22,12 @@ fi
 # Elvish
 elvish_semver="v0.19.2"
 # Fish
-fish_semver="3.7.0"
+fish_semver="3.7.1"
 fish_apt_semver="${fish_semver}-1~jammy"
 # Nushell
 nushell_semver="0.86.0"
 # Powershell
-powershell_semver="7.3.3"
+powershell_semver="7.4.6"
 powershell_apt_semver="${powershell_semver}-1.deb"
 
 ### Install dependencies on Linux

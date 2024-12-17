@@ -16,6 +16,14 @@ export default defineConfig({
         sidebar: sidebars.en,
       },
     },
+    "ko-kr": {
+      label: "한국어",
+      lang: "ko-kr",
+      themeConfig: {
+        nav: navbars.ko_kr,
+        sidebar: sidebars.ko_kr,
+      },
+    },
     "ja-jp": {
       label: "日本語",
       lang: "ja-jp",
