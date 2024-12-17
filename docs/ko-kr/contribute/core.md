@@ -63,7 +63,7 @@ bats test/list_commands.bash
 
 다음은 `asdf-vm/asdf` 리포지토리에 `.gitignore` 파일입니다. 우리는 프로젝트에 관련된 특정한 파일들을 무시합니다. 운영체제, 툴, workflows에 관련된 파일들은 글로벌 `.gitignore` 설정에서 무시되어야합니다, [더 보기](http://stratus3d.com/blog/2018/06/03/stop-excluding-editor-temp-files-in-gitignore/).
 
-@[코드](../../.gitignore)
+@/../.gitignore
 
 ### `.git-blame-ignore-revs`
 
