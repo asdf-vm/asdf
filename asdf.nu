@@ -15,7 +15,7 @@ def --env configure-asdf [] {
       if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
         $env.HOME | path join '.asdf'
       } else {
-        $env.ASDF_DIR
+        $env.ASDF_DATA_DIR
       } | path join 'shims'
     )
     let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
@@ -131,7 +131,7 @@ module asdf {
 
         let flags = ($params | where enabled | get --ignore-errors flag | default '' )
 
-        ^asdf plugin list $flags | lines | parse -r $template | str trim
+        ^asdf plugin list ...$flags | lines | parse -r $template | str trim
     }
 
     # list all available plugins
