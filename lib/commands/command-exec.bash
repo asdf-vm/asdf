@@ -3,7 +3,11 @@
 shim_exec_command() {
   local shim_name
   shim_name=$(basename "$1")
-  local shim_args=("${@:2}")
+
+  local shim_args=()
+  if [ $# -gt 1 ]; then
+    shim_args=("${@:2}")
+  fi
 
   if [ -z "$shim_name" ]; then
     printf "usage: asdf exec <command>\n"
@@ -20,12 +24,25 @@ shim_exec_command() {
       exit 2
     fi
 
-    asdf_run_hook "pre_${plugin_name}_${shim_name}" "${shim_args[@]}"
-    pre_status=$?
+    # Check if array is empty before using it
+    if [ ${#shim_args[@]} -eq 0 ]; then
+      asdf_run_hook "pre_${plugin_name}_${shim_name}"
+      pre_status=$?
+    else
+      asdf_run_hook "pre_${plugin_name}_${shim_name}" "${shim_args[@]}"
+      pre_status=$?
+    fi
+
     if [ "$pre_status" -ne 0 ]; then
       return "$pre_status"
     fi
-    exec "$executable_path" "${shim_args[@]}"
+
+    # Check if array is empty before using it
+    if [ ${#shim_args[@]} -eq 0 ]; then
+      exec "$executable_path"
+    else
+      exec "$executable_path" "${shim_args[@]}"
+    fi
   }
 
   with_shim_executable "$shim_name" exec_shim || exit $?
