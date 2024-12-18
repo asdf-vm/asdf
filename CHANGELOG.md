@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.15.0](https://github.com/asdf-vm/asdf/compare/v0.14.1...v0.15.0) (2024-12-18)
+
+
+### Features
+
+* golang-rewrite: remove `asdf update` command to prepare for Go version ([#1806](https://github.com/asdf-vm/asdf/issues/1806)) ([15571a2](https://github.com/asdf-vm/asdf/commit/15571a2d28818644673bbaf0fcf7d1d9e342cda4))
+
+
+### Patches
+
+* completions: Address two Bash completion bugs ([#1770](https://github.com/asdf-vm/asdf/issues/1770)) ([ebdb229](https://github.com/asdf-vm/asdf/commit/ebdb229ce68979a18dae5c0922620b860c56b22f))
+* make plugin-test work on alpine linux ([#1778](https://github.com/asdf-vm/asdf/issues/1778)) ([f5a1f3a](https://github.com/asdf-vm/asdf/commit/f5a1f3a0a8bb50796f6ccf618d2bf4cf3bdea097))
+* nushell: nushell spread operator ([#1777](https://github.com/asdf-vm/asdf/issues/1777)) ([a0ce37b](https://github.com/asdf-vm/asdf/commit/a0ce37b89bd5eb4ddaa806f96305ee99a8c5d365))
+* nushell: Use correct env var for shims dir ([#1742](https://github.com/asdf-vm/asdf/issues/1742)) ([2f07629](https://github.com/asdf-vm/asdf/commit/2f0762991c35da933b81ba6ab75457a504deedbb))
+* when download path got removed, it should use -f to force delete the download files ([#1746](https://github.com/asdf-vm/asdf/issues/1746)) ([221507f](https://github.com/asdf-vm/asdf/commit/221507f1c0288f0df13315a7f0f2c0a7bc39e7c2))
+
+
+### Documentation
+
+* add Korean translation ([#1757](https://github.com/asdf-vm/asdf/issues/1757)) ([9e16306](https://github.com/asdf-vm/asdf/commit/9e16306f42b4bbffd62779aaebb9cbbc9ba59007))
+* propose edits for tiny typographical/grammatical errors ([#1747](https://github.com/asdf-vm/asdf/issues/1747)) ([d462b55](https://github.com/asdf-vm/asdf/commit/d462b55ec9868eeaddba4b70850aba908236dd93))
+* split Lint and Test badges for title asdf in `README.MD` ([#1725](https://github.com/asdf-vm/asdf/issues/1725)) ([c778ea1](https://github.com/asdf-vm/asdf/commit/c778ea1deca19d8ccd91253c2f206a6b51a0a9b1))
+* Update Japanese(ja-jp) Translations ([#1715](https://github.com/asdf-vm/asdf/issues/1715)) ([bd19e4c](https://github.com/asdf-vm/asdf/commit/bd19e4cbdc2f0a9380dbdfcec46584d619e8ed56))
+
 ## [0.14.1](https://github.com/asdf-vm/asdf/compare/v0.14.0...v0.14.1) (2024-08-15)
 
 
