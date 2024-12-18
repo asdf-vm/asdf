@@ -15,7 +15,7 @@ def --env configure-asdf [] {
       if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
         $env.HOME | path join '.asdf'
       } else {
-        $env.ASDF_DIR
+        $env.ASDF_DATA_DIR
       } | path join 'shims'
     )
     let asdf_bin_dir = ( $env.ASDF_DIR | path join 'bin' )
@@ -74,6 +74,30 @@ module asdf {
         }
     }
 
+    def "complete asdf plugin versions all" [context: string] {
+        let plugin = $context | str trim | split words | last
+        ^asdf list all $plugin 
+        | lines 
+        | each { |line| $line | str trim } 
+        | prepend "latest"
+    }
+
+    def "complete asdf plugin versions installed" [context: string] {
+        let plugin = $context | str trim | split words | last
+        let versions = ^asdf list $plugin 
+        | lines 
+        | each { |line| $line | str trim }
+        | each { |version| if ($version | str starts-with "*") {{value: ($version | str substring 1..), description: "current version"}} else {{value: $version, description: ""}} }
+        
+        let latest = ^asdf latest $plugin | str trim
+
+        if ($versions | get value | any {|el| $el == $latest}) {
+            $versions | prepend {value: "latest", description: $"alias to ($latest)"}
+        } else {
+            $versions
+        }
+    }
+
     # ASDF version manager
     export extern main [
         subcommand?: string@"complete asdf sub-commands"
@@ -107,7 +131,7 @@ module asdf {
 
         let flags = ($params | where enabled | get --ignore-errors flag | default '' )
 
-        ^asdf plugin list $flags | lines | parse -r $template | str trim
+        ^asdf plugin list ...$flags | lines | parse -r $template | str trim
     }
 
     # list all available plugins
@@ -145,15 +169,15 @@ module asdf {
 
     # install a package version
     export extern "asdf install" [
-        name?: string # Name of the package
-        version?: string # Version of the package or latest
+        name?: string@"complete asdf installed plugins" # Name of the package
+        version?: string@"complete asdf plugin versions all" # Version of the package or latest
     ]
 
 
     # Remove an installed package version
     export extern "asdf uninstall" [
         name: string@"complete asdf installed" # Name of the package
-        version: string # Version of the package
+        version: string@"complete asdf plugin versions installed" # Version of the package
     ]
 
     # Display current version
@@ -169,31 +193,31 @@ module asdf {
     # Display install path for an installled package version
     export extern "asdf where" [
         name: string@"complete asdf installed" # Name of installed package
-        version?: string # Version of installed package
+        version?: string@"complete asdf plugin versions installed" # Version of installed package
     ]
 
     # Set the package local version
     export extern "asdf local" [
         name: string@"complete asdf installed" # Name of the package
-        version?: string # Version of the package or latest
+        version?: string@"complete asdf plugin versions installed" # Version of the package or latest
     ]
 
     # Set the package global version
     export extern "asdf global" [
         name: string@"complete asdf installed" # Name of the package
-        version?: string # Version of the package or latest
+        version?: string@"complete asdf plugin versions installed" # Version of the package or latest
     ]
 
     # Set the package to version in the current shell
     export extern "asdf shell" [
         name: string@"complete asdf installed" # Name of the package
-        version?: string # Version of the package or latest
+        version?: string@"complete asdf plugin versions installed" # Version of the package or latest
     ]
 
     # Show latest stable version of a package
     export extern "asdf latest" [
-        name: string # Name of the package
-        version?: string # Filter latest stable version from this version
+        name: string@"complete asdf installed" # Name of the package
+        version?: string@"complete asdf plugin versions installed" # Filter latest stable version from this version
     ]
 
     # Show latest stable version for all installed packages
@@ -202,13 +226,13 @@ module asdf {
     # List installed package versions
     export extern "asdf list" [
         name?: string@"complete asdf installed" # Name of the package
-        version?: string # Filter the version
+        version?: string@"complete asdf plugin versions installed" # Filter the version
     ]
 
     # List all available package versions
     export def "asdf list all" [
         name: string@"complete asdf installed" # Name of the package
-        version?: string="" # Filter the version
+        version?: string@"complete asdf plugin versions installed"="" # Filter the version
     ]    {
         ^asdf list all $name $version | lines | parse "{version}" | str trim
     }
@@ -216,7 +240,7 @@ module asdf {
     # Show documentation for plugin
     export extern "asdf help" [
         name: string@"complete asdf installed" # Name of the plugin
-        version?: string # Version of the plugin
+        version?: string@"complete asdf plugin versions installed" # Version of the plugin
     ]
 
     # Execute a command shim for the current version
@@ -237,7 +261,7 @@ module asdf {
     # Recreate shims for version package
     export extern "asdf reshim" [
         name?: string@"complete asdf installed" # Name of the package
-        version?: string # Version of the package
+        version?: string@"complete asdf plugin versions installed" # Version of the package
     ]
 
     # List the plugins and versions that provide a command
