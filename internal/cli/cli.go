@@ -319,10 +319,9 @@ func Execute(version string) {
 func completionCommand(l *log.Logger, shell string) error {
 	file, ok := completions.Get(shell)
 	if !ok {
-		err := fmt.Errorf(`No completions available for shell with name %q
+		l.Printf(`No completions available for shell with name %q
 Completions are available for: %v`, shell, strings.Join(completions.Names(), ", "))
-		l.Print(err)
-		return err
+		return errors.New("bad shell name")
 	}
 	defer file.Close()
 
