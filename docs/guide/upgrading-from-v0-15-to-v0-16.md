@@ -1,6 +1,6 @@
-# Upgrading From Version 0.14.x to 0.15.0
+# Upgrading From Version 0.15.x to 0.16.0
 
-asdf versions 0.14.1 and older were written in Bash and distributed as a set of
+asdf versions 0.15.0 and older were written in Bash and distributed as a set of
 Bash scripts with the `asdf` function loaded into your shell. asdf version
 0.15.0 is a complete rewrite of asdf in Go. Since it is a complete rewrite
 there are a number of breaking changes and it is now distributed as a binary
@@ -15,7 +15,7 @@ callback any installs of any version of that plugin will fail.
 
 ### Hyphenated commands have been removed
 
-asdf version 0.14.1 and earlier supported by hyphenated and non-hyphenated
+asdf version 0.15.0 and earlier supported by hyphenated and non-hyphenated
 versions of certain commands. With version 0.15.0 only the non-hyphenated
 versions are supported. The affected commands:
 
@@ -43,7 +43,7 @@ conveys how asdf works and provides similar functionality to `asdf global` and
 
 Updates can no longer be performed this way. Use your OS package manager or
 download the latest binary manually. Additionally, the `asdf update` command
-present in versions 0.14.1 and older cannot upgrade to version 0.15.0 because
+present in versions 0.15.0 and older cannot upgrade to version 0.15.0 because
 the install process has changed. **You cannot upgrade to the latest Go
 implementation using `asdf update`.**
 
@@ -125,7 +125,7 @@ $ asdf cmd foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/command
 ### Executables Shims Resolve to Must Runnable by `syscall.Exec`
 
 The most obvious example of this breaking change are scripts that lack a proper
-shebang line. asdf 0.14.1 and older were implemented in Bash, so as long it was
+shebang line. asdf 0.15.0 and older were implemented in Bash, so as long it was
 an executable that could be executed with Bash it would run. This mean that
 scripts lacking a shebang could still be run by `asdf exec`. With asdf 0.15.x
 implemented in Go we now invoke executables via Go's `syscall.Exec` function,
