@@ -2,7 +2,6 @@
 package cli
 
 import (
-	_ "embed"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +13,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/asdf-vm/asdf/internal/completions"
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/exec"
 	"github.com/asdf-vm/asdf/internal/execenv"
@@ -52,7 +52,7 @@ func Execute(version string) {
 
 	app := &cli.App{
 		Name:    "asdf",
-		Version: "0.1.0",
+		Version: version,
 		// Not really sure what I should put here, but all the new Golang code will
 		// likely be written by me.
 		Copyright: "(c) 2024 Trevor Brown",
@@ -315,45 +315,18 @@ func Execute(version string) {
 	}
 }
 
-//go:embed completions/asdf.bash
-var bashCompletions string
-
-//go:embed completions/asdf.zsh
-var zshCompletions string
-
-//go:embed completions/asdf.fish
-var fishCompletions string
-
-//go:embed completions/asdf.nu
-var nuCompletions string
-
-//go:embed completions/asdf.elv
-var elvishCompletions string
-
 func completionCommand(l *log.Logger, shell string) error {
-	switch shell {
-	case "bash":
-		fmt.Print(bashCompletions)
-		return nil
-	case "zsh":
-		fmt.Print(zshCompletions)
-		return nil
-	case "fish":
-		fmt.Print(fishCompletions)
-		return nil
-	case "nushell":
-		fmt.Print(nuCompletions)
-		return nil
-	case "elvish":
-		fmt.Print(elvishCompletions)
-		return nil
-	default:
-		fmtString := `No completions available for shell with name %s
-Completions are available for: bash, zsh, fish, nushell, elvish`
-		msg := fmt.Sprintf(fmtString, shell)
-		l.Print(msg)
-		return errors.New(msg)
+	file, ok := completions.Get(shell)
+	if !ok {
+		l.Printf(`No completions available for shell with name %q
+Completions are available for: %v`, shell, strings.Join(completions.Names(), ", "))
+		return errors.New("bad shell name")
 	}
+	defer file.Close()
+
+	io.Copy(os.Stdout, file)
+
+	return nil
 }
 
 // This function is a whole mess and needs to be refactored

@@ -5,7 +5,7 @@ import (
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/plugins"
-	"github.com/asdf-vm/asdf/repotest"
+	"github.com/asdf-vm/asdf/internal/repotest"
 	"github.com/stretchr/testify/assert"
 )
 
