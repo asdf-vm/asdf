@@ -87,7 +87,7 @@ module asdf {
         let versions = ^asdf list $plugin 
         | lines 
         | each { |line| $line | str trim }
-        | each { |version| if ($version | str starts-with "*") {{value: ($version | str substring 1..), description: "current global"}} else {{value: $version, description: ""}} }
+        | each { |version| if ($version | str starts-with "*") {{value: ($version | str substring 1..), description: "current version"}} else {{value: $version, description: ""}} }
         
         let latest = ^asdf latest $plugin | str trim
 
