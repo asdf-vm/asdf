@@ -243,7 +243,7 @@ install_tool_version() {
         fi
       # Otherwise, remove the download directory if it exists
       elif [ -d "$download_path" ]; then
-        rm -r "$download_path"
+        rm -rf "$download_path"
       fi
 
       reshim_command "$plugin_name" "$full_version"
