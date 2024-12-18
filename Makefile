@@ -10,7 +10,7 @@ build: # test lint
 
 fmt:
 	go fmt ./...
-	gofumpt -l -w .
+	go run mvdan.cc/gofumpt -l -w .
 
 verify:
 	go mod verify
@@ -27,8 +27,8 @@ cover: test
 	go tool cover -html=/tmp/coverage.out
 
 lint: fmt
-	staticcheck -tests -show-ignored ./...
-	revive -set_exit_status ./...
+	go run honnef.co/go/tools/cmd/staticcheck -tests -show-ignored ./...
+	go run github.com/mgechev/revive -set_exit_status ./...
 
 vet: fmt
 	go vet ./...
