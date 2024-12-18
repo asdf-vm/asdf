@@ -53,7 +53,7 @@ func Execute(version string) {
 
 	app := &cli.App{
 		Name:    "asdf",
-		Version: "0.1.0",
+		Version: version,
 		// Not really sure what I should put here, but all the new Golang code will
 		// likely be written by me.
 		Copyright: "(c) 2024 Trevor Brown",
