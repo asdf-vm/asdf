@@ -31,7 +31,7 @@ run_shfmt_stylecheck() {
 
   print.info "Checking .bash with shfmt"
   shfmt --language-dialect bash --indent 2 "${shfmt_flag}" \
-    cli/completions/*.bash \
+    internal/cli/completions/*.bash \
     bin/asdf \
     bin/private/asdf-exec \
     lib/utils.bash \
@@ -55,7 +55,7 @@ run_shellcheck_linter() {
 
   print.info "Checking .bash files with Shellcheck"
   shellcheck --shell bash --external-sources \
-    cli/completions/*.bash \
+    internal/cli/completions/*.bash \
     bin/asdf \
     bin/private/asdf-exec \
     lib/utils.bash \
