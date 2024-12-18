@@ -16,6 +16,8 @@ import (
 //go:embed asdf.*
 var completions embed.FS
 
+// Get returns a file containing completion code for the given shell if it is
+// found.
 func Get(name string) (fs.File, bool) {
 	file, err := completions.Open("asdf." + name)
 	if err != nil {
@@ -27,6 +29,7 @@ func Get(name string) (fs.File, bool) {
 	return file, true
 }
 
+// Names returns a slice of shell names that completion is available for.
 func Names() []string {
 	files, _ := fs.Glob(completions, "asdf.*")
 	for i, file := range files {

@@ -2,7 +2,6 @@
 package cli
 
 import (
-	_ "embed"
 	"errors"
 	"fmt"
 	"io"
