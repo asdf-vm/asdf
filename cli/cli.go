@@ -2,6 +2,7 @@
 package cli
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"io"
@@ -69,6 +70,13 @@ func Execute(version string) {
 					args := cCtx.Args().Slice()
 
 					return extensionCommand(logger, args)
+				},
+			},
+			{
+				Name: "completion",
+				Action: func(cCtx *cli.Context) error {
+					shell := cCtx.Args().Get(0)
+					return completionCommand(logger, shell)
 				},
 			},
 			{
@@ -304,6 +312,47 @@ func Execute(version string) {
 	err := app.Run(os.Args)
 	if err != nil {
 		os.Exit(1)
+	}
+}
+
+//go:embed completions/asdf.bash
+var bashCompletions string
+
+//go:embed completions/asdf.zsh
+var zshCompletions string
+
+//go:embed completions/asdf.fish
+var fishCompletions string
+
+//go:embed completions/asdf.nu
+var nuCompletions string
+
+//go:embed completions/asdf.elv
+var elvishCompletions string
+
+func completionCommand(l *log.Logger, shell string) error {
+	switch shell {
+	case "bash":
+		fmt.Print(bashCompletions)
+		return nil
+	case "zsh":
+		fmt.Print(zshCompletions)
+		return nil
+	case "fish":
+		fmt.Print(fishCompletions)
+		return nil
+	case "nushell":
+		fmt.Print(nuCompletions)
+		return nil
+	case "elvish":
+		fmt.Print(elvishCompletions)
+		return nil
+	default:
+		fmtString := `No completions available for shell with name %s
+Completions are available for: bash, zsh, fish, nushell, elvish`
+		msg := fmt.Sprintf(fmtString, shell)
+		l.Print(msg)
+		return errors.New(msg)
 	}
 }
 
