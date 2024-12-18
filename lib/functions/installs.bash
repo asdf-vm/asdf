@@ -194,6 +194,7 @@ install_tool_version() {
   if [ -d "$install_path" ]; then
     printf "%s %s is already installed\n" "$plugin_name" "$full_version"
   else
+    printf "%s %s is being downloaded\n" "$plugin_name" "$full_version"
 
     if [ -f "${plugin_path}/bin/download" ]; then
       # Not a legacy plugin
@@ -216,6 +217,7 @@ install_tool_version() {
     local download_exit_code=$?
     if [ $download_exit_code -eq 0 ]; then
       (
+        printf "%s %s is being installed\n" "$plugin_name" "$full_version"
         # shellcheck disable=SC2031
         export ASDF_INSTALL_TYPE=$install_type
         # shellcheck disable=SC2031

@@ -183,7 +183,7 @@ EOM
   printf 'dummy 1.0.0\nother-dummy 2.0.0' >"$PROJECT_DIR/.tool-versions"
   run asdf install dummy other-dummy
   [ "$status" -eq 1 ]
-  [ "$output" = "Dummy couldn't install version: other-dummy (on purpose)" ]
+  [[ "$output" == *"Dummy couldn't install version: other-dummy (on purpose)" ]]
   [ ! -f "$ASDF_DIR/installs/dummy/1.0.0/version" ]
   [ ! -f "$ASDF_DIR/installs/other-dummy/2.0.0/version" ]
 }
@@ -227,7 +227,7 @@ pre_asdf_install_dummy = echo will install dummy $1
 EOM
 
   run asdf install dummy 1.0.0
-  [ "$output" = "will install dummy 1.0.0" ]
+  [[ "$output" == *"will install dummy 1.0.0" ]]
 }
 
 @test "install command executes configured post plugin install hook" {
@@ -236,7 +236,7 @@ post_asdf_install_dummy = echo HEY $version FROM $plugin_name
 EOM
 
   run asdf install dummy 1.0.0
-  [ "$output" = "HEY 1.0.0 FROM dummy" ]
+  [[ "$output" == *"HEY 1.0.0 FROM dummy" ]]
 }
 
 @test "install command without arguments installs versions from legacy files" {
@@ -295,12 +295,18 @@ EOM
   [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
 }
 
+@test "install_command outputs installing and downloading messages" {
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [[ "$output" == "dummy 1.0.0 is being downloaded"*"dummy 1.0.0 is being installed"* ]]
+}
+
 @test "install_command fails when download script exits with non-zero code" {
   run asdf install dummy-broken 1.0.0
   [ "$status" -eq 1 ]
   [ ! -d "$ASDF_DIR/downloads/dummy-broken/1.1.0" ]
   [ ! -d "$ASDF_DIR/installs/dummy-broken/1.1.0" ]
-  [ "$output" = "Download failed!" ]
+  [[ "$output" == *"Download failed!" ]]
 }
 
 @test "install_command prints info message if plugin does not support preserving download data if --keep-download flag is provided" {
