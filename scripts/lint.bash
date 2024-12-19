@@ -123,7 +123,7 @@ run_fish_linter() {
     printf "%s\n" "[WARNING] fish_indent not found. Skipping .fish files."
   else
     print.info "Checking .fish files with fish_indent"
-    fish_indent "${flag}" ./completions/asdf.fish
+    fish_indent "${flag}" ./internal/completions/asdf.fish
   fi
 }
 
