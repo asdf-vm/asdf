@@ -12,8 +12,8 @@ import (
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/installtest"
 	"github.com/asdf-vm/asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/internal/repotest"
 	"github.com/asdf-vm/asdf/internal/toolversions"
-	"github.com/asdf-vm/asdf/repotest"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sys/unix"
 )
