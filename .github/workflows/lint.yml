@@ -31,22 +31,16 @@ jobs:
           go-version: '1.23.4'
       - name: Install dependencies
         run: go get ./...
-      - name: Install gofumpt for formatting
-        run: go install mvdan.cc/gofumpt@latest
       - name: Run 'gofumpt'
-        run: gofumpt -l -w .
+        run: go run mvdan.cc/gofumpt -l -w .
       - name: Check format
         run: '[ -z "$(gofmt -l ./...)" ]'
-      - name: Install revive for linting
-        run: go install github.com/mgechev/revive@latest
       - name: Run 'revive'
-        run: revive -set_exit_status ./...
+        run: go run github.com/mgechev/revive -set_exit_status ./...
       - name: Vet
         run: go vet ./...
-      - name: Install staticcheck for linting
-        run: go install honnef.co/go/tools/cmd/staticcheck@latest
       - name: Lint
-        run: staticcheck -tests -show-ignored ./...
+        run: go run honnef.co/go/tools/cmd/staticcheck -tests -show-ignored ./...
       - name: Build
         run: go build -v ./...
 
