@@ -45,6 +45,14 @@ teardown() {
   [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
 }
 
+@test "install_command installs the 'latest:' version in .tool-versions" {
+  cd "$PROJECT_DIR"
+  echo -n 'dummy latest:1.1' >".tool-versions"
+  run asdf install dummy
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
+}
+
 @test "install_command set ASDF_CONCURRENCY" {
   run asdf install dummy 1.0.0
   [ "$status" -eq 0 ]

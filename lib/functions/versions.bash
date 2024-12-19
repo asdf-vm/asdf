@@ -37,15 +37,7 @@ version_command() {
   declare -a resolved_versions
   local item
   for item in "${!versions[@]}"; do
-    IFS=':' read -r -a version_info <<<"${versions[$item]}"
-    if [ "${version_info[0]}" = "latest" ] && [ -n "${version_info[1]}" ]; then
-      version=$(latest_command "$plugin_name" "${version_info[1]}")
-    elif [ "${version_info[0]}" = "latest" ] && [ -z "${version_info[1]}" ]; then
-      version=$(latest_command "$plugin_name")
-    else
-      # if branch handles ref: || path: || normal versions
-      version="${versions[$item]}"
-    fi
+    version="$(resolve_version_spec "${versions[$item]}")"
 
     # check_if_version_exists should probably handle if either param is empty string
     if [ -z "$version" ]; then
@@ -77,6 +69,22 @@ version_command() {
     # Add a new version line to the end of the file
     printf "%s %s\n" "$plugin_name" "${resolved_versions[*]}" >>"$file"
   fi
+}
+
+resolve_version_spec() {
+  local version_spec=$1
+
+  IFS=':' read -r -a version_info <<<"$version_spec"
+  if [ "${version_info[0]}" = "latest" ] && [ -n "${version_info[1]}" ]; then
+    version=$(latest_command "$plugin_name" "${version_info[1]}")
+  elif [ "${version_info[0]}" = "latest" ] && [ -z "${version_info[1]}" ]; then
+    version=$(latest_command "$plugin_name")
+  else
+    # if branch handles ref: || path: || normal versions
+    version="$version_spec"
+  fi
+
+  printf "%s\n" "$version"
 }
 
 list_all_command() {
