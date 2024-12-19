@@ -13,10 +13,13 @@ permissions:
 # pushed. But since this is a new projectu I'm doing it on every new commit to
 # the master branch. This will make it easy to download and test binaries for
 # each new version.
+#
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+# Don't create release and binaries on pushes to master
+#  push:
+#    branches:
+#      - master
 
 # TODO: Uncomment once this is merged and we're ready to prepare the first
 # public tagged version of the Golang implementation.
