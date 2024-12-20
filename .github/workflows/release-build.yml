@@ -1,89 +1,16 @@
 name: Release (and build Golang binaries)
-# This workflow should eventually replace the one in release.yml completely.
+
+on:
+  release:
+    types: [published]
+
 permissions:
   contents: write
   packages: write
 
-# Eventually this workflow will only be run when a
-#on:
-#  push:
-#    tags:
-#    - 'v[0-9]+.*'
-# Typically we'd only want to build binaries and a release when a new tag is
-# pushed. But since this is a new projectu I'm doing it on every new commit to
-# the master branch. This will make it easy to download and test binaries for
-# each new version.
-#
-on:
-  workflow_dispatch:
-# Don't create release and binaries on pushes to master
-#  push:
-#    branches:
-#      - master
-
-# TODO: Uncomment once this is merged and we're ready to prepare the first
-# public tagged version of the Golang implementation.
-#jobs:
-#  release:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: GoogleCloudPlatform/release-please-action@v4
-#        name: create release
-#        with:
-#          release-type: simple
-#          bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
-#          changelog-types: |
-#            [
-#              { "type": "feat", "section": "Features", "hidden": false },
-#              { "type": "fix", "section": "Patches", "hidden": false },
-#              { "type": "docs", "section": "Documentation", "hidden": false }
-#            ]
-#          extra-files: |
-#            SECURITY.md
-#            docs/guide/getting-started.md
-#            docs/pt-br/guide/getting-started.md
-#            docs/zh-hans/guide/getting-started.md
-
 jobs:
-  generate-release-tag:
-    name: generate-release-tag
-    runs-on: ubuntu-22.04
-    # env:
-    # Set to force version number, e.g., when no tag exists.
-    #   ASDF_VERSION: TEST-0.1.0
-    outputs:
-      tag: ${{ env.ASDF_VERSION }}
-    steps:
-      - name: Get the release version from the tag
-        shell: bash
-        if: env.ASDF_VERSION == ''
-        run: |
-          # Apparently, this is the right way to get a tag name. Really?
-          #
-          # See: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167/highlight/true#M1027
-          #echo "ASDF_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          # Once we're using this for real releases we'll want to change this
-          # line below to contain the actual tag name
-          echo "ASDF_VERSION=$(echo "$GITHUB_SHA" | cut -c1-7)" >> "$GITHUB_ENV"
-          echo "version is: ${{ env.ASDF_VERSION }}"
-  create-release:
-    name: create-release
-    needs: generate-release-tag
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create GitHub release
-        id: release
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ needs.generate-release-tag.outputs.tag }}
-          name: ${{ needs.generate-release-tag.outputs.tag }}
-
   build:
-    name: Build Go release binaries
-    needs: [create-release, generate-release-tag]
+    name: Build release binaries
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -114,6 +41,6 @@ jobs:
           goversion: "1.23.4"
           binary_name: "asdf"
           project_path: ./cmd/asdf
-          release_tag: ${{ needs.generate-release-tag.outputs.tag }}
-          release_name: ${{ needs.generate-release-tag.outputs.tag }}
-          ldflags: -s -X main.version=${{ steps.asdf-version.outputs.version }}
+          release_tag: ${{ github.event.release.tag_name }}
+          release_name: ${{ github.event.release.tag_name }}
+          ldflags: -s -X main.version=${{ github.event.release.tag_name }}
