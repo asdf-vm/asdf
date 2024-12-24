@@ -76,15 +76,6 @@ concurrency = auto
 | `no` <Badge type="tip" text="デフォルト" vertical="middle" /> | バージョンの読み込みには`.tool-versions`を使用します                                                        |
 | `yes`                                                         | 利用可能なレガシーバージョンファイル(`.ruby-version`など)がある場合、プラグインのフォールバックで使用します |
 
-### `use_release_candidates`
-
-`asdf update`コマンドでasdfを更新する際に、最新リリースではなく、リリース候補版へ更新するか制御します。
-
-| オプション                                                    | 説明                       |
-| :------------------------------------------------------------ | :------------------------- |
-| `no` <Badge type="tip" text="デフォルト" vertical="middle" /> | 最新リリースを使用します   |
-| `yes`                                                         | リリース候補版を使用します |
-
 ### `always_keep_download`
 
 `asdf install`コマンドでダウンロードしたソースコードやバイナリを、保持しておくか削除するかを制御します。
@@ -253,9 +244,3 @@ pre_foo_bar = echo Executing with args: $@
 | always_keep_download                  | `no`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
 | plugin_repository_last_check_duration | `60`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
 | disable_plugin_short_name_repository  | `no`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
-
-## 内部構成
-
-この節では、パッケージマネージャやインテグレータ向けの`asdf`の内部構成について記述しているため、ユーザが気にする必要はありません。
-
-- `$ASDF_DIR/asdf_updates_disabled`: このファイルが存在する場合、`asdf update`コマンドによる更新は無効になります(ファイル内容は関係ありません)。これは、PacmanやHomebrewのようなパッケージマネージャによって使用され、特定のインストールに対して正しい更新方法を適用するようにします。
