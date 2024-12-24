@@ -70,15 +70,6 @@ concurrency = auto
 | `no` <Badge type="tip" text="默认" vertical="middle" /> | 从 `.tool-versions` 文件读取版本                         |
 | `yes`                                                   | 如果可行的话，从传统版本文件读取版本（`.ruby-versions`） |
 
-### `use_release_candidates`
-
-配置 `asdf update` 命令以升级到最新的候选版本，而不是最新的语义版本。
-
-| 选项                                                    | 描述           |
-| :------------------------------------------------------ | :------------- |
-| `no` <Badge type="tip" text="默认" vertical="middle" /> | 语义版本被使用 |
-| `yes`                                                   | 候选版本被使用 |
-
 ### `always_keep_download`
 
 配置 `asdf install` 命令以保留或删除下载的源代码或二进制文件。
@@ -104,9 +95,3 @@ concurrency = auto
 - `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - 存储工具名称和版本的文件名。默认为 `.tool-versions`。可以是任何有效的文件名。通常，除非你知道你希望 asdf 忽略 `.tool-versions` 文件，否则不应该覆盖默认值。
 - `ASDF_DIR` - 默认为 `~/.asdf` - `asdf` 脚本的位置。如果你把 `asdf` 安装到了其他目录，请设置该变量到那个目录。比如，如果通过 AUR 进行安装，则应设置该变量为 `/opt/asdf-vm`。
 - `ASDF_DATA_DIR` - 默认为 `~/.asdf` - `asdf` 安装插件、垫片和安装器的位置。可以被设置在上一节提到的生效 `asdf.sh` 或者 `asdf.fish` 之间的任何位置。对于 Elvish，这可以设置在 `use asdf` 上面。
-
-## 内部配置
-
-用户不必担心本节，因为它描述了对包管理器和集成者有用的 `asdf` 的内部配置。
-
-- `$ASDF_DIR/asdf_updates_disabled`：当此文件存在时（内容无关），通过 `asdf update` 命令进行的更新 将会被禁用。像 Pacman 或者 Homebrew 等包管理器使用它来确保个性化安装的正确的更新方法。

@@ -76,15 +76,6 @@ concurrency = auto
 | `no` <Badge type="tip" text="기본" vertical="middle" /> | 버전을 불러오는 데는 `.tool-versions`를 사용합니다                                          |
 | `yes`                                                   | 이용 가능한 레거시 버전 파일(`.ruby-version` 등)이 있는 경우 플러그인의 폴백으로 사용합니다 |
 
-### `use_release_candidates`
-
-`asdf update` 명령어로 asdf를 최신 유의적 버전이 아닌 최신 버전 후보판으로 업그레이드 되도록 설정합니다.
-
-| 옵션                                                    | 설명               |
-| :------------------------------------------------------ | :----------------- |
-| `no` <Badge type="tip" text="기본" vertical="middle" /> | 유의적 버전 사용   |
-| `yes`                                                   | 릴리스 후보판 사용 |
-
 ### `always_keep_download`
 
 `asdf install` 명령어로 다운로드하는 소스 코드 또는 바이너리를 유지 또는 제거하도록 설정합니다
@@ -253,9 +244,3 @@ pre_foo_bar = echo Executing with args: $@
 | always_keep_download                  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
 | plugin_repository_last_check_duration | `60`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
 | disable_plugin_short_name_repository  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
-
-## 내부 설정
-
-이 섹션은 패키지 관리자 및 통합자에게 유용한 `asdf` 내부 설정을 설명하므로 일반 사용자들은 이 섹션에 대해 걱정할 필요가 없습니다.
-
-- `$ASDF_DIR/asdf_updates_disabled`: 이 파일이 있으면 `asdf update` 명령어를 통한 업데이트가 (내용과 무관하게) 비활성화됩니다. 이는 Pacman이나 Homebrew와 같은 패키지 매니저들이 특정 설치에 올바른 업데이트 방법이 사용되었는지 확인하는 데 사용됩니다.

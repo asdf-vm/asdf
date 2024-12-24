@@ -66,13 +66,7 @@ nodejs 16.5.0
 
 ## 更新
 
-`asdf` 有一个依赖于 Git （我们推荐的安装方法）的内置命令用于更新。如果你使用了其他方法安装，则应按照该方法的步骤操作：
-
-| 方法       | 最新稳定版本                                                                                                               | `master` 分支上的最新提交        |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| asdf (Git) | `asdf update`                                                                                                              | `asdf update --head`             |
-| Homebrew   | `brew upgrade asdf`                                                                                                        | `brew upgrade asdf --fetch-HEAD` |
-| Pacman     | 下载一个新的 `PKGBUILD` 并且重新编译 <br/> 或者使用你习惯的 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |                                  |
+请使用与安装 `asdf` 相同的方法进行更新。`asdf` 的最新版本显示在本页面的右上角。
 
 ## 卸载
 
