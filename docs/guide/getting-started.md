@@ -1,25 +1,6 @@
 # Getting Started
 
-## 1. Install Dependencies
-
-asdf primarily requires `git`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
-
-| OS    | Package Manager | Command                            |
-| ----- | --------------- | ---------------------------------- |
-| linux | Aptitude        | `apt install git`             |
-| linux | DNF             | `dnf install git`             |
-| linux | Pacman          | `pacman -S git`               |
-| linux | Zypper          | `zypper install git`          |
-| macOS | Homebrew        | `brew install coreutils git`  |
-| macOS | Spack           | `spack install coreutils git` |
-
-::: tip Note
-
-`sudo` may be required depending on your system configuration.
-
-:::
-
-## 2. Install asdf
+## 1. Install asdf
 
 asdf can be installed in several different ways:
 
@@ -32,24 +13,36 @@ asdf can be installed in several different ways:
 
 :::
 
-::: details Download Pre-Compiled Binary - **Easy**
+:::: details Download Pre-Compiled Binary - **Easy**
+
+<!--@include: @/parts/install-dependencies.md-->
+
+##### Install asdf
 
 1. Visit https://github.com/asdf-vm/asdf/releases and download the appropriate archive for your operating system/architecture combination.
 2. Extract the `asdf` binary in the archive into a directory on your `$PATH`.
 3. Verify `asdf` is on your shell's `$PATH` by running `type -a asdf`. The directory you placed the `asdf` binary in should be listed on the first line of the output from `type`. If it is not that means step #2 was not completed correctly.
 
-:::
+::::
 
-::: details With `go install`
+:::: details With `go install`
+
+<!--@include: @/parts/install-dependencies.md-->
+
+##### Install asdf
 
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
 2. Run `go install github.com/asdf-vm/asdf@v0.16.0`
 <!-- x-release-please-end -->
 
-:::
+::::
 
-::: details Build from Source
+:::: details Build from Source
+
+<!--@include: @/parts/install-dependencies.md-->
+
+##### Install asdf
 
 <!-- x-release-please-start-version -->
 1. Clone the asdf repository:
@@ -61,9 +54,16 @@ asdf can be installed in several different ways:
 3. Copy the `asdf` binary into a directory on your `$PATH`.
 4. Verify `asdf` is on your shell's `$PATH` by running `type -a asdf`. The directory you placed the `asdf` binary in should be listed on the first line of the output from `type`. If it is not that means step #3 was not completed correctly.
 
-:::
+::::
 
-## 3. Set up completions
+## 2. Configure asdf
+
+::: tip Note
+Most users **DO NOT** need to customize the location that asdf writes plugin,
+install, and shim data to. However, if `$HOME/.asdf` isn't the directory you
+want asdf writing too, you can change it. Specify the directory by exporting
+a variable named `ASDF_DATA_DIR` in your shell's RC file.
+:::
 
 There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
 
@@ -75,37 +75,71 @@ There are many different combinations of Shells, OSs & Installation methods all 
 
 **Pacman**: [`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) needs to be installed for the completions to work.
 
-Add the following to `~/.bashrc`:
+##### Add shims directory to path (required)
+
+Add the following to `~/.bash_profile`:
+```shell
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+```
+
+###### Custom data directory (optional)
+
+Add the following to `~/.bash_profile` above the line you added above:
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
+
+##### Set up shells completions (optional)
 
 Completions must be configured by adding the following to your `.bashrc`:
 
 ```shell
-. "$HOME/.asdf/completions/asdf.bash"
+. <(asdf completion bash)
 ```
 
 :::
 
 ::: details Fish
 
+##### Add shims directory to path (required)
+
 Add the following to `~/.config/fish/config.fish`:
 
 ```shell
-source ~/.asdf/asdf.fish
+# ASDF configuration code
+if test -z $ASDF_DATA_DIR
+    set _asdf_shims "$HOME/.asdf/shims"
+else
+    set _asdf_shims "$ASDF_DATA_DIR/shims"
+end
+
+# Do not use fish_add_path (added in Fish 3.2) because it
+# potentially changes the order of items in PATH
+if not contains $_asdf_shims $PATH
+    set -gx --prepend PATH $_asdf_shims
+end
+set --erase _asdf_shims
 ```
+
+###### Custom data directory (optional)
+
+**Pacman**: Completions are automatically configured on installation by the AUR package.
+
+Add the following to `~/.config/fish/config.fish` above the lines you added above:
+
+```shell
+set -gx --prepend ASDF_DATA_DIR "/your/custom/data/dir"
+```
+
+##### Set up shells completions (optional)
 
 Completions must be configured manually with the following command:
 
 ```shell
-mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+$ asdf completion fish > ~/.config/fish/completions/asdf.fish
 ```
 
-Pacman:
-
-Completions are automatically configured on installation by the AUR package.
 :::
 
 ::: details Elvish
@@ -123,6 +157,8 @@ Completions are automatically configured.
 :::
 
 ::: details ZSH
+
+**Pacman**: Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 
 Add the following to `~/.zshrc`:
 
@@ -154,11 +190,7 @@ Add `asdf.sh` to your `~/.zshrc` with:
 echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 ```
 
-**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
-
 Completions are configured by either a ZSH Framework `asdf` or will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated plugin for asdf may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
-
-Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
 ::: details PowerShell Core
@@ -200,6 +232,7 @@ On macOS, starting a Bash or Zsh shell automatically calls a utility called `pat
 :::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
+
 
 ## Core Installation Complete!
 
