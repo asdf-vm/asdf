@@ -1,26 +1,17 @@
 # Getting Started
 
-`asdf` installation involves:
-
-1. Installing dependencies
-2. Downloading `asdf` core
-3. Installing `asdf`
-4. Installing a plugin for each tool/runtime you wish to manage
-5. Installing a version of the tool/runtime
-6. Setting global and project versions via `.tool-versions` config files
-
 ## 1. Install Dependencies
 
-asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
+asdf primarily requires `git`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
 
 | OS    | Package Manager | Command                            |
 | ----- | --------------- | ---------------------------------- |
-| linux | Aptitude        | `apt install curl git`             |
-| linux | DNF             | `dnf install curl git`             |
-| linux | Pacman          | `pacman -S curl git`               |
-| linux | Zypper          | `zypper install curl git`          |
-| macOS | Homebrew        | `brew install coreutils curl git`  |
-| macOS | Spack           | `spack install coreutils curl git` |
+| linux | Aptitude        | `apt install git`             |
+| linux | DNF             | `dnf install git`             |
+| linux | Pacman          | `pacman -S git`               |
+| linux | Zypper          | `zypper install git`          |
+| macOS | Homebrew        | `brew install coreutils git`  |
+| macOS | Spack           | `spack install coreutils git` |
 
 ::: tip Note
 
@@ -28,36 +19,61 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 :::
 
-## 2. Download asdf
+## 2. Install asdf
 
-### Official Download
+asdf can be installed in several different ways:
 
-<!-- x-release-please-start-version -->
+::: details With Package Manager - **Recommended**
 
-
-```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
-
-```
-
-<!-- x-release-please-end -->
-
-### Community Supported Download Methods
-
-We highly recommend using the official `git` method.
-
-| Method   | Command                                                                                                                                                             |
+| Package Manager   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
-## 3. Install asdf
+:::
+
+::: details Download Pre-Compiled Binary - **Easy**
+
+1. Visit https://github.com/asdf-vm/asdf/releases and download the appropriate archive for your operating system/architecture combination.
+2. Extract the `asdf` binary in the archive into a directory on your `$PATH`.
+3. Verify `asdf` is on your shell's `$PATH` by running `type -a asdf`. The directory you placed the `asdf` binary in should be listed on the first line of the output from `type`. If it is not that means step #2 was not completed correctly.
+
+:::
+
+::: details With `go install`
+
+<!-- x-release-please-start-version -->
+1. [Install Go](https://go.dev/doc/install)
+2. Run `go install github.com/asdf-vm/asdf@v0.16.0`
+<!-- x-release-please-end -->
+
+:::
+
+::: details Build from Source
+
+<!-- x-release-please-start-version -->
+1. Clone the asdf repository:
+  ```shell
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.16.0
+  ```
+<!-- x-release-please-end -->
+2. Run `make`
+3. Copy the `asdf` binary into a directory on your `$PATH`.
+4. Verify `asdf` is on your shell's `$PATH` by running `type -a asdf`. The directory you placed the `asdf` binary in should be listed on the first line of the output from `type`. If it is not that means step #3 was not completed correctly.
+
+:::
+
+## 3. Set up completions
 
 There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
 
 **macOS users, be sure to read the warning about `path_helper` at the end of this section.**
 
-::: details Bash & Git
+::: details Bash
+
+**macOS Catalina or newer**: The default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
+
+**Pacman**: [`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) needs to be installed for the completions to work.
 
 Add the following to `~/.bashrc`:
 
@@ -73,70 +89,7 @@ Completions must be configured by adding the following to your `.bashrc`:
 
 :::
 
-::: details Bash & Git (macOS)
-
-If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
-
-Add the following to `~/.bash_profile`:
-
-```shell
-. "$HOME/.asdf/asdf.sh"
-```
-
-Completions must be configured manually with the following entry in your `.bash_profile`:
-
-```shell
-. "$HOME/.asdf/completions/asdf.bash"
-```
-
-:::
-
-::: details Bash & Homebrew
-
-Add `asdf.sh` to your `~/.bashrc` with:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
-```
-
-Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
-```
-
-:::
-
-::: details Bash & Homebrew (macOS)
-
-If using **macOS Catalina or newer**, the default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
-
-Add `asdf.sh` to your `~/.bash_profile` with:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
-```
-
-Completions will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) or with the following:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
-```
-
-:::
-
-::: details Bash & Pacman
-
-Add the following to `~/.bashrc`:
-
-```shell
-. /opt/asdf-vm/asdf.sh
-```
-
-[`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) needs to be installed for the completions to work.
-:::
-
-::: details Fish & Git
+::: details Fish
 
 Add the following to `~/.config/fish/config.fish`:
 
@@ -150,31 +103,12 @@ Completions must be configured manually with the following command:
 mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
 ```
 
-:::
-
-::: details Fish & Homebrew
-
-Add `asdf.fish` to your `~/.config/fish/config.fish` with:
-
-```shell
-echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
-```
-
-Completions are [handled by Homebrew for the Fish shell](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). Friendly!
-:::
-
-::: details Fish & Pacman
-
-Add the following to `~/.config/fish/config.fish`:
-
-```shell
-source /opt/asdf-vm/asdf.fish
-```
+Pacman:
 
 Completions are automatically configured on installation by the AUR package.
 :::
 
-::: details Elvish & Git
+::: details Elvish
 
 Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
 
@@ -188,33 +122,7 @@ Completions are automatically configured.
 
 :::
 
-::: details Elvish & Homebrew
-
-Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
-
-```shell
-mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
-```
-
-Completions are automatically configured.
-:::
-
-::: details Elvish & Pacman
-
-Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
-
-```shell
-mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
-```
-
-Completions are automatically configured.
-:::
-
-::: details ZSH & Git
+::: details ZSH
 
 Add the following to `~/.zshrc`:
 
@@ -249,20 +157,11 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
 Completions are configured by either a ZSH Framework `asdf` or will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated plugin for asdf may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
-:::
-
-::: details ZSH & Pacman
-
-Add the following to `~/.zshrc`:
-
-```shell
-. /opt/asdf-vm/asdf.sh
-```
 
 Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 :::
 
-::: details PowerShell Core & Git
+::: details PowerShell Core
 
 Add the following to `~/.config/powershell/profile.ps1`:
 
@@ -272,27 +171,7 @@ Add the following to `~/.config/powershell/profile.ps1`:
 
 :::
 
-::: details PowerShell Core & Homebrew
-
-Add `asdf.sh` to your `~/.config/powershell/profile.ps1` with:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
-```
-
-:::
-
-::: details PowerShell Core & Pacman
-
-Add the following to `~/.config/powershell/profile.ps1`:
-
-```shell
-. /opt/asdf-vm/asdf.ps1
-```
-
-:::
-
-::: details Nushell & Git
+::: details Nushell
 
 Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
@@ -303,57 +182,13 @@ Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 Completions are automatically configured
 :::
 
-::: details Nushell & Homebrew
-
-Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
-
-```shell
-"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
-```
-
-Completions are automatically configured
-:::
-
-::: details Nushell & Pacman
-
-Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
-
-```shell
-"\n$env.ASDF_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
-```
-
-Completions are automatically configured.
-:::
-
-::: details POSIX Shell & Git
+::: details POSIX Shell
 
 Add the following to `~/.profile`:
 
 ```shell
 export ASDF_DIR="$HOME/.asdf"
 . "$HOME/.asdf/asdf.sh"
-```
-
-:::
-
-::: details POSIX Shell & Homebrew
-
-Add `asdf.sh` to your `~/.profile` with:
-
-```shell
-echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
-```
-
-:::
-
-::: details POSIX Shell & Pacman
-
-Add the following to `~/.profile`:
-
-```shell
-export ASDF_DIR="/opt/asdf-vm"
-. /opt/asdf-vm/asdf.sh
 ```
 
 :::
@@ -417,6 +252,8 @@ asdf install nodejs latest
 ::: warning
 Without a version listed for a tool execution of the tool will **error**. `asdf current` will show you the tool & version resolution, or absence of, from your current directory so you can observe which tools will fail to execute.
 :::
+
+Because asdf looks for a `.tool-versions` file in the current directory first, and if the file is not found it then climbs up the file tree looking for a `.tool-versions` in a parent directory until it finds one. If no `.tool-versions` file is found the version resolution process will fail and an error will be printed.
 
 ### Global
 
