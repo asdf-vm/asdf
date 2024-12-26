@@ -1,5 +1,4 @@
 #compdef asdf
-compdef _asdf asdf
 #description tool to manage versions of multiple runtimes
 
 local curcontext="$curcontext" state state_descr line subcmd
@@ -91,7 +90,6 @@ _asdf__installed_versions_of_plus_system() {
     compadd -a versions
 }
 
-_asdf() {
 
 local -i IntermediateCount=0
 
@@ -119,8 +117,6 @@ _asdf__dash_commands() {
     subcmd="${subcmd}-${words[2+IntermediateCount]}"
   fi
 }
-
-
 case "$subcmd" in
 (plugin|shim|list)
   _asdf__dash_commands
@@ -224,4 +220,3 @@ case "$subcmd" in
   (( CURRENT == 3 )) && compadd -- --head
   ;;
 esac
-}
