@@ -90,7 +90,7 @@ Add the following to `~/.bash_profile` above the line you added above:
 export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
-##### Set up shells completions (optional)
+##### Set up shell completions (optional)
 
 Completions must be configured by adding the following to your `.bashrc`:
 
@@ -132,7 +132,7 @@ Add the following to `~/.config/fish/config.fish` above the lines you added abov
 set -gx --prepend ASDF_DATA_DIR "/your/custom/data/dir"
 ```
 
-##### Set up shells completions (optional)
+##### Set up shell completions (optional)
 
 Completions must be configured manually with the following command:
 
@@ -144,15 +144,36 @@ $ asdf completion fish > ~/.config/fish/completions/asdf.fish
 
 ::: details Elvish
 
-Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
+##### Add shims directory to path (required)
+
+Add the following to `~/.config/elvish/rc.elv`:
 
 ```shell
-mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+var asdf_data_dir = ~'/.asdf'
+if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
+  set asdf_data_dir = $E:ASDF_DATA_DIR
+}
+
+if (not (has-value $paths $asdf_data_dir'/shims')) {
+  set paths = [$path $@paths]
+}
 ```
 
-Completions are automatically configured.
+###### Custom data directory (optional)
+
+Change the following line in the above snippet to set a custom data directory:
+
+```diff
+-var asdf_data_dir = ~'/.asdf'
++var asdf_data_dir = '/your/custom/data/dir'
+```
+
+##### Set up shell completions (optional)
+
+```shell
+$ asdf completion elvish >> ~/.config/elvish/rc.elv
+$ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+```
 
 :::
 
@@ -160,25 +181,42 @@ Completions are automatically configured.
 
 **Pacman**: Completions are placed in a ZSH friendly location, but [ZSH must be configured to use the autocompletions](https://wiki.archlinux.org/index.php/zsh#Command_completion).
 
-Add the following to `~/.zshrc`:
+##### Add shims directory to path (required)
 
+Add the following to `~/.bash_profile`:
 ```shell
-. "$HOME/.asdf/asdf.sh"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+###### Custom data directory (optional)
 
-Completions are configured by either a ZSH Framework `asdf` plugin or by adding the following to your `.zshrc`:
+Add the following to `~/.bash_profile` above the line you added above:
+
+```shell
+export ASDF_DATA_DIR="/your/custom/data/dir"
+```
+
+##### Set up shell completions (optional)
+
+Completions are configured by either a ZSH Framework `asdf` plugin (like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf)) or by doing the following:
+
+```shell
+$ mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+$ asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
+```
+
+Then add the following to your `.zshrc`:
 
 ```shell
 # append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 # initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
 ```
 
-- if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
-- if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
+**Note**
+
+If you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
 
 :::
 
@@ -195,32 +233,101 @@ Completions are configured by either a ZSH Framework `asdf` or will need to be [
 
 ::: details PowerShell Core
 
+##### Add shims directory to path (required)
+
 Add the following to `~/.config/powershell/profile.ps1`:
+```shell
+# Determine the location of the shims directory
+if ($null -eq $ASDF_DATA_DIR -or $ASDF_DATA_DIR -eq '') {
+  $_asdf_shims = "${env:HOME}/.asdf/shims"
+}
+else {
+  $_asdf_shims = "$ASDF_DATA_DIR/shims"
+}
+
+# Then add it to path
+$env:PATH = "${_asdf_shims}:${env:PATH}"
+```
+
+###### Custom data directory (optional)
+
+Add the following to `~/.config/powershell/profile.ps1` above the snippet you added above:
 
 ```shell
-. "$HOME/.asdf/asdf.ps1"
+$env:ASDF_DATA_DIR = "/your/custom/data/dir"
 ```
+
+Shell completions not available for PowerShell
 
 :::
 
 ::: details Nushell
 
-Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
+##### Add shims directory to path (required)
+
+Add the following to `~/.config/nushell/config.nu`:
 
 ```shell
-"\n$env.ASDF_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
+let shims_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  } | path join 'shims'
+)
+$env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
 ```
 
-Completions are automatically configured
+###### Custom data directory (optional)
+
+Add the following to `~/.config/nushell/config.nu` above the line you added above:
+
+```shell
+$env.ASDF_DATA_DIR = "/your/custom/data/dir"
+```
+
+##### Set up shell completions (optional)
+
+```shell
+# If you've not customized the asdf data directory:
+$ mkdir $"($env.HOME)/.asdf/completions"
+$ asdf completion nushell | save $"($env.HOME)/.asdf/completions/nushell.nu"
+
+# If you have customized the data directory by setting ASDF_DATA_DIR:
+$ mkdir $"($env.ASDF_DATA_DIR)/completions"
+$ asdf completion nushell | save $"($env.ASDF_DATA_DIR)/completions/nushell.nu"
+```
+
+Then add the following to `~/.config/nushell/config.nu`:
+
+```shell
+let asdf_data_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  }
+)
+. "$asdf_data_dir/completions/nushell.nu"
+```
+
 :::
 
 ::: details POSIX Shell
 
+##### Add shims directory to path (required)
+
 Add the following to `~/.profile`:
+```shell
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+```
+
+###### Custom data directory (optional)
+
+Add the following to `~/.profile` above the line you added above:
 
 ```shell
-export ASDF_DIR="$HOME/.asdf"
-. "$HOME/.asdf/asdf.sh"
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
 :::
