@@ -1,4 +1,4 @@
-name: Release (and build Golang binaries)
+name: Build Binaries for Release
 
 on:
   release:
