@@ -236,9 +236,6 @@ autoload -Uz compinit && compinit
 - if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
 - if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
 
-**Warning**
-
-If you are using a ZSH Framework the associated `asdf` plugin may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
 
 ::: details ZSH & Homebrew
