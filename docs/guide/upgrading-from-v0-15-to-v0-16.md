@@ -28,16 +28,18 @@ versions are supported. The affected commands:
 * `asdf plugin-test` -> `asdf plugin test`
 * `asdf shim-versions` -> `asdf shimversions`
 
-### `asdf global` and `asdf local` commands have been removed
+### `asdf global` and `asdf local` commands have been replaced with `asdf set`
 
 `asdf global` and `asdf local` have been removed. The "global" and "local"
 terminology was wrong and also misleading. asdf doesn't actually support
 "global" versions that apply everywhere. Any version that was specified with
 `asdf global` could easily be overridden by a `.tool-versions` file in your
 current directory specifying a different version. This was confusing to users.
-The plan is to introduce an `asdf set` command in the near future that better
-conveys how asdf works and provides similar functionality to `asdf global` and
-`asdf local`.
+The new `asdf set` behaves the same as `asdf local` by default, but also has
+flags for setting versions in the user's home directory (`--home`) and in an
+existing `.tool-versions` file in one of the parent directories (`--parent`).
+This new interface will hopefully convey a better understanding of how asdf
+resolves versions and provide equivalent functionality.
 
 ### `asdf update` command has been removed
 
