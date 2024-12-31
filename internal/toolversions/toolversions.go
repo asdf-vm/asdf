@@ -22,6 +22,58 @@ type ToolVersions struct {
 	Versions []string
 }
 
+// WriteToolVersionsToFile takes a path to a file and writes the new tool and
+// version data to the file. It creates the file if it does not exist and
+// updates it if it does.
+func WriteToolVersionsToFile(filepath string, toolVersions []ToolVersions) error {
+	content, err := os.ReadFile(filepath)
+	if _, ok := err.(*os.PathError); err != nil && !ok {
+		return err
+	}
+
+	updatedContent := updateContentWithToolVersions(string(content), toolVersions)
+	return os.WriteFile(filepath, []byte(updatedContent), 0o666)
+}
+
+func updateContentWithToolVersions(content string, toolVersions []ToolVersions) string {
+	var output strings.Builder
+
+	if content != "" {
+		for _, line := range readLines(content) {
+			tokens, comment := parseLine(line)
+			if len(tokens) > 1 {
+				tv := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
+
+				indexMatching := slices.IndexFunc(toolVersions, func(toolVersion ToolVersions) bool {
+					return toolVersion.Name == tv.Name
+				})
+
+				if indexMatching != -1 {
+					// write updated version
+					newTv := toolVersions[indexMatching]
+					newTokens := toolVersionsToTokens(newTv)
+					fmt.Fprintf(&output, "%s\n", encodeLine(newTokens, comment))
+					toolVersions = slices.Delete(toolVersions, indexMatching, indexMatching+1)
+					continue
+				}
+			}
+
+			// write back original line
+			fmt.Fprintf(&output, "%s\n", line)
+		}
+	}
+
+	// If any ToolVersions structs remaining, write them to the end of the file
+	if len(toolVersions) > 0 {
+		for _, toolVersion := range toolVersions {
+			newTokens := toolVersionsToTokens(toolVersion)
+			fmt.Fprintf(&output, "%s\n", encodeLine(newTokens, ""))
+		}
+	}
+
+	return output.String()
+}
+
 // FindToolVersions looks up a tool version in a tool versions file and if found
 // returns a slice of versions for it.
 func FindToolVersions(filepath, toolName string) (versions []string, found bool, err error) {
@@ -153,17 +205,8 @@ func FormatForFS(version Version) string {
 	}
 }
 
-// readLines reads all the lines in a given file
-// removing spaces and comments which are marked by '#'
 func readLines(content string) (lines []string) {
-	for _, line := range strings.Split(content, "\n") {
-		line, _, _ = strings.Cut(line, "#")
-		line = strings.TrimSpace(line)
-		if len(line) > 0 {
-			lines = append(lines, line)
-		}
-	}
-	return
+	return strings.Split(content, "\n")
 }
 
 func findToolVersionsInContent(content, toolName string) (versions []string, found bool) {
@@ -179,21 +222,42 @@ func findToolVersionsInContent(content, toolName string) (versions []string, fou
 
 func getAllToolsAndVersionsInContent(content string) (toolVersions []ToolVersions) {
 	for _, line := range readLines(content) {
-		tokens := parseLine(line)
-		newTool := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
-		toolVersions = append(toolVersions, newTool)
+		tokens, _ := parseLine(line)
+		if len(tokens) > 1 {
+			newTool := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
+			toolVersions = append(toolVersions, newTool)
+		}
 	}
 
 	return toolVersions
 }
 
-func parseLine(line string) (tokens []string) {
-	for _, token := range strings.Split(line, " ") {
+// parseLine receives a single line from a file and parses it into a list of
+// tokens and a comment. A comment may occur anywhere on the line and is started
+// by a `#` character.
+func parseLine(line string) (tokens []string, comment string) {
+	preComment, comment, _ := strings.Cut(line, "#")
+	for _, token := range strings.Split(preComment, " ") {
 		token = strings.TrimSpace(token)
 		if len(token) > 0 {
 			tokens = append(tokens, token)
 		}
 	}
 
-	return tokens
+	return tokens, comment
+}
+
+func toolVersionsToTokens(tv ToolVersions) []string {
+	return append([]string{tv.Name}, tv.Versions...)
+}
+
+func encodeLine(tokens []string, comment string) string {
+	tokensStr := strings.Join(tokens, " ")
+	if comment == "" {
+		if len(tokens) == 0 {
+			return ""
+		}
+		return tokensStr
+	}
+	return fmt.Sprintf("%s #%s", tokensStr, comment)
 }

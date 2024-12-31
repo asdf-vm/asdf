@@ -51,6 +51,107 @@ func TestFindToolVersions(t *testing.T) {
 	})
 }
 
+func TestWriteToolVersionsToFile(t *testing.T) {
+	toolVersions := ToolVersions{Name: "lua", Versions: []string{"1.2.3"}}
+
+	t.Run("writes new file when it does not exist", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), ".tool-versions")
+		assert.Nil(t, WriteToolVersionsToFile(path, []ToolVersions{toolVersions}))
+
+		fileContents, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, string(fileContents), "lua 1.2.3\n")
+	})
+
+	t.Run("writes new line to end of file when version not already set", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), ".tool-versions")
+		assert.Nil(t, os.WriteFile(path, []byte("test 1.2.3"), 0o666))
+		assert.Nil(t, WriteToolVersionsToFile(path, []ToolVersions{toolVersions}))
+
+		fileContents, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, string(fileContents), "test 1.2.3\nlua 1.2.3\n")
+	})
+
+	t.Run("updates existing line when tool already has one or more versions set", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), ".tool-versions")
+		assert.Nil(t, os.WriteFile(path, []byte("lua 1.1.1"), 0o666))
+		assert.Nil(t, WriteToolVersionsToFile(path, []ToolVersions{toolVersions}))
+
+		fileContents, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, string(fileContents), "lua 1.2.3\n")
+	})
+}
+
+func TestUpdateContentWithToolVersions(t *testing.T) {
+	tests := []struct {
+		desc         string
+		input        string
+		toolVersions []ToolVersions
+		output       string
+	}{
+		{
+			desc:         "returns content unchanged when identical tool and version already set",
+			input:        "foobar 1.2.3",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"1.2.3"}}},
+			output:       "foobar 1.2.3\n",
+		},
+		{
+			desc:         "writes new line to end of file when version not already set",
+			input:        "foobar 1.2.3",
+			toolVersions: []ToolVersions{{Name: "test", Versions: []string{"4.5.6"}}},
+			output:       "foobar 1.2.3\ntest 4.5.6\n",
+		},
+		{
+			desc:         "preserves comments on all other lines",
+			input:        "foobar 1.2.3\n# this is a test",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"4.5.6"}}},
+			output:       "foobar 4.5.6\n# this is a test\n",
+		},
+		{
+			desc:         "preserves comment on end of the line specifying previous version",
+			input:        "foobar 1.2.3 # this is a test",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"4.5.6"}}},
+			output:       "foobar 4.5.6 # this is a test\n",
+		},
+		{
+			desc:         "writes multiple versions for same tool",
+			input:        "foobar 1.2.3",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"4.5.6", "1.2.3"}}},
+			output:       "foobar 4.5.6 1.2.3\n",
+		},
+		{
+			desc:  "writes multiple tools",
+			input: "foobar 1.2.3",
+			toolVersions: []ToolVersions{
+				{Name: "ruby", Versions: []string{"4.5.6", "1.2.3"}},
+				{Name: "lua", Versions: []string{"5.2.3"}},
+			},
+			output: "foobar 1.2.3\nruby 4.5.6 1.2.3\nlua 5.2.3\n",
+		},
+		{
+			desc:         "writes new version when empty string",
+			input:        "",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"1.2.3"}}},
+			output:       "foobar 1.2.3\n",
+		},
+		{
+			desc:         "writes new version when empty string",
+			input:        "# this is a test",
+			toolVersions: []ToolVersions{{Name: "foobar", Versions: []string{"1.2.3"}}},
+			output:       "# this is a test\nfoobar 1.2.3\n",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			output := updateContentWithToolVersions(tt.input, tt.toolVersions)
+			assert.Equal(t, tt.output, output)
+		})
+	}
+}
+
 func TestIntersect(t *testing.T) {
 	t.Run("when provided two empty ToolVersions returns empty ToolVersions", func(t *testing.T) {
 		got := Intersect([]string{}, []string{})
