@@ -137,6 +137,26 @@ check_if_version_exists() {
   fi
 }
 
+try_get_closest_version() {
+  local plugin_name=$1
+  local partial_version=$2
+  local versions
+
+  versions=$(list_installed_versions "$plugin_name")
+
+  if [ -n "${versions}" ]; then
+    for version in $versions; do
+      if [[ $version == $partial_version* ]]; then
+        matched_versions+=("$version")
+      fi
+    done
+  fi
+
+  if [ ${#matched_versions[@]} -eq 1 ]; then
+    printf "%s" "${matched_versions[0]}"
+  fi
+}
+
 version_not_installed_text() {
   local plugin_name=$1
   local version=$2
