@@ -1,6 +1,8 @@
 # -*- sh -*-
 # shellcheck source=lib/functions/plugins.bash
 . "$(dirname "$(dirname "$0")")/lib/functions/plugins.bash"
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 # shellcheck disable=SC2059
 plugin_current_command() {
@@ -21,7 +23,8 @@ plugin_current_command() {
   local description=""
 
   IFS=' ' read -r -a versions <<<"$full_version"
-  for version in "${versions[@]}"; do
+  for version_spec in "${versions[@]}"; do
+    version="$(resolve_version_spec "$version_spec")"
     if ! (check_if_version_exists "$plugin_name" "$version"); then
       version_not_installed="$version"
     fi
