@@ -385,12 +385,10 @@ Without a version listed for a tool execution of the tool will **error**. `asdf 
 
 Because asdf looks for a `.tool-versions` file in the current directory first, and if the file is not found it then climbs up the file tree looking for a `.tool-versions` in a parent directory until it finds one. If no `.tool-versions` file is found the version resolution process will fail and an error will be printed.
 
-### Global
-
-Global defaults are managed in `$HOME/.tool-versions`. Set a global version with:
+If you want to set a default version that will apply to all directories you work in you can set a version in `$HOME/.tool-versions`. Any directory under your home directory will have that same version set, unless a particular directory sets another version.
 
 ```shell
-asdf global nodejs latest
+asdf set -u nodejs 16.5.0
 ```
 
 `$HOME/.tool-versions` will then look like:
@@ -401,12 +399,10 @@ nodejs 16.5.0
 
 Some OSs already have tools installed that are managed by the system and not `asdf`, `python` is a common example. You need to tell `asdf` to pass the management back to the system. The [Versions reference section](/manage/versions.md) will guide you.
 
-### Local
-
-Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
+The first place asdf looks for a version is your current working directory (`$PWD/.tool-versions`). This may be a directory containing a source code or Git repository for a project. When in your desired directory execute you can use `asdf set` to set the version:
 
 ```shell
-asdf local nodejs latest
+asdf set nodejs 16.5.0
 ```
 
 `$PWD/.tool-versions` will then look like:
