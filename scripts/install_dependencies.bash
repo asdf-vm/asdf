@@ -21,9 +21,6 @@ fi
 ### Set variables for tracking versions
 # Elvish
 elvish_semver="v0.19.2"
-# Fish
-fish_semver="3.7.1"
-fish_apt_semver="${fish_semver}-1~jammy"
 # Nushell
 nushell_semver="0.86.0"
 # Powershell
@@ -39,8 +36,7 @@ if [ "$RUNNER_OS" = "Linux" ]; then
   sudo add-apt-repository -y ppa:fish-shell/release-3
   sudo apt-get update
   sudo apt-get --allow-downgrades -y install curl parallel \
-    fish="${fish_apt_semver}" \
-    powershell="${powershell_apt_semver}"
+    fish powershell="${powershell_apt_semver}"
 
   # Create $HOME/bin
   mkdir -p "$HOME/bin"

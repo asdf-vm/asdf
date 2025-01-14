@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  PYTHON_MIN_VERSION: "3.7.13"
+  PYTHON_MIN_VERSION: "3.13.1"
 
 jobs:
   asdf-bash:
