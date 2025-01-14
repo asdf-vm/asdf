@@ -5,6 +5,9 @@ const en = [
     items: [
       { text: "What is asdf?", link: "/guide/introduction" },
       { text: "Getting Started", link: "/guide/getting-started" },
+      { text: "Getting Started (pre-0.16.0)", link: "/guide/getting-started-legacy" },
+      { text: "Upgrading to 0.16.0", link: "/guide/upgrading-to-v0-16" },
+
     ],
   },
   {

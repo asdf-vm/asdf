@@ -65,35 +65,53 @@ asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
-## Set Current Version
+## Set Version
+
+#### Via `.tool-versions` file
 
 ```shell
-asdf global <name> <version> [<version>...]
-asdf shell <name> <version> [<version>...]
-asdf local <name> <version> [<version>...]
-# asdf global elixir 1.2.4
+asdf set [flags] <name> <version> [<version>...]
+# asdf set elixir 1.2.4 # set in current dir
+# asdf set -u elixir 1.2.4 # set in .tool-versions file in home directory
+# asdf set -p elixir 1.2.4 # set in existing .tool-versions file in a parent dir
 
-asdf global <name> latest[:<version>]
-asdf local <name> latest[:<version>]
-# asdf global elixir latest
+asdf set <name> latest[:<version>]
+# asdf set elixir latest
 ```
 
-`global` writes the version to `$HOME/.tool-versions`.
+`asdf set` writes the version to a `.tool-versions` file in the current directory,
+creating it if needed. It exists purely for convenience. You can think of it as
+just doing `echo "<tool> <version>" > .tool-versions`.
 
-`shell` sets the version to an environment variable named `ASDF_${TOOL}_VERSION`, for the current shell session only.
+With the `-u`/`--home` flag `asdf set` writes to the `.tool-versions` file in
+your `$HOME` directory, creating the file if it does not exist.
 
-`local` writes the version to `$PWD/.tool-versions`, creating it if needed.
+With the `-p`/`--parent` flag `asdf set` finds a `.tool-versions` file in the
+closest parent directory of the current directory.
+
+#### Via Environment Variable
+
+When determining the version looks for an environment variable with the pattern
+`ASDF_${TOOL}_VERSION`. The version format is the same supported by the
+`.tool-versions` file. If set, the value of this environment variable overrides
+any versions set in for the tool in any `.tool-versions` file. For example:
+
+```shell
+export ASDF_ELIXIR_VERSION=1.18.1
+```
+
+Will tell asdf to use Elixir `1.18.1` in the current shell session.
+
+:::warning
+Because this is an environment variable, it only takes effect where it is set.
+Any other shell sessions that are running will still use to whatever version is
+set in a `.tool-versions` file.
 
 See the `.tool-versions` [file in the Configuration section](/manage/configuration.md) for details.
 
-:::warning Alternatively
-If you want to set a version only for the current shell session
-or for executing just a command under a particular tool version, you
-can set an environment variable like `ASDF_${TOOL}_VERSION`.
 :::
 
 The following example runs tests on an Elixir project with version `1.4.0`.
-The version format is the same supported by the `.tool-versions` file.
 
 ```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
@@ -103,11 +121,11 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 To use the system version of tool `<name>` instead of an asdf managed version you can set the version for the tool to `system`.
 
-Set system with either `global`, `local` or `shell` as outlined in [Set Current Version](#set-current-version) section above.
+Set system with either `asdf set` or via environment variable as outlined in [Set Current Version](#set-current-version) section above.
 
 ```shell
-asdf local <name> system
-# asdf local python system
+asdf set <name> system
+# asdf set python system
 ```
 
 ## View Current Version
@@ -136,7 +154,7 @@ When asdf installs a package it creates shims for every executable program in th
 
 The shims themselves are really simple wrappers that `exec` a helper program `asdf exec` passing it the name of the plugin and path to the executable in the installed package that the shim is wrapping.
 
-The `asdf exec` helper determines the version of the package to use (as specified in `.tool-versions` file, selected by `asdf local ...` or `asdf global ...`), the final path to the executable in the package installation directory (this can be manipulated by the `exec-path` callback in the plugin) and the environment to execute in (also provided by the plugin - `exec-env` script), and finally it executes it.
+The `asdf exec` helper determines the version of the package to use (as specified in `.tool-versions` file or environment variable), the final path to the executable in the package installation directory (this can be manipulated by the `exec-path` callback in the plugin) and the environment to execute in (also provided by the plugin - `exec-env` script), and finally it executes it.
 
 ::: warning Note
 Because this system uses `exec` calls, any scripts in the package that are meant to be sourced by the shell instead of executed need to be accessed directly instead of via the shim wrapper. The two `asdf` commands: `which` and `where` can help with this by returning the path to the installed package:
