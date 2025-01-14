@@ -52,14 +52,14 @@ func updateContentWithToolVersions(content string, toolVersions []ToolVersions) 
 					// write updated version
 					newTv := toolVersions[indexMatching]
 					newTokens := toolVersionsToTokens(newTv)
-					fmt.Fprintf(&output, "%s\n", encodeLine(newTokens, comment))
+					writeLine(&output, encodeLine(newTokens, comment))
 					toolVersions = slices.Delete(toolVersions, indexMatching, indexMatching+1)
 					continue
 				}
 			}
 
 			// write back original line
-			fmt.Fprintf(&output, "%s\n", line)
+			writeLine(&output, line)
 		}
 	}
 
@@ -67,7 +67,7 @@ func updateContentWithToolVersions(content string, toolVersions []ToolVersions) 
 	if len(toolVersions) > 0 {
 		for _, toolVersion := range toolVersions {
 			newTokens := toolVersionsToTokens(toolVersion)
-			fmt.Fprintf(&output, "%s\n", encodeLine(newTokens, ""))
+			writeLine(&output, encodeLine(newTokens, ""))
 		}
 	}
 
@@ -260,4 +260,10 @@ func encodeLine(tokens []string, comment string) string {
 		return tokensStr
 	}
 	return fmt.Sprintf("%s #%s", tokensStr, comment)
+}
+
+func writeLine(output *strings.Builder, line string) {
+	if strings.TrimSpace(line) != "" {
+		output.WriteString(line + "\n")
+	}
 }

@@ -95,6 +95,24 @@ func TestAll(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "lua 5.2.3\n", string(bytes))
 	})
+
+	t.Run("sets version in current directory only once", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		dir := t.TempDir()
+		assert.Nil(t, os.Chdir(dir))
+
+		_ = Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
+		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
+
+		assert.Nil(t, err)
+		assert.Equal(t, stdout.String(), "")
+		assert.Equal(t, stderr.String(), "")
+
+		path := filepath.Join(dir, ".tool-versions")
+		bytes, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, "lua 5.2.3\n", string(bytes))
+	})
 }
 
 func buildOutputs() (strings.Builder, strings.Builder) {
