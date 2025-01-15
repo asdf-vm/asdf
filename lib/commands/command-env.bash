@@ -1,4 +1,6 @@
 # -*- sh -*-
+# shellcheck source=lib/functions/versions.bash
+. "$(dirname "$(dirname "$0")")/lib/functions/versions.bash"
 
 shim_env_command() {
   local shim_name="$1"
