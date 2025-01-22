@@ -231,9 +231,13 @@ func TestUpdate(t *testing.T) {
 
 	repoPath, err := repotest.GeneratePlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)
+	assert.Nil(t, Add(conf, testPluginName, repoPath, ""))
 
-	err = Add(conf, testPluginName, repoPath, "")
+	noPostUpdateCallbackPlugin := "no-post-update"
+	repoPath, err = repotest.GeneratePlugin("dummy_plugin", testDataDir, noPostUpdateCallbackPlugin)
 	assert.Nil(t, err)
+	assert.Nil(t, os.Remove(filepath.Join(repoPath, "bin", "post-plugin-update")))
+	assert.Nil(t, Add(conf, noPostUpdateCallbackPlugin, repoPath, ""))
 
 	badPluginName := "badplugin"
 	badRepo := data.PluginDirectory(testDataDir, badPluginName)
@@ -268,6 +272,14 @@ func TestUpdate(t *testing.T) {
 			desc:        "updates plugin when plugin with name exists",
 			givenConf:   conf,
 			givenName:   testPluginName,
+			givenRef:    "",
+			wantSomeRef: true,
+			wantErrMsg:  "",
+		},
+		{
+			desc:        "updates plugin when plugin when post-plugin-update callback does not exist",
+			givenConf:   conf,
+			givenName:   noPostUpdateCallbackPlugin,
 			givenRef:    "",
 			wantSomeRef: true,
 			wantErrMsg:  "",
