@@ -261,11 +261,14 @@ func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (s
 	}
 
 	err = p.RunCallback("post-plugin-update", []string{}, env, out, errout)
+	if _, ok := err.(NoCallbackError); err != nil && !ok {
+		return newRef, err
+	}
 
 	hook.Run(conf, "post_asdf_plugin_update", []string{p.Name})
 	hook.Run(conf, fmt.Sprintf("post_asdf_plugin_update_%s", p.Name), []string{})
 
-	return newRef, err
+	return newRef, nil
 }
 
 // List takes config and flags for what to return and builds a list of plugins

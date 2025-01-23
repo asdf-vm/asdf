@@ -34,7 +34,7 @@ The full list of scripts callable from asdf.
 | Script                                                                                                | Description                                                      |
 | :---------------------------------------------------------------------------------------------------- |:-----------------------------------------------------------------|
 | [bin/list-all](#bin-list-all) <Badge type="tip" text="required" vertical="middle" />                  | List all installable versions                                    |
-| [bin/download](#bin-download) <Badge type="tip" text="required" vertical="middle" />                  | Download source code or binary for the specified version         |
+| [bin/download](#bin-download) <Badge type="warning" text="recommended" vertical="middle" />           | Download source code or binary for the specified version         |
 | [bin/install](#bin-install) <Badge type="tip" text="required" vertical="middle" />                    | Installs the specified version                                   |
 | [bin/latest-stable](#bin-latest-stable) <Badge type="warning" text="recommended" vertical="middle" /> | List the latest stable version of the specified tool             |
 | [bin/help.overview](#bin-help.overview)                                                               | Output a general description about the plugin & tool             |
