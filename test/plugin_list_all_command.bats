@@ -26,15 +26,13 @@ teardown() {
 @test "plugin_list_all should sync repo when check_duration set to 0" {
   export ASDF_CONFIG_DEFAULT_FILE="$HOME/.asdfrc"
   echo 'plugin_repository_last_check_duration = 0' >"$ASDF_CONFIG_DEFAULT_FILE"
-  local expected_plugin_repo_sync="updating plugin repository..."
   local expected_plugins_list="\
 bar                           http://example.com/bar
-dummy                        *http://example.com/dummy
+dummy                         http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
   [ "$status" -eq 0 ]
-  [[ "$output" == *"$expected_plugin_repo_sync"* ]]
   [[ "$output" == *"$expected_plugins_list"* ]]
 }
 
@@ -43,7 +41,7 @@ foo                           http://example.com/foo"
   echo 'plugin_repository_last_check_duration = 10' >"$ASDF_CONFIG_DEFAULT_FILE"
   local expected="\
 bar                           http://example.com/bar
-dummy                        *http://example.com/dummy
+dummy                         http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
@@ -56,7 +54,7 @@ foo                           http://example.com/foo"
   echo 'plugin_repository_last_check_duration = never' >"$ASDF_CONFIG_DEFAULT_FILE"
   local expected="\
 bar                           http://example.com/bar
-dummy                        *http://example.com/dummy
+dummy                         http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all
@@ -67,7 +65,7 @@ foo                           http://example.com/foo"
 @test "plugin_list_all list all plugins in the repository" {
   local expected="\
 bar                           http://example.com/bar
-dummy                        *http://example.com/dummy
+dummy                         http://example.com/dummy
 foo                           http://example.com/foo"
 
   run asdf plugin list all

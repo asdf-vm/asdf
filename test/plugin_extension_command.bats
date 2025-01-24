@@ -18,15 +18,15 @@ teardown() {
 @test "asdf help shows plugin extension commands" {
   local plugin_path listed_cmds
   plugin_path="$(get_plugin_path dummy)"
-  touch "$plugin_path/lib/commands/command.bash"
-  touch "$plugin_path/lib/commands/command-foo.bash"
-  touch "$plugin_path/lib/commands/command-foo-bar.bash"
+  touch "$plugin_path/lib/commands/command"
+  touch "$plugin_path/lib/commands/command-foo"
+  touch "$plugin_path/lib/commands/command-foo-bar"
   run asdf help
   [ "$status" -eq 0 ]
   echo "$output" | grep "PLUGIN dummy" # should present plugin section
   listed_cmds=$(echo "$output" | grep -c "asdf dummy")
   [ "$listed_cmds" -eq 3 ]
-  echo "$output" | grep "asdf dummy foo bar" # should present commands without hyphens
+  echo "$output" | grep "asdf dummy foo-bar"
 }
 
 @test "asdf help shows extension commands for plugin with hyphens in the name" {
@@ -37,9 +37,9 @@ teardown() {
 
   plugin_path="$(get_plugin_path $plugin_name)"
   mkdir -p "$plugin_path/lib/commands"
-  touch "$plugin_path/lib/commands/command.bash"
-  touch "$plugin_path/lib/commands/command-foo.bash"
-  touch "$plugin_path/lib/commands/command-foo-bar.bash"
+  touch "$plugin_path/lib/commands/command"
+  touch "$plugin_path/lib/commands/command-foo"
+  touch "$plugin_path/lib/commands/command-foo-bar"
 
   run asdf help
   [ "$status" -eq 0 ]
@@ -47,52 +47,55 @@ teardown() {
   listed_cmds=$(grep -c "asdf $plugin_name" <<<"${output}")
   [[ $listed_cmds -eq 3 ]]
   [[ "$output" == *"asdf $plugin_name foo"* ]]
-  [[ "$output" == *"asdf $plugin_name foo bar"* ]]
+  [[ "$output" == *"asdf $plugin_name foo-bar"* ]]
 }
 
 @test "asdf can execute plugin bin commands" {
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy foo` command
-  cat <<'EOF' >"$plugin_path/lib/commands/command-foo.bash"
+  cat <<'EOF' >"$plugin_path/lib/commands/command-foo"
 #!/usr/bin/env bash
 echo this is an executable $*
 EOF
-  chmod +x "$plugin_path/lib/commands/command-foo.bash"
+  chmod +x "$plugin_path/lib/commands/command-foo"
 
   expected="this is an executable bar"
 
-  run asdf dummy foo bar
+  run asdf cmd dummy foo bar
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
 
-@test "asdf can source plugin bin scripts" {
-  plugin_path="$(get_plugin_path dummy)"
+# No longer supported. If you want to do this you'll need to manual source the
+# file containing the functions you want via relative path.
+#@test "asdf can source plugin bin scripts" {
+#  plugin_path="$(get_plugin_path dummy)"
 
-  # this plugin defines a new `asdf dummy foo` command
-  echo 'echo sourced script has asdf utils $(get_plugin_path dummy) $*' >"$plugin_path/lib/commands/command-foo.bash"
+#  # this plugin defines a new `asdf dummy foo` command
+#  echo '#!/usr/bin/env bash
+#  echo sourced script has asdf utils $(get_plugin_path dummy) $*' >"$plugin_path/lib/commands/command-foo"
 
-  expected="sourced script has asdf utils $plugin_path bar"
+#  expected="sourced script has asdf utils $plugin_path bar"
 
-  run asdf dummy foo bar
-  [ "$status" -eq 0 ]
-  [ "$output" = "$expected" ]
-}
+#  run asdf cmd dummy foo bar
+#  [ "$status" -eq 0 ]
+#  [ "$output" = "$expected" ]
+#}
 
 @test "asdf can execute plugin default command without arguments" {
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy` command
-  cat <<'EOF' >"$plugin_path/lib/commands/command.bash"
+  cat <<'EOF' >"$plugin_path/lib/commands/command"
 #!/usr/bin/env bash
 echo hello
 EOF
-  chmod +x "$plugin_path/lib/commands/command.bash"
+  chmod +x "$plugin_path/lib/commands/command"
 
   expected="hello"
 
-  run asdf dummy
+  run asdf cmd dummy
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
@@ -101,15 +104,15 @@ EOF
   plugin_path="$(get_plugin_path dummy)"
 
   # this plugin defines a new `asdf dummy` command
-  cat <<'EOF' >"$plugin_path/lib/commands/command.bash"
+  cat <<'EOF' >"$plugin_path/lib/commands/command"
 #!/usr/bin/env bash
 echo hello $*
 EOF
-  chmod +x "$plugin_path/lib/commands/command.bash"
+  chmod +x "$plugin_path/lib/commands/command"
 
   expected="hello world"
 
-  run asdf dummy world
+  run asdf cmd dummy world
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }

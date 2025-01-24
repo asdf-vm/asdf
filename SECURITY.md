@@ -9,7 +9,7 @@ not covered under this security policy.**
 <!-- x-release-please-start-version -->
 
 ```
-0.14.1
+0.15.0
 ```
 
 <!-- x-release-please-end -->

@@ -1,0 +1,2 @@
+pre_asdf_reshim_lua = echo pre_reshim $@
+post_asdf_reshim_lua = echo post_reshim $@

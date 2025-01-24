@@ -1,0 +1,8 @@
+# This is a test asdfrc file containing all possible values. Each field to set
+# to a value that is different than the default.
+
+# Hooks
+pre_asdf_plugin_add = echo Executing with args: $@
+pre_asdf_plugin_add_test =      echo Executing with args: $@
+pre_asdf_plugin_add_test2 = exit $1
+pre_asdf_plugin_add_test3 = eval $@

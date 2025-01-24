@@ -68,13 +68,7 @@ nodejs 16.5.0
 
 ## Atualizar
 
-`asdf` tem um comando embutido para atualização que depende do Git (nosso método de instalação recomendado). Se você instalou usando um método diferente, siga as etapas para esse método:
-
-| Method         | Latest Stable Release                                                                                                                          | Latest commit on `master`        |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| asdf (via Git) | `asdf update`                                                                                                                                  | `asdf update --head`             |
-| Homebrew       | `brew upgrade asdf`                                                                                                                            | `brew upgrade asdf --fetch-HEAD` |
-| Pacman         | Obter manualmente um novo `PKGBUILD` e <br/> reconstruir ou usar suas preferências de [AUR](https://wiki.archlinux.org/index.php/AUR_helpers). |                                  |
+Por favor, use o mesmo método que você usou para instalar o asdf para atualizá-lo. A versão mais recente do asdf é mostrada no canto superior direito desta página.
 
 ## Desinstalar
 

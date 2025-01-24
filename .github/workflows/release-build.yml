@@ -1,0 +1,46 @@
+name: Build Binaries for Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build release binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # windows isn't working on windows right now, add it to this list once
+        # I fix the code.
+        goos: [linux, darwin]
+        goarch: ["386", amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          #- goarch: arm64
+          #  goos: windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Compute asdf version
+        id: asdf-version
+        shell: bash
+        run: echo "version=$(./scripts/asdf-version)" >> "$GITHUB_OUTPUT"
+      - name: Build Go binaries
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: "1.23.4"
+          binary_name: "asdf"
+          project_path: ./cmd/asdf
+          release_tag: ${{ github.event.release.tag_name }}
+          release_name: ${{ github.event.release.tag_name }}
+          ldflags: -s -X main.version=${{ github.event.release.tag_name }}

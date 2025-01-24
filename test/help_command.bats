@@ -75,7 +75,7 @@ EOF
   [ "$status" -eq 0 ]
   [[ $output == 'version: v'* ]]
   [[ $output == *$'MANAGE PLUGINS\n'* ]]
-  [[ $output == *$'MANAGE PACKAGES\n'* ]]
+  [[ $output == *$'MANAGE TOOLS\n'* ]]
   [[ $output == *$'UTILS\n'* ]]
   [[ $output == *$'"Late but latest"\n-- Rajinikanth' ]]
 }

@@ -76,15 +76,6 @@ Plugins **with support** can read the versions files used by other version manag
 | `no` <Badge type="tip" text="default" vertical="middle" /> | Use `.tool-versions` to read versions                                      |
 | `yes`                                                      | Use plugin fallback to legacy version files (`.ruby-version`) if available |
 
-### `use_release_candidates`
-
-Configure the `asdf update` command to upgrade to the latest Release Candidate instead of the latest Semantic Version.
-
-| Options                                                    | Description               |
-| :--------------------------------------------------------- | :------------------------ |
-| `no` <Badge type="tip" text="default" vertical="middle" /> | Semantic Version is used  |
-| `yes`                                                      | Release Candidate is used |
-
 ### `always_keep_download`
 
 Configure the `asdf install` command to keep or delete the source code or binary it downloads.
@@ -253,9 +244,3 @@ would result in the following outcomes:
 | always_keep_download                  | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
 | plugin_repository_last_check_duration | `60`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
 | disable_plugin_short_name_repository  | `no`             | No custom `.asdfrc`, so use the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults)                                      |
-
-## Internal Configuration
-
-Users should not worry about this section as it describes configuration internal to `asdf` useful for Package Managers and integrators.
-
-- `$ASDF_DIR/asdf_updates_disabled`: Updates via the `asdf update` command are disabled when this file is present (content irrelevant). This is used by package managers like Pacman or Homebrew to ensure the correct update method is used for the particular installation.

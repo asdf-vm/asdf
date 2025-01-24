@@ -31,7 +31,7 @@ run_shfmt_stylecheck() {
 
   print.info "Checking .bash with shfmt"
   shfmt --language-dialect bash --indent 2 "${shfmt_flag}" \
-    completions/*.bash \
+    internal/completions/*.bash \
     bin/asdf \
     bin/private/asdf-exec \
     lib/utils.bash \
@@ -55,7 +55,7 @@ run_shellcheck_linter() {
 
   print.info "Checking .bash files with Shellcheck"
   shellcheck --shell bash --external-sources \
-    completions/*.bash \
+    internal/completions/*.bash \
     bin/asdf \
     bin/private/asdf-exec \
     lib/utils.bash \
@@ -123,7 +123,7 @@ run_fish_linter() {
     printf "%s\n" "[WARNING] fish_indent not found. Skipping .fish files."
   else
     print.info "Checking .fish files with fish_indent"
-    fish_indent "${flag}" ./**/*.fish
+    fish_indent "${flag}" ./internal/completions/asdf.fish
   fi
 }
 

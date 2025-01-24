@@ -22,7 +22,7 @@ teardown() {
   run asdf install dummy 1.0
   run asdf reshim dummy
 
-  run asdf shim-versions dummy
+  run asdf shimversions dummy
   [ "$status" -eq 0 ]
 
   echo "$output" | grep "dummy 3.0"

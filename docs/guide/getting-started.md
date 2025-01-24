@@ -36,7 +36,7 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
 
 ```
 
@@ -236,9 +236,6 @@ autoload -Uz compinit && compinit
 - if you are using a custom `compinit` setup, ensure `compinit` is below your sourcing of `asdf.sh`
 - if you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
 
-**Warning**
-
-If you are using a ZSH Framework the associated `asdf` plugin may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
 :::
 
 ::: details ZSH & Homebrew
@@ -364,7 +361,7 @@ export ASDF_DIR="/opt/asdf-vm"
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
 ::: warning
-On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcily adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.
+On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcibly adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.
 :::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.

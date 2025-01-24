@@ -9,19 +9,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: GoogleCloudPlatform/release-please-action@v3
+      - uses: GoogleCloudPlatform/release-please-action@v4
         name: create release
         with:
+          token: ${{ secrets.ASDF_WORKFLOW_TOKEN }}
           release-type: simple
-          bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
-          changelog-types: |
-            [
-              { "type": "feat", "section": "Features", "hidden": false },
-              { "type": "fix", "section": "Patches", "hidden": false },
-              { "type": "docs", "section": "Documentation", "hidden": false }
-            ]
-          extra-files: |
-            SECURITY.md
-            docs/guide/getting-started.md
-            docs/pt-br/guide/getting-started.md
-            docs/zh-hans/guide/getting-started.md

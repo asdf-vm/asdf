@@ -76,15 +76,6 @@ concurrency = auto
 | `no` <Badge type="tip" text="デフォルト" vertical="middle" /> | バージョンの読み込みには`.tool-versions`を使用します                                                        |
 | `yes`                                                         | 利用可能なレガシーバージョンファイル(`.ruby-version`など)がある場合、プラグインのフォールバックで使用します |
 
-### `use_release_candidates`
-
-`asdf update`コマンドでasdfを更新する際に、最新リリースではなく、リリース候補版へ更新するか制御します。
-
-| オプション                                                    | 説明                       |
-| :------------------------------------------------------------ | :------------------------- |
-| `no` <Badge type="tip" text="デフォルト" vertical="middle" /> | 最新リリースを使用します   |
-| `yes`                                                         | リリース候補版を使用します |
-
 ### `always_keep_download`
 
 `asdf install`コマンドでダウンロードしたソースコードやバイナリを、保持しておくか削除するかを制御します。
@@ -151,6 +142,31 @@ asdfプラグインのショートネームリポジトリの同期を無効化�
 | `auto`  | `nproc`、`sysctl hw.ncpu`、`/proc/cpuinfo`、または`1`、の優先順でコア数を計算します |
 
 備考: `ASDF_CONCURRENCY`環境変数が設定されている場合はそちらが優先されます。
+
+### プラグインフック
+
+下記のタイミングで、カスタムコードを実行することができます:
+
+- プラグインのインストール、Shim再生成、更新および削除をする際の前後
+- プラグインコマンドの実行前後
+
+例えば、`foo`というプラグインがインストールされていて、`bar`という実行可能ファイルが提供されている場合、以下のようなフックを使うことで、一番最初にカスタムコードを実行することができます:
+
+```text
+pre_foo_bar = echo Executing with args: $@
+```
+
+以下のパターンがサポートされています:
+
+- `pre_<plugin_name>_<command>`
+- `pre_asdf_download_<plugin_name>`
+- `{pre,post}_asdf_{install,reshim,uninstall}_<plugin_name>`
+  - `$1`: フルバージョン
+- `{pre,post}_asdf_plugin_{add,update,remove,reshim}`
+  - `$1`: プラグイン名
+- `{pre,post}_asdf_plugin_{add,update,remove}_<plugin_name>`
+
+どのようなコマンドの前後にどのようなコマンドフックを実行すべきかについての詳細は、[プラグインの作成](../plugins/create.md)をご覧ください。
 
 ## 環境変数
 
@@ -228,9 +244,3 @@ asdfプラグインのショートネームリポジトリの同期を無効化�
 | always_keep_download                  | `no`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
 | plugin_repository_last_check_duration | `60`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
 | disable_plugin_short_name_repository  | `no`             | `.asdfrc`をカスタマイズしていないので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)を使用します。           |
-
-## 内部構成
-
-この節では、パッケージマネージャやインテグレータ向けの`asdf`の内部構成について記述しているため、ユーザが気にする必要はありません。
-
-- `$ASDF_DIR/asdf_updates_disabled`: このファイルが存在する場合、`asdf update`コマンドによる更新は無効になります(ファイル内容は関係ありません)。これは、PacmanやHomebrewのようなパッケージマネージャによって使用され、特定のインストールに対して正しい更新方法を適用するようにします。

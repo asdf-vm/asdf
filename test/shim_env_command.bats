@@ -38,7 +38,8 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
 
-  echo "export FOO=bar" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  echo '#!/usr/bin/env bash
+  export FOO=bar' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
   chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
 
   run asdf env dummy
@@ -46,12 +47,33 @@ teardown() {
   echo "$output" | grep 'FOO=bar'
 }
 
+@test "asdf env should print error when plugin version lacks the specified executable" {
+  echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
+  run asdf install
+
+  echo '#!/usr/bin/env bash
+  export FOO=bar' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
+
+  echo "dummy system" >"$PROJECT_DIR/.tool-versions"
+
+  run asdf env dummy
+  [ "$status" -eq 1 ]
+  [ "$output" = "No executable dummy found for current version. Please select a different version or install dummy manually for the current version" ]
+}
+
 @test "asdf env should ignore plugin custom environment on system version" {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
 
-  echo "export FOO=bar" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  echo '#!/usr/bin/env bash
+  export FOO=bar' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
   chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
+
+  # Create a "system" dummy executable
+  echo '#!/usr/bin/env bash
+  echo "system dummy"' >"$ASDF_BIN/dummy"
+  chmod +x "$ASDF_BIN/dummy"
 
   echo "dummy system" >"$PROJECT_DIR/.tool-versions"
 
@@ -63,8 +85,10 @@ teardown() {
   [ "$status" -eq 1 ]
 
   run asdf env dummy which dummy
-  [ "$output" = "$ASDF_DIR/shims/dummy" ]
+  [ "$output" = "$ASDF_BIN/dummy" ]
   [ "$status" -eq 0 ]
+  # Remove "system" dummy executable
+  rm "$ASDF_BIN/dummy"
 }
 
 @test "asdf env should set PATH correctly" {
