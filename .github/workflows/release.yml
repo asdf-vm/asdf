@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -13,4 +17,4 @@ jobs:
         name: create release
         with:
           token: ${{ secrets.ASDF_WORKFLOW_TOKEN }}
-          release-type: simple
+          release-type: go
