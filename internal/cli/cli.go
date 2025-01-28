@@ -774,6 +774,11 @@ func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
 		return err
 	}
 
+	if len(plugins) == 0 {
+		logger.Println("No plugins installed")
+		return nil
+	}
+
 	// TODO: Add some sort of presenter logic in another file so we
 	// don't clutter up this cmd code with conditional presentation
 	// logic
