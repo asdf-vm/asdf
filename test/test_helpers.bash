@@ -71,7 +71,7 @@ install_mock_plugin_repo() {
 init_git_repo() {
   location="$1"
   remote="${2:-"https://asdf-vm.com/fake-repo"}"
-  git -C "${location}" init -q
+  git -C "${location}" init -q --initial-branch=master
   git -C "${location}" config user.name "Test"
   git -C "${location}" config user.email "test@example.com"
   git -C "${location}" add -A
