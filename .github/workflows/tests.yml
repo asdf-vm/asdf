@@ -41,7 +41,10 @@ jobs:
   test-golang:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.go == 'true' || needs.detect-changes.outputs.cli == 'true' }}
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
