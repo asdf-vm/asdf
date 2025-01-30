@@ -267,8 +267,7 @@ Determine the latest stable version of a tool. If absent, the asdf core will `ta
 
 **Commands that invoke this script**
 
-- `asdf global <tool> latest`: set the global version of a tool to the latest stable version for that tool.
-- `asdf local <name> latest`: set the local version of a tool to the latest stable version for that tool.
+- `asdf set <tool> latest`: set the global version of a tool to the latest stable version for that tool.
 - `asdf install <tool> latest`: installs the latest version of a tool.
 - `asdf latest <tool> [<version>]`: outputs the latest version of a tool based on the optional filter.
 - `asdf latest --all`: outputs the latest version of all tools managed by asdf and whether they are installed.

@@ -6,12 +6,6 @@ Configuration of `asdf` encompasses both the sharable `.tool-versions` files as 
 
 Whenever `.tool-versions` file is present in a directory, the tool versions it declares will be used in that directory and any subdirectories.
 
-::: warning Note
-
-Global defaults can be set in the file `$HOME/.tool-versions`
-
-:::
-
 This is what a `.tool-versions` file looks like:
 
 ```
@@ -48,7 +42,7 @@ To install all the tools defined in a `.tool-versions` file run `asdf install` w
 
 To install a single tool defined in a `.tool-versions` file run `asdf install <name>` in the directory containing the `.tool-versions` file. The tool will be installed at the version specified in the `.tool-versions` file.
 
-Edit the file directly or use `asdf local` (or `asdf global`) which updates it.
+Edit the file directly or use `asdf set` which updates it.
 
 ## `.asdfrc`
 
