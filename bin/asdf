@@ -109,6 +109,7 @@ asdf_cmd() {
 
     exec "$ASDF_CMD_FILE" "${@:${args_offset}}"
   elif [ -f "$ASDF_CMD_FILE" ]; then
+    print_0_16_0_migration_notice
     set -- "${@:${args_offset}}"
     # shellcheck source=/dev/null
     . "$ASDF_CMD_FILE"
@@ -120,6 +121,26 @@ asdf_cmd() {
     . "$asdf_cmd_dir/command-help.bash" >&2
     return 127
   fi
+}
+
+print_0_16_0_migration_notice() {
+  printf -- '\033[1;31m----------
+
+NOTICE:
+
+You have tried to upgrade to asdf 0.16.0 or newer. Versions 0.16.0 is a
+complete rewrite of asdf in Go. This text is being printed by the older
+Bash implementation. If you are seeing this you have not migrated to
+asdf 0.16.0. Please follow the instructions on the upgrade guide to
+migrate to the new version.
+
+Aside from this notice, this older Bash implementation works as it did
+in asdf version 0.15.0 and older.
+
+Migration guide: https://asdf-vm.com/guide/upgrading-to-v0-16
+asdf website: https://asdf-vm.com
+Source code: https://github.com/asdf-vm/asdf
+\033[0m\n\n' >&2
 }
 
 asdf_cmd "$@"
