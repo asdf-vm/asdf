@@ -19,6 +19,16 @@ asdf can be installed in several different ways:
 
 ##### Install asdf
 
+There are two ways to install `asdf` using a pre-compiled binary:
+
+###### Using install script
+```bash
+curl -fsSL https://raw.githubusercontent.com/asdf-vm/asdf/v0.16.0/install.sh | sudo sh
+```
+
+This will download the `asdf` binary and install it to `/usr/local/bin/asdf`. 
+
+###### Using pre-compiled binary
 1. Visit https://github.com/asdf-vm/asdf/releases and download the appropriate archive for your operating system/architecture combination.
 2. Extract the `asdf` binary in the archive into a directory on your `$PATH`.
 3. Verify `asdf` is on your shell's `$PATH` by running `type -a asdf`. The directory you placed the `asdf` binary in should be listed on the first line of the output from `type`. If it is not that means step #2 was not completed correctly.
