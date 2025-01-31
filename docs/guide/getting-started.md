@@ -33,7 +33,7 @@ asdf can be installed in several different ways:
 
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
-2. Run `go install github.com/asdf-vm/asdf@v0.16.0`
+2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.0`
 <!-- x-release-please-end -->
 
 ::::
