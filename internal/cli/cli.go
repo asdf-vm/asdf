@@ -1468,7 +1468,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 		}
 
 		// not found
-		msg := fmt.Sprintf("No version is set for %s; please run `asdf <global | shell | local> %s <version>`", tool, tool)
+		msg := fmt.Sprintf("No version is set for %s; please run `asdf set [options] %s <version>`", tool, tool)
 		logger.Print(msg)
 		return errors.New(msg)
 	}
