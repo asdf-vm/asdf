@@ -190,7 +190,7 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 ###### Custom data directory (optional)
 
-Add the following to `~/.bash_profile` above the line you added above:
+Add the following to `~/.zshrc` above the line you added above:
 
 ```shell
 export ASDF_DATA_DIR="/your/custom/data/dir"
