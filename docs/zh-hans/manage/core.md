@@ -43,22 +43,22 @@ asdf reshim <name> <version>
 ## Shim-versions
 
 ```shell
-asdf shim-versions <command>
+asdf shimversions <command>
 ```
 
 列举为命令提供垫片的插件和版本。
 
-例如，[Node.js](https://nodejs.org/) 附带了两个可执行程序，`node` 和 `npm`。当使用 [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)`插件安装了这些工具的很多版本时，执行`shim-versions` 命令会返回：
+例如，[Node.js](https://nodejs.org/) 附带了两个可执行程序，`node` 和 `npm`。当使用 [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)`插件安装了这些工具的很多版本时，执行`shimversions` 命令会返回：
 
 ```shell
-➜ asdf shim-versions node
+➜ asdf shimversions node
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
 ```
 
 ```shell
-➜ asdf shim-versions npm
+➜ asdf shimversions npm
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0

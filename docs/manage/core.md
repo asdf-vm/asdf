@@ -43,22 +43,22 @@ This recreates the shims for the current version of a package. By default, shims
 ## Shim-versions
 
 ```shell
-asdf shim-versions <command>
+asdf shimversions <command>
 ```
 
 Lists the plugins and versions that provide shims for a command.
 
-As an example, [Node.js](https://nodejs.org/) ships with two executables, `node` and `npm`. When many versions of the tools are installed with [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) `shim-versions` can return:
+As an example, [Node.js](https://nodejs.org/) ships with two executables, `node` and `npm`. When many versions of the tools are installed with [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) `shimversions` can return:
 
 ```shell
-➜ asdf shim-versions node
+➜ asdf shimversions node
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
 ```
 
 ```shell
-➜ asdf shim-versions npm
+➜ asdf shimversions npm
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
