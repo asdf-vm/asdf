@@ -69,8 +69,8 @@ func SliceToMap(env []string) map[string]string {
 
 	for _, envVar := range env {
 		varValue := strings.Split(envVar, "=")
-		if len(varValue) == 2 {
-			envMap[varValue[0]] = varValue[1]
+		if len(varValue) >= 2 {
+			envMap[varValue[0]] = strings.Join(varValue[1:], "=")
 		}
 	}
 

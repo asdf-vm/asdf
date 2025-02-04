@@ -1,6 +1,7 @@
 package execenv
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -72,4 +73,30 @@ func TestGenerate(t *testing.T) {
 		_, found := env["FOO"]
 		assert.False(t, found)
 	})
+}
+
+func TestSliceToMap(t *testing.T) {
+	tests := []struct {
+		input  []string
+		output map[string]string
+	}{
+		{
+			input:  []string{"VAR=value"},
+			output: map[string]string{"VAR": "value"},
+		},
+		{
+			input:  []string{"BASH_FUNC_bats_readlinkf%%=() {  readlink -f \"$1\"\n}"},
+			output: map[string]string{"BASH_FUNC_bats_readlinkf%%": "() {  readlink -f \"$1\"\n}"},
+		},
+		{
+			input:  []string{"MYVAR=some things = with = in it"},
+			output: map[string]string{"MYVAR": "some things = with = in it"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("input: %s, output: %s", tt.input, tt.output), func(t *testing.T) {
+			assert.Equal(t, tt.output, SliceToMap(tt.input))
+		})
+	}
 }
