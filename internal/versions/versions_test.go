@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testPluginName = "lua"
+const testPluginName = "testlua"
 
 func TestInstallAll(t *testing.T) {
 	t.Run("installs multiple tools when multiple tool versions are specified", func(t *testing.T) {

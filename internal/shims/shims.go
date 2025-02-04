@@ -93,7 +93,9 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 				}
 
 				versions.Versions = tempVersions
-				existingPluginToolVersions[plugin] = versions
+				if len(versions.Versions) > 0 {
+					existingPluginToolVersions[plugin] = versions
+				}
 			}
 		}
 	}
@@ -131,9 +133,9 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 
 	tools := []string{}
 	versions := []string{}
-	for plugin := range existingPluginToolVersions {
+	for plugin, toolVersions := range existingPluginToolVersions {
 		tools = append(tools, plugin.Name)
-		versions = append(versions, existingPluginToolVersions[plugin].Versions...)
+		versions = append(versions, toolVersions.Versions...)
 	}
 
 	return "", plugins.Plugin{}, "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
