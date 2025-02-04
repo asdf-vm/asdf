@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -12,13 +13,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const testPluginName = "test-plugin"
+
 func TestVersion(t *testing.T) {
 	testDataDir := t.TempDir()
 	currentDir := t.TempDir()
 	conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
-	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, "lua")
+	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
 	assert.Nil(t, err)
-	plugin := plugins.New(conf, "lua")
+	plugin := plugins.New(conf, testPluginName)
 
 	t.Run("returns empty slice when non-existent version passed", func(t *testing.T) {
 		toolVersion, found, err := Version(conf, plugin, t.TempDir())
@@ -29,7 +32,7 @@ func TestVersion(t *testing.T) {
 
 	t.Run("returns single version from .tool-versions file", func(t *testing.T) {
 		// write a version file
-		data := []byte("lua 1.2.3")
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
 
 		toolVersion, found, err := Version(conf, plugin, currentDir)
@@ -40,10 +43,10 @@ func TestVersion(t *testing.T) {
 
 	t.Run("returns version from env when env variable set", func(t *testing.T) {
 		// Set env
-		t.Setenv("ASDF_LUA_VERSION", "2.3.4")
+		t.Setenv(fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(testPluginName)), "2.3.4")
 
 		// write a version file
-		data := []byte("lua 1.2.3")
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
 
 		// assert env variable takes precedence
@@ -55,7 +58,7 @@ func TestVersion(t *testing.T) {
 
 	t.Run("returns single version from .tool-versions file in parent directory", func(t *testing.T) {
 		// write a version file
-		data := []byte("lua 1.2.3")
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
 
 		subDir := filepath.Join(currentDir, "subdir")
@@ -72,9 +75,9 @@ func TestVersion(t *testing.T) {
 func TestFindVersionsInDir(t *testing.T) {
 	testDataDir := t.TempDir()
 	conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
-	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, "lua")
+	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
 	assert.Nil(t, err)
-	plugin := plugins.New(conf, "lua")
+	plugin := plugins.New(conf, testPluginName)
 
 	t.Run("when no versions set returns found false", func(t *testing.T) {
 		currentDir := t.TempDir()
@@ -89,7 +92,7 @@ func TestFindVersionsInDir(t *testing.T) {
 	t.Run("when version is set returns found true and version", func(t *testing.T) {
 		currentDir := t.TempDir()
 
-		data := []byte("lua 1.2.3")
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
 
 		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
@@ -102,7 +105,7 @@ func TestFindVersionsInDir(t *testing.T) {
 	t.Run("when multiple versions present in .tool-versions returns found true and versions", func(t *testing.T) {
 		currentDir := t.TempDir()
 
-		data := []byte("lua 1.2.3 2.3.4")
+		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
 
 		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
@@ -116,7 +119,7 @@ func TestFindVersionsInDir(t *testing.T) {
 		conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: "custom-file"}
 		currentDir := t.TempDir()
 
-		data := []byte("lua 1.2.3 2.3.4")
+		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, "custom-file"), data, 0o666)
 
 		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
@@ -143,9 +146,9 @@ func TestFindVersionsInDir(t *testing.T) {
 func TestFindVersionsLegacyFiles(t *testing.T) {
 	testDataDir := t.TempDir()
 	conf := config.Config{DataDir: testDataDir}
-	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, "lua")
+	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
 	assert.Nil(t, err)
-	plugin := plugins.New(conf, "lua")
+	plugin := plugins.New(conf, testPluginName)
 
 	t.Run("when given tool that lacks list-legacy-filenames callback returns empty versions list", func(t *testing.T) {
 		pluginName := "foobar"

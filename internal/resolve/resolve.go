@@ -36,7 +36,17 @@ func Version(conf config.Config, plugin plugins.Plugin, directory string) (versi
 		}
 
 		nextDir := path.Dir(directory)
+		// If current dir and next dir are the same it means we've reached `/` and
+		// have no more parent directories to search.
 		if nextDir == directory {
+			// If no version found, try current users home directory. I'd like to
+			// eventually remove this feature.
+			homeDir, osErr := os.UserHomeDir()
+			if osErr != nil {
+				break
+			}
+
+			versions, found, err = findVersionsInDir(conf, plugin, homeDir)
 			break
 		}
 		directory = nextDir
