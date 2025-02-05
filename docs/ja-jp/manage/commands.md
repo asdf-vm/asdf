@@ -2,4 +2,4 @@
 
 `asdf`で利用可能なすべてのコマンドの一覧です。この一覧は、`asdf help`コマンドで表示されるテキストです。
 
-<<< @../../help.txt
+<<< @../../internal/help/help.txt
