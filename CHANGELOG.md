@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.16.1](https://github.com/asdf-vm/asdf/compare/v0.16.0...v0.16.1) (2025-02-05)
+
+
+### Bug Fixes
+
+* correct SliceToMap environment variable parsing function ([#1879](https://github.com/asdf-vm/asdf/issues/1879)) ([e63aec6](https://github.com/asdf-vm/asdf/commit/e63aec61020a907fe5960d74b6d3dbf229214ae0))
+* remove old hyphenated command from help ([1f0296a](https://github.com/asdf-vm/asdf/commit/1f0296a3d11a9df0d300ca61f59d097750ab6f1c))
+* replace reference to removed subcommands ([#1868](https://github.com/asdf-vm/asdf/issues/1868)) ([0785d35](https://github.com/asdf-vm/asdf/commit/0785d35263b2bd5ad570ee6706e1b38d8dd05422))
+* revert change to old Bash help text ([de019fd](https://github.com/asdf-vm/asdf/commit/de019fde849d2f3a258b3f40e5b2004d1973c804))
+* use version in home dir when no version found in root dir ([#1883](https://github.com/asdf-vm/asdf/issues/1883)) ([5ae5f76](https://github.com/asdf-vm/asdf/commit/5ae5f769f1042add6219e98633063e76a03e12b9))
+
 ## [0.16.0](https://github.com/asdf-vm/asdf/compare/v0.15.0...v0.16.0) (2025-01-30)
 
 
