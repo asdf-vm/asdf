@@ -43,22 +43,22 @@ asdf reshim <name> <version>
 ## Shimのバージョン
 
 ```shell
-asdf shim-versions <command>
+asdf shimversions <command>
 ```
 
 `<command>`のShimを提供するプラグインおよびバージョンを一覧で表示します。
 
-例えば、[Node.js](https://nodejs.org/)には`node`と`npm`という2つの実行ファイルが提供されています。[`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)プラグインで、複数のバージョンのツールがインストールされている場合、`shim-versions`は下記のような一覧を返します:
+例えば、[Node.js](https://nodejs.org/)には`node`と`npm`という2つの実行ファイルが提供されています。[`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)プラグインで、複数のバージョンのツールがインストールされている場合、`shimversions`は下記のような一覧を返します:
 
 ```shell
-➜ asdf shim-versions node
+➜ asdf shimversions node
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
 ```
 
 ```shell
-➜ asdf shim-versions npm
+➜ asdf shimversions npm
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
