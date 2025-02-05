@@ -51,7 +51,7 @@ asdf env <command> [util]               Runs util (default: `env`) inside the
 asdf info                               Print OS, Shell and ASDF debug information.
 asdf version                            Print the currently installed version of ASDF
 asdf reshim <name> <version>            Recreate shims for version of a package
-asdf shim-versions <command>            List the plugins and versions that
+asdf shimversions <command>             List the plugins and versions that
                                         provide a command
 
 RESOURCES

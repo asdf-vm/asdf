@@ -43,22 +43,22 @@ asdf reshim <name> <version>
 ## Shim 버전
 
 ```shell
-asdf shim-versions <command>
+asdf shimversions <command>
 ```
 
 shim을 제공하는 플러그인 및 버전들을 나열합니다.
 
-예를 들면, [Node.js](https://nodejs.org/)에는 `node`와 `npm`이라고 하는 2개의 실행파일이 제공되고 있습니다. [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)을 통해 여러 버전의 툴이 설치되어 있는 경우, `shim-versions`는 아래와 같은 내용을 출력할 수 있습니다:
+예를 들면, [Node.js](https://nodejs.org/)에는 `node`와 `npm`이라고 하는 2개의 실행파일이 제공되고 있습니다. [`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/)을 통해 여러 버전의 툴이 설치되어 있는 경우, `shimversions`는 아래와 같은 내용을 출력할 수 있습니다:
 
 ```shell
-➜ asdf shim-versions node
+➜ asdf shimversions node
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
 ```
 
 ```shell
-➜ asdf shim-versions npm
+➜ asdf shimversions npm
 nodejs 14.8.0
 nodejs 14.17.3
 nodejs 16.5.0
