@@ -238,7 +238,7 @@ func (p Plugin) ExtensionCommandPath(name string) (string, error) {
 }
 
 // Update a plugin to a specific ref, or if no ref provided update to latest
-func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (string, error) {
+func (p Plugin) Update(conf config.Config, ref string, stdOut io.Writer, errOut io.Writer) (string, error) {
 	err := p.Exists()
 	if err != nil {
 		return "", fmt.Errorf("no such plugin: %s", p.Name)
@@ -260,7 +260,7 @@ func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (s
 		"ASDF_PLUGIN_POST_REF": newSHA,
 	}
 
-	err = p.RunCallback("post-plugin-update", []string{}, env, out, errout)
+	err = p.RunCallback("post-plugin-update", []string{}, env, stdOut, errOut)
 	if _, ok := err.(NoCallbackError); err != nil && !ok {
 		return newRef, err
 	}
@@ -399,7 +399,7 @@ func Add(config config.Config, pluginName, pluginURL, ref string) error {
 }
 
 // Remove uninstalls a plugin by removing it from the file system if installed
-func Remove(config config.Config, pluginName string, stdout, stderr io.Writer) error {
+func Remove(config config.Config, pluginName string, stdOut io.Writer, stdErr io.Writer) error {
 	err := validatePluginName(pluginName)
 	if err != nil {
 		return err
@@ -423,7 +423,7 @@ func Remove(config config.Config, pluginName string, stdout, stderr io.Writer) e
 		"ASDF_PLUGIN_PATH":       plugin.Dir,
 		"ASDF_PLUGIN_SOURCE_URL": plugin.URL,
 	}
-	plugin.RunCallback("pre-plugin-remove", []string{}, env, stdout, stderr)
+	plugin.RunCallback("pre-plugin-remove", []string{}, env, stdOut, stdErr)
 
 	pluginDir := data.PluginDirectory(config.DataDir, pluginName)
 	downloadDir := data.DownloadDirectory(config.DataDir, pluginName)
