@@ -902,7 +902,7 @@ func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
 func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref string) error {
 	updateAll := cCtx.Bool("all")
 	if !updateAll && pluginName == "" {
-		return cli.Exit("usage: asdf plugin-update {<name> [git-ref] | --all}", 1)
+		return cli.Exit("usage: asdf plugin update {<name> [git-ref] | --all}", 1)
 	}
 
 	conf, err := config.LoadConfig()
