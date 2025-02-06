@@ -1083,6 +1083,10 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 		if version == "" {
 			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
 			if err != nil {
+				if _, ok := err.(versions.VersionAlreadyInstalledError); ok {
+					return nil
+				}
+
 				if _, ok := err.(versions.NoVersionSetError); ok {
 					logger.Printf("No versions specified for %s in config files or environment", toolName)
 					os.Exit(1)
@@ -1104,6 +1108,9 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 
 			if err != nil {
 				logger.Printf("error installing version: %s", err)
+				if _, ok := err.(versions.VersionAlreadyInstalledError); ok {
+					return nil
+				}
 			}
 		}
 	}
