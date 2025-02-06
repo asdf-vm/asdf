@@ -51,6 +51,17 @@ func (e NoVersionSetError) Error() string {
 	return "no version set"
 }
 
+// VersionAlreadyInstalledError is returned whenever a version is already
+// installed.
+type VersionAlreadyInstalledError struct {
+	toolName string
+  version toolversions.Version
+}
+
+func (e VersionAlreadyInstalledError) Error() string {
+  return fmt.Sprintf("version %s of %s is already installed", e.version, e.toolName)
+}
+
 // InstallAll installs all specified versions of every tool for the current
 // directory. Typically this will just be a single version, if not already
 // installed, but it may be multiple versions if multiple versions for the tool
@@ -143,7 +154,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	installDir := installs.InstallPath(conf, plugin, version)
 
 	if installs.IsInstalled(conf, plugin, version) {
-		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
+    return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
 
 	env := map[string]string{

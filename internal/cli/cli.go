@@ -1115,7 +1115,9 @@ func filterInstallErrors(errs []error) []error {
 	var filtered []error
 	for _, err := range errs {
 		if _, ok := err.(versions.NoVersionSetError); !ok {
-			filtered = append(filtered, err)
+			if _, ok := err.(versions.VersionAlreadyInstalledError); !ok {
+				filtered = append(filtered, err)
+			}
 		}
 	}
 	return filtered
