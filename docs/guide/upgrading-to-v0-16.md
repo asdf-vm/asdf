@@ -12,7 +12,7 @@ Installation of version 0.16.0 is much simpler than previous versions of asdf.
 It's just three steps:
 
 * Download the appropriate `asdf` binary for your operating system/architecture combo and place it in a directory on your `$PATH`
-* Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH.
+* Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH`.
 * Optionally, if you previously had a customized location for asdf data, set
 `ASDF_DATA_DIR` to the directory you already had the old version installing
 plugins, versions, and shims.
@@ -55,7 +55,7 @@ to the end setting `ASDF_DATA_DIR` to that same value:
 export ASDF_DATA_DIR="/home/myuser/.asdf"
 ```
 
-#### 3. Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH
+#### 3. Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH`
 
 In your shell RC file (same file as step #2) add `$ASDF_DATA_DIR/shims` to the
 front of your path:
