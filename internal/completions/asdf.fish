@@ -35,15 +35,15 @@ function __fish_asdf_list_versions -a plugin
 end
 
 function __fish_asdf_list_all -a plugin
-    asdf list-all $plugin 2>/dev/null
+    asdf list all $plugin 2>/dev/null
 end
 
 function __fish_asdf_plugin_list
-    asdf plugin-list 2>/dev/null
+    asdf plugin list 2>/dev/null
 end
 
 function __fish_asdf_plugin_list_all
-    asdf plugin-list-all 2>/dev/null
+    asdf plugin list all 2>/dev/null
 end
 
 function __fish_asdf_list_shims
@@ -54,26 +54,26 @@ end
 complete -f -c asdf -n __fish_asdf_needs_command -a update -d "Update asdf"
 complete -f -c asdf -n '__fish_asdf_using_command update; and __fish_asdf_arg_number 2' -l head -d "Updates to master HEAD"
 
-# plugin-add completion
-complete -f -c asdf -n __fish_asdf_needs_command -a plugin-add -d "Add git repo as plugin"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list_all | grep -v \'*\' | awk \'{ print $1 }\')'
-complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 3' -a '(__fish_asdf_plugin_list_all | grep (__fish_asdf_arg_at 3) | awk \'{ print $2 }\')'
-complete -f -c asdf -n '__fish_asdf_using_command plugin-add; and __fish_asdf_arg_number 4'
+# plugin add completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin add -d "Add git repo as plugin"
+complete -f -c asdf -n '__fish_asdf_using_command plugin add; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list_all | grep -v \'*\' | awk \'{ print $1 }\')'
+complete -f -c asdf -n '__fish_asdf_using_command plugin add; and __fish_asdf_arg_number 3' -a '(__fish_asdf_plugin_list_all | grep (__fish_asdf_arg_at 3) | awk \'{ print $2 }\')'
+complete -f -c asdf -n '__fish_asdf_using_command plugin add; and __fish_asdf_arg_number 4'
 
-# plugin-list completion
-complete -f -c asdf -n __fish_asdf_needs_command -a plugin-list -d "List installed plugins"
+# plugin list completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin list -d "List installed plugins"
 
-# plugin-list-all completion
-complete -f -c asdf -n __fish_asdf_needs_command -a plugin-list-all -d "List all existing plugins"
+# plugin list all completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin list all -d "List all existing plugins"
 
-# plugin-remove completion
-complete -f -c asdf -n __fish_asdf_needs_command -a plugin-remove -d "Remove plugin and package versions"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-remove; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
+# plugin remove completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin remove -d "Remove plugin and package versions"
+complete -f -c asdf -n '__fish_asdf_using_command plugin remove; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 
-# plugin-update completion
-complete -f -c asdf -n __fish_asdf_needs_command -a plugin-update -d "Update plugin"
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
-complete -f -c asdf -n '__fish_asdf_using_command plugin-update; and __fish_asdf_arg_number 2' -a --all
+# plugin update completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin update -d "Update plugin"
+complete -f -c asdf -n '__fish_asdf_using_command plugin update; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
+complete -f -c asdf -n '__fish_asdf_using_command plugin update; and __fish_asdf_arg_number 2' -a --all
 
 # install completion
 complete -f -c asdf -n __fish_asdf_needs_command -a install -d "Install a specific version of a package"
@@ -108,17 +108,17 @@ complete -f -c asdf -n __fish_asdf_needs_command -a list -d "List installed vers
 complete -f -c asdf -n '__fish_asdf_using_command list; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 
 # list-all completion
-complete -f -c asdf -n __fish_asdf_needs_command -a list-all -d "List all versions of a package"
-complete -f -c asdf -n '__fish_asdf_using_command list-all; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
+complete -f -c asdf -n __fish_asdf_needs_command -a list all -d "List all versions of a package"
+complete -f -c asdf -n '__fish_asdf_using_command list all; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 
 # reshim completion
 complete -f -c asdf -n __fish_asdf_needs_command -a reshim -d "Recreate shims for version of a package"
 complete -f -c asdf -n '__fish_asdf_using_command reshim; and __fish_asdf_arg_number 2' -a '(__fish_asdf_plugin_list)'
 complete -f -c asdf -n '__fish_asdf_using_command reshim; and __fish_asdf_arg_number 3' -a '(__fish_asdf_list_versions (__fish_asdf_arg_at 3))'
 
-# shim-versions completion
-complete -f -c asdf -n __fish_asdf_needs_command -a shim-versions -d "List the plugins and versions that provide a command"
-complete -f -c asdf -n '__fish_asdf_using_command shim-versions; and __fish_asdf_arg_number 2' -a '(__fish_asdf_list_shims)'
+# shim versions completion
+complete -f -c asdf -n __fish_asdf_needs_command -a shimversions -d "List the plugins and versions that provide a command"
+complete -f -c asdf -n '__fish_asdf_using_command shimversions; and __fish_asdf_arg_number 2' -a '(__fish_asdf_list_shims)'
 
 # local completion
 complete -f -c asdf -n __fish_asdf_needs_command -a local -d "Set local version for a plugin"
