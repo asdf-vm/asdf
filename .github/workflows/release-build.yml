@@ -28,10 +28,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Compute asdf version
-        id: asdf-version
-        shell: bash
-        run: echo "version=$(./scripts/asdf-version)" >> "$GITHUB_OUTPUT"
       - name: Build Go binaries
         uses: wangyoucao577/go-release-action@v1
         with:
