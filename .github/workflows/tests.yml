@@ -37,6 +37,8 @@ jobs:
               - 'help.txt'
             go:
               - '**.go'
+              - 'go.mod'
+              - 'go.sum'
 
   test-golang:
     needs: detect-changes
