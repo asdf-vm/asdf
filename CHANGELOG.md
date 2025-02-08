@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.16.2](https://github.com/asdf-vm/asdf/compare/v0.16.1...v0.16.2) (2025-02-08)
+
+
+### Bug Fixes
+
+* completion bash ([#1886](https://github.com/asdf-vm/asdf/issues/1886)) ([fdb1bc7](https://github.com/asdf-vm/asdf/commit/fdb1bc793a06263a0eac8818c14498e23906108a))
+* completions for zsh and fish ([#1912](https://github.com/asdf-vm/asdf/issues/1912)) ([2f806de](https://github.com/asdf-vm/asdf/commit/2f806de830655d9146d25663d74e3fceedcc300f))
+* correct help for asdf set command ([#1920](https://github.com/asdf-vm/asdf/issues/1920)) ([554b4ea](https://github.com/asdf-vm/asdf/commit/554b4eaf351c08fed2261715308320838f0c5afb))
+* correct help for asdf set command completion bash ([#1921](https://github.com/asdf-vm/asdf/issues/1921)) ([63e7dca](https://github.com/asdf-vm/asdf/commit/63e7dcaeae46d6d43ae63db9bf635e227a6ba944))
+* improve zsh completion suggestions ([#1925](https://github.com/asdf-vm/asdf/issues/1925)) ([e190624](https://github.com/asdf-vm/asdf/commit/e190624fa82fb2caf4d56521232de4e873b63118))
+* run go tests when go.mod or go.sum change ([#1917](https://github.com/asdf-vm/asdf/issues/1917)) ([6e4a7b5](https://github.com/asdf-vm/asdf/commit/6e4a7b5ad3d6abdbb98faa383bc41643b35ef6bf))
+* typo ([#1897](https://github.com/asdf-vm/asdf/issues/1897)) ([98ffa86](https://github.com/asdf-vm/asdf/commit/98ffa861e9b64a2e029a0ed26205bfcc81838180))
+* update make utils script to set correct version ([892736b](https://github.com/asdf-vm/asdf/commit/892736bf76ac37487cfca75d2cfcc57d5cdec913))
+* update urfave/cli to fix cmd output ([#1914](https://github.com/asdf-vm/asdf/issues/1914)) ([3525e9e](https://github.com/asdf-vm/asdf/commit/3525e9ed4edb05f15a15f00378f5336ef29aa2f4))
+
 ## [0.16.1](https://github.com/asdf-vm/asdf/compare/v0.16.0...v0.16.1) (2025-02-05)
 
 
