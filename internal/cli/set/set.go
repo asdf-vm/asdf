@@ -58,13 +58,16 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		}
 
 		filepath := filepath.Join(homeDir, conf.DefaultToolVersionsFilename)
-		return toolversions.WriteToolVersionsToFile(filepath, []toolversions.ToolVersions{tv})
+		err = toolversions.WriteToolVersionsToFile(filepath, []toolversions.ToolVersions{tv})
+		if err != nil {
+			err = printError(stderr, fmt.Sprintf("error writing version file: %s", err))
+		}
+		return err
 	}
 
 	currentDir, err := os.Getwd()
 	if err != nil {
-		printError(stderr, fmt.Sprintf("unable to get current directory: %s", err))
-		return err
+		return printError(stderr, fmt.Sprintf("unable to get current directory: %s", err))
 	}
 
 	if parent {
@@ -74,7 +77,11 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 			return printError(stderr, fmt.Sprintf("No %s version file found in parent directory", conf.DefaultToolVersionsFilename))
 		}
 
-		return toolversions.WriteToolVersionsToFile(path, []toolversions.ToolVersions{tv})
+		err = toolversions.WriteToolVersionsToFile(path, []toolversions.ToolVersions{tv})
+		if err != nil {
+			err = printError(stderr, fmt.Sprintf("error writing version file: %s", err))
+		}
+		return err
 	}
 
 	// Write new file in current dir
