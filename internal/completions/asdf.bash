@@ -111,7 +111,7 @@ _asdf() {
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
       # shellcheck disable=SC2207
-      COMPREPLY=($(compgen -W "$plugins -h -p" -- "$cur"))
+      COMPREPLY=($(compgen -W "$plugins -u -p" -- "$cur"))
     fi
     ;;
   latest)
