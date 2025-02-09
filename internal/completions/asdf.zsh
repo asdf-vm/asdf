@@ -8,10 +8,10 @@ local -a asdf_plugin_commands
 asdf_plugin_commands=(
   'add:add plugin from asdf-plugins repo or from git URL'
   'list:list installed plugins (--urls with URLs)'
-  'list all:list all plugins registered in asdf-plugins repo'
-  'remove:remove named plugin and all versions for it'
+  'remove:remove named plugin and all packages for it'
   'update:update named plugin (or --all)'
 )
+
 local -a asdf_commands
 asdf_commands=( # 'asdf help' lists commands with help text
   # plugins
@@ -24,9 +24,8 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'latest:display latest version available to install for a named tool'
   'where:display install path for given tool at optional specified version'
   'which:display path to an executable'
-  'set:set tool version'
+  'set:Set a tool version in a .tool-version file'
   'list:list installed versions of a tool'
-  'list all:list all available (remote) versions of a tool'
 
   # utils
   'exec:executes the command shim for the current version'
@@ -36,7 +35,6 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'reshim:recreate shims for version of a tool'
   'shim:shim management sub-commands'
   'shimversions:list for given command which plugins and versions provide it'
-  'update:update ASDF to the latest stable release (unless --head)'
 )
 
 _asdf__available_plugins() {
@@ -92,7 +90,6 @@ _asdf__installed_versions_of_plus_system() {
     compadd -a versions
 }
 
-
 if (( CURRENT == 2 )); then
   _arguments -C : '--version[version]' ':command:->command'
 fi
@@ -103,19 +100,22 @@ case "$state" in
   return
   ;;
 esac
+
 subcmd="${words[2]}"
-subcmd2="${words[3]}"
+curcontext="${curcontext%:*}=$subcmd:"
 
 case "$subcmd" in
   (plugin)
-    case "$subcmd2" in
+    if (( CURRENT == 3 )); then
+      _describe -t asdf-plugin-commands 'ASDF Plugin Commands' asdf_plugin_commands
+    else
+      local plugin_subcmd="${words[3]}"
+      case "$plugin_subcmd" in
       (add)
         if (( CURRENT == 4 )); then
           _asdf__available_plugins
-        else
-          if (( CURRENT == 5 )); then
-            _arguments "*:${words[3]} plugin url:_urls"
-          fi
+        elif (( CURRENT == 5 )); then
+            _arguments "*:${words[4]} plugin url:_urls"
         fi
         return
         ;;
@@ -123,27 +123,59 @@ case "$subcmd" in
         _alternative \
           'all:all:(--all)' \
           'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
-                  return
-                  ;;
+          return
+        ;;
       (remove)
         _asdf__installed_plugins
         return
         ;;
       (list)
-        _asdf__installed_plugins
-        return
+        case $CURRENT in
+          4)
+            _alternative \
+              'flags:flags:(--urls --refs)' \
+              'commands:commands:(all)'
+            return
+            ;;
+          5)
+            if [[ ${words[4]} == --* ]]; then
+              local used_flags=("${words[@]}")
+              local -a available_flags
+              available_flags=()
+              if [[ ! "${used_flags[@]}" =~ "--urls" ]]; then
+                available_flags+=("--urls")
+              fi
+              if [[ ! "${used_flags[@]}" =~ "--refs" ]]; then
+                available_flags+=("--refs")
+              fi
+              (( ${#available_flags[@]} )) && compadd -- "${available_flags[@]}"
+            fi
+            return
+            ;;
+        esac
         ;;
-      (*)
-        _describe -t asdf-commands 'ASDF Plugin Commands' asdf_plugin_commands
-        return
-        ;;
-    esac
+      esac
+    fi
     ;;
   (current)
     _asdf__installed_plugins
     ;;
+  (list)
+    case $CURRENT in
+      3)
+        _alternative \
+          'command:command:(all)' \
+          'plugin:plugin:_asdf__installed_plugins'
+        ;;
+      4)
+        if [[ ${words[3]} == "all" ]]; then
+          _asdf__installed_plugins
+        fi
+        ;;
+    esac
+    ;;
   (install)
-    if (( CURRENT == 3)); then
+    if (( CURRENT == 3 )); then
       _asdf__installed_plugins
       return
     elif (( CURRENT == 4 )); then
@@ -153,13 +185,13 @@ case "$subcmd" in
         _wanted "latest-versions-$tool" \
           expl "Latest version" \
           compadd -- latest:${^$(asdf list all "$tool")}
-                else
-                  _wanted "latest-tag-$tool" \
-                    expl "Latest version" \
-                    compadd -- 'latest' 'latest:'
-                                      _wanted "remote-versions-$tool" \
-                                        expl "Available versions of $tool" \
-                                        compadd -- $(asdf list all "$tool")
+      else
+        _wanted "latest-tag-$tool" \
+          expl "Latest version" \
+          compadd -- 'latest' 'latest:'
+        _wanted "remote-versions-$tool" \
+          expl "Available versions of $tool" \
+          compadd -- $(asdf list all "$tool")
       fi
       return
     fi
@@ -169,27 +201,51 @@ case "$subcmd" in
       _alternative  \
         'all:all:(--all)' \
         'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
-            elif (( CURRENT == 4)); then
-              local tool="${words[3]}"
-              local query=${words[4]}
-              [[ -n $query ]] || query='[0-9]'
-              _wanted "latest-pattern-$tool" \
-                expl "Pattern to look for in matching versions of $tool" \
-                compadd -- $(asdf list all "$tool" "$query")
     fi
     ;;
   (uninstall|reshim)
-    compset -n 2
-    _arguments '1:plugin-name: _asdf__installed_plugins' '2:tool-version:{_asdf__installed_versions_of ${words[2]}}'
+    _arguments '1:plugin-name: _asdf__installed_plugins' '2:tool-version:{_asdf__installed_versions_of ${words[3]}}'
     ;;
   (set)
-    compset -n 2
-    _arguments '1:plugin-name: _asdf__installed_plugins' '2:tool-version:{_asdf__installed_versions_of_plus_system ${words[2]}}'
+    case $CURRENT in
+      3)
+        _alternative \
+          'flags:flags:(-u -p)' \
+          'plugin:plugin:_asdf__installed_plugins'
+        ;;
+      4)
+        if [[ ${words[3]} == -* ]]; then
+          # After flag comes plugin name
+          _asdf__installed_plugins
+        else
+          # Versions for the plugin
+          local versions
+          if versions=$(asdf list all "${words[3]}" 2>/dev/null); then
+            _wanted "versions-${words[3]}" \
+              expl "Available versions of ${words[3]}" \
+              compadd -- ${(f)versions}
+          fi
+        fi
+        ;;
+      *)
+        # Additional versions for multiple version support
+        if [[ ${words[3]} == -* ]]; then
+          local plugin="${words[4]}"
+        else
+          local plugin="${words[3]}"
+        fi
+        local versions
+        if versions=$(asdf list all "$plugin" 2>/dev/null); then
+          _wanted "versions-$plugin" \
+            expl "Available versions of $plugin" \
+            compadd -- ${(f)versions}
+        fi
+        ;;
+    esac
     ;;
   (where)
     # version is optional
-    compset -n 2
-    _arguments '1:plugin-name: _asdf__installed_plugins' '2::tool-version:{_asdf__installed_versions_of ${words[2]}}'
+    _arguments '1:plugin-name:_asdf__installed_plugins' '2::tool-version:{_asdf__installed_versions_of ${words[3]}}'
     ;;
   (which|shimversions)
     _wanted asdf-shims expl "ASDF Shims" compadd -- "${asdf_dir:?}/shims"/*(:t)
