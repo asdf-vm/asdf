@@ -18,6 +18,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'plugin:plugin management sub-commands'
 
   # tools
+  'help:Output documentation for plugin and tool'
   'install:install tool at stated version, or all from .tools-versions'
   'uninstall:remove a specific version of a tool'
   'current:display current versions for named tool (else all)'
@@ -220,6 +221,13 @@ case "$subcmd" in
         fi
         ;;
     esac
+    ;;
+  (help)
+    if (( CURRENT == 3 )); then
+      _asdf__installed_plugins
+    elif (( CURRENT == 4 )); then
+      _asdf__installed_versions_of ${words[3]}
+    fi
     ;;
   (install)
     if (( CURRENT == 3 )); then
