@@ -133,9 +133,9 @@ _asdf() {
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "$plugins" -- "$cur"))
     ;;
-  info) ;;
+  info | version) ;;
   *)
-    local cmds='current set help install latest list plugin reshim shimversions uninstall where which exec env info'
+    local cmds='current set help install latest list plugin reshim shimversions uninstall where which exec env info version'
     # shellcheck disable=SC2207
     COMPREPLY=($(compgen -W "$cmds" -- "$cur"))
     ;;
