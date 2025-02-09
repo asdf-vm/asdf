@@ -202,6 +202,21 @@ case "$subcmd" in
       4)
         if [[ ${words[3]} == "all" ]]; then
           _asdf__installed_plugins
+        else
+          # For normal list: show installed versions with optional filter
+          _asdf__installed_versions_of ${words[3]}
+        fi
+        ;;
+      5)
+        if [[ ${words[3]} == "all" ]]; then
+          local versions
+          if versions=$(asdf list all "${words[4]}" 2>/dev/null); then
+            _wanted "remote-versions-${words[4]}" \
+              expl "Available versions of ${words[4]}" \
+              compadd -- ${(f)versions}
+          else
+            _message "Unable to fetch versions for ${words[4]}"
+          fi
         fi
         ;;
     esac
