@@ -90,6 +90,29 @@ _asdf__installed_versions_of_plus_system() {
     compadd -a versions
 }
 
+# Get available git refs for a plugin
+_asdf__plugin_git_refs() {
+  local plugin=$1
+  local data_dir=${ASDF_DATA_DIR:-$HOME/.asdf}
+  local plugin_path="$data_dir/plugins/$plugin"
+
+  if [[ -d "$plugin_path/.git" ]]; then
+    # Branches
+    git -C "$plugin_path" branch -r 2> /dev/null | \
+      sed \
+        -e 's/^[[:space:]]*[^\/]*\///' \
+        -e 's/[[:space:]]*->.*$//' \
+        -e 's/\(.*\)/\1:Remote branch \1/' | \
+      sort -fd
+    # Tags
+    git -C "$plugin_path" tag 2> /dev/null | \
+      sed -e 's/\(.*\)/\1:Tag \1/' | \
+      sort -V
+    # Recent commits
+    git -C "$plugin_path" log --pretty=format:'%h:%s' -n 10 2> /dev/null
+  fi
+}
+
 if (( CURRENT == 2 )); then
   _arguments -C : '--version[version]' ':command:->command'
 fi
@@ -120,10 +143,19 @@ case "$subcmd" in
         return
         ;;
       (update)
-        _alternative \
-          'all:all:(--all)' \
-          'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
-          return
+        if (( CURRENT == 4 )); then
+          _alternative \
+            'all:all:(--all)' \
+            'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
+        elif (( CURRENT == 5 )); then
+          if [[ ${words[4]} != "--all" ]]; then
+            local -a refs
+            while IFS=: read -r value descr; do
+              refs+=( "${value}:${descr}" )
+            done < <(_asdf__plugin_git_refs ${words[4]})
+            _describe -V -t git-refs 'Git References' refs
+          fi
+        fi
         ;;
       (remove)
         _asdf__installed_plugins
