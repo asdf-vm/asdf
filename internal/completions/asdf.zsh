@@ -1,9 +1,14 @@
+# Define completion for asdf version manager
 #compdef asdf
 #description tool to manage versions of multiple runtimes
 
+# Initialize local variables for ZSH completion context
 local curcontext="$curcontext" state state_descr line subcmd
+
+# Set asdf directory path, using ASDF_DATA_DIR if set, otherwise default to ~/.asdf
 local asdf_dir="${ASDF_DATA_DIR:-$HOME/.asdf}"
 
+# Define plugin management commands
 local -a asdf_plugin_commands
 asdf_plugin_commands=(
   'add:add plugin from asdf-plugins repo or from git URL'
@@ -12,9 +17,10 @@ asdf_plugin_commands=(
   'update:update named plugin (or --all)'
 )
 
+# Define main asdf commands array with descriptions
 local -a asdf_commands
 asdf_commands=( # 'asdf help' lists commands with help text
-  # plugins
+  # Plugin related commands
   'plugin:plugin management sub-commands'
 
   # tools
@@ -28,7 +34,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'set:Set a tool version in a .tool-version file'
   'list:list installed versions of a tool'
 
-  # utils
+  # Utility commands
   'exec:executes the command shim for the current version'
   'env:prints or runs an executable under a command environment'
   'info:print os, shell and asdf debug information'
@@ -38,6 +44,7 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'shimversions:list for given command which plugins and versions provide it'
 )
 
+# Function to list all available plugins from the repository
 _asdf__available_plugins() {
   local plugin_dir="${asdf_dir:?}/repository/plugins"
   if [[ ! -d "$plugin_dir" ]]; then
@@ -51,6 +58,7 @@ _asdf__available_plugins() {
     compadd -a plugins
 }
 
+# Function to list currently installed plugins
 _asdf__installed_plugins() {
   local plugin_dir="${asdf_dir:?}/plugins"
   if [[ ! -d "$plugin_dir" ]]; then
@@ -64,6 +72,7 @@ _asdf__installed_plugins() {
     compadd -a plugins
 }
 
+# Function to list installed versions for a specific plugin
 _asdf__installed_versions_of() {
   local plugin_dir="${asdf_dir:?}/installs/${1:?need a plugin version}"
   if [[ ! -d "$plugin_dir" ]]; then
@@ -77,6 +86,7 @@ _asdf__installed_versions_of() {
     compadd -a versions
 }
 
+# Similar to _asdf__installed_versions_of but includes 'system' as an option
 _asdf__installed_versions_of_plus_system() {
   local plugin_dir="${asdf_dir:?}/installs/${1:?need a plugin version}"
   if [[ ! -d "$plugin_dir" ]]; then
@@ -91,33 +101,35 @@ _asdf__installed_versions_of_plus_system() {
     compadd -a versions
 }
 
-# Get available git refs for a plugin
+# Function to get available git references for a plugin
 _asdf__plugin_git_refs() {
   local plugin=$1
   local data_dir=${ASDF_DATA_DIR:-$HOME/.asdf}
   local plugin_path="$data_dir/plugins/$plugin"
 
   if [[ -d "$plugin_path/.git" ]]; then
-    # Branches
+    # Get remote branches and format them
     git -C "$plugin_path" branch -r 2> /dev/null | \
       sed \
         -e 's/^[[:space:]]*[^\/]*\///' \
         -e 's/[[:space:]]*->.*$//' \
         -e 's/\(.*\)/\1:Remote branch \1/' | \
       sort -fd
-    # Tags
+    # Get tags and format them
     git -C "$plugin_path" tag 2> /dev/null | \
       sed -e 's/\(.*\)/\1:Tag \1/' | \
       sort -V
-    # Recent commits
+    # Get recent commit hashes and messages (last 10 commits)
     git -C "$plugin_path" log --pretty=format:'%h:%s' -n 10 2> /dev/null
   fi
 }
 
+# Handle top-level command completion first
 if (( CURRENT == 2 )); then
   _arguments -C : '--version[version]' ':command:->command'
 fi
 
+# Process command state for top-level commands
 case "$state" in
 (command)
   _describe -t asdf-commands 'ASDF Commands' asdf_commands
@@ -125,17 +137,22 @@ case "$state" in
   ;;
 esac
 
+# Get the subcommand for further processing
 subcmd="${words[2]}"
 curcontext="${curcontext%:*}=$subcmd:"
 
+# Complex completion logic for each subcommand
+# Each case handles specific completion scenarios for the respective command
 case "$subcmd" in
   (plugin)
+    # Handle plugin subcommand completions with nested subcommands
     if (( CURRENT == 3 )); then
       _describe -t asdf-plugin-commands 'ASDF Plugin Commands' asdf_plugin_commands
     else
       local plugin_subcmd="${words[3]}"
       case "$plugin_subcmd" in
       (add)
+        # Complete available plugins or URLs for add command
         if (( CURRENT == 4 )); then
           _asdf__available_plugins
         elif (( CURRENT == 5 )); then
@@ -144,6 +161,7 @@ case "$subcmd" in
         return
         ;;
       (update)
+        # Handle update command with support for --all flag and git refs
         if (( CURRENT == 4 )); then
           _alternative \
             'all:all:(--all)' \
@@ -159,10 +177,12 @@ case "$subcmd" in
         fi
         ;;
       (remove)
+        # Complete installed plugin names for remove command
         _asdf__installed_plugins
         return
         ;;
       (list)
+        # Handle list command options with support for --urls and --refs flags
         case $CURRENT in
           4)
             _alternative \
@@ -171,6 +191,7 @@ case "$subcmd" in
             return
             ;;
           5)
+            # Handle remaining available flags
             if [[ ${words[4]} == --* ]]; then
               local used_flags=("${words[@]}")
               local -a available_flags
@@ -191,9 +212,11 @@ case "$subcmd" in
     fi
     ;;
   (current)
+    # Complete with installed plugins for current command
     _asdf__installed_plugins
     ;;
   (list)
+    # Handle list command completions with support for 'all' and specific plugins
     case $CURRENT in
       3)
         _alternative \
@@ -209,6 +232,7 @@ case "$subcmd" in
         fi
         ;;
       5)
+        # When listing all versions of a specific plugin
         if [[ ${words[3]} == "all" ]]; then
           local versions
           if versions=$(asdf list all "${words[4]}" 2>/dev/null); then
@@ -223,6 +247,7 @@ case "$subcmd" in
     esac
     ;;
   (help)
+    # Complete installed plugins and their versions for help command
     if (( CURRENT == 3 )); then
       _asdf__installed_plugins
     elif (( CURRENT == 4 )); then
@@ -230,6 +255,7 @@ case "$subcmd" in
     fi
     ;;
   (install)
+    # Handle complex install command completion with latest tag support
     if (( CURRENT == 3 )); then
       _asdf__installed_plugins
       return
@@ -237,10 +263,12 @@ case "$subcmd" in
       local tool="${words[3]}"
       local ver_prefix="${words[4]}"
       if [[ $ver_prefix == latest:* ]]; then
+        # Handle latest:<version> syntax
         _wanted "latest-versions-$tool" \
           expl "Latest version" \
           compadd -- latest:${^$(asdf list all "$tool")}
       else
+        # Offer both latest options and specific versions
         _wanted "latest-tag-$tool" \
           expl "Latest version" \
           compadd -- 'latest' 'latest:'
@@ -252,6 +280,7 @@ case "$subcmd" in
     fi
     ;;
   (latest)
+    # Complete plugin names or --all flag for latest command
     if (( CURRENT == 3 )); then
       _alternative  \
         'all:all:(--all)' \
@@ -259,9 +288,11 @@ case "$subcmd" in
     fi
     ;;
   (uninstall|reshim)
+    # Complete plugin name and version for uninstall and reshim commands
     _arguments '1:plugin-name: _asdf__installed_plugins' '2:tool-version:{_asdf__installed_versions_of ${words[3]}}'
     ;;
   (set)
+    # Handle set command completion
     case $CURRENT in
       3)
         _alternative \
@@ -270,10 +301,10 @@ case "$subcmd" in
         ;;
       4)
         if [[ ${words[3]} == -* ]]; then
-          # After flag comes plugin name
+          # After flag, complete with plugin name
           _asdf__installed_plugins
         else
-          # Versions for the plugin
+          # Complete with available versions for the plugin
           local versions
           if versions=$(asdf list all "${words[3]}" 2>/dev/null); then
             _wanted "versions-${words[3]}" \
@@ -283,7 +314,7 @@ case "$subcmd" in
         fi
         ;;
       *)
-        # Additional versions for multiple version support
+        # Support for multiple version specifications
         if [[ ${words[3]} == -* ]]; then
           local plugin="${words[4]}"
         else
@@ -299,14 +330,15 @@ case "$subcmd" in
     esac
     ;;
   (where)
-    # version is optional
+    # Complete plugin name and optional version for where command
     _arguments '1:plugin-name:_asdf__installed_plugins' '2::tool-version:{_asdf__installed_versions_of ${words[3]}}'
     ;;
   (which|shimversions)
+    # Complete with available shims for which and shimversions commands
     _wanted asdf-shims expl "ASDF Shims" compadd -- "${asdf_dir:?}/shims"/*(:t)
     ;;
   (exec)
-    # asdf exec <shim-cmd> [<shim-cmd args ...>]
+    # Handle exec command completion with shim command and args
     if (( CURRENT == 3 )); then
       _wanted asdf-shims expl "ASDF Shims" compadd -- "${asdf_dir:?}/shims"/*(:t)
     else
@@ -315,7 +347,7 @@ case "$subcmd" in
     fi
     ;;
   (env)
-    # asdf exec <shim-name> <arbitrary-cmd> [<cmd args ...>]
+    # Handle env command completion with shim name and arbitrary command
     if (( CURRENT == 3 )); then
       _wanted asdf-shims expl "ASDF Shims" compadd -- "${asdf_dir:?}/shims"/*(:t)
     else
