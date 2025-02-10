@@ -164,7 +164,7 @@ case "$subcmd" in
         # Handle update command with support for --all flag and git refs
         if (( CURRENT == 4 )); then
           _alternative \
-            'all:all:(--all)' \
+            'flags:flags:((--all\:"Update all installed plugins"))' \
             'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
         elif (( CURRENT == 5 )); then
           if [[ ${words[4]} != "--all" ]]; then
@@ -186,8 +186,8 @@ case "$subcmd" in
         case $CURRENT in
           4)
             _alternative \
-              'flags:flags:(--urls --refs)' \
-              'commands:commands:(all)'
+              'flags:flags:((--urls\:"Show repository URLs" --refs\:"Show Git references"))' \
+              'commands:commands:((all\:"List all available plugins"))'
             return
             ;;
           5)
@@ -220,7 +220,7 @@ case "$subcmd" in
     case $CURRENT in
       3)
         _alternative \
-          'command:command:(all)' \
+          'commands:commands:((all\:"List all available (remote) versions"))' \
           'plugin:plugin:_asdf__installed_plugins'
         ;;
       4)
@@ -283,7 +283,7 @@ case "$subcmd" in
     # Complete plugin names or --all flag for latest command
     if (( CURRENT == 3 )); then
       _alternative  \
-        'all:all:(--all)' \
+        'flags:flags:((--all\:"Show latest version of all tools"))' \
         'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
     fi
     ;;
@@ -296,7 +296,7 @@ case "$subcmd" in
     case $CURRENT in
       3)
         _alternative \
-          'flags:flags:(-u -p)' \
+          'flags:flags:((-u\:"set version in user home directory" -p\:"set version in closest parent .tool-versions"))' \
           'plugin:plugin:_asdf__installed_plugins'
         ;;
       4)
