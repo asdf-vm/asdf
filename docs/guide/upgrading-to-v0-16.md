@@ -35,7 +35,7 @@ the asdf binary in `$HOME/bin` and then added `$HOME/bin` to the front of my
 
 ```
 # In .zshrc, .bashrc, etc...
-export PATH="$HOME/bin:$PATH"`
+export PATH="$HOME/bin:$PATH"
 ```
 
 #### 2. Set `ASDF_DATA_DIR`
