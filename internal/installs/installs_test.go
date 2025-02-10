@@ -48,34 +48,66 @@ func TestInstallPath(t *testing.T) {
 }
 
 func TestInstalled(t *testing.T) {
-	conf, plugin := generateConfig(t)
-
 	t.Run("returns empty slice for newly installed plugin", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
 		installedVersions, err := Installed(conf, plugin)
 		assert.Nil(t, err)
 		assert.Empty(t, installedVersions)
 	})
 
 	t.Run("returns slice of all installed versions for a tool", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
 		mockInstall(t, conf, plugin, "1.0.0")
 
 		installedVersions, err := Installed(conf, plugin)
 		assert.Nil(t, err)
 		assert.Equal(t, installedVersions, []string{"1.0.0"})
 	})
+
+	t.Run("returns installed versions including symlinks", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		mockInstall(t, conf, plugin, "1.0.0")
+		symlinkVersion(t, conf, plugin, "1.0.0", "1")
+
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+		assert.Equal(t, installedVersions, []string{"1", "1.0.0"})
+	})
 }
 
 func TestIsInstalled(t *testing.T) {
-	conf, plugin := generateConfig(t)
-	installVersion(t, conf, plugin, "1.0.0")
-
 	t.Run("returns false when not installed", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		installVersion(t, conf, plugin, "1.0.0")
+
 		version := toolversions.Version{Type: "version", Value: "4.0.0"}
 		assert.False(t, IsInstalled(conf, plugin, version))
 	})
+
 	t.Run("returns true when installed", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		installVersion(t, conf, plugin, "1.0.0")
+
 		version := toolversions.Version{Type: "version", Value: "1.0.0"}
 		assert.True(t, IsInstalled(conf, plugin, version))
+	})
+
+	t.Run("returns true when using symlinks", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		installVersion(t, conf, plugin, "1.0.0")
+		symlinkVersion(t, conf, plugin, "1.0.0", "1")
+
+		version := toolversions.Version{Type: "version", Value: "1"}
+		assert.True(t, IsInstalled(conf, plugin, version))
+	})
+
+	t.Run("returns false when symlink broken", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		installVersion(t, conf, plugin, "1.0.0")
+		symlinkVersion(t, conf, plugin, "2.0.0", "2")
+
+		version := toolversions.Version{Type: "version", Value: "2"}
+		assert.False(t, IsInstalled(conf, plugin, version))
 	})
 }
 
@@ -98,6 +130,15 @@ func mockInstall(t *testing.T, conf config.Config, plugin plugins.Plugin, versio
 	version := toolversions.Version{Type: "version", Value: versionStr}
 	path := InstallPath(conf, plugin, version)
 	err := os.MkdirAll(path, os.ModePerm)
+	assert.Nil(t, err)
+}
+
+func symlinkVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, srcVersionStr, targetVersionStr string) {
+	t.Helper()
+	err := os.Symlink(
+		InstallPath(conf, plugin, toolversions.Version{Type: "version", Value: srcVersionStr}),
+		InstallPath(conf, plugin, toolversions.Version{Type: "version", Value: targetVersionStr}),
+	)
 	assert.Nil(t, err)
 }
 

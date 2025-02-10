@@ -4,8 +4,10 @@
 package installs
 
 import (
+	"errors"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -19,19 +21,26 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 	installDirectory := data.InstallDirectory(conf.DataDir, plugin.Name)
 	files, err := os.ReadDir(installDirectory)
 	if err != nil {
-		if _, ok := err.(*fs.PathError); ok {
-			return versions, nil
+		if isFileNotFoundError(err) {
+			return nil, nil
 		}
 
-		return versions, err
+		return nil, err
 	}
 
 	for _, file := range files {
-		if !file.IsDir() {
-			continue
+		IsDir, err := resolveIsDirectory(installDirectory, file)
+		if err != nil {
+			if isFileNotFoundError(err) {
+				continue
+			}
+
+			return nil, err
 		}
 
-		versions = append(versions, file.Name())
+		if IsDir {
+			versions = append(versions, file.Name())
+		}
 	}
 
 	return versions, err
@@ -62,4 +71,39 @@ func IsInstalled(conf config.Config, plugin plugins.Plugin, version toolversions
 	// Check if version already installed
 	_, err := os.Stat(installDir)
 	return !os.IsNotExist(err)
+}
+
+// isDirectory checks if a given file is a directory or a symbolic link to a directory.
+func resolveIsDirectory(parent string, file os.DirEntry) (bool, error) {
+	if file.IsDir() {
+		return true, nil
+	}
+
+	// Check if file is a symbolic link (which is a directory)
+	if file.Type()&os.ModeSymlink == 0 {
+		return false, nil
+	}
+
+	// Resolve symbolic link to determine if it points to a directory
+	linkTarget, err := os.Readlink(filepath.Join(parent, file.Name()))
+	if err != nil {
+		return false, err
+	}
+
+	// If the link target is relative, resolve it to an absolute path
+	if !path.IsAbs(linkTarget) {
+		linkTarget = filepath.Join(parent, linkTarget)
+	}
+
+	info, err := os.Stat(linkTarget)
+	if err != nil {
+		return false, err
+	}
+
+	return info.IsDir(), nil
+}
+
+func isFileNotFoundError(err error) bool {
+	var ferr *fs.PathError
+	return errors.As(err, &ferr) || errors.Is(err, fs.ErrNotExist)
 }
