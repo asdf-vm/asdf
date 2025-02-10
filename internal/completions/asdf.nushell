@@ -17,6 +17,7 @@ module asdf {
             "exec",
             "env",
             "info",
+            "version",
             "reshim",
             "shim-version",
             "update"
@@ -227,6 +228,9 @@ module asdf {
 
     # Show information about OS, Shell and asdf Debug
     export extern "asdf info" []
+
+    # Print the currently installed version of ASDF
+    export extern "asdf version" []
 
     # Recreate shims for version package
     export extern "asdf reshim" [

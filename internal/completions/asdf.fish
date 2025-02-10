@@ -138,4 +138,4 @@ complete -f -c asdf -n '__fish_asdf_using_command shell; and test (count (comman
 # misc
 complete -f -c asdf -n __fish_asdf_needs_command -l help -d "Displays help"
 complete -f -c asdf -n __fish_asdf_needs_command -a info -d "Print OS, Shell and ASDF debug information"
-complete -f -c asdf -n __fish_asdf_needs_command -l version -d "Displays asdf version"
+complete -f -c asdf -n __fish_asdf_needs_command -l version -d "Print the currently installed version of ASDF"

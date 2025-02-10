@@ -134,6 +134,13 @@ func Execute(version string) {
 				},
 			},
 			{
+				Name: "version",
+				Action: func(_ *cli.Context) error {
+					fmt.Fprintf(os.Stdout, "%s\n", version)
+					return nil
+				},
+			},
+			{
 				Name: "install",
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
