@@ -94,7 +94,7 @@ func TestConfigMethods(t *testing.T) {
 	})
 
 	t.Run("When file does not exist returns settings struct with defaults", func(t *testing.T) {
-		config := Config{ConfigFile: "non-existant"}
+		config := Config{ConfigFile: "non-existent"}
 
 		legacy, err := config.LegacyVersionFile()
 		assert.Nil(t, err)

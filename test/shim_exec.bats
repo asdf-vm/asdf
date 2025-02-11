@@ -274,7 +274,7 @@ teardown() {
 #  [ "$output" = "$ASDF_DIR/installs/dummy/2.0.0/foo custom" ]
 #}
 
-#@test "shim exec doest not use custom exec-env for system version" {
+#@test "shim exec doesn't not use custom exec-env for system version" {
 #  run asdf install dummy 2.0.0
 #  echo "export FOO=sourced" >"$ASDF_DIR/plugins/dummy/bin/exec-env"
 #  mkdir "$ASDF_DIR/plugins/dummy/shims"
@@ -434,7 +434,7 @@ EOM
   echo "$output" | grep "This is Dummy 1.0! world hello"
 }
 
-@test "shim exec doesnt execute command if pre-hook failed" {
+@test "shim exec doesn't execute command if pre-hook failed" {
   run asdf install dummy 1.0
   echo dummy 1.0 >"$PROJECT_DIR/.tool-versions"
 

@@ -111,7 +111,7 @@ func LoadConfig() (Config, error) {
 }
 
 // Methods on the Config struct that allow it to load and cache values from the
-// Settings struct, which is loaded from file on disk and therefor somewhat
+// Settings struct, which is loaded from file on disk and therefore somewhat
 // "expensive".
 
 // LegacyVersionFile loads the asdfrc if it isn't already loaded and fetches

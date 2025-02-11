@@ -102,9 +102,9 @@ func TestRepoUpdate(t *testing.T) {
 	assert.Nil(t, err)
 
 	t.Run("returns error when repo with name does not exist", func(t *testing.T) {
-		nonexistantPath := filepath.Join(directory, "nonexistant")
-		nonexistantRepo := NewRepo(nonexistantPath)
-		updatedToRef, _, _, err := nonexistantRepo.Update("")
+		nonexistentPath := filepath.Join(directory, "nonexistent")
+		nonexistentRepo := NewRepo(nonexistentPath)
+		updatedToRef, _, _, err := nonexistentRepo.Update("")
 
 		assert.NotNil(t, err)
 		assert.Equal(t, updatedToRef, "")
@@ -154,10 +154,10 @@ func TestRepoUpdate(t *testing.T) {
 	})
 
 	t.Run("Returns error when specified ref does not exist", func(t *testing.T) {
-		ref := "non-existant"
+		ref := "non-existent"
 		updatedToRef, _, _, err := repo.Update(ref)
 		assert.Equal(t, updatedToRef, "")
-		expectedErrMsg := "couldn't find remote ref \"non-existant\""
+		expectedErrMsg := "couldn't find remote ref \"non-existent\""
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
