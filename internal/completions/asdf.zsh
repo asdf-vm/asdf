@@ -3,7 +3,7 @@
 #description tool to manage versions of multiple runtimes
 
 # Initialize local variables for ZSH completion context
-local curcontext="$curcontext" state state_descr line subcmd
+local state subcmd
 
 # Set asdf directory path, using ASDF_DATA_DIR if set, otherwise default to ~/.asdf
 local asdf_dir="${ASDF_DATA_DIR:-$HOME/.asdf}"
@@ -139,7 +139,6 @@ esac
 
 # Get the subcommand for further processing
 subcmd="${words[2]}"
-curcontext="${curcontext%:*}=$subcmd:"
 
 # Complex completion logic for each subcommand
 # Each case handles specific completion scenarios for the respective command
