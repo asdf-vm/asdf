@@ -50,7 +50,8 @@ function __fish_asdf_list_shims
     path basename $asdf_data_dir/shims/*
 end
 
-# plugin add completion
+# plugin completion
+complete -f -c asdf -n __fish_asdf_needs_command -a plugin -d "Plugin management sub-commands"
 # suggest `add` after `plugin`
 complete -f -c asdf -n '__fish_asdf_using_command plugin; and __fish_asdf_arg_number 2' -a add -d "Add git repo as plugin"
 # show available plugins after `plugin add`
