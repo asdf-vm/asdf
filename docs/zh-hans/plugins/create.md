@@ -57,7 +57,7 @@
 
 如果可能，脚本应仅在安装脚本认为工具的生成和安装成功后，才将文件放在 `ASDF_INSTALL_PATH` 目录中。asdf 检查 `ASDF_INSTALL_PATH` 目录的 [扩展](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) 以确认是否安装了该工具版本。如果在安装过程开始时填充了 `ASDF_INSTALL_PATH` 目录，则在安装过程中在其他终端中运行的其他 asdf 命令可能会认为该工具版本已经安装，即使它还未完全安装。
 
-如果你希望你的插件使用 asdf 0.7._ 及更早版本和 0.8._ 及更高版本，请检查是否存在 `ASDF_DOWNLOAD_PATH` 环境变量。如果未设置，请在 `bin/install` 脚本回调时下载源代码。如果设置，则假设 `bin/downlaod` 脚本已经下载源代码。
+如果你希望你的插件使用 asdf 0.7._ 及更早版本和 0.8._ 及更高版本，请检查是否存在 `ASDF_DOWNLOAD_PATH` 环境变量。如果未设置，请在 `bin/install` 脚本回调时下载源代码。如果设置，则假设 `bin/download` 脚本已经下载源代码。
 
 ## 可选脚本
 

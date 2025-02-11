@@ -67,7 +67,7 @@ The full list of Environment Variables used throughout all scripts.
 | `ASDF_DOWNLOAD_PATH`     | the path to where the source code or binary was downloaded to by `bin/download`         |
 | `ASDF_PLUGIN_PATH`       | the path the plugin was installed                                                       |
 | `ASDF_PLUGIN_SOURCE_URL` | the source URL of the plugin                                                            |
-| `ASDF_PLUGIN_PREV_REF`   | prevous `git-ref` of the plugin repo                                                    |
+| `ASDF_PLUGIN_PREV_REF`   | previous `git-ref` of the plugin repo                                                    |
 | `ASDF_PLUGIN_POST_REF`   | updated `git-ref` of the plugin repo                                                    |
 | `ASDF_CMD_FILE`          | resolves to the full path of the file being sourced                                     |
 

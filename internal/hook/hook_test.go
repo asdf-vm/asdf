@@ -40,7 +40,7 @@ func TestRun(t *testing.T) {
 		config, err := config.LoadConfig()
 		assert.Nil(t, err)
 
-		err = Run(config, "nonexistant-hook", []string{})
+		err = Run(config, "nonexistent-hook", []string{})
 		assert.Nil(t, err)
 	})
 }
