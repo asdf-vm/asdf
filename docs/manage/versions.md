@@ -121,7 +121,7 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 To use the system version of tool `<name>` instead of an asdf managed version you can set the version for the tool to `system`.
 
-Set system with either `asdf set` or via environment variable as outlined in [Set Current Version](#set-current-version) section above.
+Set system with either `asdf set` or via environment variable as outlined in [Set Version](#set-version) section above.
 
 ```shell
 asdf set <name> system
