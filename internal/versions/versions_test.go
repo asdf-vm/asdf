@@ -122,6 +122,30 @@ func TestInstall(t *testing.T) {
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
 	})
+
+	t.Run("if multiple versions are defined and installed returns an error", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		currentDir := t.TempDir()
+
+		versions := "1.0.0 2.0.0"
+		// write a version file
+		data := []byte(fmt.Sprintf("%s %s", plugin.Name, versions))
+		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		assert.NoError(t, err)
+
+		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		assert.NoError(t, err)
+
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
+
+		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		assert.Error(t, err)
+		// Expect a VersionAlreadyInstalledError
+		var eerr VersionAlreadyInstalledError
+		assert.ErrorAs(t, err, &eerr)
+	})
 }
 
 func TestInstallVersion(t *testing.T) {
@@ -204,7 +228,10 @@ func TestInstallOneVersion(t *testing.T) {
 
 		// Install a second time
 		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
-		assert.NotNil(t, err)
+		assert.Error(t, err)
+		// Expect a VersionAlreadyInstalledError
+		var eerr VersionAlreadyInstalledError
+		assert.ErrorAs(t, err, &eerr)
 	})
 
 	t.Run("creates download directory", func(t *testing.T) {
@@ -309,6 +336,43 @@ func TestLatest(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "4.0.0", version)
 	})
+}
+
+func TestLatestWithSamples(t *testing.T) {
+	tests := []struct {
+		testFile       string
+		expectedOutput string
+	}{
+		{
+			testFile:       "list-all-ruby",
+			expectedOutput: "3.4.2",
+		},
+		{
+			testFile:       "list-all-python",
+			expectedOutput: "3.13.2t",
+		},
+		{
+			testFile:       "list-all-elixir",
+			expectedOutput: "1.18.2-otp-27",
+		},
+	}
+	for _, tt := range tests {
+		pluginName := "latest_test"
+		conf, _ := generateConfig(t)
+		pluginDir, err := repotest.InstallPlugin("dummy_legacy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		versionsFilePath, err := filepath.Abs(filepath.Join("testdata", tt.testFile))
+		assert.Nil(t, err)
+		contents := "#!/usr/bin/env bash\ncat \"" + versionsFilePath + "\""
+		listAllPath := filepath.Join(pluginDir, "bin", "list-all")
+		err = os.WriteFile(listAllPath, []byte(contents), 0o777)
+		assert.Nil(t, err)
+
+		plugin := plugins.New(conf, pluginName)
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, tt.expectedOutput, version)
+	}
 }
 
 func TestAllVersions(t *testing.T) {

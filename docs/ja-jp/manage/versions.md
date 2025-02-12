@@ -65,35 +65,45 @@ asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
-## カレントバージョンのセット
+## バージョンのセット
+
+#### `.tool-versions`ファイルで管理する
 
 ```shell
-asdf global <name> <version> [<version>...]
-asdf shell <name> <version> [<version>...]
-asdf local <name> <version> [<version>...]
-# asdf global elixir 1.2.4
+asdf set [flags] <name> <version> [<version>...]
+# asdf set elixir 1.2.4 # set in current dir
+# asdf set -u elixir 1.2.4 # set in .tool-versions file in home directory
+# asdf set -p elixir 1.2.4 # set in existing .tool-versions file in a parent dir
 
-asdf global <name> latest[:<version>]
-asdf local <name> latest[:<version>]
-# asdf global elixir latest
+asdf set <name> latest[:<version>]
+# asdf set elixir latest
 ```
 
-`global`の場合、バージョンは`$HOME/.tool-versions`ファイルに書き込まれます。
+`asdf set`はカレントディレクトリの`.tool-versions`ファイルにバージョンを書き込みます。これは単純に利便性のために存在します。`echo "<tool> <version>" > .tool-versions`を実行するようなものと考えてください。
 
-`shell`の場合、バージョンは`ASDF_${TOOL}_VERSION`という環境変数に設定され、現在のシェルセッションでのみ有効となります。
+`u` または `--home`フラグをつけて`asdf set`を実行すると、`$HOME`ディレクトリの`.tool-versions`ファイルにバージョンを書き込みます。ファイルが存在しない場合は作成されます。
 
-`local`の場合、バージョンは`$PWD/.tool-versions`ファイルに書き込まれます。存在しない場合は作成されます。
+`p`または `--parent`フラグをつけて`asdf set`を実行すると、カレントディレクトリから親ディレクトリを探索し、最初に見つかった`.tool-versions` ファイルにバージョンを書き込みます。
+
+#### 環境変数で管理する
+
+バージョンを決定するときに、`ASDF_${TOOL}_VERSION`というパターンの環境変数を探します。バージョンの形式は`.tool-versions`ファイルでサポートされているものと同じです。設定されている場合、この環境変数の値は`.tool-versions`ファイルでのバージョン指定よりも優先されます。たとえば:
+
+```shell
+export ASDF_ELIXIR_VERSION=1.18.1
+```
+
+これは現在のシェルセッションではElixir `1.18.1`を使うようasdfに指示します。
+
+:::warning
+これは環境変数なので、設定されたセッションでのみ有効になります。
+実行中の他のセッションでは、`.tool-versions`ファイルに設定されているバージョンを引き続き使用します。
 
 `.tool-versions`ファイルについて詳しくは、[構成設定のリファレンス](/ja-jp/manage/configuration.md)をご覧ください。
 
-:::warning 代替手段
-現在のシェルセッションでのみバージョンを設定したい場合、
-または、特定のツールバージョンでコマンドを実行するだけのためにバージョンを設定したい場合は、
-`ASDF_${TOOL}_VERSION`という環境変数で設定することができます。
 :::
 
 下記の例では、バージョン`1.4.0`のElixirプロジェクトに対して、テストを実行させています。
-バージョンの表記形式は、`.tool-versions`ファイルでサポートされているものと同じです。
 
 ```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
@@ -103,11 +113,11 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 asdfで管理されているバージョンではなく、`<name>`で指定されたツールのシステムバージョンを使用するには、バージョンとして`system`を指定します。
 
-[カレントバージョンのセット](#カレントバージョンのセット)と同様の方法で、`global`、`local`、または`shell`のいずれかに`system`をセットしてください。
+[バージョンのセット](#バージョンのセット)と同様に、`asdf set`または環境変数で`system`をセットしてください。
 
 ```shell
-asdf local <name> system
-# asdf local python system
+asdf set <name> system
+# asdf set python system
 ```
 
 ## カレントバージョンの表示
@@ -136,7 +146,7 @@ asdfがパッケージをインストールすると、そのパッケージに�
 
 Shim自体は非常に単純なラッパーであり、`asdf exec`というヘルパープログラムに、プラグイン名と、Shimがラップしているインストール済みパッケージの実行ファイルのパスを渡して、`exec`します。
 
-`asdf exec`ヘルパーは、使用するパッケージのバージョン(`.tool-versions`ファイルで指定されたもの、または`asdf local ...`か`asdf global ...`で指定されたもの)、パッケージのインストールディレクトリにある実行ファイルの完全パス(プラグインの`exec-path`コールバックで操作可能)、および実行環境(プラグインの`exec-env`スクリプトで提供)を決定し、実行します。
+`asdf exec`ヘルパーは、使用するパッケージのバージョン(`.tool-versions`ファイルで指定されたもの、または環境変数で指定されたもの)、パッケージのインストールディレクトリにある実行ファイルの完全パス(プラグインの`exec-path`コールバックで操作可能)、および実行環境(プラグインの`exec-env`スクリプトで提供)を決定し、実行します。
 
 ::: warning 備考
 本システムは`exec`呼び出しを使用するため、シェルによってsourceされるパッケージ内のスクリプトは、Shimラッパーを経由させずに直接アクセスする必要があります。`asdf`で用意されている`which`および`where`コマンドは、下記のように、インストールされたパッケージへのパスを返すため、この状況を解決するのに役立ちます:

@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.16.5](https://github.com/asdf-vm/asdf/compare/v0.16.4...v0.16.5) (2025-03-04)
+
+
+### Bug Fixes
+
+* always propagate env variables when executing commands ([#1982](https://github.com/asdf-vm/asdf/issues/1982)) ([80265a8](https://github.com/asdf-vm/asdf/commit/80265a8eecedc623cb8cf5cca18ae563e9d4f94c))
+* build static binary to improve portability ([#1993](https://github.com/asdf-vm/asdf/issues/1993)) ([45047a6](https://github.com/asdf-vm/asdf/commit/45047a6c451599e718f996fdadbdcea3ecf683fd))
+* correct exit status when sub-command does not exist ([#1991](https://github.com/asdf-vm/asdf/issues/1991)) ([3dd0dd3](https://github.com/asdf-vm/asdf/commit/3dd0dd3b475d1c4ddcb6d76248a988be5cceef51)), closes [#1928](https://github.com/asdf-vm/asdf/issues/1928)
+* latest version returns latest version ([#1996](https://github.com/asdf-vm/asdf/issues/1996)) ([0ceac7a](https://github.com/asdf-vm/asdf/commit/0ceac7af8c126980901caba4d8daa80900819451))
+* preserve files untracked by Git on plugin update ([#1995](https://github.com/asdf-vm/asdf/issues/1995)) ([d4d8db0](https://github.com/asdf-vm/asdf/commit/d4d8db035d9f349bfed513af6976734db18e2c14))
+* set correct env vars on recursive calls ([#1989](https://github.com/asdf-vm/asdf/issues/1989)) ([97a91cc](https://github.com/asdf-vm/asdf/commit/97a91cc8d01bda0896a50dff50a162e87fd61e57))
+* simplify env vars parsing ([#1988](https://github.com/asdf-vm/asdf/issues/1988)) ([8990b6b](https://github.com/asdf-vm/asdf/commit/8990b6b4ae3c9754f3764289f0d7cf410815d29d)), closes [#1986](https://github.com/asdf-vm/asdf/issues/1986)
+
+## [0.16.4](https://github.com/asdf-vm/asdf/compare/v0.16.3...v0.16.4) (2025-02-19)
+
+
+### Bug Fixes
+
+* Add a newline delimiter when suggesting versions to install ([#1972](https://github.com/asdf-vm/asdf/issues/1972)) ([38bea71](https://github.com/asdf-vm/asdf/commit/38bea7145495a53c1a6fbad0542a32a4e7937e91))
+* correct version resolution order to restore legacy file fallback behavior ([#1956](https://github.com/asdf-vm/asdf/issues/1956)) ([6696d47](https://github.com/asdf-vm/asdf/commit/6696d4702937442842a3643fab31d21a7fd0208f))
+* support environment variables with equals sign and newlines in value ([#1977](https://github.com/asdf-vm/asdf/issues/1977)) ([1acf082](https://github.com/asdf-vm/asdf/commit/1acf0824ccfd33f118cb7440970df9e43899a1c1))
+
+## [0.16.3](https://github.com/asdf-vm/asdf/compare/v0.16.2...v0.16.3) (2025-02-17)
+
+
+### Bug Fixes
+
+* add missing version command ([#1931](https://github.com/asdf-vm/asdf/issues/1931)) ([5339c41](https://github.com/asdf-vm/asdf/commit/5339c413d2fd77e971ed9b7621f0454b96fe3a0d))
+* correct formatting of version in "already installed" error message ([df5e283](https://github.com/asdf-vm/asdf/commit/df5e283fb74a63faecd9ab234af1f0c24f1afdcd))
+* correct typo in `Upgrading to 0.16.0` documentation ([#1938](https://github.com/asdf-vm/asdf/issues/1938)) ([7e8e5f6](https://github.com/asdf-vm/asdf/commit/7e8e5f60d13b0672e65982e21d7dc864246be8eb))
+* don't error if version already installed ([06f8990](https://github.com/asdf-vm/asdf/commit/06f89907b2002db0e53b9bb2acd8ad11935f051c))
+* pass environment variables through to `exec-env` callback ([9e6b559](https://github.com/asdf-vm/asdf/commit/9e6b5594080acd4208427505d9018123f1fb1f36))
+* repair invalid fish shell completion code ([#1936](https://github.com/asdf-vm/asdf/issues/1936)) ([8388f99](https://github.com/asdf-vm/asdf/commit/8388f992e9be7f21313d8c8e363b43e82e44f207))
+* return no error from shims.RemoveAll when shims dir missing ([#1967](https://github.com/asdf-vm/asdf/issues/1967)) ([45c31c9](https://github.com/asdf-vm/asdf/commit/45c31c9761f62a45896f6e45707a60fd0c1f4111))
+
 ## [0.16.2](https://github.com/asdf-vm/asdf/compare/v0.16.1...v0.16.2) (2025-02-08)
 
 
@@ -100,7 +135,7 @@ The full list of pull requests and merge commits for this rewrite are listed bel
 * fix some pt-br spelling ([#1640](https://github.com/asdf-vm/asdf/issues/1640)) ([0c7c41a](https://github.com/asdf-vm/asdf/commit/0c7c41ab44d3a42a9e57e3d20a646569c2eacfdc))
 * fix typo "node version" filename ([#1679](https://github.com/asdf-vm/asdf/issues/1679)) ([fad23bc](https://github.com/asdf-vm/asdf/commit/fad23bc9f4d38747f28d6708ab01689749030063))
 * fix typo ([#1670](https://github.com/asdf-vm/asdf/issues/1670)) ([5737fa3](https://github.com/asdf-vm/asdf/commit/5737fa316eab01c4033565eacf678222cd861f8d))
-* Improve `.asdfrc` plugin hook docuentation ([#1661](https://github.com/asdf-vm/asdf/issues/1661)) ([8fbf9a3](https://github.com/asdf-vm/asdf/commit/8fbf9a396bd4a5b71ec7cf215d12040fb5365d6a))
+* Improve `.asdfrc` plugin hook documentation ([#1661](https://github.com/asdf-vm/asdf/issues/1661)) ([8fbf9a3](https://github.com/asdf-vm/asdf/commit/8fbf9a396bd4a5b71ec7cf215d12040fb5365d6a))
 
 ## [0.13.1](https://github.com/asdf-vm/asdf/compare/v0.13.0...v0.13.1) (2023-09-12)
 
@@ -224,7 +259,7 @@ The full list of pull requests and merge commits for this rewrite are listed bel
 * force lwrcase plugin name fix capitalization mismatch errs ([#1400](https://github.com/asdf-vm/asdf/issues/1400)) ([196a05b](https://github.com/asdf-vm/asdf/commit/196a05b2dcef48f3a281350734c76ba7bc73fa81))
 * lint errors from `scripts/checkstyle.py` ([#1385](https://github.com/asdf-vm/asdf/issues/1385)) ([3492043](https://github.com/asdf-vm/asdf/commit/3492043241e466337c5965a6fe2e089147bc4152))
 * mv dev dep from repo root to subdir to avoid clash ([#1408](https://github.com/asdf-vm/asdf/issues/1408)) ([5df70da](https://github.com/asdf-vm/asdf/commit/5df70dadacd66b4150ed47e58c861418c0d1281f))
-* Remove unecessary backslashes ([#1384](https://github.com/asdf-vm/asdf/issues/1384)) ([15faf93](https://github.com/asdf-vm/asdf/commit/15faf93a0d3615834e550ea1562fb6b8cee5a205))
+* Remove unnecessary backslashes ([#1384](https://github.com/asdf-vm/asdf/issues/1384)) ([15faf93](https://github.com/asdf-vm/asdf/commit/15faf93a0d3615834e550ea1562fb6b8cee5a205))
 * Remove usage of `$(pwd)` in favor of `$PWD` ([f522ab9](https://github.com/asdf-vm/asdf/commit/f522ab98797345d767b239041246dfb4b740423e))
 
 ## [0.11.0](https://github.com/asdf-vm/asdf/compare/v0.10.2...v0.11.0) (2022-12-12)

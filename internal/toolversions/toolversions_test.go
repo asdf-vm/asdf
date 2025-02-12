@@ -9,8 +9,8 @@ import (
 )
 
 func TestGetAllToolsAndVersions(t *testing.T) {
-	t.Run("returns error when non-existant file", func(t *testing.T) {
-		toolVersions, err := GetAllToolsAndVersions("non-existant-file")
+	t.Run("returns error when non-existent file", func(t *testing.T) {
+		toolVersions, err := GetAllToolsAndVersions("non-existent-file")
 		assert.Error(t, err)
 		assert.Empty(t, toolVersions)
 	})
@@ -30,8 +30,8 @@ func TestGetAllToolsAndVersions(t *testing.T) {
 }
 
 func TestFindToolVersions(t *testing.T) {
-	t.Run("returns error when non-existant file", func(t *testing.T) {
-		versions, found, err := FindToolVersions("non-existant-file", "nonexistant-tool")
+	t.Run("returns error when non-existent file", func(t *testing.T) {
+		versions, found, err := FindToolVersions("non-existent-file", "nonexistent-tool")
 		assert.Error(t, err)
 		assert.False(t, found)
 		assert.Empty(t, versions)

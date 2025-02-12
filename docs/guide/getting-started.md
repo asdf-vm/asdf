@@ -61,7 +61,7 @@ asdf can be installed in several different ways:
 ::: tip Note
 Most users **DO NOT** need to customize the location that asdf writes plugin,
 install, and shim data to. However, if `$HOME/.asdf` isn't the directory you
-want asdf writing too, you can change it. Specify the directory by exporting
+want asdf writing to, you can change it. Specify the directory by exporting
 a variable named `ASDF_DATA_DIR` in your shell's RC file.
 :::
 

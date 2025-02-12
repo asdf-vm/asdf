@@ -35,7 +35,7 @@ npm install
 
 ## Development
 
-[VitePress (v2)](https://vitepress.dev/) is the Static Site Generator (SSG) we use to build the asdf documentation site. It was chosen to replace [Docsify.js](https://docsify.js.org/) and subsequently VuePress as we would like to support an HTML only fallback when users do not have JavaScript available or enabled. This was not possible with Docsify & VitePress quicly supplanted VuePress. Other than this, the feature-set is largely the same, with the focus on writing Markdown files with minimal configuration.
+[VitePress (v2)](https://vitepress.dev/) is the Static Site Generator (SSG) we use to build the asdf documentation site. It was chosen to replace [Docsify.js](https://docsify.js.org/) and subsequently VuePress as we would like to support an HTML only fallback when users do not have JavaScript available or enabled. This was not possible with Docsify & VitePress quickly supplanted VuePress. Other than this, the feature-set is largely the same, with the focus on writing Markdown files with minimal configuration.
 
 `package.json` contains the scripts required for development:
 

@@ -8,6 +8,9 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.go]
+indent_style = tab
+
 [*.py]
 indent_size = 4
 

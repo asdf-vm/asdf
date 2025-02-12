@@ -102,9 +102,9 @@ func TestRepoUpdate(t *testing.T) {
 	assert.Nil(t, err)
 
 	t.Run("returns error when repo with name does not exist", func(t *testing.T) {
-		nonexistantPath := filepath.Join(directory, "nonexistant")
-		nonexistantRepo := NewRepo(nonexistantPath)
-		updatedToRef, _, _, err := nonexistantRepo.Update("")
+		nonexistentPath := filepath.Join(directory, "nonexistent")
+		nonexistentRepo := NewRepo(nonexistentPath)
+		updatedToRef, _, _, err := nonexistentRepo.Update("")
 
 		assert.NotNil(t, err)
 		assert.Equal(t, updatedToRef, "")
@@ -153,11 +153,45 @@ func TestRepoUpdate(t *testing.T) {
 		assert.Equal(t, latestHash, currentHash)
 	})
 
+	t.Run("updates repo while leaving untracked files in place", func(t *testing.T) {
+		latestHash, err := getCurrentCommit(directory)
+		assert.Nil(t, err)
+
+		_, err = checkoutPreviousCommit(directory)
+		assert.Nil(t, err)
+
+		untrackedDir := filepath.Join(directory, "untracked")
+		err = os.Mkdir(untrackedDir, 0o777)
+		assert.Nil(t, err)
+
+		expectedContent := []byte("dummy_content")
+		err = os.WriteFile(filepath.Join(untrackedDir, "file_one"), expectedContent, 0o777)
+		assert.Nil(t, err)
+		err = os.WriteFile(filepath.Join(untrackedDir, "file_two"), expectedContent, 0o777)
+		assert.Nil(t, err)
+
+		updatedToRef, _, _, err := repo.Update("")
+		assert.Nil(t, err)
+		assert.Equal(t, "refs/heads/master", updatedToRef)
+
+		currentHash, err := getCurrentCommit(directory)
+		assert.Nil(t, err)
+		assert.Equal(t, latestHash, currentHash)
+
+		content, err := os.ReadFile(filepath.Join(untrackedDir, "file_one"))
+		assert.Nil(t, err)
+		assert.Equal(t, expectedContent, content)
+
+		content, err = os.ReadFile(filepath.Join(untrackedDir, "file_two"))
+		assert.Nil(t, err)
+		assert.Equal(t, expectedContent, content)
+	})
+
 	t.Run("Returns error when specified ref does not exist", func(t *testing.T) {
-		ref := "non-existant"
+		ref := "non-existent"
 		updatedToRef, _, _, err := repo.Update(ref)
 		assert.Equal(t, updatedToRef, "")
-		expectedErrMsg := "couldn't find remote ref \"non-existant\""
+		expectedErrMsg := "couldn't find remote ref \"non-existent\""
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 

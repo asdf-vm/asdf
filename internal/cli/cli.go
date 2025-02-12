@@ -181,7 +181,7 @@ func Execute(version string) {
 				Name: "plugin",
 				Action: func(_ *cli.Context) error {
 					logger.Println("Unknown command: `asdf plugin`")
-					os.Exit(1)
+					cli.OsExiter(1)
 					return nil
 				},
 				Subcommands: []*cli.Command{
@@ -335,14 +335,20 @@ func Execute(version string) {
 				},
 			},
 		},
-		Action: func(_ *cli.Context) error {
-			return helpCommand(logger, version, "", "")
+		CommandNotFound: func(_ *cli.Context, s string) {
+			logger.Printf("invalid command provided: %s\n\n", s)
+			helpCommand(logger, version, "", "")
+			cli.OsExiter(1)
 		},
 	}
 
-	err := app.Run(os.Args)
+	err := unsetAsdfReservedEnvVars()
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
+	}
+
+	if err = app.Run(os.Args); err != nil {
+		cli.OsExiter(1)
 	}
 }
 
@@ -415,7 +421,7 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 		}
 
 		if !versionInstalled {
-			os.Exit(1)
+			cli.OsExiter(1)
 		}
 	} else {
 		fmt.Printf("No such plugin: %s\n", tool)
@@ -533,7 +539,8 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		return err
 	}
 
-	err = exec.Exec(fname, realArgs, execute.MapToSlice(env))
+	finalEnv := execute.MergeWithCurrentEnv(env)
+	err = exec.Exec(fname, realArgs, finalEnv)
 	if err != nil {
 		fmt.Printf("err %#+v\n", err.Error())
 	}
@@ -586,15 +593,14 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		}
 	}
 
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
-
 	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
-	return exec.Exec(executable, args, execute.MapToSlice(env))
+	finalEnv := execute.MergeWithCurrentEnv(env)
+	return exec.Exec(executable, args, finalEnv)
 }
 
 func extensionCommand(logger *log.Logger, args []string) error {
@@ -613,12 +619,12 @@ func extensionCommand(logger *log.Logger, args []string) error {
 	pluginName := args[0]
 	plugin := plugins.New(conf, pluginName)
 
-	err = runExtensionCommand(plugin, args[1:], execenv.SliceToMap(os.Environ()))
+	err = runExtensionCommand(plugin, args[1:])
 	logger.Printf("error running extension command: %s", err.Error())
 	return err
 }
 
-func runExtensionCommand(plugin plugins.Plugin, args []string, environment map[string]string) (err error) {
+func runExtensionCommand(plugin plugins.Plugin, args []string) (err error) {
 	path := ""
 	if len(args) > 0 {
 		path, err = plugin.ExtensionCommandPath(args[0])
@@ -638,7 +644,7 @@ func runExtensionCommand(plugin plugins.Plugin, args []string, environment map[s
 		}
 	}
 
-	return exec.Exec(path, args, execute.MapToSlice(environment))
+	return exec.Exec(path, args, os.Environ())
 }
 
 func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
@@ -653,7 +659,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 
 		if _, ok := err.(shims.NoExecutableForPluginError); ok {
 			logger.Printf("No executable %s found for current version. Please select a different version or install %s manually for the current version", command, command)
-			os.Exit(1)
+			cli.OsExiter(1)
 			return "", plugin, version, err
 		}
 		shimPath := shims.Path(conf, command)
@@ -676,7 +682,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
-					fmt.Printf("%s %s", toolVersion.Name, version)
+					fmt.Printf("%s %s\n", toolVersion.Name, version)
 				}
 			}
 		}
@@ -725,7 +731,7 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 			return nil
 		}
 
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
@@ -736,7 +742,7 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) error {
 	if pluginName == "" {
 		logger.Print("No plugin given")
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
@@ -757,7 +763,7 @@ func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) 
 	err2 := shims.RemoveAll(conf)
 	if err2 != nil {
 		logger.Printf("%s", err2)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err2
 	}
 
@@ -818,7 +824,7 @@ func pluginListAllCommand(logger *log.Logger) error {
 	}
 	if disableRepo {
 		logger.Printf("Short-name plugin repository is disabled")
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
@@ -881,26 +887,26 @@ func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
 		if version != "" {
 			err := help.PrintToolVersion(conf, tool, version)
 			if err != nil {
-				os.Exit(1)
+				cli.OsExiter(1)
 			}
 			return err
 		}
 
 		err := help.PrintTool(conf, tool)
 		if err != nil {
-			os.Exit(1)
+			cli.OsExiter(1)
 		}
 		return err
 	}
 
 	allPlugins, err := plugins.List(conf, false, false)
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
 	}
 
 	err = help.Print(asdfVersion, allPlugins)
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
 	}
 
 	return err
@@ -943,7 +949,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		l.Printf("error loading config: %s", err)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return
 	}
 
@@ -1039,7 +1045,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 
 func failTest(logger *log.Logger, msg string) {
 	logger.Printf("FAILED: %s", msg)
-	os.Exit(1)
+	cli.OsExiter(1)
 }
 
 func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err error) {
@@ -1090,11 +1096,18 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 		if version == "" {
 			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
 			if err != nil {
-				if _, ok := err.(versions.NoVersionSetError); ok {
-					logger.Printf("No versions specified for %s in config files or environment", toolName)
-					os.Exit(1)
+				var vaiErr versions.VersionAlreadyInstalledError
+				if errors.As(err, &vaiErr) {
+					logger.Println(err)
+					return nil
 				}
 
+				if _, ok := err.(versions.NoVersionSetError); ok {
+					logger.Printf("No versions specified for %s in config files or environment", toolName)
+					cli.OsExiter(1)
+				}
+
+				logger.Printf("error installing version: %v", err)
 				return err
 			}
 		} else {
@@ -1110,7 +1123,13 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 			}
 
 			if err != nil {
-				logger.Printf("error installing version: %s", err)
+				var vaiErr versions.VersionAlreadyInstalledError
+				if errors.As(err, &vaiErr) {
+					logger.Println(err)
+					return nil
+				}
+
+				logger.Printf("error installing version: %v", err)
 			}
 		}
 	}
@@ -1121,6 +1140,11 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 func filterInstallErrors(errs []error) []error {
 	var filtered []error
 	for _, err := range errs {
+		var vaiErr versions.VersionAlreadyInstalledError
+		if errors.As(err, &vaiErr) {
+			continue
+		}
+
 		if _, ok := err.(versions.NoVersionSetError); !ok {
 			filtered = append(filtered, err)
 		}
@@ -1138,7 +1162,7 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	if !all {
 		err = latestForPlugin(conf, toolName, pattern, false)
 		if err != nil {
-			os.Exit(1)
+			cli.OsExiter(1)
 		}
 
 		return err
@@ -1160,7 +1184,7 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	}
 
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
 		return maybeErr
 	}
 	return nil
@@ -1185,13 +1209,13 @@ func listCommand(logger *log.Logger, first, second, third string) (err error) {
 func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter string) error {
 	if toolName == "" {
 		logger.Print("No plugin given")
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
 	plugin, err := loadPlugin(logger, conf, toolName)
 	if err != nil {
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
@@ -1205,7 +1229,7 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 		os.Stderr.WriteString(stderr.String())
 		os.Stderr.WriteString(stdout.String())
 
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
@@ -1217,7 +1241,7 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 
 	if len(versions) == 0 {
 		logger.Printf("No compatible versions available (%s %s)", plugin.Name, filter)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
@@ -1248,7 +1272,7 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 	if pluginName != "" {
 		plugin, err := loadPlugin(logger, conf, pluginName)
 		if err != nil {
-			os.Exit(1)
+			cli.OsExiter(1)
 			return err
 		}
 		versions, _ := installs.Installed(conf, plugin)
@@ -1259,13 +1283,13 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 
 		if len(versions) == 0 {
 			logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
-			os.Exit(1)
+			cli.OsExiter(1)
 			return nil
 		}
 
 		currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
 		if err != nil {
-			os.Exit(1)
+			cli.OsExiter(1)
 			return err
 		}
 
@@ -1292,7 +1316,7 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		if len(versions) > 0 {
 			currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
 			if err != nil {
-				os.Exit(1)
+				cli.OsExiter(1)
 				return err
 			}
 			for _, version := range versions {
@@ -1317,6 +1341,16 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 		return err
 	}
 
+	var plugin plugins.Plugin
+
+	if tool != "" {
+		plugin = plugins.New(conf, tool)
+		if err := plugin.Exists(); err != nil {
+			logger.Printf("No such plugin: %s", plugin.Name)
+			cli.OsExiter(1)
+			return err
+		}
+	}
 	// if either tool or version are missing just regenerate all shims. This is
 	// fast enough now.
 	if tool == "" || version == "" {
@@ -1330,7 +1364,7 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 
 	// If provided a specific version it could be something special like a path
 	// version so we need to generate it manually
-	return reshimToolVersion(conf, tool, version, os.Stdout, os.Stderr)
+	return reshimToolVersion(conf, plugin, version, os.Stdout, os.Stderr)
 }
 
 func shimVersionsCommand(logger *log.Logger, shimName string) error {
@@ -1397,14 +1431,14 @@ func whichCommand(logger *log.Logger, command string) error {
 func uninstallCommand(logger *log.Logger, tool, version string) error {
 	if tool == "" || version == "" {
 		logger.Print("No plugin given")
-		os.Exit(1)
+		cli.OsExiter(1)
 		return nil
 	}
 
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
@@ -1412,7 +1446,7 @@ func uninstallCommand(logger *log.Logger, tool, version string) error {
 	err = versions.Uninstall(conf, plugin, version, os.Stdout, os.Stderr)
 	if err != nil {
 		logger.Printf("%s", err)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
@@ -1421,7 +1455,7 @@ func uninstallCommand(logger *log.Logger, tool, version string) error {
 	err = shims.RemoveAll(conf)
 	if err != nil {
 		logger.Printf("%s", err)
-		os.Exit(1)
+		cli.OsExiter(1)
 		return err
 	}
 
@@ -1502,9 +1536,10 @@ func loadPlugin(logger *log.Logger, conf config.Config, pluginName string) (plug
 	return plugin, err
 }
 
-func reshimToolVersion(conf config.Config, tool, versionStr string, out io.Writer, errOut io.Writer) error {
+func reshimToolVersion(conf config.Config, plugin plugins.Plugin, versionStr string, out io.Writer, errOut io.Writer) error {
 	version := toolversions.Parse(versionStr)
-	return shims.GenerateForVersion(conf, plugins.New(conf, tool), version, out, errOut)
+
+	return shims.GenerateForVersion(conf, plugin, version, out, errOut)
 }
 
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
@@ -1536,4 +1571,17 @@ func installedStatus(installed bool) string {
 		return "installed"
 	}
 	return "missing"
+}
+
+func unsetAsdfReservedEnvVars() error {
+	// These are environment variables which are passed via env or exec.
+	// We strip these out to avoid any potential issues with recursive calls to asdf.
+	asdfManagedVars := []string{"ASDF_INSTALL_TYPE", "ASDF_INSTALL_VERSION", "ASDF_INSTALL_PATH"}
+	for _, v := range asdfManagedVars {
+		err := os.Unsetenv(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

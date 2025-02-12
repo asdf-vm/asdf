@@ -5,6 +5,7 @@ repository
 .vagrant
 keyrings
 /tmp
+.idea
 
 dist/
 

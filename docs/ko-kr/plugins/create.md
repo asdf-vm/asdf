@@ -1,8 +1,8 @@
 # 플러그인 생성하기
 
-플러그인은 언어 / 툴의 버전 관리를 지원하는 실행 가능한 스크립트들이 있는 
-Git 리포지토리입니다. 이 스크립트들은 asdf에 의해 특정 명령어들을 받아 
-`asdf list-all <name>`, `asdf install <name> <version>` 
+플러그인은 언어 / 툴의 버전 관리를 지원하는 실행 가능한 스크립트들이 있는
+Git 리포지토리입니다. 이 스크립트들은 asdf에 의해 특정 명령어들을 받아
+`asdf list-all <name>`, `asdf install <name> <version>`
 등의 지원을 위해 실행됩니다.
 
 ## 빠른 시작
@@ -13,10 +13,10 @@ Git 리포지토리입니다. 이 스크립트들은 asdf에 의해 특정 명�
    리포지토리 사용해서
    기본 스크립트가 구현된 (`asdf-<tool_name>` 이름으로) 플러그인 리포지토리
    [생성하기](https://github.com/asdf-vm/asdf-plugin-template/generate). 리포지토리가 생성되면,
-   그 리포지토리를 clone하고 템플릿을 
-   유기적으로 업데이트하여 
+   그 리포지토리를 clone하고 템플릿을
+   유기적으로 업데이트하여
    `setup.bash` 스크립트를 실행합니다.
-2. `asdf-<tool_name>`로 이룸 붙인 리포지토리를 시작하고 
+2. `asdf-<tool_name>`로 이룸 붙인 리포지토리를 시작하고
    아래 문서에 필수 스크립트들을 구현하세요.
 
 ### 플리그인 스크립트들을 위한 황금률
@@ -101,8 +101,8 @@ asdf core는 각 버전을 각각의 행에 출력하여, 일부 버전을 화�
 
 **정렬**
 
-웹사이트의 릴리스 페이지에서 버전을 가져오는 경우에는 
-이미 올바른 순서로 되어 있는 경우가 많기 때문에 제공된 순서대로 두는 것이 
+웹사이트의 릴리스 페이지에서 버전을 가져오는 경우에는
+이미 올바른 순서로 되어 있는 경우가 많기 때문에 제공된 순서대로 두는 것이
 좋습니다. 역순으로 되어 있는 경우 `tac`을 통해 해당 버전들을 바로 잡는것으로
 충분합니다.
 
@@ -171,7 +171,7 @@ asdf core는 각 버전을 각각의 행에 출력하여, 일부 버전을 화�
 - `asdf install <tool> [version]`
 - `asdf install <tool> latest[:version]`
 - `asdf install nodejs 18.0.0`: Node.js 버전 `18.0.0`의 소스 코드 또는 바이너리를 다운로드하고
-  `ASDF_DOWLOAD_PATH` 디렉토리에 저장. 그 다음 `bin/install` 스크립트를 실행.
+  `ASDF_DOWNLOAD_PATH` 디렉토리에 저장. 그 다음 `bin/install` 스크립트를 실행.
 
 **asdf core에서 호출 시그니처**
 
@@ -904,7 +904,7 @@ cmd="$cmd $releases_path"
 ### `GITHUB_API_TOKEN`
 
 `GITHUB_API_TOKEN`를 사용할 때는,
-오직 `public_repo` 액세스 권환으로 
+오직 `public_repo` 액세스 권환으로
 [새로운 개인 토큰](https://github.com/settings/tokens/new)을 생성합니다.
 
 다음으로 이 토큰을 CI pipeline 환경 변수에 추가하십시오.
@@ -933,5 +933,5 @@ asdf는 사용될 `git_url`을 정확히 결정하기 위해
 [Shortname 인덱스 리포지토리](https://github.com/asdf-vm/asdf-plugins)를 사용합니다.
 
 [Shortname 인덱스](https://github.com/asdf-vm/asdf-plugins)에
-설명서에 따라 플러그인을 
+설명서에 따라 플러그인을
 해당 리포지토리에 추가할 수 있습니다.

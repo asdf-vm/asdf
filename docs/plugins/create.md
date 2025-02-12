@@ -67,7 +67,7 @@ The full list of Environment Variables used throughout all scripts.
 | `ASDF_DOWNLOAD_PATH`     | the path to where the source code or binary was downloaded to by `bin/download`         |
 | `ASDF_PLUGIN_PATH`       | the path the plugin was installed                                                       |
 | `ASDF_PLUGIN_SOURCE_URL` | the source URL of the plugin                                                            |
-| `ASDF_PLUGIN_PREV_REF`   | prevous `git-ref` of the plugin repo                                                    |
+| `ASDF_PLUGIN_PREV_REF`   | previous `git-ref` of the plugin repo                                                    |
 | `ASDF_PLUGIN_POST_REF`   | updated `git-ref` of the plugin repo                                                    |
 | `ASDF_CMD_FILE`          | resolves to the full path of the file being sourced                                     |
 
@@ -267,7 +267,7 @@ Determine the latest stable version of a tool. If absent, the asdf core will `ta
 
 **Commands that invoke this script**
 
-- `asdf set <tool> latest`: set the global version of a tool to the latest stable version for that tool.
+- `asdf set <tool> latest`: set the version of a tool to the latest stable version for that tool.
 - `asdf install <tool> latest`: installs the latest version of a tool.
 - `asdf latest <tool> [<version>]`: outputs the latest version of a tool based on the optional filter.
 - `asdf latest --all`: outputs the latest version of all tools managed by asdf and whether they are installed.

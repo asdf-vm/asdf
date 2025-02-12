@@ -4,6 +4,7 @@ package shims
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path"
@@ -226,6 +227,11 @@ func RemoveAll(conf config.Config) error {
 	shimDir := filepath.Join(conf.DataDir, shimDirName)
 	entries, err := os.ReadDir(shimDir)
 	if err != nil {
+		if _, ok := err.(*fs.PathError); ok {
+			// if directory doesn't exist we can just return because no shims can
+			// possibly exist.
+			return nil
+		}
 		return err
 	}
 

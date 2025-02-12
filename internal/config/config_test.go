@@ -1,6 +1,8 @@
 package config
 
 import (
+	"runtime"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,6 +22,24 @@ func TestLoadConfigEnv(t *testing.T) {
 	assert.Nil(t, err, "Returned error when loading env for config")
 
 	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
+}
+
+func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
+	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
+		t.Setenv("ASDF_FORCE_PREPEND", "yes")
+
+		config, _ := loadConfigEnv()
+
+		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
+	})
+
+	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
+		t.Setenv("ASDF_FORCE_PREPEND", "no")
+
+		config, _ := loadConfigEnv()
+
+		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
+	})
 }
 
 func TestLoadSettings(t *testing.T) {
@@ -46,11 +66,31 @@ func TestLoadSettings(t *testing.T) {
 		assert.True(t, settings.PluginRepositoryLastCheckDuration.Never, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.Zero(t, settings.PluginRepositoryLastCheckDuration.Every, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.True(t, settings.DisablePluginShortNameRepository, "DisablePluginShortNameRepository field has wrong value")
+		assert.Equal(t, "5", settings.Concurrency, "Concurrency field has wrong value")
+	})
+
+	t.Run("ASDF_CONCURRENCY=99 takes precedence over asdfrc value", func(t *testing.T) {
+		t.Setenv("ASDF_CONCURRENCY", "99")
+		settings, err := loadSettings("testdata/asdfrc")
+		assert.Nil(t, err)
+
+		assert.True(t, settings.Loaded, "Expected Loaded field to be set to true")
+		assert.Equal(t, "99", settings.Concurrency, "Concurrency field has wrong value")
+	})
+
+	t.Run("ASDF_CONCURRENCY=auto takes precedence over asdfrc value", func(t *testing.T) {
+		expectedConcurrency := strconv.Itoa(runtime.NumCPU())
+		t.Setenv("ASDF_CONCURRENCY", "auto")
+		settings, err := loadSettings("testdata/asdfrc")
+		assert.Nil(t, err)
+
+		assert.True(t, settings.Loaded, "Expected Loaded field to be set to true")
+		assert.Equal(t, expectedConcurrency, settings.Concurrency, "Concurrency field has wrong value")
 	})
 
 	t.Run("When given path to empty file returns settings struct with defaults", func(t *testing.T) {
+		expectedConcurrency := strconv.Itoa(runtime.NumCPU())
 		settings, err := loadSettings("testdata/empty-asdfrc")
-
 		assert.Nil(t, err)
 
 		assert.False(t, settings.LegacyVersionFile, "LegacyVersionFile field has wrong value")
@@ -58,6 +98,7 @@ func TestLoadSettings(t *testing.T) {
 		assert.False(t, settings.PluginRepositoryLastCheckDuration.Never, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.Equal(t, settings.PluginRepositoryLastCheckDuration.Every, 60, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.False(t, settings.DisablePluginShortNameRepository, "DisablePluginShortNameRepository field has wrong value")
+		assert.Equal(t, expectedConcurrency, settings.Concurrency, "Concurrency field has wrong value")
 	})
 }
 
@@ -94,7 +135,7 @@ func TestConfigMethods(t *testing.T) {
 	})
 
 	t.Run("When file does not exist returns settings struct with defaults", func(t *testing.T) {
-		config := Config{ConfigFile: "non-existant"}
+		config := Config{ConfigFile: "non-existent"}
 
 		legacy, err := config.LegacyVersionFile()
 		assert.Nil(t, err)

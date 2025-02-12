@@ -116,3 +116,22 @@ EOF
   [ "$status" -eq 0 ]
   [ "$output" = "$expected" ]
 }
+
+@test "asdf execute plugin default command unsets ASDF_INSTALL_TYPE ASDF_INSTALL_VERSION and ASDF_INSTALL_PATH env variables" {
+  export ASDF_INSTALL_VERSION=1.2.3
+  export ASDF_INSTALL_TYPE=version
+  export ASDF_INSTALL_PATH=/somewhere
+
+  plugin_path="$(get_plugin_path dummy)"
+
+  # this plugin defines a new `asdf dummy` command
+  cat <<'EOF' >"$plugin_path/lib/commands/command"
+#!/usr/bin/env bash
+/usr/bin/env
+EOF
+  chmod +x "$plugin_path/lib/commands/command"
+
+  run asdf cmd dummy
+  [ "$status" -eq 0 ]
+  [ "0" -eq "$(echo "$output" | grep -c "^ASDF_INSTALL_")" ]
+}
