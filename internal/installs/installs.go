@@ -4,6 +4,7 @@
 package installs
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -13,6 +14,23 @@ import (
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/toolversions"
 )
+
+// NewVersionAlreadyInstalled generates a new NewVersionAlreadyInstalled error instance for
+// a particular install version
+func NewVersionAlreadyInstalled(plugin plugins.Plugin, version toolversions.Version) VersionAlreadyInstalled {
+	return VersionAlreadyInstalled{plugin: plugin, version: version}
+}
+
+// VersionAlreadyInstalled is an error returned when the specified version of a tool is already
+// installed
+type VersionAlreadyInstalled struct {
+	plugin  plugins.Plugin
+	version toolversions.Version
+}
+
+func (e VersionAlreadyInstalled) Error() string {
+	return fmt.Sprintf("Version %s of %s is already installed.", e.version.Value, e.plugin.Name)
+}
 
 // Installed returns a slice of all installed versions for a given plugin
 func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, err error) {

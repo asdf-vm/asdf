@@ -143,7 +143,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	installDir := installs.InstallPath(conf, plugin, version)
 
 	if installs.IsInstalled(conf, plugin, version) {
-		return fmt.Errorf("version %s of %s is already installed", version, plugin.Name)
+		return installs.NewVersionAlreadyInstalled(plugin, version)
 	}
 
 	env := map[string]string{
