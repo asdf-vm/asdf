@@ -65,6 +65,16 @@ export ASDF_DATA_DIR="/home/myuser/.asdf"
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
 ```
 
+#### 4. Regenerate Shims
+
+Verify that `asdf` command in your shell session is version 0.16.0+ by running
+`asdf --help`. If you still see an older version you will need to start a new
+shell session.
+
+Once you've verified the `asdf` command is the new version run `asdf reshim` to
+regenerate all shims. This is necessary as the old shims may still reference
+the old Bash version.
+
 ### Testing
 
 
