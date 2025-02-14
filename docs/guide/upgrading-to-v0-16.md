@@ -194,7 +194,7 @@ Now:
 ```
 $ asdf cmd foo         # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command`
 $ asdf cmd foo bar     # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bar`
-$ asdf cmd foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command bat man`
+$ asdf cmd foo bat man # same as running `$ASDF_DATA_DIR/plugins/foo/lib/commands/command-bat man`
 ```
 
 ### Executables Shims Resolve to Must Runnable by `syscall.Exec`
