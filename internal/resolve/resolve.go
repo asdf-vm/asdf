@@ -56,6 +56,15 @@ func Version(conf config.Config, plugin plugins.Plugin, directory string) (versi
 }
 
 func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
+	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
+
+	if _, err = os.Stat(filepath); err == nil {
+		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
+		if found || err != nil {
+			return ToolVersions{Versions: versions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
+		}
+	}
+
 	legacyFiles, err := conf.LegacyVersionFile()
 	if err != nil {
 		return versions, found, err
@@ -66,15 +75,6 @@ func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory stri
 
 		if found || err != nil {
 			return versions, found, err
-		}
-	}
-
-	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
-
-	if _, err = os.Stat(filepath); err == nil {
-		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
-		if found || err != nil {
-			return ToolVersions{Versions: versions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
 		}
 	}
 
