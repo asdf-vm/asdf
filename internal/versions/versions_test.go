@@ -122,6 +122,30 @@ func TestInstall(t *testing.T) {
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
 	})
+
+	t.Run("if multiple versions are defined and installed returns an error", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		currentDir := t.TempDir()
+
+		versions := "1.0.0 2.0.0"
+		// write a version file
+		data := []byte(fmt.Sprintf("%s %s", plugin.Name, versions))
+		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		assert.NoError(t, err)
+
+		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		assert.NoError(t, err)
+
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
+
+		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		assert.Error(t, err)
+		// Expect a VersionAlreadyInstalledError
+		var eerr VersionAlreadyInstalledError
+		assert.ErrorAs(t, err, &eerr)
+	})
 }
 
 func TestInstallVersion(t *testing.T) {
@@ -204,7 +228,10 @@ func TestInstallOneVersion(t *testing.T) {
 
 		// Install a second time
 		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
-		assert.NotNil(t, err)
+		assert.Error(t, err)
+		// Expect a VersionAlreadyInstalledError
+		var eerr VersionAlreadyInstalledError
+		assert.ErrorAs(t, err, &eerr)
 	})
 
 	t.Run("creates download directory", func(t *testing.T) {
