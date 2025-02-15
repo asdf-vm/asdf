@@ -521,6 +521,8 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		"PATH":                 setPath(execPaths),
 	}
 
+	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
@@ -579,14 +581,14 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		"PATH":                 setPath(execPaths),
 	}
 
+	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
 			return err
 		}
 	}
-
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
 
 	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
 	if err != nil {
