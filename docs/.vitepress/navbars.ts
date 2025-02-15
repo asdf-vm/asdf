@@ -3,7 +3,7 @@ import fs from "fs";
 import process from "process";
 
 export const getVersion = () => {
-  const versionFilepath = path.join(__dirname, "../../version.txt");
+  const versionFilepath = path.join(__dirname, "../version.txt");
   try {
     const version = fs.readFileSync(versionFilepath, "utf8").trim();
     console.log(`Found version ${version} from ${versionFilepath}`);
