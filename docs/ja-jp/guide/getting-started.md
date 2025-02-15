@@ -1,362 +1,321 @@
 # はじめよう
 
-`asdf`のインストールには次の手順が必要です:
+## 1. asdfのインストール
 
-1. 依存関係のインストール
-2. `asdf`コアのダウンロード
-3. `asdf`のインストール
-4. 管理したいツール/ランタイムごとにプラグインをインストール
-5. ツール/ランタイムの特定バージョンをインストール
-6. `.tool-versions`ファイルで、グローバルまたはプロジェクトのバージョンをセット
+asdfはいくつかの方法でインストールできます:
 
-## 1. 依存関係のインストール
+::: details パッケージマネージャーを使用 - **推奨**
 
-asdfの動作には`git`および`curl`が必要です。以下の表は、 _あなたが使用している_ パッケージマネージャで実行するコマンドの _一部例_ です(いくつかのツールは、後の手順で自動的にインストールされます)。
-
-| OS    | パッケージマネージャ | コマンド                           |
-| ----- | -------------------- | ---------------------------------- |
-| linux | Aptitude             | `apt install curl git`             |
-| linux | DNF                  | `dnf install curl git`             |
-| linux | Pacman               | `pacman -S curl git`               |
-| linux | Zypper               | `zypper install curl git`          |
-| macOS | Homebrew             | `brew install coreutils curl git`  |
-| macOS | Spack                | `spack install coreutils curl git` |
-
-::: tip 備考
-
-お使いのシステムの構成によっては、接頭に`sudo`が必要となる場合もあります。
+| パッケージマネージャー   | コマンド                                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homebrew | `brew install asdf`                                                                                                                                                 |
+| Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` または お好みの [AUR ヘルパー](https://wiki.archlinux.jp/index.php/AUR_%E3%83%98%E3%83%AB%E3%83%91%E3%83%BC) |
 
 :::
 
-## 2. asdfのダウンロード
+:::: details コンパイル済みバイナリをダウンロード - **かんたん**
 
-### 公式ダウンロード
+<!--@include: ./parts/install-dependencies.md-->
+
+##### asdfのインストール
+
+1. https://github.com/asdf-vm/asdf/releases から、お使いのオペレーティングシステム/アーキテクチャの組み合わせに適したアーカイブをダウンロード。
+2. アーカイブ内の`asdf`バイナリを`$PATH`のディレクトリに解凍。
+3. `type -a asdf`を実行して、シェルの`$PATH`に`asdf`があることを確認します。`asdf`のバイナリを置いたディレクトリが`type`の出力の1行目に表示されるはずです。うまくいかない場合は、2の手順が正しく行えていない可能性があります。
+
+::::
+
+:::: details `go install` を使用
+
+<!--@include: ./parts/install-dependencies.md-->
+
+##### asdfのインストール
 
 <!-- x-release-please-start-version -->
-
-
-```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-
-```
-
+1. [Goをインストールする](https://go.dev/doc/install)
+2. コマンドを実行: `go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.0`
 <!-- x-release-please-end -->
 
-### コミュニティがサポートするダウンロード方法
+::::
 
-理由がない限り、`git`コマンドを使用した公式ダウンロードの手順を使用することを強く推奨します。
+:::: details ソースコードからビルドする
 
-| 方法     | コマンド                                                                                                                                                         |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homebrew | `brew install asdf`                                                                                                                                              |
-| Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` または好みの[AURヘルパー](https://wiki.archlinux.jp/index.php/AUR_ヘルパー)を使用 |
+<!--@include: ./parts/install-dependencies.md-->
 
-## 3. asdfのインストール
+##### asdfのインストール
 
-あなたが使用しているシェル、OS、およびインストール方法によって、ここでの設定方法が変わります。最も適したものを選択してください。
+<!-- x-release-please-start-version -->
+1. asdfリポジトリをクローン:
+  ```shell
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.16.0
+  ```
+<!-- x-release-please-end -->
+2. `make`を実行。
+3. `asdf`バイナリを`$PATH`上のディレクトリに解凍。
+4. `type -a asdf`を実行して、シェルの`$PATH`に`asdf`があることを確認します。`asdf`のバイナリを置いたディレクトリが`type`の出力の1行目に表示されるはずです。うまくいかない場合は、3の手順が正しく行えていない可能性があります。
 
-**masOSユーザの方は、この節の最後にある`path_helper`に関する警告を必ず参照してください。**
+::::
 
-::: details Bash & Git
+## 2. asdfの設定
 
-`~/.bashrc`に下記の行を追記します:
+::: tip 備考
+ほとんどのユーザーは、asdfが管理するデータ(plugin, install, shim data)の保存先を変更する必要は**ありません**。ただし、デフォルトの`$HOME/.asdf`以外を指定したい場合は変更することができます。別のディレクトリを指定するには、シェルのRCファイルで`ASDF_DATA_DIR`変数をエクスポートしてください。
+:::
 
+シェル、OS、インストール方法には様々な組み合わせがあり、その全てがここでの設定に影響します。あなたのシステムに最も適したものを選んでください。
+
+**masOSユーザーはこの節の最後にある`path_helper`に関する警告を必ず参照してください。**
+
+::: details Bash
+
+**macOS Catalina以降**: デフォルトのシェルが**ZSH**に変更されました。Bashに変更していない限り、ZSHの手順を参照してください。
+
+**Pacman**: コマンド補完が必要な場合は、[`bash-completion`](https://wiki.archlinux.jp/index.php/Bash#.E3.82.88.E3.81.8F.E4.BD.BF.E3.82.8F.E3.82.8C.E3.82.8B.E3.83.97.E3.83.AD.E3.82.B0.E3.83.A9.E3.83.A0.E3.81.A8.E3.82.AA.E3.83.97.E3.82.B7.E3.83.A7.E3.83.B3)をインストールしてください。
+
+##### shimsディレクトリをパスに追加する(必須)
+
+`~/.bash_profile`に以下を追記します:
 ```shell
-. "$HOME/.asdf/asdf.sh"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-コマンド補完が必要な場合は、`.bashrc`に下記の行を追記します:
+###### カスタムデータディレクトリの設定(オプション)
+
+`~/.bash_profile`に以下を追記します(先述したパス追加よりも上の行に書くこと):
 
 ```shell
-. "$HOME/.asdf/completions/asdf.bash"
+export ASDF_DATA_DIR="/your/custom/data/dir"
+```
+
+##### シェルのコマンド補完設定(オプション)
+
+`.bashrc`に以下を追記します:
+
+```shell
+. <(asdf completion bash)
 ```
 
 :::
 
-::: details Bash & Git (macOS)
+::: details Fish
 
-**macOS Catalina以降**を使用している場合、デフォルトのシェルは**ZSH**です。Bashに変更していない限り、ZSHの手順を参照してください。
+##### shimsディレクトリをパスに追加する(必須)
 
-`~/.bash_profile`に下記の行を追記します:
+`~/.config/fish/config.fish`に以下を追記します:
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+# ASDF configuration code
+if test -z $ASDF_DATA_DIR
+    set _asdf_shims "$HOME/.asdf/shims"
+else
+    set _asdf_shims "$ASDF_DATA_DIR/shims"
+end
+
+# Do not use fish_add_path (added in Fish 3.2) because it
+# potentially changes the order of items in PATH
+if not contains $_asdf_shims $PATH
+    set -gx --prepend PATH $_asdf_shims
+end
+set --erase _asdf_shims
 ```
 
-コマンド補完が必要な場合は、`.bash_profile`に下記の行を追記します:
+###### カスタムデータディレクトリの設定(オプション)
+
+**Pacman**: コマンド補完はAURパッケージのインストール時に自動的に設定されます。
+
+`~/.config/fish/config.fish`に以下を追記します(先述したパス追加よりも上の行に書くこと):
 
 ```shell
-. "$HOME/.asdf/completions/asdf.bash"
+set -gx --prepend ASDF_DATA_DIR "/your/custom/data/dir"
 ```
 
-:::
+##### シェルのコマンド補完設定(オプション)
 
-::: details Bash & Homebrew
-
-下記コマンドで、`~/.bashrc`に`asdf.sh`を追加します:
+コマンド補完は以下を実行して手動で設定する必要があります:
 
 ```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
-```
-
-コマンド補完が必要な場合は、[Homebrewのガイドに従って設定を完了させる](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash)か、下記コマンドを実行します:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
-```
-
-:::
-
-::: details Bash & Homebrew (macOS)
-
-**macOS Catalina以降**を使用している場合、デフォルトのシェルは**ZSH**です。Bashに変更していない限り、ZSHの手順を参照してください。
-
-下記コマンドで、`~/.bash_profile`に`asdf.sh`を追加します:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
-```
-
-コマンド補完が必要な場合は、[Homebrewのガイドに従って設定を完了させる](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash)か、下記コマンドを実行します:
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
+$ asdf completion fish > ~/.config/fish/completions/asdf.fish
 ```
 
 :::
 
-::: details Bash & Pacman
+::: details Elvish
 
-`~/.bashrc`に下記の行を追記します:
+##### shimsディレクトリをパスに追加する(必須)
 
-```shell
-. /opt/asdf-vm/asdf.sh
-```
-
-コマンド補完が必要な場合は、[`bash-completion`](https://wiki.archlinux.jp/index.php/Bash#プログラムとオプションを追加)をインストールします。
-:::
-
-::: details Fish & Git
-
-`~/.config/fish/config.fish`に下記の行を追記します:
+`~/.config/elvish/rc.elv`に以下を追記します:
 
 ```shell
-source ~/.asdf/asdf.fish
+var asdf_data_dir = ~'/.asdf'
+if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
+  set asdf_data_dir = $E:ASDF_DATA_DIR
+}
+
+if (not (has-value $paths $asdf_data_dir'/shims')) {
+  set paths = [$path $@paths]
+}
 ```
 
-コマンド補完が必要な場合は、下記コマンドを実行します:
+###### カスタムデータディレクトリの設定(オプション)
+
+カスタムデータディレクトリを設定するには、上記のスニペットの以下の行を変更してください:
+
+```diff
+-var asdf_data_dir = ~'/.asdf'
++var asdf_data_dir = '/your/custom/data/dir'
+```
+
+##### シェルのコマンド補完設定(オプション)
 
 ```shell
-mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+$ asdf completion elvish >> ~/.config/elvish/rc.elv
+$ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
-
-:::
-
-::: details Fish & Homebrew
-
-下記コマンドで、`~/.config/fish/config.fish`に`asdf.sh`を追加します:
-
-```shell
-echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
-```
-
-コマンド補完は、[Fish shellのHomebrewが担います](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish)。親切ですね!
-:::
-
-::: details Fish & Pacman
-
-`~/.config/fish/config.fish`に下記の行を追記します:
-
-```shell
-source /opt/asdf-vm/asdf.fish
-```
-
-コマンド補完は、AURパッケージのインストール時に自動的に設定されます。
-:::
-
-::: details Elvish & Git
-
-下記コマンドで、`~/.config/elvish/rc.elv`に`asdf.elv`を追加します:
-
-```shell
-mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
-```
-
-コマンド補完は自動的に設定されます。
 
 :::
 
-::: details Elvish & Homebrew
+::: details ZSH
 
-下記コマンドで、`~/.config/elvish/rc.elv`に`asdf.elv`を追加します:
+**Pacman**: コマンド補完はZSHから使いやすい場所に配置されますが、[自動補完を使うにはZSHの設定で有効化する必要があります](https://wiki.archlinux.jp/index.php/Zsh#.E3.82.B3.E3.83.9E.E3.83.B3.E3.83.89.E8.A3.9C.E5.AE.8C)。
 
-```shell
-mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
-```
+##### shimsディレクトリをパスに追加する(必須)
 
-コマンド補完は自動的に設定されます。
-:::
-
-::: details Elvish & Pacman
-
-下記コマンドで、`~/.config/elvish/rc.elv`に`asdf.elv`を追加します:
+`~/.zshrc`に以下を追記します:
 
 ```shell
-mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-コマンド補完は自動的に設定されます。
-:::
+###### カスタムデータディレクトリの設定(オプション)
 
-::: details ZSH & Git
-
-`~/.zshrc`に下記の行を追記します:
+`~/.zshrc`に以下を追記します(先述したパス追加よりも上の行に書くこと):
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
-**または**、[asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf)のようなZSHフレームワークプラグインを使用して、このスクリプトをsourceし、コマンド補完をセットアップします。
+##### シェルのコマンド補完設定(オプション)
 
-コマンド補完は、ZSHフレームワークの`asdf`プラグインで設定するか、`~/.zshrc`に下記の行を追記することで設定できます:
+コマンド補完はZSHフレームワークの`asdf`プラグイン（[asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf)のようなもの）を使用するか、以下の手順で設定します:
+
+```shell
+$ mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+$ asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
+```
+
+その場合は`.zshrc`に以下を追記します:
 
 ```shell
 # append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 # initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
 ```
 
-- `compinit`のセットアップをカスタマイズしている場合は、`asdf.sh`ソース以下に`compinit`がくるようにしてください。
-- ZSHフレームワークで`compinit`のセットアップをカスタマイズしている場合は、フレームワークソース以下に`compinit`がくるようにしてください。
+**備考**
 
-**警告**
+ZSHフレームワークでカスタムされた`compinit`セットアップを使っている場合は、`compinit`がフレームワークのソース配下にあることを確認してください。
 
-ZSHフレームワークを使用している場合、新しいZSHコマンド補完を使用するには、`fpath`経由で、関連する`asdf`プラグインの更新が必要となることがあります。Oh-My-ZSH asdfプラグインは、[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837)でご覧いただくと分かるとおり、まだ更新されていません。
+コマンド補完はZSHフレームワークの`asdf`で設定するか、[Homebrewの指示に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)する必要があります。ZSHフレームワークを使っている場合、asdf用のプラグインを更新して`fpath`経由で新しいZSH補完機能を正しく使えるようにする必要があるかもしれません。なお、Oh-My-ZSH asdfプラグインはまだ対応していません。[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) を参照してください。
 :::
 
-::: details ZSH & Homebrew
+::: details PowerShell Core
 
-下記コマンドで、`~/.zshrc`に`asdf.sh`を追加します:
+##### shimsディレクトリをパスに追加する(必須)
 
+`~/.config/powershell/profile.ps1`に以下を追記します:
 ```shell
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+# Determine the location of the shims directory
+if ($null -eq $ASDF_DATA_DIR -or $ASDF_DATA_DIR -eq '') {
+  $_asdf_shims = "${env:HOME}/.asdf/shims"
+}
+else {
+  $_asdf_shims = "$ASDF_DATA_DIR/shims"
+}
+
+# Then add it to path
+$env:PATH = "${_asdf_shims}:${env:PATH}"
 ```
 
-**OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
+###### カスタムデータディレクトリの設定(オプション)
 
-コマンド補完は、ZSHフレームワーク`asdf`によって設定されるか、[Homebrewの説明に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)必要があります。ZSHフレームワークを使用している場合、新しいZSHコマンド補完を使用するには、`fpath`経由で、関連する`asdf`プラグインの更新が必要となることがあります。Oh-My-ZSH asdfプラグインは、[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837)でご覧いただくと分かるとおり、まだ更新されていません。
-:::
-
-::: details ZSH & Pacman
-
-`~/.zshrc`に下記の行を追記します:
+`~/.config/powershell/profile.ps1`に以下を追記します(先述したスニペットよりも上の行に書くこと):
 
 ```shell
-. /opt/asdf-vm/asdf.sh
+$env:ASDF_DATA_DIR = "/your/custom/data/dir"
 ```
 
-コマンド補完は、ZSHに適した場所に配置されますが、[オートコンプリートを使用するようにZSHを設定する必要があります](https://wiki.archlinux.jp/index.php/Zsh#.E3.82.B3.E3.83.9E.E3.83.B3.E3.83.89.E8.A3.9C.E5.AE.8C)。
+PowerShellはコマンド補完に対応していません。
+
 :::
 
-::: details PowerShell Core & Git
+::: details Nushell
 
-`~/.config/powershell/profile.ps1`に下記の行を追記します:
+##### shimsディレクトリをパスに追加する(必須)
+
+`~/.config/nushell/config.nu`に以下を追記します:
 
 ```shell
-. "$HOME/.asdf/asdf.ps1"
+let shims_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  } | path join 'shims'
+)
+$env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
 ```
 
-:::
+###### カスタムデータディレクトリの設定(オプション)
 
-::: details PowerShell Core & Homebrew
-
-下記コマンドで、`~/.config/powershell/profile.ps1`に`asdf.sh`を追加します:
+`~/.config/nushell/config.nu`に以下を追記します(先述したパス追加よりも上の行に書くこと)：
 
 ```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+$env.ASDF_DATA_DIR = "/your/custom/data/dir"
 ```
 
-:::
-
-::: details PowerShell Core & Pacman
-
-`~/.config/powershell/profile.ps1`に下記の行を追記します:
+##### シェルのコマンド補完設定(オプション)
 
 ```shell
-. /opt/asdf-vm/asdf.ps1
+# If you've not customized the asdf data directory:
+$ mkdir $"($env.HOME)/.asdf/completions"
+$ asdf completion nushell | save $"($env.HOME)/.asdf/completions/nushell.nu"
+
+# If you have customized the data directory by setting ASDF_DATA_DIR:
+$ mkdir $"($env.ASDF_DATA_DIR)/completions"
+$ asdf completion nushell | save $"($env.ASDF_DATA_DIR)/completions/nushell.nu"
 ```
 
-:::
-
-::: details Nushell & Git
-
-下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
+次に、`~/.config/nushell/config.nu`に以下を追記します:
 
 ```shell
-"\n$env.ASDF_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
-```
-
-コマンド補完は自動的に設定されます。
-:::
-
-::: details Nushell & Homebrew
-
-下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
-
-```shell
-"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
-```
-
-コマンド補完は自動的に設定されます。
-:::
-
-::: details Nushell & Pacman
-
-下記コマンドで、`~/.config/nushell/config.nu`に`asdf.nu`を追加します:
-
-```shell
-"\n$env.ASDF_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
-```
-
-コマンド補完は自動的に設定されます。
-:::
-
-::: details POSIX Shell & Git
-
-`~/.profile`に下記の行を追記します:
-
-```shell
-export ASDF_DIR="$HOME/.asdf"
-. "$HOME/.asdf/asdf.sh"
+let asdf_data_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  }
+)
+. "$asdf_data_dir/completions/nushell.nu"
 ```
 
 :::
 
-::: details POSIX Shell & Homebrew
+::: details POSIX Shell
 
-下記コマンドで、`~/.profile`に`asdf.sh`を追加します:
+##### shimsディレクトリをパスに追加する(必須)
 
+`~/.profile`に以下を追記します:
 ```shell
-echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-:::
+###### カスタムデータディレクトリの設定(オプション)
 
-::: details POSIX Shell & Pacman
-
-`~/.profile`に下記の行を追記します:
+`~/.profile`に以下を追記します(先述したパス追加よりも上の行に書くこと):
 
 ```shell
-export ASDF_DIR="/opt/asdf-vm"
-. /opt/asdf-vm/asdf.sh
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
 :::
@@ -364,14 +323,15 @@ export ASDF_DIR="/opt/asdf-vm"
 `asdf`のスクリプトは、`$PATH`を設定した**あと**、かつ、使用中のフレームワーク(oh-my-zsh など)を呼び出した**あと**に記述する必要があります。
 
 ::: warning 警告
-macOSでは、BashまたはZSHシェルを起動すると、自動的に`path_helper`というユーティリティが呼び出されます。`path_helper`は`PATH`(および`MANPATH`)内の項目の順番を並び替えることができるため、特定の順序を必要とするツールの動作に、一貫性が無くなってしまいます。これを回避するため、macOSで`asdf`を利用するときは、強制的に`PATH`エントリの先頭に追加する(優先度を一番高くする)ようにしてください。これは、`ASDF_FORCE_PREPEND`環境変数で制御できます。
+macOSでは、BashまたはZSHシェルを起動すると、自動的に`path_helper`というユーティリティが呼び出されます。`path_helper`は`PATH`(および`MANPATH`)内の項目の順番を並び替えることができるため、特定の順序を必要とするツールの動作に一貫性が無くなってしまいます。これを回避するため、macOSで`asdf`を利用するときは強制的に`PATH`エントリの先頭に追加する(優先度を一番高くする)ようにしてください。これは、`ASDF_FORCE_PREPEND`環境変数で制御できます。
 :::
 
 `PATH`の変更を反映するために、シェルを再起動してください。たいていの場合、ターミナルのタブを新たに開けばOKです。
 
-## コアのインストールが完了!
 
-これで、`asdf`のコアのインストールは完了です:tada:
+## コアのインストールが完了！
+
+これで、`asdf`のコアのインストールは完了です :tada:
 
 しかし、`asdf`が役に立つようになるのは、**プラグイン**をインストールしてから**ツール**をインストールし、**バージョン**を管理するようになってからです。引き続き、ガイドを進めていきましょう。
 
@@ -421,15 +381,15 @@ asdf install nodejs latest
 ツールで指定されたバージョンが見つからない場合、**エラー**が発生します。`asdf current`コマンドを実行すると、カレントディレクトリにおいてツールのバージョンを解決可能か確認できるため、どのツールが実行に失敗するか検証することができます。
 :::
 
-### グローバル
+asdfはまずカレントディレクトリにある `.tool-versions` ファイルを探し、見つからなければ親ディレクトリを参照し `.tool-versions` ファイルが見つかるまでファイルツリーの上位階層を探索します。`.tool-versions`ファイルが見つからない場合、バージョン解決処理は失敗し、エラーが表示されます。
 
-グローバルのデフォルト設定は、`$HOME/.tool-versions`で管理されます。グローバルのバージョンをセットするには、次のコマンドを実行します:
+すべてのディレクトリに適用されるデフォルトのバージョンを設定したい場合、`$HOME/.tool-versions`にバージョンを設定できます。特定のディレクトリで別のバージョンを設定しない限り、ホームディレクトリ以下のすべてのディレクトリに同じバージョンが設定されるようになります。
 
 ```shell
-asdf global nodejs latest
+asdf set -u nodejs 16.5.0
 ```
 
-すると、`$HOME/.tool-versions`内には次のように書き込まれます:
+`$HOME/.tool-versions`は次のようになります:
 
 ```
 nodejs 16.5.0
@@ -437,15 +397,13 @@ nodejs 16.5.0
 
 一部のOSでは、`python`のように、`asdf`ではなくシステムが管理するツールが既にインストールされていることがあります。それを使用する場合、`asdf`に対して、バージョン管理をシステムに委任するように指示する必要があります。詳しくは、[バージョンのリファレンス](/ja-jp/manage/versions.md)をご覧ください。
 
-### ローカル
-
-ローカルのバージョン設定は、`$PWD/.tool-versions`ファイル(カレントディレクトリ内)で定義されます。たいていの場合は、プロジェクトのGitリポジトリ内となるでしょう。対象となるディレクトリで、下記コマンドを実行します:
+asdfが最初にバージョンを探す場所は、現在の作業ディレクトリ（`$PWD/.tool-versions`）です。これはプロジェクトのソースコードやGitリポジトリを含むディレクトリです。目的のディレクトリで`asdf set`を実行すると、バージョンを設定することができます:
 
 ```shell
-asdf local nodejs latest
+asdf set nodejs 16.5.0
 ```
 
-すると、`$PWD/.tool-versions`内には次のように書き込まれます:
+`$PWD/.tool-versions`は次のようになります:
 
 ```
 nodejs 16.5.0
@@ -463,7 +421,7 @@ legacy_version_file = yes
 
 構成設定でのその他のオプションについて詳しくは、[構成設定](/ja-jp/manage/configuration.md)のリファレンスをご覧ください。
 
-## 入門完了!
+## 入門完了！
 
 以上で、`asdf`の入門は完了です:tada: ここまでで、プロジェクトでの`nodejs`のバージョン管理ができるようになりました。プロジェクトで使用するツールごとに、同様の手順を実施してください!
 
