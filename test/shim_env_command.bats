@@ -47,6 +47,21 @@ teardown() {
   echo "$output" | grep 'FOO=bar'
 }
 
+@test "asdf env should pass through any already defined environment variables to a shim" {
+  echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
+  export MYTESTENV=exec-env-pass-through
+  run asdf install
+
+  echo '#!/usr/bin/env bash
+  export FOO=bar' >"$ASDF_DIR/plugins/dummy/bin/exec-env"
+  chmod +x "$ASDF_DIR/plugins/dummy/bin/exec-env"
+
+  run asdf env dummy
+  [ "$status" -eq 0 ]
+  echo "$output" | grep 'FOO=bar'
+  echo "$output" | grep 'MYTESTENV=exec-env-pass-through'
+}
+
 @test "asdf env should print error when plugin version lacks the specified executable" {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
