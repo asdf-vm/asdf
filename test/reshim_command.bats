@@ -15,6 +15,12 @@ teardown() {
   clean_asdf_dir
 }
 
+@test "reshim should print error when plugin with name does not exist" {
+  run asdf reshim non-existent 1.0
+  [ "$status" -eq 1 ]
+  [ "$output" = "No such plugin: non-existent" ]
+}
+
 @test "reshim should allow prefixes of other versions" {
   run asdf install dummy 1.0.1
   run asdf install dummy 1.0
