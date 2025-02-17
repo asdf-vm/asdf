@@ -59,7 +59,7 @@ type VersionAlreadyInstalledError struct {
 }
 
 func (e VersionAlreadyInstalledError) Error() string {
-	return fmt.Sprintf("version %s of %s is already installed", e.version, e.toolName)
+	return fmt.Sprintf("version %s of %s is already installed", e.version.Value, e.toolName)
 }
 
 // InstallAll installs all specified versions of every tool for the current
