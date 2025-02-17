@@ -232,6 +232,8 @@ const ja_jp = [
     items: [
       { text: "asdfってなに?", link: "/ja-jp/guide/introduction" },
       { text: "はじめよう", link: "/ja-jp/guide/getting-started" },
+      { text: "はじめよう (0.16.0以前)", link: "/ja-jp/guide/getting-started-legacy" },
+      { text: "0.16.0にアップグレードする", link: "/ja-jp/guide/upgrading-to-v0-16" },
     ],
   },
   {
