@@ -321,3 +321,60 @@ EOM
 #  [ "$status" -eq 0 ]
 #  [[ "$output" == *'asdf: Warn:'*'not be preserved'* ]]
 #}
+
+@test "install command without arguments installs version a second time without errors" {
+  cd "$PROJECT_DIR"
+  echo -n 'dummy 1.2.0' >".tool-versions"
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
+
+  run asdf install
+  [ "$status" -eq 0 ]
+}
+
+@test "install command with tool installs version a second time without errors" {
+  cd "$PROJECT_DIR"
+  echo -n 'dummy 1.2.0' >".tool-versions"
+  run asdf install dummy
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.2.0/version")" = "1.2.0" ]
+
+  run asdf install dummy
+  [ "$status" -eq 0 ]
+}
+
+@test "install command with tool and version installs version a second time without errors" {
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
+
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+}
+
+@test "install command with tool and different version installs version a second time without errors" {
+  cd "$PROJECT_DIR"
+  echo -n 'dummy 1.0.0 1.1.0' >".tool-versions"
+
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
+
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.1.0/version")" = "1.1.0" ]
+}
+
+@test "install command with two tools installs tool version a second time without errors" {
+  cd "$PROJECT_DIR"
+  printf "dummy 1.0.0\nlegacy-dummy 1.0.0" >"$PROJECT_DIR/.tool-versions"
+
+  run asdf install dummy 1.0.0
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
+
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$(cat "$ASDF_DIR/installs/legacy-dummy/1.0.0/version")" = "1.0.0" ]
+}
