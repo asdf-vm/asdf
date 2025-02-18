@@ -485,6 +485,7 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
+	conf.Home = testDataDir
 
 	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)
