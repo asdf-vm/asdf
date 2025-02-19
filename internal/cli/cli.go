@@ -678,7 +678,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
-					fmt.Printf("%s %s", toolVersion.Name, version)
+					fmt.Printf("%s %s\n", toolVersion.Name, version)
 				}
 			}
 		}
