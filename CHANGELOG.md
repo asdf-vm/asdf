@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.16.3](https://github.com/asdf-vm/asdf/compare/v0.16.2...v0.16.3) (2025-02-17)
+
+
+### Bug Fixes
+
+* add missing version command ([#1931](https://github.com/asdf-vm/asdf/issues/1931)) ([5339c41](https://github.com/asdf-vm/asdf/commit/5339c413d2fd77e971ed9b7621f0454b96fe3a0d))
+* correct formatting of version in "already installed" error message ([df5e283](https://github.com/asdf-vm/asdf/commit/df5e283fb74a63faecd9ab234af1f0c24f1afdcd))
+* correct typo in `Upgrading to 0.16.0` documentation ([#1938](https://github.com/asdf-vm/asdf/issues/1938)) ([7e8e5f6](https://github.com/asdf-vm/asdf/commit/7e8e5f60d13b0672e65982e21d7dc864246be8eb))
+* don't error if version already installed ([06f8990](https://github.com/asdf-vm/asdf/commit/06f89907b2002db0e53b9bb2acd8ad11935f051c))
+* pass environment variables through to `exec-env` callback ([9e6b559](https://github.com/asdf-vm/asdf/commit/9e6b5594080acd4208427505d9018123f1fb1f36))
+* repair invalid fish shell completion code ([#1936](https://github.com/asdf-vm/asdf/issues/1936)) ([8388f99](https://github.com/asdf-vm/asdf/commit/8388f992e9be7f21313d8c8e363b43e82e44f207))
+* return no error from shims.RemoveAll when shims dir missing ([#1967](https://github.com/asdf-vm/asdf/issues/1967)) ([45c31c9](https://github.com/asdf-vm/asdf/commit/45c31c9761f62a45896f6e45707a60fd0c1f4111))
+
 ## [0.16.2](https://github.com/asdf-vm/asdf/compare/v0.16.1...v0.16.2) (2025-02-08)
 
 

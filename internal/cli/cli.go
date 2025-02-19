@@ -521,6 +521,8 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		"PATH":                 setPath(execPaths),
 	}
 
+	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
@@ -579,14 +581,14 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		"PATH":                 setPath(execPaths),
 	}
 
+	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
+
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
 			return err
 		}
 	}
-
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
 
 	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
 	if err != nil {
@@ -676,7 +678,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
-					fmt.Printf("%s %s", toolVersion.Name, version)
+					fmt.Printf("%s %s\n", toolVersion.Name, version)
 				}
 			}
 		}
@@ -1090,11 +1092,18 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 		if version == "" {
 			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
 			if err != nil {
+				var vaiErr versions.VersionAlreadyInstalledError
+				if errors.As(err, &vaiErr) {
+					logger.Println(err)
+					return nil
+				}
+
 				if _, ok := err.(versions.NoVersionSetError); ok {
 					logger.Printf("No versions specified for %s in config files or environment", toolName)
 					os.Exit(1)
 				}
 
+				logger.Printf("error installing version: %v", err)
 				return err
 			}
 		} else {
@@ -1110,7 +1119,13 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 			}
 
 			if err != nil {
-				logger.Printf("error installing version: %s", err)
+				var vaiErr versions.VersionAlreadyInstalledError
+				if errors.As(err, &vaiErr) {
+					logger.Println(err)
+					return nil
+				}
+
+				logger.Printf("error installing version: %v", err)
 			}
 		}
 	}
@@ -1121,6 +1136,11 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 func filterInstallErrors(errs []error) []error {
 	var filtered []error
 	for _, err := range errs {
+		var vaiErr versions.VersionAlreadyInstalledError
+		if errors.As(err, &vaiErr) {
+			continue
+		}
+
 		if _, ok := err.(versions.NoVersionSetError); !ok {
 			filtered = append(filtered, err)
 		}
@@ -1317,6 +1337,16 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 		return err
 	}
 
+	var plugin plugins.Plugin
+
+	if tool != "" {
+		plugin = plugins.New(conf, tool)
+		if err := plugin.Exists(); err != nil {
+			logger.Printf("No such plugin: %s", plugin.Name)
+			os.Exit(1)
+			return err
+		}
+	}
 	// if either tool or version are missing just regenerate all shims. This is
 	// fast enough now.
 	if tool == "" || version == "" {
@@ -1330,7 +1360,7 @@ func reshimCommand(logger *log.Logger, tool, version string) (err error) {
 
 	// If provided a specific version it could be something special like a path
 	// version so we need to generate it manually
-	return reshimToolVersion(conf, tool, version, os.Stdout, os.Stderr)
+	return reshimToolVersion(conf, plugin, version, os.Stdout, os.Stderr)
 }
 
 func shimVersionsCommand(logger *log.Logger, shimName string) error {
@@ -1502,9 +1532,10 @@ func loadPlugin(logger *log.Logger, conf config.Config, pluginName string) (plug
 	return plugin, err
 }
 
-func reshimToolVersion(conf config.Config, tool, versionStr string, out io.Writer, errOut io.Writer) error {
+func reshimToolVersion(conf config.Config, plugin plugins.Plugin, versionStr string, out io.Writer, errOut io.Writer) error {
 	version := toolversions.Parse(versionStr)
-	return shims.GenerateForVersion(conf, plugins.New(conf, tool), version, out, errOut)
+
+	return shims.GenerateForVersion(conf, plugin, version, out, errOut)
 }
 
 func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {

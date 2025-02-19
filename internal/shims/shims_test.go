@@ -161,6 +161,12 @@ func TestRemoveAll(t *testing.T) {
 			assert.True(t, errors.Is(err, os.ErrNotExist))
 		}
 	})
+
+	t.Run("does not return error when shims directory does not exist", func(t *testing.T) {
+		shimDir := Directory(conf)
+		assert.Nil(t, os.RemoveAll(shimDir))
+		assert.Nil(t, RemoveAll(conf))
+	})
 }
 
 func TestGenerateAll(t *testing.T) {
