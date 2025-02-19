@@ -49,9 +49,9 @@ func TestMergeEnv(t *testing.T) {
 }
 
 func TestGenerate(t *testing.T) {
-	testDataDir := t.TempDir()
 
 	t.Run("returns map of environment variables", func(t *testing.T) {
+		testDataDir := t.TempDir()
 		conf := config.Config{DataDir: testDataDir}
 		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 		assert.Nil(t, err)
@@ -64,6 +64,7 @@ func TestGenerate(t *testing.T) {
 	})
 
 	t.Run("returns error when plugin lacks exec-env callback", func(t *testing.T) {
+		testDataDir := t.TempDir()
 		conf := config.Config{DataDir: testDataDir}
 		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName2)
 		assert.Nil(t, err)
@@ -72,6 +73,32 @@ func TestGenerate(t *testing.T) {
 		assert.Equal(t, err.(plugins.NoCallbackError).Error(), "Plugin named ruby does not have a callback named exec-env")
 		_, found := env["FOO"]
 		assert.False(t, found)
+	})
+
+	t.Run("preserves environment variables that contain equals sign in value", func(t *testing.T) {
+		testDataDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir}
+		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, testPluginName)
+		assert.Nil(t, repotest.WritePluginCallback(plugin.Dir, "exec-env", "#!/usr/bin/env bash\nexport BAZ=bar"))
+		env, err := Generate(plugin, map[string]string{"EQUALSTEST": "abc=123"})
+		assert.Nil(t, err)
+		assert.Equal(t, "bar", env["BAZ"])
+		assert.Equal(t, "abc=123", env["EQUALSTEST"])
+	})
+
+	t.Run("preserves environment variables that contain equals sign in value", func(t *testing.T) {
+		testDataDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir}
+		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, testPluginName)
+		assert.Nil(t, repotest.WritePluginCallback(plugin.Dir, "exec-env", "#!/usr/bin/env bash\nexport BAZ=bar"))
+		env, err := Generate(plugin, map[string]string{"EQUALSTEST": "abc\n123"})
+		assert.Nil(t, err)
+		assert.Equal(t, "bar", env["BAZ"])
+		assert.Equal(t, "abc\n123", env["EQUALSTEST"])
 	})
 }
 
@@ -91,6 +118,14 @@ func TestSliceToMap(t *testing.T) {
 		{
 			input:  []string{"MYVAR=some things = with = in it"},
 			output: map[string]string{"MYVAR": "some things = with = in it"},
+		},
+		{
+			input:  []string{"MYVAR=value\nwith\nnewlines"},
+			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
+		},
+		{
+			input:  []string{"MYVAR=value", "with", "newlines"},
+			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
 		},
 	}
 

@@ -47,30 +47,26 @@ func Generate(plugin plugins.Plugin, callbackEnv map[string]string) (env map[str
 	expression.Stdout = &stdout
 	err = expression.Run()
 
-	return envMap(stdout.String()), err
-}
-
-func envMap(env string) map[string]string {
-	slice := map[string]string{}
-
-	for _, envVar := range strings.Split(env, "\n") {
-		varValue := strings.Split(envVar, "=")
-		if len(varValue) == 2 {
-			slice[varValue[0]] = varValue[1]
-		}
-	}
-
-	return slice
+	str := stdout.String()
+	return SliceToMap(strings.Split(str, "\n")), err
 }
 
 // SliceToMap converts an env map to env slice suitable for syscall.Exec
 func SliceToMap(env []string) map[string]string {
 	envMap := map[string]string{}
 
+	var previousKey string
+
 	for _, envVar := range env {
-		varValue := strings.Split(envVar, "=")
-		if len(varValue) >= 2 {
-			envMap[varValue[0]] = strings.Join(varValue[1:], "=")
+		varValue := strings.SplitN(envVar, "=", 2)
+		if len(varValue) == 2 {
+			// new var=value line
+			previousKey = varValue[0]
+			envMap[varValue[0]] = varValue[1]
+		} else {
+			// value from variable defined on a previous line, append
+			val := envMap[previousKey]
+			envMap[previousKey] = val + "\n" + varValue[0]
 		}
 	}
 
