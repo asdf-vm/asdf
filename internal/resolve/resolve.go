@@ -29,6 +29,7 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 	resolvedToolVersions := map[string]bool{}
 	var finalVersions []ToolVersions
 
+	// First: Resolve using environment values
 	for _, plugin := range plugins {
 		version, envVariableName, found := findVersionsInEnv(plugin.Name)
 		if found {
@@ -37,7 +38,22 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 		}
 	}
 
+	// Iterate from the nearest to furthest directory, ending with the user's home.
 	for iterDir := range iterDirectories(conf, directory) {
+		// Second: Resolve using the tool versions file
+		filepath := path.Join(iterDir, conf.DefaultToolVersionsFilename)
+		if _, err = os.Stat(filepath); err == nil {
+			if allVersions, err := toolversions.GetAllToolsAndVersions(filepath); err == nil {
+				for _, version := range allVersions {
+					if _, isPluginResolved := resolvedToolVersions[version.Name]; !isPluginResolved {
+						resolvedToolVersions[version.Name] = true
+						finalVersions = append(finalVersions, ToolVersions{Name: version.Name, Versions: version.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir})
+					}
+				}
+			}
+		}
+
+		// Third: Resolve using legacy settings
 		for _, plugin := range plugins {
 			if _, isPluginResolved := resolvedToolVersions[plugin.Name]; !isPluginResolved {
 				version, found, err := findLegacyVersionsInDir(conf, plugin, iterDir)
@@ -47,18 +63,6 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 				if found {
 					resolvedToolVersions[plugin.Name] = true
 					finalVersions = append(finalVersions, version)
-				}
-			}
-		}
-
-		filepath := path.Join(iterDir, conf.DefaultToolVersionsFilename)
-		if _, err = os.Stat(filepath); err == nil {
-			if allVersions, err := toolversions.GetAllToolsAndVersions(filepath); err == nil {
-				for _, v := range allVersions {
-					if _, isPluginResolved := resolvedToolVersions[v.Name]; !isPluginResolved {
-						resolvedToolVersions[v.Name] = true
-						finalVersions = append(finalVersions, ToolVersions{Name: v.Name, Versions: v.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir})
-					}
 				}
 			}
 		}
@@ -117,13 +121,7 @@ func iterDirectories(conf config.Config, directory string) iter.Seq[string] {
 }
 
 func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
-	versions, found, err = findLegacyVersionsInDir(conf, plugin, directory)
-	if found || err != nil {
-		return versions, found, err
-	}
-
 	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
-
 	if _, err = os.Stat(filepath); err == nil {
 		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
 		if found || err != nil {
@@ -131,7 +129,7 @@ func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory stri
 		}
 	}
 
-	return versions, found, nil
+	return findLegacyVersionsInDir(conf, plugin, directory)
 }
 
 func findLegacyVersionsInDir(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
