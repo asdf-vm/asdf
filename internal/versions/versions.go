@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"regexp"
 	"strings"
 
@@ -26,6 +27,7 @@ const (
 	uninstallableVersionMsg = "uninstallable version: %s"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
 	noLatestVersionErrMsg   = "no latest version found"
+	missingPluginErrMsg     = "missing plugin for %s"
 )
 
 // UninstallableVersionError is an error returned if someone tries to install the
@@ -42,6 +44,16 @@ func (e UninstallableVersionError) Error() string {
 // is not able to resolve one.
 type NoVersionSetError struct {
 	toolName string
+}
+
+// MissingPluginError is returned whenever an operation expects a plugin,
+// but it is not installed.
+type MissingPluginError struct {
+	toolName string
+}
+
+func (e MissingPluginError) Error() string {
+	return fmt.Sprintf(missingPluginErrMsg, e.toolName)
 }
 
 func (e NoVersionSetError) Error() string {
@@ -72,14 +84,29 @@ func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writ
 		return []error{fmt.Errorf("unable to list plugins: %w", err)}
 	}
 
+	toolNames := map[string]bool{}
+	filepath := path.Join(dir, conf.DefaultToolVersionsFilename)
+	toolVersions, err := toolversions.GetAllToolsAndVersions(filepath)
+	if err == nil {
+		for _, version := range toolVersions {
+			toolNames[version.Name] = true
+		}
+	}
+
 	// Ideally we should install these in the order they are specified in the
 	// closest .tool-versions file, but for now that is too complicated to
 	// implement.
 	for _, plugin := range plugins {
+		delete(toolNames, plugin.Name)
 		err := Install(conf, plugin, dir, stdOut, stdErr)
 		if err != nil {
 			failures = append(failures, err)
 		}
+	}
+
+	for toolName := range toolNames {
+		err = MissingPluginError{toolName: toolName}
+		failures = append(failures, err)
 	}
 
 	return failures
