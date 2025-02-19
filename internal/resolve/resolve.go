@@ -17,6 +17,7 @@ import (
 
 // ToolVersions represents a tool along with versions specified for it
 type ToolVersions struct {
+	Name      string
 	Versions  []string
 	Directory string
 	Source    string
@@ -24,12 +25,15 @@ type ToolVersions struct {
 
 // AllVersions takes a set of plugins and a directory and resolves all tools to one or more
 // versions. This includes tools without a corresponding plugin.
-func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string) (versions map[string]ToolVersions, err error) {
-	resolvedToolVersions := map[string]ToolVersions{}
+func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string) (versions []ToolVersions, err error) {
+	resolvedToolVersions := map[string]bool{}
+	var finalVersions []ToolVersions
+
 	for _, plugin := range plugins {
 		version, envVariableName, found := findVersionsInEnv(plugin.Name)
 		if found {
-			resolvedToolVersions[plugin.Name] = ToolVersions{Versions: version, Source: envVariableName}
+			resolvedToolVersions[plugin.Name] = true
+			finalVersions = append(finalVersions, ToolVersions{Name: plugin.Name, Versions: version, Source: envVariableName})
 		}
 	}
 
@@ -41,7 +45,8 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 					return versions, err
 				}
 				if found {
-					resolvedToolVersions[plugin.Name] = version
+					resolvedToolVersions[plugin.Name] = true
+					finalVersions = append(finalVersions, version)
 				}
 			}
 		}
@@ -51,13 +56,14 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 			if allVersions, err := toolversions.GetAllToolsAndVersions(filepath); err == nil {
 				for _, v := range allVersions {
 					if _, isPluginResolved := resolvedToolVersions[v.Name]; !isPluginResolved {
-						resolvedToolVersions[v.Name] = ToolVersions{Versions: v.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir}
+						resolvedToolVersions[v.Name] = true
+						finalVersions = append(finalVersions, ToolVersions{Name: v.Name, Versions: v.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir})
 					}
 				}
 			}
 		}
 	}
-	return resolvedToolVersions, nil
+	return finalVersions, nil
 }
 
 // Version takes a plugin and a directory and resolves the tool to one or more
@@ -65,7 +71,7 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 func Version(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
 	version, envVariableName, found := findVersionsInEnv(plugin.Name)
 	if found {
-		return ToolVersions{Versions: version, Source: envVariableName}, true, nil
+		return ToolVersions{Name: plugin.Name, Versions: version, Source: envVariableName}, true, nil
 	}
 
 	for iterDir := range iterDirectories(conf, directory) {
@@ -114,6 +120,15 @@ func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory stri
 	versions, found, err = findLegacyVersionsInDir(conf, plugin, directory)
 	if found || err != nil {
 		return versions, found, err
+	}
+
+	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
+
+	if _, err = os.Stat(filepath); err == nil {
+		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
+		if found || err != nil {
+			return ToolVersions{Name: plugin.Name, Versions: versions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
+		}
 	}
 
 	return versions, found, nil
@@ -165,7 +180,7 @@ func findVersionsInLegacyFile(plugin plugins.Plugin, directory string) (versions
 			if len(versionsSlice) == 0 || (len(versionsSlice) == 1 && versionsSlice[0] == "") {
 				return versions, false, nil
 			}
-			return ToolVersions{Versions: versionsSlice, Source: filename, Directory: directory}, err == nil, err
+			return ToolVersions{Name: plugin.Name, Versions: versionsSlice, Source: filename, Directory: directory}, err == nil, err
 		}
 	}
 
