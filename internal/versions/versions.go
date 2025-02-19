@@ -78,22 +78,23 @@ func (e VersionAlreadyInstalledError) Error() string {
 // installed, but it may be multiple versions if multiple versions for the tool
 // are specified in the .tool-versions file.
 func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writer) (failures []error) {
-	plugins, err := plugins.List(conf, false, false)
+	installedPlugins, err := plugins.List(conf, false, false)
 	if err != nil {
 		return []error{fmt.Errorf("unable to list plugins: %w", err)}
 	}
+	pluginsMap := map[string]plugins.Plugin{}
+	for _, plugin := range installedPlugins {
+		pluginsMap[plugin.Name] = plugin
+	}
 
-	toolVersions, err := resolve.AllVersions(conf, plugins, dir)
+	toolVersions, err := resolve.AllVersions(conf, installedPlugins, dir)
 	if err != nil {
 		return []error{fmt.Errorf("unable to resolve versions: %w", err)}
 	}
 
-	// Ideally we should install these in the order they are specified in the
-	// closest .tool-versions file, but for now that is too complicated to
-	// implement.
-	for _, plugin := range plugins {
-		if toolVersion, isPluginResolved := toolVersions[plugin.Name]; isPluginResolved {
-			delete(toolVersions, plugin.Name)
+	for _, toolVersion := range toolVersions {
+		if plugin, isPluginResolved := pluginsMap[toolVersion.Name]; isPluginResolved {
+			delete(pluginsMap, plugin.Name)
 			for _, version := range toolVersion.Versions {
 				err := InstallOneVersion(conf, plugin, version, false, stdOut, stdErr)
 				if err != nil {
@@ -101,13 +102,13 @@ func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writ
 				}
 			}
 		} else {
-			err := NoVersionSetError{toolName: plugin.Name}
+			err = MissingPluginError{toolName: toolVersion.Name}
 			failures = append(failures, err)
 		}
 	}
 
-	for toolName := range toolVersions {
-		err = MissingPluginError{toolName: toolName}
+	for _, plugin := range pluginsMap {
+		err := NoVersionSetError{toolName: plugin.Name}
 		failures = append(failures, err)
 	}
 
