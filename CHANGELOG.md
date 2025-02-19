@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.16.4](https://github.com/asdf-vm/asdf/compare/v0.16.3...v0.16.4) (2025-02-19)
+
+
+### Bug Fixes
+
+* Add a newline delimiter when suggesting versions to install ([#1972](https://github.com/asdf-vm/asdf/issues/1972)) ([38bea71](https://github.com/asdf-vm/asdf/commit/38bea7145495a53c1a6fbad0542a32a4e7937e91))
+* correct version resolution order to restore legacy file fallback behavior ([#1956](https://github.com/asdf-vm/asdf/issues/1956)) ([6696d47](https://github.com/asdf-vm/asdf/commit/6696d4702937442842a3643fab31d21a7fd0208f))
+* support environment variables with equals sign and newlines in value ([#1977](https://github.com/asdf-vm/asdf/issues/1977)) ([1acf082](https://github.com/asdf-vm/asdf/commit/1acf0824ccfd33f118cb7440970df9e43899a1c1))
+
 ## [0.16.3](https://github.com/asdf-vm/asdf/compare/v0.16.2...v0.16.3) (2025-02-17)
 
 
