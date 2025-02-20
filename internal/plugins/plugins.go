@@ -255,6 +255,8 @@ func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (s
 	}
 
 	env := map[string]string{
+		"HOME":                 os.Getenv("HOME"),
+		"ASDF_DATA_DIR":        conf.DataDir,
 		"ASDF_PLUGIN_PATH":     p.Dir,
 		"ASDF_PLUGIN_PREV_REF": oldSHA,
 		"ASDF_PLUGIN_POST_REF": newSHA,
