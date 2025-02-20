@@ -16,7 +16,7 @@ func TestRepoClone(t *testing.T) {
 		repo := NewRepo(t.TempDir())
 		err := repo.Clone("foobar", "")
 
-		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
+		assert.ErrorContains(t, err, "unable to clone plugin: fatal: repository 'foobar' does not exist")
 	})
 
 	t.Run("clones provided Git URL to repo directory when URL is valid", func(t *testing.T) {
@@ -43,7 +43,7 @@ func TestRepoClone(t *testing.T) {
 
 		err := repo.Clone(repoDir, "non-existent")
 
-		assert.ErrorContains(t, err, "unable to clone plugin: reference not found")
+		assert.ErrorContains(t, err, "unable to clone plugin: fatal: Remote branch non-existent not found in upstream origin")
 	})
 
 	t.Run("clones a provided Git URL and checks out a specific ref when URL is valid and ref is provided", func(t *testing.T) {
