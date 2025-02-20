@@ -4,7 +4,9 @@ package git
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/asdf-vm/asdf/internal/execute"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -39,18 +41,23 @@ func NewRepo(directory string) Repo {
 
 // Clone installs a plugin via Git
 func (r Repo) Clone(pluginURL, ref string) error {
-	options := git.CloneOptions{
-		URL: pluginURL,
-	}
+	cmdStr := []string{"clone", pluginURL, r.Directory}
 
-	// if ref is provided set it on CloneOptions
 	if ref != "" {
-		options.ReferenceName = plumbing.NewBranchReferenceName(ref)
+		cmdStr = []string{"clone", pluginURL, r.Directory, "--branch", ref}
 	}
 
-	_, err := git.PlainClone(r.Directory, false, &options)
+	cmd := execute.New("git", cmdStr)
+	var stdOut strings.Builder
+	var stdErr strings.Builder
+	cmd.Stdout = &stdOut
+	cmd.Stderr = &stdErr
+	err := cmd.Run()
+
 	if err != nil {
-		return fmt.Errorf("unable to clone plugin: %w", err)
+		lines := strings.Split(strings.TrimSuffix(stdErr.String(), "\n"), "\n")
+		errMsg := lines[len(lines)-1]
+		return fmt.Errorf("unable to clone plugin: %s", errMsg)
 	}
 
 	return nil

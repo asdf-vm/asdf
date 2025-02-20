@@ -129,7 +129,7 @@ func TestAdd(t *testing.T) {
 
 		err := Add(conf, "foo", "foobar", "")
 
-		assert.ErrorContains(t, err, "unable to clone plugin: repository not found")
+		assert.ErrorContains(t, err, "unable to clone plugin: fatal: repository 'foobar' does not exist")
 	})
 
 	t.Run("when plugin name and URL are valid installs plugin", func(t *testing.T) {
