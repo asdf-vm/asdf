@@ -43,12 +43,14 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 		// Second: Resolve using the tool versions file
 		filepath := path.Join(iterDir, conf.DefaultToolVersionsFilename)
 		if _, err = os.Stat(filepath); err == nil {
-			if allVersions, err := toolversions.GetAllToolsAndVersions(filepath); err == nil {
-				for _, version := range allVersions {
-					if _, isPluginResolved := resolvedToolVersions[version.Name]; !isPluginResolved {
-						resolvedToolVersions[version.Name] = true
-						finalVersions = append(finalVersions, ToolVersions{Name: version.Name, Versions: version.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir})
-					}
+			allVersions, err := toolversions.GetAllToolsAndVersions(filepath)
+			if err != nil {
+				return versions, err
+			}
+			for _, version := range allVersions {
+				if _, isPluginResolved := resolvedToolVersions[version.Name]; !isPluginResolved {
+					resolvedToolVersions[version.Name] = true
+					finalVersions = append(finalVersions, ToolVersions{Name: version.Name, Versions: version.Versions, Source: conf.DefaultToolVersionsFilename, Directory: iterDir})
 				}
 			}
 		}
@@ -80,10 +82,7 @@ func Version(conf config.Config, plugin plugins.Plugin, directory string) (versi
 
 	for iterDir := range iterDirectories(conf, directory) {
 		versions, found, err = findVersionsInDir(conf, plugin, iterDir)
-		if err != nil {
-			return versions, false, err
-		}
-		if found {
+		if found || err != nil {
 			return versions, found, err
 		}
 	}
@@ -111,7 +110,6 @@ func iterDirectories(conf config.Config, directory string) iter.Seq[string] {
 		// If no version found, try current users home directory. I'd like to
 		// eventually remove this feature.
 		homeDir := conf.Home
-		// homeDir, osErr := os.UserHomeDir()
 		if homeDir != "" {
 			if !yield(homeDir) {
 				return

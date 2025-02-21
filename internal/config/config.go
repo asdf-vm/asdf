@@ -5,10 +5,12 @@ package config
 import (
 	"context"
 	"io/fs"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/mitchellh/go-homedir"
+
 	"github.com/sethvargo/go-envconfig"
 	"gopkg.in/ini.v1"
 )
@@ -100,7 +102,7 @@ func LoadConfig() (Config, error) {
 		return config, err
 	}
 
-	homeDir, err := homedir.Dir()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return config, err
 	}

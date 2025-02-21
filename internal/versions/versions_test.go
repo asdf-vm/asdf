@@ -482,10 +482,11 @@ func assertNotInstalled(t *testing.T, dataDir, pluginName, version string) {
 func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	t.Helper()
 	testDataDir := t.TempDir()
+	homeDir := t.TempDir()
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
-	conf.Home = testDataDir
+	conf.Home = homeDir
 
 	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)
