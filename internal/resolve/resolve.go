@@ -38,7 +38,7 @@ func AllVersions(conf config.Config, plugins []plugins.Plugin, directory string)
 		}
 	}
 
-	// Iterate from the nearest to furthest directory, ending with the user's home.
+	// Iterate from the current towards the root directory, ending with the user's home.
 	for iterDir := range iterDirectories(conf, directory) {
 		// Second: Resolve using the tool versions file
 		filepath := path.Join(iterDir, conf.DefaultToolVersionsFilename)

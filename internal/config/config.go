@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/mitchellh/go-homedir"
-
 	"github.com/sethvargo/go-envconfig"
 	"gopkg.in/ini.v1"
 )

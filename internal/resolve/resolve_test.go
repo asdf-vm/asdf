@@ -141,6 +141,25 @@ func TestAllVersions(t *testing.T) {
 		assert.Equal(t, toolVersion[0].Name, unknownPluginName)
 		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
 	})
+
+	t.Run("returns results in order from .tool-versions file", func(t *testing.T) {
+		testPluginTwoName := "dummy_plugin_two"
+		_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginTwoName)
+		assert.Nil(t, err)
+		allPlugins := []plugins.Plugin{plugins.New(conf, testPluginName), plugins.New(conf, testPluginTwoName)}
+
+		// write a version file
+		unknownPluginName := "dummy_unknown_plugin"
+		data := []byte(fmt.Sprintf("%s 1.2.3\n%s 1.2.3\n%s 1.2.3", testPluginTwoName, testPluginName, unknownPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		assert.Nil(t, err)
+
+		toolVersion, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Name, testPluginTwoName)
+		assert.Equal(t, toolVersion[1].Name, testPluginName)
+		assert.Equal(t, toolVersion[2].Name, unknownPluginName)
+	})
 }
 
 func TestFindVersionsInDir(t *testing.T) {
