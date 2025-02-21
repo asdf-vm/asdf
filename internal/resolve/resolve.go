@@ -121,9 +121,12 @@ func iterDirectories(conf config.Config, directory string) iter.Seq[string] {
 func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
 	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
 	if _, err = os.Stat(filepath); err == nil {
-		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
-		if found || err != nil {
-			return ToolVersions{Name: plugin.Name, Versions: versions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
+		foundVersions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
+		if err != nil {
+			return versions, found, err
+		}
+		if found {
+			return ToolVersions{Name: plugin.Name, Versions: foundVersions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
 		}
 	}
 
@@ -137,11 +140,7 @@ func findLegacyVersionsInDir(conf config.Config, plugin plugins.Plugin, director
 	}
 
 	if legacyFiles {
-		versions, found, err := findVersionsInLegacyFile(plugin, directory)
-
-		if found || err != nil {
-			return versions, found, err
-		}
+		return findVersionsInLegacyFile(plugin, directory)
 	}
 	return versions, false, nil
 }

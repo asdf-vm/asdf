@@ -126,6 +126,16 @@ func TestAllVersions(t *testing.T) {
 		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
 	})
 
+	t.Run("returns single version from .tool-versions file in home directory", func(t *testing.T) {
+		// write a version file
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(filepath.Join(homeDir, ".tool-versions"), data, 0o666)
+
+		toolVersion, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
+	})
+
 	t.Run("returns unknown plugin version from .tool-versions file in parent directory", func(t *testing.T) {
 		// write a version file
 		unknownPluginName := "dummy_unknown_plugin"
