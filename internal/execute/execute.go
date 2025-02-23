@@ -6,6 +6,7 @@ package execute
 import (
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -47,7 +48,7 @@ func (c Command) Run() error {
 
 	cmd := exec.Command("bash", "-c", command)
 
-	cmd.Env = MapToSlice(c.Env)
+	cmd.Env = append(os.Environ(), MapToSlice(c.Env)...)
 	cmd.Stdin = c.Stdin
 
 	// Capture stdout and stderr

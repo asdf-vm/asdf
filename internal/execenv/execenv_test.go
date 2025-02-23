@@ -49,7 +49,6 @@ func TestMergeEnv(t *testing.T) {
 }
 
 func TestGenerate(t *testing.T) {
-
 	t.Run("returns map of environment variables", func(t *testing.T) {
 		testDataDir := t.TempDir()
 		conf := config.Config{DataDir: testDataDir}

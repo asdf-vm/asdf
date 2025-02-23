@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -68,6 +69,33 @@ func TestRun_Command(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, "my var value\n", stdout.String())
+	})
+
+	t.Run("system environment variables are passed to command", func(t *testing.T) {
+		cmd := New("echo $MYVAR1;", []string{})
+		err := os.Setenv("MYVAR1", "my var value")
+		assert.Nil(t, err)
+
+		var stdout strings.Builder
+		cmd.Stdout = &stdout
+		err = cmd.Run()
+
+		assert.Nil(t, err)
+		assert.Equal(t, "my var value\n", stdout.String())
+	})
+
+	t.Run("provided env overwrites system environment variables when passed to command", func(t *testing.T) {
+		cmd := New("echo $MYVAR2;", []string{})
+		err := os.Setenv("MYVAR2", "should be dropped")
+		assert.Nil(t, err)
+
+		var stdout strings.Builder
+		cmd.Stdout = &stdout
+		cmd.Env = map[string]string{"MYVAR2": "final value"}
+		err = cmd.Run()
+
+		assert.Nil(t, err)
+		assert.Equal(t, "final value\n", stdout.String())
 	})
 
 	t.Run("captures stdout and stdin", func(t *testing.T) {

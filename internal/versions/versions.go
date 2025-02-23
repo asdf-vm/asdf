@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
-	"github.com/asdf-vm/asdf/internal/execenv"
 	"github.com/asdf-vm/asdf/internal/hook"
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/plugins"
@@ -167,8 +166,6 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
 		"ASDF_CONCURRENCY":     asdfConcurrency(conf),
 	}
-
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
 
 	err = os.MkdirAll(downloadDir, 0o777)
 	if err != nil {

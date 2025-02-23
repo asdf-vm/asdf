@@ -521,8 +521,6 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		"PATH":                 setPath(execPaths),
 	}
 
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
-
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
@@ -581,8 +579,6 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		"PATH":                 setPath(execPaths),
 	}
 
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
-
 	if parsedVersion.Type != "system" {
 		env, err = execenv.Generate(plugin, env)
 		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
@@ -615,12 +611,12 @@ func extensionCommand(logger *log.Logger, args []string) error {
 	pluginName := args[0]
 	plugin := plugins.New(conf, pluginName)
 
-	err = runExtensionCommand(plugin, args[1:], execenv.SliceToMap(os.Environ()))
+	err = runExtensionCommand(plugin, args[1:])
 	logger.Printf("error running extension command: %s", err.Error())
 	return err
 }
 
-func runExtensionCommand(plugin plugins.Plugin, args []string, environment map[string]string) (err error) {
+func runExtensionCommand(plugin plugins.Plugin, args []string) (err error) {
 	path := ""
 	if len(args) > 0 {
 		path, err = plugin.ExtensionCommandPath(args[0])
@@ -640,7 +636,7 @@ func runExtensionCommand(plugin plugins.Plugin, args []string, environment map[s
 		}
 	}
 
-	return exec.Exec(path, args, execute.MapToSlice(environment))
+	return exec.Exec(path, args, os.Environ())
 }
 
 func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
