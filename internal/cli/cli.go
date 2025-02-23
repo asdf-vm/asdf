@@ -533,7 +533,8 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		return err
 	}
 
-	err = exec.Exec(fname, realArgs, execute.MapToSlice(env))
+	finalEnv := append(os.Environ(), execute.MapToSlice(env)...)
+	err = exec.Exec(fname, realArgs, finalEnv)
 	if err != nil {
 		fmt.Printf("err %#+v\n", err.Error())
 	}
@@ -592,7 +593,8 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		return err
 	}
 
-	return exec.Exec(executable, args, execute.MapToSlice(env))
+	finalEnv := append(os.Environ(), execute.MapToSlice(env)...)
+	return exec.Exec(executable, args, finalEnv)
 }
 
 func extensionCommand(logger *log.Logger, args []string) error {
