@@ -36,17 +36,21 @@ func NewExpression(expression string, args []string) Command {
 
 // Run executes a Command with Bash and returns the error if there is one
 func (c Command) Run() error {
-	var command string
+	// var command string
+	var finalArgs []string
+
 	if c.Expression != "" {
-		// Expressions need to be invoked inside a Bash function, so variables like
+		// Expressions need to be invoked as a script to Bash, so variables like
 		// $0 and $@ are available
-		command = fmt.Sprintf("fn() { %s; }; fn %s", c.Expression, formatArgString(c.Args))
+		finalArgs = []string{"-s"}
+		c.Stdin = strings.NewReader(c.Expression)
 	} else {
 		// Scripts can be invoked directly, with args provided
-		command = fmt.Sprintf("%s %s", c.Command, formatArgString(c.Args))
+		finalArgs = []string{c.Command}
 	}
 
-	cmd := exec.Command("bash", "-c", command)
+	finalArgs = append(finalArgs, c.Args...)
+	cmd := exec.Command("bash", finalArgs...)
 
 	cmd.Env = append(os.Environ(), MapToSlice(c.Env)...)
 	cmd.Stdin = c.Stdin

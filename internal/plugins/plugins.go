@@ -171,7 +171,7 @@ func (p Plugin) RunCallback(name string, arguments []string, environment map[str
 		return err
 	}
 
-	cmd := execute.New(fmt.Sprintf("'%s'", callback), arguments)
+	cmd := execute.New(callback, arguments)
 
 	cmd.Env = environment
 	cmd.Stdout = stdOut
