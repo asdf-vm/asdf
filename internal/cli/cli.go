@@ -13,14 +13,14 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/asdf-vm/asdf/internal/hook"
-
 	"github.com/asdf-vm/asdf/internal/cli/set"
 	"github.com/asdf-vm/asdf/internal/completions"
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/exec"
 	"github.com/asdf-vm/asdf/internal/execenv"
+	"github.com/asdf-vm/asdf/internal/execute"
 	"github.com/asdf-vm/asdf/internal/help"
+	"github.com/asdf-vm/asdf/internal/hook"
 	"github.com/asdf-vm/asdf/internal/info"
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/pluginindex"
@@ -520,7 +520,25 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
 		"PATH":                 setPath(execPaths),
 	}
-	return execenv.Invoke(plugin, parsedVersion, env, command, realArgs)
+
+	if parsedVersion.Type != "system" {
+		env, err = execenv.Generate(plugin, env)
+		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
+			return err
+		}
+	}
+
+	fname, err := shims.ExecutableOnPath(env["PATH"], command)
+	if err != nil {
+		return err
+	}
+
+	finalEnv := append(os.Environ(), execute.MapToSlice(env)...)
+	err = exec.Exec(fname, realArgs, finalEnv)
+	if err != nil {
+		fmt.Printf("err %#+v\n", err.Error())
+	}
+	return err
 }
 
 func setPath(paths []string) string {
@@ -555,13 +573,6 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 	if err != nil {
 		return err
 	}
-
-	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
-	if err != nil {
-		os.Exit(1)
-		return err
-	}
-
 	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
 		"ASDF_INSTALL_VERSION": parsedVersion.Value,
@@ -569,7 +580,21 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		"PATH":                 setPath(execPaths),
 	}
 
-	return execenv.Invoke(plugin, parsedVersion, env, executable, args)
+	if parsedVersion.Type != "system" {
+		env, err = execenv.Generate(plugin, env)
+		if _, ok := err.(plugins.NoCallbackError); !ok && err != nil {
+			return err
+		}
+	}
+
+	err = hook.RunWithOutput(conf, fmt.Sprintf("pre_%s_%s", plugin.Name, filepath.Base(executable)), args, os.Stdout, os.Stderr)
+	if err != nil {
+		os.Exit(1)
+		return err
+	}
+
+	finalEnv := append(os.Environ(), execute.MapToSlice(env)...)
+	return exec.Exec(executable, args, finalEnv)
 }
 
 func extensionCommand(logger *log.Logger, args []string) error {

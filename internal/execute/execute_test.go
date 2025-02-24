@@ -27,7 +27,7 @@ func TestNewExpression(t *testing.T) {
 
 func TestRun_Command(t *testing.T) {
 	t.Run("command is executed with bash", func(t *testing.T) {
-		cmd := NewExpression("echo $(type -a sh);", []string{})
+		cmd := New("echo $(type -a sh);", []string{})
 
 		var stdout strings.Builder
 		cmd.Stdout = &stdout
@@ -60,7 +60,7 @@ func TestRun_Command(t *testing.T) {
 	})
 
 	t.Run("environment variables are passed to command", func(t *testing.T) {
-		cmd := NewExpression("echo $MYVAR;", []string{})
+		cmd := New("echo $MYVAR;", []string{})
 		cmd.Env = map[string]string{"MYVAR": "my var value"}
 
 		var stdout strings.Builder
@@ -72,7 +72,7 @@ func TestRun_Command(t *testing.T) {
 	})
 
 	t.Run("system environment variables are passed to command", func(t *testing.T) {
-		cmd := NewExpression("echo $MYVAR1;", []string{})
+		cmd := New("echo $MYVAR1;", []string{})
 		err := os.Setenv("MYVAR1", "my var value")
 		assert.Nil(t, err)
 
@@ -85,7 +85,7 @@ func TestRun_Command(t *testing.T) {
 	})
 
 	t.Run("provided env overwrites system environment variables when passed to command", func(t *testing.T) {
-		cmd := NewExpression("echo $MYVAR2;", []string{})
+		cmd := New("echo $MYVAR2;", []string{})
 		err := os.Setenv("MYVAR2", "should be dropped")
 		assert.Nil(t, err)
 
@@ -99,7 +99,7 @@ func TestRun_Command(t *testing.T) {
 	})
 
 	t.Run("captures stdout and stdin", func(t *testing.T) {
-		cmd := NewExpression("echo 'a test' | tee /dev/stderr", []string{})
+		cmd := New("echo 'a test' | tee /dev/stderr", []string{})
 		cmd.Env = map[string]string{"MYVAR": "my var value"}
 
 		var stdout strings.Builder
@@ -115,7 +115,7 @@ func TestRun_Command(t *testing.T) {
 	})
 
 	t.Run("returns error when non-zero exit code", func(t *testing.T) {
-		cmd := NewExpression("exit 12", []string{})
+		cmd := New("exit 12", []string{})
 
 		var stdout strings.Builder
 		cmd.Stdout = &stdout
