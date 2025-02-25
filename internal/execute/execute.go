@@ -58,6 +58,24 @@ func (c Command) Run() error {
 	return cmd.Run()
 }
 
+func MergeWithSysEnv(env map[string]string) (slice []string) {
+	return MapToSlice(MergeEnv(CurrentEnv(), env))
+}
+
+// CurrentEnv returns the current environment as a map
+func CurrentEnv() map[string]string {
+	return SliceToMap(os.Environ())
+}
+
+// MergeEnv takes two maps with string keys and values and merges them.
+func MergeEnv(map1, map2 map[string]string) map[string]string {
+	for key, value := range map2 {
+		map1[key] = value
+	}
+
+	return map1
+}
+
 // MapToSlice converts an env map to env slice suitable for syscall.Exec
 func MapToSlice(env map[string]string) (slice []string) {
 	for key, value := range env {
@@ -65,6 +83,29 @@ func MapToSlice(env map[string]string) (slice []string) {
 	}
 
 	return slice
+}
+
+// SliceToMap converts an env map to env slice suitable for syscall.Exec
+func SliceToMap(env []string) map[string]string {
+	envMap := map[string]string{}
+
+	var previousKey string
+
+	for _, envVar := range env {
+		varValue := strings.SplitN(envVar, "=", 2)
+
+		if len(varValue) == 2 {
+			// new var=value line
+			previousKey = varValue[0]
+			envMap[varValue[0]] = varValue[1]
+		} else {
+			// value from variable defined on a previous line, append
+			val := envMap[previousKey]
+			envMap[previousKey] = val + "\n" + varValue[0]
+		}
+	}
+
+	return envMap
 }
 
 func formatArgString(args []string) string {
