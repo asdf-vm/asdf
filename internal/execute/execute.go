@@ -58,7 +58,8 @@ func (c Command) Run() error {
 	return cmd.Run()
 }
 
-func MergeWithSysEnv(env map[string]string) (slice []string) {
+// MergeWithCurrentEnv merges the provided map into the current environment variables
+func MergeWithCurrentEnv(env map[string]string) (slice []string) {
 	return MapToSlice(MergeEnv(CurrentEnv(), env))
 }
 

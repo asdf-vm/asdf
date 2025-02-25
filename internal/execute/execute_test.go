@@ -203,6 +203,18 @@ func TestRun_Expression(t *testing.T) {
 	})
 }
 
+func TestMergeWithCurrentEnv(t *testing.T) {
+	t.Run("merge with current env", func(t *testing.T) {
+		path := os.Getenv("PATH")
+		assert.NotEmpty(t, path)
+
+		newEnv := map[string]string{"PATH": "new_path"}
+		mergedEnv := MergeWithCurrentEnv(newEnv)
+		assert.Contains(t, mergedEnv, "PATH=new_path")
+		assert.NotContains(t, mergedEnv, "PATH="+path)
+	})
+}
+
 func TestCurrentEnv(t *testing.T) {
 	t.Run("returns map of current environment", func(t *testing.T) {
 		envMap := CurrentEnv()
