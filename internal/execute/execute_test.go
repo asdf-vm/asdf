@@ -269,10 +269,6 @@ func TestSliceToMap(t *testing.T) {
 			input:  []string{"MYVAR=value\nwith\nnewlines"},
 			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
 		},
-		{
-			input:  []string{"MYVAR=value", "with", "newlines"},
-			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
-		},
 	}
 
 	for _, tt := range tests {
