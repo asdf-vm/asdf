@@ -48,7 +48,12 @@ func (c Command) Run() error {
 
 	cmd := exec.Command("bash", "-c", command)
 
-	cmd.Env = append(os.Environ(), MapToSlice(c.Env)...)
+	if len(c.Env) > 0 {
+		cmd.Env = MergeWithCurrentEnv(c.Env)
+	} else {
+		cmd.Env = os.Environ()
+	}
+
 	cmd.Stdin = c.Stdin
 
 	// Capture stdout and stderr
