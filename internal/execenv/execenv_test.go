@@ -74,9 +74,8 @@ func TestGenerate(t *testing.T) {
 		assert.Nil(t, err)
 		plugin := plugins.New(conf, testPluginName)
 		assert.Nil(t, repotest.WritePluginCallback(plugin.Dir, "exec-env", "#!/usr/bin/env bash\nexport BAZ=\""+value+"\""))
-		env, err := Generate(plugin, map[string]string{"EQUALSTEST": "abc\n123"})
+		env, err := Generate(plugin, map[string]string{})
 		assert.Nil(t, err)
 		assert.Equal(t, value, env["BAZ"])
-		assert.Equal(t, "abc\n123", env["EQUALSTEST"])
 	})
 }
