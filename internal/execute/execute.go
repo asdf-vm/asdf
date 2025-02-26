@@ -95,19 +95,11 @@ func MapToSlice(env map[string]string) (slice []string) {
 func SliceToMap(env []string) map[string]string {
 	envMap := map[string]string{}
 
-	var previousKey string
-
 	for _, envVar := range env {
 		varValue := strings.SplitN(envVar, "=", 2)
 
 		if len(varValue) == 2 {
-			// new var=value line
-			previousKey = varValue[0]
 			envMap[varValue[0]] = varValue[1]
-		} else {
-			// value from variable defined on a previous line, append
-			val := envMap[previousKey]
-			envMap[previousKey] = val + "\n" + varValue[0]
 		}
 	}
 

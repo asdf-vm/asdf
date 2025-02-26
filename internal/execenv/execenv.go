@@ -27,11 +27,11 @@ func Generate(plugin plugins.Plugin, callbackEnv map[string]string) (env map[str
 	// executing the callback isn't enough. We actually need to source it (.) so
 	// the environment variables get set, and then run `env` so they get printed
 	// to STDOUT.
-	expression := execute.NewExpression(fmt.Sprintf(". \"%s\"; env", execEnvPath), []string{})
+	expression := execute.NewExpression(fmt.Sprintf(". \"%s\"; env -0", execEnvPath), []string{})
 	expression.Env = callbackEnv
 	expression.Stdout = &stdout
 	err = expression.Run()
 
 	str := stdout.String()
-	return execute.SliceToMap(strings.Split(str, "\n")), err
+	return execute.SliceToMap(strings.Split(str, "\x00")), err
 }

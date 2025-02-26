@@ -65,4 +65,17 @@ func TestGenerate(t *testing.T) {
 		assert.Equal(t, "bar", env["BAZ"])
 		assert.Equal(t, "abc\n123", env["EQUALSTEST"])
 	})
+
+	t.Run("preserves environment variables that contain equals sign and line breaks in value", func(t *testing.T) {
+		value := "-----BEGIN CERTIFICATE-----\nMANY\\LINES\\THE\nLAST\\ONE\\ENDS\\IN\nAN=\n-----END CERTIFICATE-----"
+		testDataDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir}
+		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, testPluginName)
+		assert.Nil(t, repotest.WritePluginCallback(plugin.Dir, "exec-env", "#!/usr/bin/env bash\nexport BAZ=\""+value+"\""))
+		env, err := Generate(plugin, map[string]string{})
+		assert.Nil(t, err)
+		assert.Equal(t, value, env["BAZ"])
+	})
 }
