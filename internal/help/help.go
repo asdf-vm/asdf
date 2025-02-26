@@ -93,7 +93,9 @@ func WriteToolVersionHelp(conf config.Config, toolName, toolVersion string, writ
 func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io.Writer, errWriter io.Writer) error {
 	plugin := plugins.New(conf, toolName)
 	env := map[string]string{
-		"ASDF_INSTALL_PATH": plugin.Dir,
+		"ASDF_INSTALL_PATH":    plugin.Dir,
+		"ASDF_INSTALL_VERSION": "",
+		"ASDF_INSTALL_TYPE":    "",
 	}
 
 	if toolVersion != "" {
