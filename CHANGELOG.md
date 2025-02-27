@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.16.5](https://github.com/asdf-vm/asdf/compare/v0.16.4...v0.16.5) (2025-02-27)
+
+
+### Bug Fixes
+
+* always propagate env variables when executing commands ([#1982](https://github.com/asdf-vm/asdf/issues/1982)) ([80265a8](https://github.com/asdf-vm/asdf/commit/80265a8eecedc623cb8cf5cca18ae563e9d4f94c))
+* correct exit status when sub-command does not exist ([#1991](https://github.com/asdf-vm/asdf/issues/1991)) ([3dd0dd3](https://github.com/asdf-vm/asdf/commit/3dd0dd3b475d1c4ddcb6d76248a988be5cceef51)), closes [#1928](https://github.com/asdf-vm/asdf/issues/1928)
+* set correct env vars on recursive calls ([#1989](https://github.com/asdf-vm/asdf/issues/1989)) ([97a91cc](https://github.com/asdf-vm/asdf/commit/97a91cc8d01bda0896a50dff50a162e87fd61e57))
+* simplify env vars parsing ([#1988](https://github.com/asdf-vm/asdf/issues/1988)) ([8990b6b](https://github.com/asdf-vm/asdf/commit/8990b6b4ae3c9754f3764289f0d7cf410815d29d)), closes [#1986](https://github.com/asdf-vm/asdf/issues/1986)
+
 ## [0.16.4](https://github.com/asdf-vm/asdf/compare/v0.16.3...v0.16.4) (2025-02-19)
 
 
