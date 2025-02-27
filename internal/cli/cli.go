@@ -342,7 +342,12 @@ func Execute(version string) {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	err := unsetAsdfReservedEnvVars()
+	if err != nil {
+		cli.OsExiter(1)
+	}
+
+	if err = app.Run(os.Args); err != nil {
 		cli.OsExiter(1)
 	}
 }
@@ -1566,4 +1571,17 @@ func installedStatus(installed bool) string {
 		return "installed"
 	}
 	return "missing"
+}
+
+func unsetAsdfReservedEnvVars() error {
+	// These are environment variables which are passed via env or exec.
+	// We strip these out to avoid any potential issues with recursive calls to asdf.
+	asdfManagedVars := []string{"ASDF_INSTALL_TYPE", "ASDF_INSTALL_VERSION", "ASDF_INSTALL_PATH"}
+	for _, v := range asdfManagedVars {
+		err := os.Unsetenv(v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
