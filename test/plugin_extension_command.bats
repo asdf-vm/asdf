@@ -135,5 +135,5 @@ EOF
   [ "$status" -eq 0 ]
   envs="$output"
 
-  [ "0" -eq "$(echo "$envs" | grep "ASDF_INSTALL_" | wc -l)" ]
+  [ "0" -eq "$(echo "$envs" | grep -c "ASDF_INSTALL_")" ]
 }
