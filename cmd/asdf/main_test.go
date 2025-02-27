@@ -106,6 +106,10 @@ func TestBatsTests(t *testing.T) {
 	t.Run("which_command", func(t *testing.T) {
 		runBatsFile(t, dir, "which_command.bats")
 	})
+
+	t.Run("non_existent_command", func(t *testing.T) {
+		runBatsFile(t, dir, "non_existent_command.bats")
+	})
 }
 
 func runBatsFile(t *testing.T, dir, filename string) {
