@@ -133,7 +133,5 @@ EOF
 
   run asdf cmd dummy
   [ "$status" -eq 0 ]
-  envs="$output"
-
-  [ "0" -eq "$(echo "$envs" | grep -c "ASDF_INSTALL_")" ]
+  [ "0" -eq "$(echo "$output" | grep -c "ASDF_INSTALL_")" ]
 }
