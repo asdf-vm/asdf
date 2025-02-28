@@ -23,7 +23,8 @@ const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
 	uninstallableVersionMsg = "uninstallable version: %s"
-	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
+	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
+	defaultFilterRegex      = "^\\s*[0-9]"
 	noLatestVersionErrMsg   = "no latest version found"
 )
 
@@ -260,7 +261,8 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 			return version, err
 		}
 
-		versions := filterOutByRegex(allVersions, latestFilterRegex)
+		versions := filterOutByRegex(allVersions, defaultFilterRegex, true)
+		versions = filterOutByRegex(versions, latestFilterRegex, false)
 
 		if len(versions) < 1 {
 			return version, errors.New(noLatestVersionErrMsg)
@@ -271,7 +273,8 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 
 	// parse stdOut and return version
 	allVersions := parseVersions(stdOut.String())
-	versions := filterOutByRegex(allVersions, latestFilterRegex)
+	versions := filterOutByRegex(allVersions, defaultFilterRegex, true)
+	versions = filterOutByRegex(versions, latestFilterRegex, false)
 	if len(versions) < 1 {
 		return version, errors.New(noLatestVersionErrMsg)
 	}
@@ -359,10 +362,10 @@ func filterByExactMatch(allVersions []string, pattern string) (versions []string
 	return versions
 }
 
-func filterOutByRegex(allVersions []string, pattern string) (versions []string) {
+func filterOutByRegex(allVersions []string, pattern string, keepMatch bool) (versions []string) {
 	for _, version := range allVersions {
 		match, _ := regexp.MatchString(pattern, version)
-		if !match {
+		if match == keepMatch {
 			versions = append(versions, version)
 		}
 	}
