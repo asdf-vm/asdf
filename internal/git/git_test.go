@@ -157,7 +157,7 @@ func TestRepoUpdate(t *testing.T) {
 		ref := "non-existent"
 		updatedToRef, _, _, err := repo.Update(ref)
 		assert.Equal(t, updatedToRef, "")
-		expectedErrMsg := "couldn't find remote ref \"non-existent\""
+		expectedErrMsg := "fatal: couldn't find remote ref non-existent"
 		assert.ErrorContains(t, err, expectedErrMsg)
 	})
 
