@@ -115,10 +115,10 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		// If on a branch checkout the latest version of it from the remote
 		branch := head.Name()
 		ref = branch.String()
-		checkoutOptions = git.CheckoutOptions{Branch: branch, Force: true}
+		checkoutOptions = git.CheckoutOptions{Branch: branch, Keep: true}
 	} else {
 		// Checkout ref if provided
-		checkoutOptions = git.CheckoutOptions{Hash: plumbing.NewHash(ref), Force: true}
+		checkoutOptions = git.CheckoutOptions{Hash: plumbing.NewHash(ref), Keep: true}
 	}
 
 	fetchOptions := git.FetchOptions{RemoteName: DefaultRemoteName, Force: true, RefSpecs: []config.RefSpec{
