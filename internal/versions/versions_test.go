@@ -3,6 +3,7 @@ package versions
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -336,6 +337,58 @@ func TestLatest(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "4.0.0", version)
 	})
+
+	t.Run("returns correct version for popular languages", func(t *testing.T) {
+		pluginDir, err := repotest.InstallPlugin("dummy_legacy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		versions := "1.2 3.5"
+		contents := "#!/usr/bin/env bash\necho \"" + versions + "\""
+		listAllPath := path.Join(pluginDir, "bin", "list-all")
+		err = os.WriteFile(listAllPath, []byte(contents), 0o777)
+		assert.Nil(t, err)
+
+		plugin := plugins.New(conf, pluginName)
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, "5.1.0", version)
+	})
+}
+
+func TestLatestWithSamples(t *testing.T) {
+	tests := []struct {
+		testFile       string
+		expectedOutput string
+	}{
+		{
+			testFile:       "list-all-ruby",
+			expectedOutput: "3.4.2",
+		},
+		{
+			testFile:       "list-all-python",
+			expectedOutput: "3.13.2t",
+		},
+		{
+			testFile:       "list-all-elixir",
+			expectedOutput: "1.18.2-otp-27",
+		},
+	}
+	for _, tt := range tests {
+		pluginName := "latest_test"
+		conf, _ := generateConfig(t)
+		pluginDir, err := repotest.InstallPlugin("dummy_legacy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		versionsFilePath, err := filepath.Abs(filepath.Join("testdata", tt.testFile))
+		assert.Nil(t, err)
+		contents := "#!/usr/bin/env bash\ncat \"" + versionsFilePath + "\""
+		listAllPath := path.Join(pluginDir, "bin", "list-all")
+		err = os.WriteFile(listAllPath, []byte(contents), 0o777)
+		assert.Nil(t, err)
+
+		plugin := plugins.New(conf, pluginName)
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, tt.expectedOutput, version)
+	}
 }
 
 func TestAllVersions(t *testing.T) {

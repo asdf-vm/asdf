@@ -363,8 +363,9 @@ func filterByExactMatch(allVersions []string, pattern string) (versions []string
 }
 
 func filterOutByRegex(allVersions []string, pattern string, keepMatch bool) (versions []string) {
+	regex, _ := regexp.Compile(pattern)
 	for _, version := range allVersions {
-		match, _ := regexp.MatchString(pattern, version)
+		match := regex.MatchString(version)
 		if match == keepMatch {
 			versions = append(versions, version)
 		}
