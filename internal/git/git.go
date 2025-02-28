@@ -3,12 +3,13 @@
 package git
 
 import (
+	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/execute"
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
@@ -55,9 +56,7 @@ func (r Repo) Clone(pluginURL, ref string) error {
 	err := cmd.Run()
 
 	if err != nil {
-		lines := strings.Split(strings.TrimSuffix(stdErr.String(), "\n"), "\n")
-		errMsg := lines[len(lines)-1]
-		return fmt.Errorf("unable to clone plugin: %s", errMsg)
+		return fmt.Errorf("unable to clone plugin: %s", stdErrToErrMsg(stdErr.String()))
 	}
 
 	return nil
@@ -106,8 +105,6 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	var checkoutOptions git.CheckoutOptions
-
 	if ref == "" {
 		// If no ref is provided checkout latest commit on current branch
 		head, err := repo.Head()
@@ -128,28 +125,38 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		checkoutOptions = git.CheckoutOptions{Hash: plumbing.NewHash(ref), Keep: true}
 	}
 
-	fetchOptions := git.FetchOptions{RemoteName: DefaultRemoteName, Force: true, RefSpecs: []config.RefSpec{
-		config.RefSpec(ref + ":" + ref),
-	}}
+	commonOpts := []string{"--git-dir", filepath.Join(r.Directory, ".git"), "--work-tree", r.Directory}
 
-	err = repo.Fetch(&fetchOptions)
+	refSpec := fmt.Sprintf("%s:%s", ref, ref)
+	cmdStr := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", "origin", refSpec}...)
+
+	cmd := execute.New("git", cmdStr)
+	var stdErr strings.Builder
+	cmd.Stderr = &stdErr
+	err = cmd.Run()
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		return "", "", "", err
+		return "", "", "", errors.New(stdErrToErrMsg(stdErr.String()))
 	}
 
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return "", "", "", err
-	}
+	cmdStr = append(commonOpts, []string{"-c", "advice.detachedHead=false", "checkout", "--force", ref}...)
+	cmd = execute.New("git", cmdStr)
+	var stdErr2 strings.Builder
+	cmd.Stderr = &stdErr2
+	err = cmd.Run()
 
-	err = worktree.Checkout(&checkoutOptions)
-	if err != nil {
-		return "", "", "", err
-	}
-
+	fmt.Printf("stdErr2.String() %#+v\n", stdErr2.String())
+	repo, err = gitOpen(r.Directory)
 	newHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
-	return ref, oldHash.String(), newHash.String(), err
+	if err != nil {
+		return ref, oldHash.String(), newHash.String(), errors.New(stdErrToErrMsg(stdErr2.String()))
+	}
+	return ref, oldHash.String(), newHash.String(), nil
+}
+
+func stdErrToErrMsg(stdErr string) string {
+	lines := strings.Split(strings.TrimSuffix(stdErr, "\n"), "\n")
+	return lines[len(lines)-1]
 }
 
 func gitOpen(directory string) (*git.Repository, error) {
