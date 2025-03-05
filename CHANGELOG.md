@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.6](https://github.com/asdf-vm/asdf/compare/v0.16.5...v0.16.6) (2025-03-05)
+
+
+### Bug Fixes
+
+* correct ASDF_INSTALL_* envvar unset test ([#2006](https://github.com/asdf-vm/asdf/issues/2006)) ([6fbf94a](https://github.com/asdf-vm/asdf/commit/6fbf94a75b8e045eea53038182e376b21a6947e4))
+
 ## [0.16.5](https://github.com/asdf-vm/asdf/compare/v0.16.4...v0.16.5) (2025-03-04)
 
 
