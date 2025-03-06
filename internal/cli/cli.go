@@ -437,7 +437,7 @@ func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string
 	if found {
 		firstVersion := toolversion.Versions[0]
 		version := toolversions.Parse(firstVersion)
-		installed = installs.IsInstalled(conf, plugin, version)
+		installed = installs.InstallDirExists(conf, plugin, version)
 	}
 	return toolversion, found, installed
 }
@@ -705,7 +705,7 @@ func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) 
 		for _, version := range toolVersion.Versions {
 			version := toolversions.Parse(version)
 			plugin := plugins.New(conf, toolVersion.Name)
-			if installs.IsInstalled(conf, plugin, version) {
+			if installs.InstallDirExists(conf, plugin, version) {
 				return true
 			}
 		}
@@ -1501,7 +1501,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 
 		if found && len(versions.Versions) > 0 {
 			versionStruct := toolversions.Version{Type: "version", Value: versions.Versions[0]}
-			if installs.IsInstalled(conf, plugin, versionStruct) {
+			if installs.InstallDirExists(conf, plugin, versionStruct) {
 				installPath := installs.InstallPath(conf, plugin, versionStruct)
 				fmt.Printf("%s", installPath)
 				return nil
@@ -1514,7 +1514,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 		return errors.New(msg)
 	}
 
-	if !installs.IsInstalled(conf, plugin, version) {
+	if !installs.InstallDirExists(conf, plugin, version) {
 		logger.Printf("Version not installed")
 		return errors.New("Version not installed")
 	}
@@ -1558,7 +1558,7 @@ func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bo
 	}
 
 	if showStatus {
-		installed := installs.IsInstalled(conf, plugin, toolversions.Version{Type: "version", Value: latest})
+		installed := installs.InstallDirExists(conf, plugin, toolversions.Version{Type: "version", Value: latest})
 		fmt.Printf("%s\t%s\t%s\n", plugin.Name, latest, installedStatus(installed))
 	} else {
 		fmt.Printf("%s\n", latest)

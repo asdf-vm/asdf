@@ -156,7 +156,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	downloadDir := installs.DownloadPath(conf, plugin, version)
 	installDir := installs.InstallPath(conf, plugin, version)
 
-	if installs.IsInstalled(conf, plugin, version) {
+	if installs.InstallDirExists(conf, plugin, version) {
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
 
@@ -318,7 +318,7 @@ func Uninstall(conf config.Config, plugin plugins.Plugin, rawVersion string, std
 		return errors.New("'latest' is a special version value that cannot be used for uninstall command")
 	}
 
-	if !installs.IsInstalled(conf, plugin, version) {
+	if !installs.InstallDirExists(conf, plugin, version) {
 		return errors.New("No such version")
 	}
 
