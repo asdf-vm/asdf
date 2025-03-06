@@ -55,7 +55,8 @@ func DownloadPath(conf config.Config, plugin plugins.Plugin, version toolversion
 	return filepath.Join(data.DownloadDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(version))
 }
 
-// InstallDirExists checks if a specific version of a tool is installed
+// InstallDirExists checks if the installation directory for the specific
+// version of a tool is accessible
 func InstallDirExists(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
 	installDir := InstallPath(conf, plugin, version)
 
