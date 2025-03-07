@@ -444,17 +444,33 @@ func dirsToPaths(dirs []string, root string) (paths []string) {
 	return paths
 }
 
-// ShimExists returns true if a shim exists for a specific version of a tool
+// ShimExists returns true if a shim exists for a specific version of a tool,
+// by checking the executables the plugin is expected to generate and seeing
+// if each one has a corresponding shim file pointing to that plugin+version.
 func ShimExists(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
-	shimPath := Path(conf, plugin.Name)
-	toolVersions, err := GetToolsAndVersionsFromShimFile(shimPath)
+	exes, err := ToolExecutables(conf, plugin, version)
 	if err != nil {
 		return false
 	}
 
-	for _, toolVersion := range toolVersions {
-		if toolVersion.Name == plugin.Name && slices.Contains(toolVersion.Versions, toolversions.Format(version)) {
-			return true
+	// Check if the executable is in the list of executables for the plugin
+	for _, exePath := range exes {
+
+		shimName := filepath.Base(exePath)
+		shimPath := Path(conf, shimName)
+
+		tvs, err := GetToolsAndVersionsFromShimFile(shimPath)
+		if err != nil {
+			continue
+		}
+
+		// Check if the plugin and version are in the list of tools and versions
+		for _, toolVersion := range tvs {
+			if toolVersion.Name == plugin.Name {
+				if slices.Contains(toolVersion.Versions, toolversions.Format(version)) {
+					return true
+				}
+			}
 		}
 	}
 
