@@ -217,7 +217,7 @@ func (c *Config) loadSettings() error {
 }
 
 func normalizePath(homeDir string, path string) string {
-	if strings.HasPrefix(path, "~") {
+	if path == "~" || strings.HasPrefix(path, "~/") {
 		path = filepath.Join(homeDir, path[1:])
 	}
 	return filepath.Clean(path)
