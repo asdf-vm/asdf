@@ -443,3 +443,20 @@ func dirsToPaths(dirs []string, root string) (paths []string) {
 
 	return paths
 }
+
+// ShimExists returns true if a shim exists for a specific version of a tool
+func ShimExists(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
+	shimPath := Path(conf, plugin.Name)
+	toolVersions, err := GetToolsAndVersionsFromShimFile(shimPath)
+	if err != nil {
+		return false
+	}
+
+	for _, toolVersion := range toolVersions {
+		if toolVersion.Name == plugin.Name && slices.Contains(toolVersion.Versions, toolversions.Format(version)) {
+			return true
+		}
+	}
+
+	return false
+}
