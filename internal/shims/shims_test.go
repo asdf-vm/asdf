@@ -428,6 +428,30 @@ func TestExecutableDirs(t *testing.T) {
 	})
 }
 
+func TestShimExists(t *testing.T) {
+	conf, plugin := generateConfig(t)
+	version := "1.0.0"
+	v := toolversions.Version{Type: "version", Value: version}
+
+	t.Run("returns false when no shim exist for plugin version", func(t *testing.T) {
+		// don't install any versions, so no shims are generated
+		got := ShimExists(conf, plugin, v)
+		assert.False(t, got, "expected ShimExists to return false if no shim is generated yet")
+	})
+
+	t.Run("returns true when shim exists for plugin version", func(t *testing.T) {
+		// install a version and generate shims
+		installVersion(t, conf, plugin, version)
+
+		var stdout, stderr strings.Builder
+		err := GenerateAll(conf, &stdout, &stderr)
+		assert.NoError(t, err, "expected GenerateAll to succeed")
+
+		got := ShimExists(conf, plugin, v)
+		assert.True(t, got, "expected ShimExists to return true after shims are generated for plugin/version")
+	})
+}
+
 // Helper functions
 func buildOutputs() (strings.Builder, strings.Builder) {
 	var stdout strings.Builder
