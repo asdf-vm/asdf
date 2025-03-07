@@ -1294,6 +1294,11 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		}
 
 		for _, version := range versions {
+			versionObj := toolversions.Version{Type: "version", Value: version}
+			if !shims.ShimExists(conf, plugin, versionObj) {
+				continue
+			}
+
 			if slices.Contains(currentVersions.Versions, version) {
 				fmt.Printf(" *%s\n", version)
 			} else {
@@ -1319,7 +1324,13 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 				cli.OsExiter(1)
 				return err
 			}
+
 			for _, version := range versions {
+				versionObj := toolversions.Version{Type: "version", Value: version}
+				if !shims.ShimExists(conf, plugin, versionObj) {
+					continue
+				}
+
 				if slices.Contains(currentVersions.Versions, version) {
 					fmt.Printf(" *%s\n", version)
 				} else {
