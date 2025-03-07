@@ -156,7 +156,7 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	downloadDir := installs.DownloadPath(conf, plugin, version)
 	installDir := installs.InstallPath(conf, plugin, version)
 
-	if installs.InstallDirExists(conf, plugin, version) {
+	if installs.InstallDirExists(conf, plugin, version) && shims.ShimExists(conf, plugin, version) {
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
 
