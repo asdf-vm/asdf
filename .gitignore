@@ -6,6 +6,7 @@ repository
 keyrings
 /tmp
 .idea
+.vscode
 
 dist/
 
