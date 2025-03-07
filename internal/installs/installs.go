@@ -59,8 +59,7 @@ func DownloadPath(conf config.Config, plugin plugins.Plugin, version toolversion
 // version of a tool is accessible
 func InstallDirExists(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
 	installDir := InstallPath(conf, plugin, version)
-
-	// Check if version already installed
 	_, err := os.Stat(installDir)
+
 	return !os.IsNotExist(err)
 }
