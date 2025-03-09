@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,6 +21,23 @@ func TestLoadConfigEnv(t *testing.T) {
 	assert.Nil(t, err, "Returned error when loading env for config")
 
 	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
+
+	cases := []struct {
+		envVar string
+	}{
+		{"yes"},
+		{"no"},
+	}
+	for _, c := range cases {
+		t.Setenv("ASDF_FORCE_PREPEND", c.envVar)
+		t.Run(fmt.Sprintf("When ASDF_FORCE_PREPEND env given %s", c.envVar), func(t *testing.T) {
+			config, err := loadConfigEnv()
+
+			assert.Nil(t, err, "Returned error when loading env for config")
+
+			assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
+		})
+	}
 }
 
 func TestLoadSettings(t *testing.T) {

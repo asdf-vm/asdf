@@ -5,6 +5,7 @@ package config
 import (
 	"context"
 	"io/fs"
+	"os"
 	"strconv"
 	"strings"
 
@@ -39,7 +40,7 @@ type Config struct {
 	// Unclear if this value will be needed with the golang implementation.
 	// AsdfDir string
 	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
-	ForcePrepend bool   `env:"ASDF_FORCE_PREPEND, overwrite"`
+	ForcePrepend bool
 	// Field that stores the settings struct if it is loaded
 	Settings       Settings
 	PluginIndexURL string
@@ -59,8 +60,15 @@ type Settings struct {
 }
 
 func defaultConfig(dataDir, configFile string) *Config {
+	forcePrepend := forcePrependDefault
+	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
+	if forcePrependEnv == "yes" {
+		forcePrepend = true
+	} else {
+		forcePrepend, _ = strconv.ParseBool(forcePrependEnv)
+	}
 	return &Config{
-		ForcePrepend:                forcePrependDefault,
+		ForcePrepend:                forcePrepend,
 		DataDir:                     dataDir,
 		ConfigFile:                  configFile,
 		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
