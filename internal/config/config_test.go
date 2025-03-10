@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,23 +21,26 @@ func TestLoadConfigEnv(t *testing.T) {
 	assert.Nil(t, err, "Returned error when loading env for config")
 
 	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
+}
 
-	cases := []struct {
-		envVar string
-	}{
-		{"yes"},
-		{"no"},
-	}
-	for _, c := range cases {
-		t.Setenv("ASDF_FORCE_PREPEND", c.envVar)
-		t.Run(fmt.Sprintf("When ASDF_FORCE_PREPEND env given %s", c.envVar), func(t *testing.T) {
-			config, err := loadConfigEnv()
+func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
+	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
+		os.Setenv("ASDF_FORCE_PREPEND", "yes")
+		defer os.Unsetenv("ASDF_FORCE_PREPEND")
 
-			assert.Nil(t, err, "Returned error when loading env for config")
+		config, _ := loadConfigEnv()
 
-			assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
-		})
-	}
+		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
+	})
+
+	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
+		os.Setenv("ASDF_FORCE_PREPEND", "no")
+		defer os.Unsetenv("ASDF_FORCE_PREPEND")
+
+		config, _ := loadConfigEnv()
+
+		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
+	})
 }
 
 func TestLoadSettings(t *testing.T) {
