@@ -6,6 +6,7 @@ import (
 	"context"
 	"io/fs"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -62,9 +63,15 @@ type Settings struct {
 func defaultConfig(dataDir, configFile string) *Config {
 	forcePrepend := forcePrependDefault
 	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
-	if forcePrependEnv == "yes" {
+	switch forcePrependEnv {
+	case "":
+		forcePrepend = forcePrependDefault
+		if runtime.GOOS == "darwin" {
+			forcePrepend = true
+		}
+	case "yes":
 		forcePrepend = true
-	} else {
+	default:
 		forcePrepend, _ = strconv.ParseBool(forcePrependEnv)
 	}
 	return &Config{
