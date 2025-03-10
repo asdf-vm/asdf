@@ -72,7 +72,7 @@ func defaultConfig(dataDir, configFile string) *Config {
 	case "yes":
 		forcePrepend = true
 	default:
-		forcePrepend, _ = strconv.ParseBool(forcePrependEnv)
+		forcePrepend = false
 	}
 	return &Config{
 		ForcePrepend:                forcePrepend,
