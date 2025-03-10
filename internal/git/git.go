@@ -10,7 +10,6 @@ import (
 
 	"github.com/asdf-vm/asdf/internal/execute"
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
 )
 
 // DefaultRemoteName for Git repositories in asdf
@@ -100,7 +99,7 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	oldHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
+	oldHash, err := repo.Head()
 	if err != nil {
 		return "", "", "", err
 	}
@@ -140,14 +139,15 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 	var stdErr2 strings.Builder
 	cmd.Stderr = &stdErr2
 	err = cmd.Run()
-
-	fmt.Printf("stdErr2.String() %#+v\n", stdErr2.String())
-	repo, err = gitOpen(r.Directory)
-	newHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
 	if err != nil {
-		return ref, oldHash.String(), newHash.String(), errors.New(stdErrToErrMsg(stdErr2.String()))
+		return "", "", "", errors.New(stdErrToErrMsg(stdErr2.String()))
 	}
-	return ref, oldHash.String(), newHash.String(), nil
+
+	newHash, err := repo.Head()
+	if err != nil {
+		return ref, oldHash.String(), newHash.Hash().String(), fmt.Errorf("unable to resolve plugin new Git HEAD: %w", err)
+	}
+	return ref, oldHash.String(), newHash.Hash().String(), nil
 }
 
 func stdErrToErrMsg(stdErr string) string {

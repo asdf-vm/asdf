@@ -51,7 +51,7 @@ func TestRepoClone(t *testing.T) {
 		directory := t.TempDir()
 		repo := NewRepo(directory)
 
-		err := repo.Clone(repoDir, "master")
+		err := repo.Clone(repoDir, "main")
 		assert.Nil(t, err)
 
 		// Assert repo directory contains Git repo with bin directory
@@ -146,7 +146,7 @@ func TestRepoUpdate(t *testing.T) {
 
 		updatedToRef, _, _, err := repo.Update("")
 		assert.Nil(t, err)
-		assert.Equal(t, "refs/heads/master", updatedToRef)
+		assert.Equal(t, "refs/heads/main", updatedToRef)
 
 		currentHash, err := getCurrentCommit(directory)
 		assert.Nil(t, err)
@@ -162,14 +162,14 @@ func TestRepoUpdate(t *testing.T) {
 	})
 
 	t.Run("updates repo to ref when repo with name and ref exist", func(t *testing.T) {
-		ref := "master"
+		ref := "main"
 
 		hash, err := getCommit(directory, ref)
 		assert.Nil(t, err)
 
 		updatedToRef, _, newHash, err := repo.Update(ref)
 		assert.Nil(t, err)
-		assert.Equal(t, "master", updatedToRef)
+		assert.Equal(t, "main", updatedToRef)
 
 		// Check that repo was updated to ref
 		latestHash, err := getCurrentCommit(directory)
