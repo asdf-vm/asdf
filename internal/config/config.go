@@ -272,7 +272,6 @@ func getConcurrency(concurrency string) string {
 
 	if concurrency == "auto" || concurrency == "" {
 		return strconv.Itoa(runtime.NumCPU())
-	} else {
-		return concurrency
 	}
+	return concurrency
 }
