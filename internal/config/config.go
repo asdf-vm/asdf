@@ -5,6 +5,8 @@ package config
 import (
 	"context"
 	"io/fs"
+	"os"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -76,6 +78,7 @@ func defaultSettings() *Settings {
 		AlwaysKeepDownload:                false,
 		PluginRepositoryLastCheckDuration: pluginRepoCheckDurationDefault,
 		DisablePluginShortNameRepository:  false,
+		Concurrency:                       getConcurrency("auto"),
 	}
 }
 
@@ -162,7 +165,7 @@ func (c *Config) DisablePluginShortNameRepository() (bool, error) {
 func (c *Config) Concurrency() (string, error) {
 	err := c.loadSettings()
 	if err != nil {
-		return "", err
+		return "1", err
 	}
 
 	return c.Settings.Concurrency, nil
@@ -241,7 +244,11 @@ func loadSettings(asdfrcPath string) (Settings, error) {
 	boolOverride(&settings.LegacyVersionFile, mainConf, "legacy_version_file")
 	boolOverride(&settings.AlwaysKeepDownload, mainConf, "always_keep_download")
 	boolOverride(&settings.DisablePluginShortNameRepository, mainConf, "disable_plugin_short_name_repository")
-	settings.Concurrency = strings.ToLower(mainConf.Key("concurrency").String())
+
+	concurrency := strings.ToLower(mainConf.Key("concurrency").String())
+	if concurrency != "" {
+		settings.Concurrency = getConcurrency(concurrency)
+	}
 
 	return *settings, nil
 }
@@ -254,5 +261,18 @@ func boolOverride(field *bool, section *ini.Section, key string) {
 	}
 	if lcYesOrNo == "no" {
 		*field = false
+	}
+}
+
+func getConcurrency(concurrency string) string {
+	concurrencyFromEnv := strings.ToLower(os.Getenv("ASDF_CONCURRENCY"))
+	if concurrencyFromEnv != "" {
+		concurrency = concurrencyFromEnv
+	}
+
+	if concurrency == "auto" || concurrency == "" {
+		return strconv.Itoa(runtime.NumCPU())
+	} else {
+		return concurrency
 	}
 }

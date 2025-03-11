@@ -1,6 +1,8 @@
 package config
 
 import (
+	"runtime"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -46,11 +48,31 @@ func TestLoadSettings(t *testing.T) {
 		assert.True(t, settings.PluginRepositoryLastCheckDuration.Never, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.Zero(t, settings.PluginRepositoryLastCheckDuration.Every, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.True(t, settings.DisablePluginShortNameRepository, "DisablePluginShortNameRepository field has wrong value")
+		assert.Equal(t, "5", settings.Concurrency, "Concurrency field has wrong value")
+	})
+
+	t.Run("ASDF_CONCURRENCY=99 takes precedence over asdfrc value", func(t *testing.T) {
+		t.Setenv("ASDF_CONCURRENCY", "99")
+		settings, err := loadSettings("testdata/asdfrc")
+		assert.Nil(t, err)
+
+		assert.True(t, settings.Loaded, "Expected Loaded field to be set to true")
+		assert.Equal(t, "99", settings.Concurrency, "Concurrency field has wrong value")
+	})
+
+	t.Run("ASDF_CONCURRENCY=auto takes precedence over asdfrc value", func(t *testing.T) {
+		expectedConcurrency := strconv.Itoa(runtime.NumCPU())
+		t.Setenv("ASDF_CONCURRENCY", "auto")
+		settings, err := loadSettings("testdata/asdfrc")
+		assert.Nil(t, err)
+
+		assert.True(t, settings.Loaded, "Expected Loaded field to be set to true")
+		assert.Equal(t, expectedConcurrency, settings.Concurrency, "Concurrency field has wrong value")
 	})
 
 	t.Run("When given path to empty file returns settings struct with defaults", func(t *testing.T) {
+		expectedConcurrency := strconv.Itoa(runtime.NumCPU())
 		settings, err := loadSettings("testdata/empty-asdfrc")
-
 		assert.Nil(t, err)
 
 		assert.False(t, settings.LegacyVersionFile, "LegacyVersionFile field has wrong value")
@@ -58,6 +80,7 @@ func TestLoadSettings(t *testing.T) {
 		assert.False(t, settings.PluginRepositoryLastCheckDuration.Never, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.Equal(t, settings.PluginRepositoryLastCheckDuration.Every, 60, "PluginRepositoryLastCheckDuration field has wrong value")
 		assert.False(t, settings.DisablePluginShortNameRepository, "DisablePluginShortNameRepository field has wrong value")
+		assert.Equal(t, expectedConcurrency, settings.Concurrency, "Concurrency field has wrong value")
 	})
 }
 

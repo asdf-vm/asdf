@@ -5,6 +5,7 @@ use_release_candidates = yes
 always_keep_download = yes
 plugin_repository_last_check_duration = never
 disable_plugin_short_name_repository = yes
+concurrency = 5
 
 # Hooks
 pre_asdf_plugin_add = echo Executing with args: $@
