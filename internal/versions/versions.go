@@ -24,7 +24,7 @@ const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
 	uninstallableVersionMsg = "uninstallable version: %s"
-	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
+	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
 	noLatestVersionErrMsg   = "no latest version found"
 )
 

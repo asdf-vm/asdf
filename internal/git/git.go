@@ -10,6 +10,7 @@ import (
 
 	"github.com/asdf-vm/asdf/internal/execute"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 )
 
 // DefaultRemoteName for Git repositories in asdf
@@ -91,6 +92,30 @@ func (r Repo) RemoteURL() (string, error) {
 	return remotes[0].Config().URLs[0], nil
 }
 
+func (r Repo) RemoteDefaultBranch() (string, error) {
+	// @jiminychris - https://github.com/go-git/go-git/issues/510#issuecomment-2560116147
+	repo, err := gitOpen(r.Directory)
+	if err != nil {
+		return "", err
+	}
+
+	// Get the remote you want to find the default for
+	remote, err := repo.Remote("origin")
+	if err != nil {
+		return "", err
+	}
+
+	references, _ := remote.List(&git.ListOptions{})
+	// Search through the list of references in that remote for a symbolic reference named HEAD;
+	// Its target should be the default branch name.
+	for _, reference := range references {
+		if reference.Name() == "HEAD" && reference.Type() == plumbing.SymbolicReference {
+			return reference.Target().String(), nil
+		}
+	}
+	return "", fmt.Errorf("unable to find default branch for git directory %s", r.Directory)
+}
+
 // Update updates the plugin's Git repository to the ref if provided, or the
 // latest commit on the current branch
 func (r Repo) Update(ref string) (string, string, string, error) {
@@ -104,20 +129,12 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	if ref == "" {
-		// If no ref is provided checkout latest commit on current branch
-		head, err := repo.Head()
+	// If no ref is provided we take the default branch of the remote
+	if strings.TrimSpace(ref) == "" {
+		ref, err = r.RemoteDefaultBranch()
 		if err != nil {
 			return "", "", "", err
 		}
-
-		if !head.Name().IsBranch() {
-			return "", "", "", fmt.Errorf("not on a branch, unable to update")
-		}
-
-		// If on a branch checkout the latest version of it from the remote
-		branch := head.Name()
-		ref = branch.String()
 	}
 
 	commonOpts := []string{"--git-dir", filepath.Join(r.Directory, ".git"), "--work-tree", r.Directory}
