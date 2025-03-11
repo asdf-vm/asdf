@@ -165,7 +165,7 @@ func (c *Config) DisablePluginShortNameRepository() (bool, error) {
 func (c *Config) Concurrency() (string, error) {
 	err := c.loadSettings()
 	if err != nil {
-		return "1", err
+		return getConcurrency("auto"), err
 	}
 
 	return c.Settings.Concurrency, nil
