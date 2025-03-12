@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -25,8 +24,7 @@ func TestLoadConfigEnv(t *testing.T) {
 
 func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
-		os.Setenv("ASDF_FORCE_PREPEND", "yes")
-		defer os.Unsetenv("ASDF_FORCE_PREPEND")
+		t.Setenv("ASDF_FORCE_PREPEND", "yes")
 
 		config, _ := loadConfigEnv()
 
@@ -34,8 +32,7 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	})
 
 	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
-		os.Setenv("ASDF_FORCE_PREPEND", "no")
-		defer os.Unsetenv("ASDF_FORCE_PREPEND")
+		t.Setenv("ASDF_FORCE_PREPEND", "no")
 
 		config, _ := loadConfigEnv()
 
