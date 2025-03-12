@@ -63,16 +63,8 @@ type Settings struct {
 func defaultConfig(dataDir, configFile string) *Config {
 	forcePrepend := forcePrependDefault
 	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
-	switch forcePrependEnv {
-	case "":
-		forcePrepend = forcePrependDefault
-		if runtime.GOOS == "darwin" {
-			forcePrepend = true
-		}
-	case "yes":
+	if forcePrependEnv == "yes" || (forcePrependEnv == "" && runtime.GOOS == "darwin") {
 		forcePrepend = true
-	default:
-		forcePrepend = false
 	}
 	return &Config{
 		ForcePrepend:                forcePrepend,
