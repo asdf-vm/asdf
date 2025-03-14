@@ -65,17 +65,17 @@ func TestInstalled(t *testing.T) {
 	})
 }
 
-func TestIsInstalled(t *testing.T) {
+func TestInstallDirExists(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, "1.0.0")
 
 	t.Run("returns false when not installed", func(t *testing.T) {
 		version := toolversions.Version{Type: "version", Value: "4.0.0"}
-		assert.False(t, IsInstalled(conf, plugin, version))
+		assert.False(t, InstallDirExists(conf, plugin, version))
 	})
 	t.Run("returns true when installed", func(t *testing.T) {
 		version := toolversions.Version{Type: "version", Value: "1.0.0"}
-		assert.True(t, IsInstalled(conf, plugin, version))
+		assert.True(t, InstallDirExists(conf, plugin, version))
 	})
 }
 
