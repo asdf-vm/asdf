@@ -160,12 +160,13 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
 
+	concurrency, _ := conf.Concurrency()
 	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    version.Type,
 		"ASDF_INSTALL_VERSION": version.Value,
 		"ASDF_INSTALL_PATH":    installDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
-		"ASDF_CONCURRENCY":     asdfConcurrency(conf),
+		"ASDF_CONCURRENCY":     concurrency,
 	}
 
 	err = os.MkdirAll(downloadDir, 0o777)
@@ -225,21 +226,6 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	}
 
 	return nil
-}
-
-func asdfConcurrency(conf config.Config) string {
-	val, ok := os.LookupEnv("ASDF_CONCURRENCY")
-
-	if !ok {
-		val, err := conf.Concurrency()
-		if err != nil {
-			return "1"
-		}
-
-		return val
-	}
-
-	return val
 }
 
 // Latest invokes the plugin's latest-stable callback if it exists and returns
