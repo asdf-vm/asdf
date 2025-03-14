@@ -92,6 +92,30 @@ func (r Repo) RemoteURL() (string, error) {
 	return remotes[0].Config().URLs[0], nil
 }
 
+func (r Repo) RemoteDefaultBranch() (string, error) {
+	// @jiminychris - https://github.com/go-git/go-git/issues/510#issuecomment-2560116147
+	repo, err := gitOpen(r.Directory)
+	if err != nil {
+		return "", err
+	}
+
+	// Get the remote you want to find the default for
+	remote, err := repo.Remote("origin")
+	if err != nil {
+		return "", err
+	}
+
+	references, _ := remote.List(&git.ListOptions{})
+	// Search through the list of references in that remote for a symbolic reference named HEAD;
+	// Its target should be the default branch name.
+	for _, reference := range references {
+		if reference.Name() == "HEAD" && reference.Type() == plumbing.SymbolicReference {
+			return reference.Target().String(), nil
+		}
+	}
+	return "", fmt.Errorf("unable to find default branch for git directory %s", r.Directory)
+}
+
 // Update updates the plugin's Git repository to the ref if provided, or the
 // latest commit on the current branch
 func (r Repo) Update(ref string) (string, string, string, error) {
@@ -100,29 +124,17 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	oldHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
+	oldHash, err := repo.Head()
 	if err != nil {
 		return "", "", "", err
 	}
 
-	if ref == "" {
-		// If no ref is provided checkout latest commit on current branch
-		head, err := repo.Head()
+	// If no ref is provided we take the default branch of the remote
+	if strings.TrimSpace(ref) == "" {
+		ref, err = r.RemoteDefaultBranch()
 		if err != nil {
 			return "", "", "", err
 		}
-
-		if !head.Name().IsBranch() {
-			return "", "", "", fmt.Errorf("not on a branch, unable to update")
-		}
-
-		// If on a branch checkout the latest version of it from the remote
-		branch := head.Name()
-		ref = branch.String()
-		checkoutOptions = git.CheckoutOptions{Branch: branch, Keep: true}
-	} else {
-		// Checkout ref if provided
-		checkoutOptions = git.CheckoutOptions{Hash: plumbing.NewHash(ref), Keep: true}
 	}
 
 	commonOpts := []string{"--git-dir", filepath.Join(r.Directory, ".git"), "--work-tree", r.Directory}
@@ -144,14 +156,15 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 	var stdErr2 strings.Builder
 	cmd.Stderr = &stdErr2
 	err = cmd.Run()
-
-	fmt.Printf("stdErr2.String() %#+v\n", stdErr2.String())
-	repo, err = gitOpen(r.Directory)
-	newHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
 	if err != nil {
-		return ref, oldHash.String(), newHash.String(), errors.New(stdErrToErrMsg(stdErr2.String()))
+		return "", "", "", errors.New(stdErrToErrMsg(stdErr2.String()))
 	}
-	return ref, oldHash.String(), newHash.String(), nil
+
+	newHash, err := repo.Head()
+	if err != nil {
+		return ref, oldHash.String(), newHash.Hash().String(), fmt.Errorf("unable to resolve plugin new Git HEAD: %w", err)
+	}
+	return ref, oldHash.String(), newHash.Hash().String(), nil
 }
 
 func stdErrToErrMsg(stdErr string) string {
