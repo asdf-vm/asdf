@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.6](https://github.com/asdf-vm/asdf/compare/v0.16.5...v0.16.6) (2025-03-14)
+
+
+### Bug Fixes
+
+* correct ASDF_INSTALL_* envvar unset test ([#2006](https://github.com/asdf-vm/asdf/issues/2006)) ([6fbf94a](https://github.com/asdf-vm/asdf/commit/6fbf94a75b8e045eea53038182e376b21a6947e4))
+* correct handling of `ASDF_FORCE_PREPEND` environment variable ([#2011](https://github.com/asdf-vm/asdf/issues/2011)) ([43a84a0](https://github.com/asdf-vm/asdf/commit/43a84a024faeacb04044c9e2cf20ccbe87ea4263))
+
 ## [0.16.5](https://github.com/asdf-vm/asdf/compare/v0.16.4...v0.16.5) (2025-03-04)
 
 
