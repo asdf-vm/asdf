@@ -126,8 +126,7 @@ func Execute(version string) {
 				Action: func(_ *cli.Context) error {
 					conf, err := config.LoadConfig()
 					if err != nil {
-						logger.Printf("error loading config: %s", err)
-						return err
+						return fmt.Errorf("error loading config: %w", err)
 					}
 
 					return infoCommand(conf, version)
@@ -191,8 +190,7 @@ func Execute(version string) {
 							args := cCtx.Args()
 							conf, err := config.LoadConfig()
 							if err != nil {
-								logger.Printf("error loading config: %s", err)
-								return err
+								return fmt.Errorf("error loading config: %w", err)
 							}
 
 							return pluginAddCommand(cCtx, conf, logger, args.Get(0), args.Get(1))
@@ -343,7 +341,7 @@ func Execute(version string) {
 	}
 
 	if err := unsetAsdfReservedEnvVars(); err != nil {
-		logger.Printf("failed to unset reserved environment variables: %s", err)
+		logger.Println("failed to unset reserved environment variables: %w", err)
 		cli.OsExiter(1)
 	}
 
@@ -371,14 +369,12 @@ Completions are available for: %v`, shell, strings.Join(completions.Names(), ", 
 func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		logger.Printf("error loading config: %s", err)
-		return err
+		return fmt.Errorf("error loading config: %w", err)
 	}
 
 	currentDir, err := os.Getwd()
 	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return err
+		return fmt.Errorf("unable to get current directory: %w", err)
 	}
 
 	// settings here to match legacy implementation
@@ -646,8 +642,7 @@ func runExtensionCommand(plugin plugins.Plugin, args []string) (err error) {
 func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
 	currentDir, err := os.Getwd()
 	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return "", plugins.Plugin{}, "", err
+		return "", plugins.Plugin{}, "", fmt.Errorf("unable to get current directory: %w", err)
 	}
 
 	executable, plugin, version, found, err := shims.FindExecutable(conf, command, currentDir)
@@ -756,7 +751,7 @@ func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) 
 	if err != nil {
 		return fmt.Errorf("error generating shims: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -860,8 +855,7 @@ func infoCommand(conf config.Config, version string) error {
 func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		logger.Printf("error loading config: %s", err)
-		return err
+		return fmt.Errorf("error loading config: %w", err)
 	}
 
 	if tool != "" {
@@ -919,7 +913,7 @@ func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref 
 				fmt.Printf("updated %s to ref %s\n", plugin.Name, updatedToRef)
 			}
 		}
-		
+
 		if len(updateErrors) > 0 {
 			// Return the first error, but log all of them
 			for _, err := range updateErrors {
@@ -942,7 +936,7 @@ func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref 
 func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		l.Printf("error loading config: %s", err)
+		l.Printf("error loading config: %s\n", err)
 		cli.OsExiter(1)
 		return
 	}
@@ -1065,8 +1059,8 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 			}
 		}
 		return nil
-	} 
-	
+	}
+
 	// Install specific version
 	plugin := plugins.New(conf, toolName)
 
