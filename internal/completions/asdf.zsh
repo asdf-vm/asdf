@@ -286,9 +286,16 @@ case "$subcmd" in
         'asdf-available-plugins:Installed ASDF Plugins:_asdf__installed_plugins'
     fi
     ;;
-  (uninstall|reshim)
-    # Complete plugin name and version for uninstall and reshim commands
-    _arguments '1:plugin-name: _asdf__installed_plugins' '2:tool-version:{_asdf__installed_versions_of ${words[3]}}'
+  (uninstall|reshim|where)
+    # Handle complex install command completion with latest tag support
+    if (( CURRENT == 3 )); then
+      _asdf__installed_plugins
+      return
+    elif (( CURRENT == 4 )); then
+      # For normal list: show installed versions with optional filter
+      _asdf__installed_versions_of ${words[3]}
+      return
+    fi
     ;;
   (set)
     # Handle set command completion
@@ -327,10 +334,6 @@ case "$subcmd" in
         fi
         ;;
     esac
-    ;;
-  (where)
-    # Complete plugin name and optional version for where command
-    _arguments '1:plugin-name:_asdf__installed_plugins' '2::tool-version:{_asdf__installed_versions_of ${words[3]}}'
     ;;
   (which|shimversions)
     # Complete with available shims for which and shimversions commands
