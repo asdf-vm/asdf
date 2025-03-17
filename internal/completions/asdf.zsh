@@ -39,7 +39,6 @@ asdf_commands=( # 'asdf help' lists commands with help text
   'env:prints or runs an executable under a command environment'
   'info:print os, shell and asdf debug information'
   'version:print the currently installed version of ASDF'
-  'version:print the currently installed version of ASDF'
   'reshim:recreate shims for version of a tool'
   'shim:shim management sub-commands'
   'shimversions:list for given command which plugins and versions provide it'
