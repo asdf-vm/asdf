@@ -196,6 +196,9 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
+		if rmErr := os.RemoveAll(installDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
+		}
 		return fmt.Errorf("failed to run install callback: %w", err)
 	}
 
