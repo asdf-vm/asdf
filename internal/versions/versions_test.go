@@ -258,6 +258,26 @@ func TestInstallOneVersion(t *testing.T) {
 		assert.True(t, pathInfo.IsDir())
 	})
 
+	t.Run("deletes install directory when install fails", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+
+		installScript := filepath.Join(conf.DataDir, "plugins", plugin.Name, "bin", "install")
+		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+		assert.Nil(t, err)
+		_, err = f.WriteString("\nexit 1")
+		assert.Nil(t, err)
+		err = f.Close()
+		assert.Nil(t, err)
+
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Errorf(t, err, "failed to run install callback: exit status 1")
+
+		installPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0")
+		_, err = os.Stat(installPath)
+		assert.True(t, os.IsNotExist(err))
+	})
+
 	t.Run("runs pre-download, pre-install and post-install hooks when installation successful", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
