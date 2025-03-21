@@ -37,11 +37,11 @@ func TestLoadConfig(t *testing.T) {
 	})
 }
 
-func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
+func TestLoadConfig_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "yes")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})
@@ -49,7 +49,7 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given YES", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "YES")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})
@@ -57,7 +57,7 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "no")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
 	})

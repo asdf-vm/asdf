@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoadConfigEnv_WithForcePrependEnv_OnDarwin(t *testing.T) {
+func TestLoadConfig_WithForcePrependEnv_OnDarwin(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env does not given on macOS", func(t *testing.T) {
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})

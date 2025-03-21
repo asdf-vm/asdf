@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoadConfigEnv_WithForcePrependEnv_OnLinux(t *testing.T) {
+func TestLoadConfig_WithForcePrependEnv_OnLinux(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env does not given on Linux", func(t *testing.T) {
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
 	})
