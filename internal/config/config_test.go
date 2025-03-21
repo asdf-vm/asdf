@@ -1,13 +1,10 @@
 package config
 
 import (
-<<<<<<< HEAD
+	"os"
 	"runtime"
 	"strconv"
-=======
-	"os"
 	"strings"
->>>>>>> 1391473 (fix: support tilde in env var)
 	"testing"
 
 	"github.com/stretchr/testify/assert"
