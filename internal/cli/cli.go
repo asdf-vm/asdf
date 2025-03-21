@@ -668,6 +668,9 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 		if len(toolVersions) > 0 {
 			if anyInstalled(conf, toolVersions) {
 				logger.Printf("No version is set for command %s", command)
+				if version != "" {
+					logger.Printf("Requested version was %s", version)
+				}
 				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
 			} else {
 				logger.Printf("No preset version installed for command %s", command)
