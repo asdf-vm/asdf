@@ -29,7 +29,7 @@ teardown() {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
 
-  run asdf env dummy which dummy
+  run env "ASDF_FORCE_PREPEND=yes" asdf env dummy which dummy
   [ "$status" -eq 0 ]
   [ "$output" = "$ASDF_DIR/installs/dummy/1.0/bin/dummy" ]
 }
