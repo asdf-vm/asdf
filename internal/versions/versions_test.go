@@ -339,6 +339,22 @@ func TestLatest(t *testing.T) {
 		assert.Equal(t, "2.0.0", version)
 	})
 
+	t.Run("when plugin has latest-stable callback invokes and it does not filter results", func(t *testing.T) {
+		pluginName := "latest-with-dev-version"
+		pluginDir, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, pluginName)
+
+		// Replace latest-stable script so it returns a dev version that would be otherwise filtered out
+		latestScript := filepath.Join(pluginDir, "bin", "latest-stable")
+		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0777)
+		assert.Nil(t, err)
+
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, "1.2.3-dev", version)
+	})
+
 	t.Run("when given query matching no versions return empty slice of versions", func(t *testing.T) {
 		version, err := Latest(plugin, "impossible-to-satisfy-query")
 		assert.Error(t, err, "no latest version found")
