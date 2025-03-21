@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.6](https://github.com/asdf-vm/asdf/compare/v0.16.5...v0.16.6) (2025-03-21)
+
+
+### Bug Fixes
+
+* correct ASDF_INSTALL_* envvar unset test ([#2006](https://github.com/asdf-vm/asdf/issues/2006)) ([6fbf94a](https://github.com/asdf-vm/asdf/commit/6fbf94a75b8e045eea53038182e376b21a6947e4))
+* correct concurrency to align with documentation ([#2014](https://github.com/asdf-vm/asdf/issues/2014)) ([807ea38](https://github.com/asdf-vm/asdf/commit/807ea3883139da48300e72931680431aa35e593d))
+* correct handling of `ASDF_FORCE_PREPEND` environment variable ([#2011](https://github.com/asdf-vm/asdf/issues/2011)) ([43a84a0](https://github.com/asdf-vm/asdf/commit/43a84a024faeacb04044c9e2cf20ccbe87ea4263))
+* improve zsh completion suggestions ([#2022](https://github.com/asdf-vm/asdf/issues/2022)) ([b1cf58d](https://github.com/asdf-vm/asdf/commit/b1cf58d2bd01c1c2c3662cca6bd8927d68a37258))
+* remove filtering from latest-stable call ([#2032](https://github.com/asdf-vm/asdf/issues/2032)) ([6fcdcdf](https://github.com/asdf-vm/asdf/commit/6fcdcdf6df693fec6d643fab54e2d520bd5b539b))
+* remove install directory for version when install fails ([#2024](https://github.com/asdf-vm/asdf/issues/2024)) ([932ac46](https://github.com/asdf-vm/asdf/commit/932ac468b7c24c2adef90a293a1f7280a0074cc4))
+
 ## [0.16.5](https://github.com/asdf-vm/asdf/compare/v0.16.4...v0.16.5) (2025-03-04)
 
 
