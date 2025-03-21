@@ -1,8 +1,13 @@
 package config
 
 import (
+<<<<<<< HEAD
 	"runtime"
 	"strconv"
+=======
+	"os"
+	"strings"
+>>>>>>> 1391473 (fix: support tilde in env var)
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,17 +16,15 @@ import (
 func TestLoadConfig(t *testing.T) {
 	config, err := LoadConfig()
 
-	assert.Nil(t, err, "Returned error when building config")
-
-	assert.NotZero(t, config.Home, "Expected Home to be set")
-}
-
-func TestLoadConfigEnv(t *testing.T) {
-	config, err := loadConfigEnv()
-
 	assert.Nil(t, err, "Returned error when loading env for config")
 
-	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
+	assert.NotZero(t, config.Home, "Expected Home to be set")
+
+	homeDir, err := os.UserHomeDir()
+	assert.Nil(t, err)
+
+	assert.True(t, strings.HasPrefix(config.DataDir, homeDir))
+	assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
 }
 
 func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
