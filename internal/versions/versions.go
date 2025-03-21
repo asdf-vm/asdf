@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
-	"github.com/asdf-vm/asdf/internal/execenv"
 	"github.com/asdf-vm/asdf/internal/hook"
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/plugins"
@@ -24,7 +23,8 @@ const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
 	uninstallableVersionMsg = "uninstallable version: %s"
-	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master)"
+	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
+	numericStartFilterRegex = "^\\s*[0-9]"
 	noLatestVersionErrMsg   = "no latest version found"
 	missingPluginErrMsg     = "missing plugin for %s"
 )
@@ -190,15 +190,14 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
 
+	concurrency, _ := conf.Concurrency()
 	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    version.Type,
 		"ASDF_INSTALL_VERSION": version.Value,
 		"ASDF_INSTALL_PATH":    installDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
-		"ASDF_CONCURRENCY":     asdfConcurrency(conf),
+		"ASDF_CONCURRENCY":     concurrency,
 	}
-
-	env = execenv.MergeEnv(execenv.SliceToMap(os.Environ()), env)
 
 	err = os.MkdirAll(downloadDir, 0o777)
 	if err != nil {
@@ -227,6 +226,9 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
+		if rmErr := os.RemoveAll(installDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
+		}
 		return fmt.Errorf("failed to run install callback: %w", err)
 	}
 
@@ -259,21 +261,6 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	return nil
 }
 
-func asdfConcurrency(conf config.Config) string {
-	val, ok := os.LookupEnv("ASDF_CONCURRENCY")
-
-	if !ok {
-		val, err := conf.Concurrency()
-		if err != nil {
-			return "1"
-		}
-
-		return val
-	}
-
-	return val
-}
-
 // Latest invokes the plugin's latest-stable callback if it exists and returns
 // the version it returns. If the callback is missing it invokes the list-all
 // callback and returns the last version matching the query, if a query is
@@ -293,7 +280,8 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 			return version, err
 		}
 
-		versions := filterOutByRegex(allVersions, latestFilterRegex)
+		versions := filterOutByRegex(allVersions, numericStartFilterRegex, true)
+		versions = filterOutByRegex(versions, latestFilterRegex, false)
 
 		if len(versions) < 1 {
 			return version, errors.New(noLatestVersionErrMsg)
@@ -304,7 +292,8 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 
 	// parse stdOut and return version
 	allVersions := parseVersions(stdOut.String())
-	versions := filterOutByRegex(allVersions, latestFilterRegex)
+	versions := filterOutByRegex(allVersions, numericStartFilterRegex, true)
+	versions = filterOutByRegex(versions, latestFilterRegex, false)
 	if len(versions) < 1 {
 		return version, errors.New(noLatestVersionErrMsg)
 	}
@@ -392,10 +381,11 @@ func filterByExactMatch(allVersions []string, pattern string) (versions []string
 	return versions
 }
 
-func filterOutByRegex(allVersions []string, pattern string) (versions []string) {
+func filterOutByRegex(allVersions []string, pattern string, keepMatch bool) (versions []string) {
+	regex, _ := regexp.Compile(pattern)
 	for _, version := range allVersions {
-		match, _ := regexp.MatchString(pattern, version)
-		if !match {
+		match := regex.MatchString(version)
+		if match == keepMatch {
 			versions = append(versions, version)
 		}
 	}

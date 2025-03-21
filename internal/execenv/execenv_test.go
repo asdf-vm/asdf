@@ -1,7 +1,6 @@
 package execenv
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -14,39 +13,6 @@ const (
 	testPluginName  = "lua"
 	testPluginName2 = "ruby"
 )
-
-func TestCurrentEnv(t *testing.T) {
-	t.Run("returns map of current environment", func(t *testing.T) {
-		envMap := CurrentEnv()
-		path, found := envMap["PATH"]
-		assert.True(t, found)
-		assert.NotEmpty(t, path)
-	})
-}
-
-func TestMergeEnv(t *testing.T) {
-	t.Run("merges two maps", func(t *testing.T) {
-		map1 := map[string]string{"Key": "value"}
-		map2 := map[string]string{"Key2": "value2"}
-		map3 := MergeEnv(map1, map2)
-		assert.Equal(t, map3["Key"], "value")
-		assert.Equal(t, map3["Key2"], "value2")
-	})
-
-	t.Run("doesn't change original map", func(t *testing.T) {
-		map1 := map[string]string{"Key": "value"}
-		map2 := map[string]string{"Key2": "value2"}
-		_ = MergeEnv(map1, map2)
-		assert.Equal(t, map1["Key2"], "value2")
-	})
-
-	t.Run("second map overwrites values in first", func(t *testing.T) {
-		map1 := map[string]string{"Key": "value"}
-		map2 := map[string]string{"Key": "value2"}
-		map3 := MergeEnv(map1, map2)
-		assert.Equal(t, map3["Key"], "value2")
-	})
-}
 
 func TestGenerate(t *testing.T) {
 	t.Run("returns map of environment variables", func(t *testing.T) {
@@ -99,38 +65,17 @@ func TestGenerate(t *testing.T) {
 		assert.Equal(t, "bar", env["BAZ"])
 		assert.Equal(t, "abc\n123", env["EQUALSTEST"])
 	})
-}
 
-func TestSliceToMap(t *testing.T) {
-	tests := []struct {
-		input  []string
-		output map[string]string
-	}{
-		{
-			input:  []string{"VAR=value"},
-			output: map[string]string{"VAR": "value"},
-		},
-		{
-			input:  []string{"BASH_FUNC_bats_readlinkf%%=() {  readlink -f \"$1\"\n}"},
-			output: map[string]string{"BASH_FUNC_bats_readlinkf%%": "() {  readlink -f \"$1\"\n}"},
-		},
-		{
-			input:  []string{"MYVAR=some things = with = in it"},
-			output: map[string]string{"MYVAR": "some things = with = in it"},
-		},
-		{
-			input:  []string{"MYVAR=value\nwith\nnewlines"},
-			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
-		},
-		{
-			input:  []string{"MYVAR=value", "with", "newlines"},
-			output: map[string]string{"MYVAR": "value\nwith\nnewlines"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(fmt.Sprintf("input: %s, output: %s", tt.input, tt.output), func(t *testing.T) {
-			assert.Equal(t, tt.output, SliceToMap(tt.input))
-		})
-	}
+	t.Run("preserves environment variables that contain equals sign and line breaks in value", func(t *testing.T) {
+		value := "-----BEGIN CERTIFICATE-----\nMANY\\LINES\\THE\nLAST\\ONE\\ENDS\\IN\nAN=\n-----END CERTIFICATE-----"
+		testDataDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir}
+		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, testPluginName)
+		assert.Nil(t, repotest.WritePluginCallback(plugin.Dir, "exec-env", "#!/usr/bin/env bash\nexport BAZ=\""+value+"\""))
+		env, err := Generate(plugin, map[string]string{})
+		assert.Nil(t, err)
+		assert.Equal(t, value, env["BAZ"])
+	})
 }

@@ -276,6 +276,26 @@ func TestInstallOneVersion(t *testing.T) {
 		assert.True(t, pathInfo.IsDir())
 	})
 
+	t.Run("deletes install directory when install fails", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+
+		installScript := filepath.Join(conf.DataDir, "plugins", plugin.Name, "bin", "install")
+		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+		assert.Nil(t, err)
+		_, err = f.WriteString("\nexit 1")
+		assert.Nil(t, err)
+		err = f.Close()
+		assert.Nil(t, err)
+
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Errorf(t, err, "failed to run install callback: exit status 1")
+
+		installPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0")
+		_, err = os.Stat(installPath)
+		assert.True(t, os.IsNotExist(err))
+	})
+
 	t.Run("runs pre-download, pre-install and post-install hooks when installation successful", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
@@ -354,6 +374,43 @@ func TestLatest(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, "4.0.0", version)
 	})
+}
+
+func TestLatestWithSamples(t *testing.T) {
+	tests := []struct {
+		testFile       string
+		expectedOutput string
+	}{
+		{
+			testFile:       "list-all-ruby",
+			expectedOutput: "3.4.2",
+		},
+		{
+			testFile:       "list-all-python",
+			expectedOutput: "3.13.2t",
+		},
+		{
+			testFile:       "list-all-elixir",
+			expectedOutput: "1.18.2-otp-27",
+		},
+	}
+	for _, tt := range tests {
+		pluginName := "latest_test"
+		conf, _ := generateConfig(t)
+		pluginDir, err := repotest.InstallPlugin("dummy_legacy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		versionsFilePath, err := filepath.Abs(filepath.Join("testdata", tt.testFile))
+		assert.Nil(t, err)
+		contents := "#!/usr/bin/env bash\ncat \"" + versionsFilePath + "\""
+		listAllPath := filepath.Join(pluginDir, "bin", "list-all")
+		err = os.WriteFile(listAllPath, []byte(contents), 0o777)
+		assert.Nil(t, err)
+
+		plugin := plugins.New(conf, pluginName)
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, tt.expectedOutput, version)
+	}
 }
 
 func TestAllVersions(t *testing.T) {
