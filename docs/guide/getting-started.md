@@ -9,6 +9,7 @@ asdf can be installed in several different ways:
 | Package Manager   | Command                                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Homebrew | `brew install asdf`                                                                                                                                                 |
+| Zypper   | `zypper install asdf`                                                                                                                                               |
 | Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
 :::
