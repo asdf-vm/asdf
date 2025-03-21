@@ -108,7 +108,7 @@ func LoadConfig() (Config, error) {
 		return config, err
 	}
 
-	homeDir, err := homedir.Dir()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return config, err
 	}
