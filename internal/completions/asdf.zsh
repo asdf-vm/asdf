@@ -1,4 +1,3 @@
-# Define completion for asdf version manager
 #compdef asdf
 #description tool to manage versions of multiple runtimes
 
