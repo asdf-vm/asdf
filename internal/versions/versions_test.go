@@ -47,6 +47,7 @@ func TestInstallAll(t *testing.T) {
 		writeVersionFile(t, currentDir, content)
 
 		err := InstallAll(conf, currentDir, &stdout, &stderr)
+		assert.Len(t, err, 1, "expected 1 install error")
 		assert.ErrorContains(t, err[0], "no version set")
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
@@ -68,6 +69,23 @@ func TestInstallAll(t *testing.T) {
 		assert.Empty(t, err)
 
 		assertNotInstalled(t, conf.DataDir, secondPlugin.Name, version)
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
+	})
+
+	t.Run("reports skipped tools due to missing plugin", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		currentDir := t.TempDir()
+		version := "1.0.0"
+
+		// write a version file
+		content := fmt.Sprintf("%s %s\n%s %s", plugin.Name, version, "non-existant-tool", version)
+		writeVersionFile(t, currentDir, content)
+
+		err := InstallAll(conf, currentDir, &stdout, &stderr)
+		assert.Len(t, err, 1, "expected 1 install error")
+		assert.ErrorContains(t, err[0], "missing plugin for")
+
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
 	})
 }
@@ -537,9 +555,11 @@ func assertNotInstalled(t *testing.T, dataDir, pluginName, version string) {
 func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	t.Helper()
 	testDataDir := t.TempDir()
+	homeDir := t.TempDir()
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
+	conf.Home = homeDir
 
 	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)

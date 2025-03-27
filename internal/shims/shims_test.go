@@ -442,6 +442,7 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
+	conf.Home = t.TempDir()
 
 	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
 }
