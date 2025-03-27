@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
+
+
+### Bug Fixes
+
+* remove comment from first line zsh completion output ([#2035](https://github.com/asdf-vm/asdf/issues/2035)) ([#2037](https://github.com/asdf-vm/asdf/issues/2037)) ([74d7b17](https://github.com/asdf-vm/asdf/commit/74d7b17a1cc9f640cf0f5134416d1cf7a56fe19f))
+
 ## [0.16.6](https://github.com/asdf-vm/asdf/compare/v0.16.5...v0.16.6) (2025-03-21)
 
 
