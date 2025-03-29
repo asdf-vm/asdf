@@ -13,6 +13,19 @@ git clone https://github.com/<GITHUB_USER>/asdf.git
 git clone https://github.com/asdf-vm/asdf.git
 ```
 
+Set the `BASE_DIR` environment variable to the full path of your `asdf-vm/asdf` clone:
+
+```
+cd asdf
+export BASE_DIR="$PWD"
+```
+
+[`direnv`](https://github.com/direnv/direnv) can be used to always export `BASE_DIR`:
+
+```
+direnv allow
+```
+
 The tools for core development are in this repo's `.tool-versions`. If you wish to manage with `asdf` itself, add the plugins:
 
 ```shell
