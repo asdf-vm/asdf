@@ -124,7 +124,7 @@ func runBatsFile(t *testing.T, dir, filename string) {
 	cmd.Stderr = &stderr
 
 	// Add dir to asdf test variables
-	asdfTestHome := fmt.Sprintf("BASE_DIR=%s", dir)
+	asdfTestHome := fmt.Sprintf("ASDF_DEV_BASE_DIR=%s", dir)
 	asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
 	cmd.Env = []string{asdfBinPath, asdfTestHome}
 
