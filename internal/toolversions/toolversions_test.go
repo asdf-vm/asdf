@@ -49,6 +49,19 @@ func TestFindToolVersions(t *testing.T) {
 		assert.True(t, found)
 		assert.Equal(t, []string{"2.0.0"}, versions)
 	})
+
+	t.Run("returns list of versions as hyphenated when installed as <tool> ref:<gitref>", func(t *testing.T) {
+		toolVersionsPath := filepath.Join(t.TempDir(), ".tool-versions")
+		file, err := os.Create(toolVersionsPath)
+		assert.Nil(t, err)
+		defer file.Close()
+		file.WriteString("erlang ref:OTP-27.3.1")
+
+		versions, found, err := FindToolVersions(toolVersionsPath, "erlang")
+		assert.Nil(t, err)
+		assert.True(t, found)
+		assert.Equal(t, []string{"ref-OTP-27.3.1"}, versions)
+	})
 }
 
 func TestWriteToolVersionsToFile(t *testing.T) {
