@@ -205,6 +205,13 @@ func FormatForFS(version Version) string {
 	}
 }
 
+func VersionFromFSFormat(version string) string {
+	if strings.HasPrefix(version, "ref-") {
+		return strings.Replace(version, "ref-", "ref:", 1)
+	}
+	return version
+}
+
 func readLines(content string) (lines []string) {
 	return strings.Split(content, "\n")
 }
@@ -224,11 +231,6 @@ func getAllToolsAndVersionsInContent(content string) (toolVersions []ToolVersion
 	for _, line := range readLines(content) {
 		tokens, _ := parseLine(line)
 		if len(tokens) > 1 {
-			for i := 1; i < len(tokens); i++ {
-				if strings.HasPrefix(tokens[i], "ref:") {
-					tokens[i] = strings.Replace(tokens[i], "ref:", "ref-", 1)
-				}
-			}
 			newTool := ToolVersions{Name: tokens[0], Versions: tokens[1:]}
 			toolVersions = append(toolVersions, newTool)
 		}
