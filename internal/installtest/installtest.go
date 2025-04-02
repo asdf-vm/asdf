@@ -66,18 +66,18 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionType, v
 
 // InstallPath returns the path to a tool installation
 func InstallPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(pluginInstallPath(conf, plugin), pluginVersion(version))
+	return filepath.Join(pluginInstallPath(conf, plugin), toolVersion(version))
 }
 
 // DownloadPath returns the download path for a particular plugin and version
 func DownloadPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, pluginVersion(version))
+	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, toolVersion(version))
 }
 
 func pluginInstallPath(conf config.Config, plugin plugins.Plugin) string {
 	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name)
 }
 
-func pluginVersion(version string) string {
+func toolVersion(version string) string {
 	return toolversions.FormatForFS(toolversions.Parse(version))
 }
