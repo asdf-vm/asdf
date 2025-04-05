@@ -87,12 +87,17 @@ func Execute(version string) {
 						Name:  "no-header",
 						Usage: "Whether or not to print a header line",
 					},
+					&cli.BoolFlag{
+						Name:  "install-missing",
+						Usage: "Install missing versions for installed plugins",
+					},
 				},
 				Action: func(cCtx *cli.Context) error {
 					tool := cCtx.Args().Get(0)
 
 					noHeader := cCtx.Bool("no-header")
-					return currentCommand(logger, tool, noHeader)
+					install := cCtx.Bool("install-missing")
+					return currentCommand(logger, tool, noHeader, install)
 				},
 			},
 			{
@@ -367,7 +372,7 @@ Completions are available for: %v`, shell, strings.Join(completions.Names(), ", 
 }
 
 // This function is a whole mess and needs to be refactored
-func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
+func currentCommand(logger *log.Logger, tool string, noHeader bool, install bool) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		logger.Printf("error loading config: %s", err)
@@ -401,6 +406,11 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 		for _, plugin := range allPlugins {
 			toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin, currentDir)
 			formatCurrentVersionLine(w, plugin, toolversion, versionFound, versionInstalled, err)
+
+			if !versionInstalled && install && len(toolversion.Versions) > 0 {
+				version := toolversion.Versions[0]
+				versions.InstallOneVersion(conf, plugin, version, false, w, os.Stderr)
+			}
 		}
 		w.Flush()
 		return nil
