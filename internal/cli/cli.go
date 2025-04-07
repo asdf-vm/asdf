@@ -279,12 +279,25 @@ func Execute(version string) {
 						Aliases: []string{"p"},
 						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory.",
 					},
+					&cli.BoolFlag{
+						Name:    "parent",
+						Hidden:  false,
+						Usage:   "Has been renamed to --parents. See above.",
+					},
 				},
 				Action: func(cCtx *cli.Context) error {
 					args := cCtx.Args().Slice()
 					home := cCtx.Bool("home")
 					parents := cCtx.Bool("parents")
-					return set.Main(os.Stdout, os.Stderr, args, home, parents, func() (string, error) {
+					parent := cCtx.Bool("parent")
+
+					if parent {
+						const msg = "Warning: set --parent has been renamed to --parents. Please use --parents instead."
+						logger.Println(msg)
+					}
+
+					
+					return set.Main(os.Stdout, os.Stderr, args, home, parents || parent, func() (string, error) {
 						return os.UserHomeDir()
 					})
 				},
