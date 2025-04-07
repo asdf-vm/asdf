@@ -15,7 +15,7 @@ import (
 )
 
 // Main function is the entrypoint for the 'asdf set' command
-func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, homeFunc func() (string, error)) error {
+func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parents bool, homeFunc func() (string, error)) error {
 	if len(args) < 1 {
 		return printError(stderr, "tool and version must be provided as arguments")
 	}
@@ -24,8 +24,8 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		return printError(stderr, "version must be provided as an argument")
 	}
 
-	if home && parent {
-		return printError(stderr, "home and parent flags cannot both be specified; must be one location or the other")
+	if home && parents {
+		return printError(stderr, "home and parents flags cannot both be specified; must be one location or the other")
 	}
 
 	conf, err := config.LoadConfig()
@@ -70,11 +70,11 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		return printError(stderr, fmt.Sprintf("unable to get current directory: %s", err))
 	}
 
-	if parent {
-		// locate file in parent dir and update it
-		path, found := findVersionFileInParentDir(conf, currentDir)
+	if parents {
+		// locate file in parents dir and update it
+		path, found := findVersionFileInParentDirs(conf, currentDir)
 		if !found {
-			return printError(stderr, fmt.Sprintf("No %s version file found in parent directory", conf.DefaultToolVersionsFilename))
+			return printError(stderr, fmt.Sprintf("No %s version file found in parent directories", conf.DefaultToolVersionsFilename))
 		}
 
 		err = toolversions.WriteToolVersionsToFile(path, []toolversions.ToolVersions{tv})
@@ -94,7 +94,7 @@ func printError(stderr io.Writer, msg string) error {
 	return errors.New(msg)
 }
 
-func findVersionFileInParentDir(conf config.Config, directory string) (string, bool) {
+func findVersionFileInParentDirs(conf config.Config, directory string) (string, bool) {
 	directory = filepath.Dir(directory)
 
 	for {
