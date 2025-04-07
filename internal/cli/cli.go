@@ -275,16 +275,16 @@ func Execute(version string) {
 						Usage:   "The version should be set in the current users home directory",
 					},
 					&cli.BoolFlag{
-						Name:    "parent",
+						Name:    "parents",
 						Aliases: []string{"p"},
-						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory",
+						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory.",
 					},
 				},
 				Action: func(cCtx *cli.Context) error {
 					args := cCtx.Args().Slice()
 					home := cCtx.Bool("home")
-					parent := cCtx.Bool("parent")
-					return set.Main(os.Stdout, os.Stderr, args, home, parent, func() (string, error) {
+					parents := cCtx.Bool("parents")
+					return set.Main(os.Stdout, os.Stderr, args, home, parents, func() (string, error) {
 						return os.UserHomeDir()
 					})
 				},

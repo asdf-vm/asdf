@@ -150,29 +150,29 @@ fn arg-completer {|@argz|
       # asdf list <name> [<version>]
       ls-installed-versions $argz[-1]
     } elif (match $argz 'local') {
-      # asdf local <name> [-p|--parent]
+      # asdf local <name> [-p|--parents]
       asdf plugin-list
       put '-p'
-      put '--parent'
-    } elif (match $argz 'local' '(-p|(--parent))') {
-      # asdf local <name> [-p|--parent] <version>
+      put '--parents'
+    } elif (match $argz 'local' '(-p|(--parents))') {
+      # asdf local <name> [-p|--parents] <version>
       asdf plugin-list
     } elif (match $argz 'local' '.*') {
-      # asdf local <name> [-p|--parent]
+      # asdf local <name> [-p|--parents]
       # asdf local <name> <version>
       ls-installed-versions $argz[-1]
       put '-p'
-      put '--parent'
-    } elif (match $argz 'local' '(-p|(--parent))' '.*') {
-      # asdf local [-p|--parent] <name> <version>
+      put '--parents'
+    } elif (match $argz 'local' '(-p|(--parents))' '.*') {
+      # asdf local [-p|--parents] <name> <version>
       ls-installed-versions $argz[-1]
-    } elif (match $argz 'local' '.*' '(-p|(--parent))') {
-      # asdf local <name> [-p|--parent] <version>
+    } elif (match $argz 'local' '.*' '(-p|(--parents))') {
+      # asdf local <name> [-p|--parents] <version>
       ls-installed-versions $argz[-2]
     } elif (match $argz 'local' '.*' '.*') {
-      # asdf local <name> <version> [-p|--parent]
+      # asdf local <name> <version> [-p|--parents]
       put '-p'
-      put '--parent'
+      put '--parents'
     } elif (or (match $argz 'plugin-add') (match $argz 'plugin' 'add')) {
       # asdf plugin add <name>
       asdf plugin-list-all | each {|line|

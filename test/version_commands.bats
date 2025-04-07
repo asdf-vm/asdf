@@ -156,25 +156,25 @@ teardown() {
   [ "$(cat "$PROJECT_DIR/.tool-versions")" = "dummy path:$PROJECT_DIR/local" ]
 }
 
-@test "local -p/--parent should set should emit an error when called with incorrect arity" {
+@test "local -p/--parents should set should emit an error when called with incorrect arity" {
   run asdf local -p "dummy"
   [ "$status" -eq 1 ]
   [ "$output" = "Usage: asdf local <name> <version>" ]
 }
 
-@test "local -p/--parent should emit an error when plugin does not exist" {
+@test "local -p/--parents should emit an error when plugin does not exist" {
   run asdf local -p "inexistent" "1.0.0"
   [ "$status" -eq 1 ]
   [ "$output" = "No such plugin: inexistent" ]
 }
 
-@test "local -p/--parent should emit an error when plugin version does not exist" {
+@test "local -p/--parents should emit an error when plugin version does not exist" {
   run asdf local -p "dummy" "0.0.1"
   [ "$status" -eq 1 ]
   [ "$output" = "version 0.0.1 is not installed for dummy" ]
 }
 
-@test "local -p/--parent should allow multiple versions" {
+@test "local -p/--parents should allow multiple versions" {
   cd "$CHILD_DIR"
   touch "$PROJECT_DIR/.tool-versions"
   run asdf local -p "dummy" "1.1.0" "1.0.0"
@@ -182,7 +182,7 @@ teardown() {
   [ "$(cat "$PROJECT_DIR/.tool-versions")" = "dummy 1.1.0 1.0.0" ]
 }
 
-@test "local -p/--parent should overwrite the existing version if it's set" {
+@test "local -p/--parents should overwrite the existing version if it's set" {
   cd "$CHILD_DIR"
   echo 'dummy 1.0.0' >>"$PROJECT_DIR/.tool-versions"
   run asdf local -p "dummy" "1.1.0"
@@ -190,7 +190,7 @@ teardown() {
   [ "$(cat "$PROJECT_DIR/.tool-versions")" = "dummy 1.1.0" ]
 }
 
-@test "local -p/--parent should set the version if it's unset" {
+@test "local -p/--parents should set the version if it's unset" {
   cd "$CHILD_DIR"
   touch "$PROJECT_DIR/.tool-versions"
   run asdf local -p "dummy" "1.1.0"

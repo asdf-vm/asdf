@@ -128,7 +128,7 @@ complete -f -c asdf -n '__fish_asdf_using_command set; and test (count (commandl
 
 # set commands
 complete -f -c asdf -n '__fish_asdf_using_command set' -l home -d "Set version in home directory"
-complete -f -c asdf -n '__fish_asdf_using_command set' -l parent -d "Set version in parent directory"
+complete -f -c asdf -n '__fish_asdf_using_command set' -l parents -d "Set version in closest parent directory"
 
 # misc
 complete -f -c asdf -n __fish_asdf_needs_command -l help -d "Displays help"

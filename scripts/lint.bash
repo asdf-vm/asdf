@@ -91,6 +91,8 @@ run_custom_python_stylecheck() {
     printf "%s\n" "[WARNING] python3 not found. Skipping Custom Python Script."
   else
     print.info "Checking files with Custom Python Script."
+    print.info "${flag}"
+    print.info "${0%/*}/checkstyle.py"
     "${0%/*}/checkstyle.py" "${flag}"
   fi
 

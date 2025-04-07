@@ -190,7 +190,7 @@ EOM
   [ ! -f "$ASDF_DIR/installs/other-dummy/2.0.0/version" ]
 }
 
-@test "install_command without arguments uses a parent directory .tool-versions file if present" {
+@test "install_command without arguments uses the closest parent directory .tool-versions file if present" {
   # asdf lib needed to run generated shims
   cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
 
