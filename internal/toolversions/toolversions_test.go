@@ -358,7 +358,7 @@ func TestFormat(t *testing.T) {
 		{
 			desc:   "with ref version",
 			input:  Version{Type: "ref", Value: "foobar"},
-			output: "foobar",
+			output: "ref:foobar",
 		},
 		{
 			desc:   "with system version",

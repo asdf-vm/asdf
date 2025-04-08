@@ -411,12 +411,7 @@ func parse(contents string) (versions []toolversions.ToolVersions) {
 			segments := strings.Split(line, " ")
 			// if doesn't have expected number of elements on line skip
 			if len(segments) >= 4 {
-				versions = append(versions, toolversions.ToolVersions{
-					Name: segments[2],
-					Versions: []string{
-						toolversions.VersionFromFSFormat(segments[3]),
-					},
-				})
+				versions = append(versions, toolversions.ToolVersions{Name: segments[2], Versions: []string{segments[3]}})
 			}
 		}
 	}

@@ -189,6 +189,8 @@ func Format(version Version) string {
 		return "system"
 	case "path":
 		return fmt.Sprintf("path:%s", version.Value)
+	case "ref":
+		return fmt.Sprintf("ref:%s", version.Value)
 	default:
 		return version.Value
 	}

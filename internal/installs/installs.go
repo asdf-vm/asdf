@@ -31,7 +31,7 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 			continue
 		}
 
-		versions = append(versions, file.Name())
+		versions = append(versions, toolversions.VersionFromFSFormat(file.Name()))
 	}
 
 	return versions, err
