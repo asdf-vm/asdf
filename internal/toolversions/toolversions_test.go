@@ -390,6 +390,29 @@ func TestFormatForFS(t *testing.T) {
 	})
 }
 
+func TestVersionStringFromFSFormat(t *testing.T) {
+	tests := []struct {
+		desc  string
+		input Version
+	}{
+		{
+			desc:  "with regular version",
+			input: Version{Type: "version", Value: "foobar"},
+		},
+		{
+			desc:  "with ref version",
+			input: Version{Type: "ref", Value: "foobar"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got := Parse(VersionStringFromFSFormat(FormatForFS(tt.input)))
+			assert.Equal(t, tt.input, got)
+		})
+	}
+}
+
 func BenchmarkUnique(b *testing.B) {
 	versions := []ToolVersions{
 		{Name: "foo", Versions: []string{"1"}},
