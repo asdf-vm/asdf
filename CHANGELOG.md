@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.8](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.16.8) (2025-04-08)
+
+
+### Bug Fixes
+
+* address linter warning ([67581cf](https://github.com/asdf-vm/asdf/commit/67581cf030d4eb39f261acac5e861444fedad7f6))
+
 ## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
 
 
