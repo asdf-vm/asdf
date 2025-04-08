@@ -207,7 +207,7 @@ func FormatForFS(version Version) string {
 	}
 }
 
-func VersionFromFSFormat(version string) string {
+func VersionStringFromFSFormat(version string) string {
 	if strings.HasPrefix(version, "ref-") {
 		return strings.Replace(version, "ref-", "ref:", 1)
 	}
