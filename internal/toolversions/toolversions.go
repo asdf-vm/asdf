@@ -207,6 +207,8 @@ func FormatForFS(version Version) string {
 	}
 }
 
+// VersionStringFromFSFormat takes a version string from directory name and
+// formats it as version string that can be parsed by the Parse function.
 func VersionStringFromFSFormat(version string) string {
 	if strings.HasPrefix(version, "ref-") {
 		return strings.Replace(version, "ref-", "ref:", 1)
