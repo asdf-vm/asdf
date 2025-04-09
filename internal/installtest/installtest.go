@@ -11,6 +11,7 @@ import (
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/plugins"
+	"github.com/asdf-vm/asdf/internal/toolversions"
 )
 
 const (
@@ -65,14 +66,18 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionType, v
 
 // InstallPath returns the path to a tool installation
 func InstallPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(pluginInstallPath(conf, plugin), version)
+	return filepath.Join(pluginInstallPath(conf, plugin), formatVersionStringForFS(version))
 }
 
 // DownloadPath returns the download path for a particular plugin and version
 func DownloadPath(conf config.Config, plugin plugins.Plugin, version string) string {
-	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, version)
+	return filepath.Join(conf.DataDir, dataDirDownloads, plugin.Name, formatVersionStringForFS(version))
 }
 
 func pluginInstallPath(conf config.Config, plugin plugins.Plugin) string {
 	return filepath.Join(conf.DataDir, dataDirInstalls, plugin.Name)
+}
+
+func formatVersionStringForFS(version string) string {
+	return toolversions.FormatForFS(toolversions.Parse(version))
 }

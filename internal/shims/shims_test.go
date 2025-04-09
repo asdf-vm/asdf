@@ -100,6 +100,29 @@ func TestFindExecutable(t *testing.T) {
 	})
 }
 
+func TestFindExecutable_Ref(t *testing.T) {
+	version := "ref:v1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	stdout, stderr := buildOutputs()
+	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+	currentDir := t.TempDir()
+
+	t.Run("returns string containing path to ref installed executable when found", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua ref:v1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Nil(t, err)
+		assert.True(t, found)
+		assert.Equal(t, "ref:v1.1.0", version)
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, "dummy", filepath.Base(executable))
+		assert.Equal(t, "ref-v1.1.0", filepath.Base(filepath.Dir(filepath.Dir(executable))))
+	})
+}
+
 func TestGetExecutablePath(t *testing.T) {
 	version := toolversions.Version{Type: "version", Value: "1.1.0"}
 	conf, plugin := generateConfig(t)
