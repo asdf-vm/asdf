@@ -24,11 +24,11 @@ teardown() {
 }
 
 @test "plugin_test_command works with no options provided" {
-  run asdf plugin test dummy "${BASE_DIR}/repo-dummy"
+  run asdf plugin test dummy "${ASDF_DEV_BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
 }
 
 @test "plugin_test_command works with all options provided" {
-  run asdf plugin test dummy "${BASE_DIR}/repo-dummy" --asdf-tool-version 1.0.0 --asdf-plugin-gitref master
+  run asdf plugin test dummy "${ASDF_DEV_BASE_DIR}/repo-dummy" --asdf-tool-version 1.0.0 --asdf-plugin-gitref master
   [ "$status" -eq 0 ]
 }

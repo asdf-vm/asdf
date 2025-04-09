@@ -3,8 +3,8 @@
 #load test_helpers
 
 #setup() {
-#  BASE_DIR=$(mktemp -dt asdf.XXXX)
-#  HOME="$BASE_DIR/home"
+#  ASDF_DEV_BASE_DIR=$(mktemp -dt asdf.XXXX)
+#  HOME="$ASDF_DEV_BASE_DIR/home"
 #  ASDF_DIR="$HOME/.asdf"
 #  git clone -o local "$(dirname "$BATS_TEST_DIRNAME")" "$ASDF_DIR"
 #  git --git-dir "$ASDF_DIR/.git" remote add origin https://github.com/asdf-vm/asdf.git

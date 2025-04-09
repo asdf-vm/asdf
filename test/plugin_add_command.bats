@@ -14,7 +14,7 @@ teardown() {
 @test "plugin_add command with plugin name matching all valid regex chars succeeds" {
   install_mock_plugin_repo "plugin_with-all-valid-chars-123"
 
-  run asdf plugin add "plugin_with-all-valid-chars-123" "${BASE_DIR}/repo-plugin_with-all-valid-chars-123"
+  run asdf plugin add "plugin_with-all-valid-chars-123" "${ASDF_DEV_BASE_DIR}/repo-plugin_with-all-valid-chars-123"
   [ "$status" -eq 0 ]
 
   run asdf plugin list
@@ -29,7 +29,7 @@ teardown() {
 
   # https://stackoverflow.com/questions/52570103/regular-expression-a-za-z-seems-to-not-include-letter-w-and-wA
   # https://github.com/asdf-vm/asdf/issues/1237
-  run asdf plugin add "plugin-with-w" "${BASE_DIR}/repo-plugin-with-w"
+  run asdf plugin add "plugin-with-w" "${ASDF_DEV_BASE_DIR}/repo-plugin-with-w"
   [ "$status" -eq 0 ]
 
   run asdf plugin list
@@ -89,7 +89,7 @@ teardown() {
 @test "plugin_add command with URL specified adds a plugin using repo" {
   install_mock_plugin_repo "dummy"
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
 
   run asdf plugin list
@@ -100,8 +100,8 @@ teardown() {
 @test "plugin_add command with URL specified twice returns success on second time" {
   install_mock_plugin_repo "dummy"
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
   [ "$output" = "Plugin named dummy already added" ]
 }
@@ -115,8 +115,8 @@ teardown() {
 @test "plugin_add command executes post-plugin add script" {
   install_mock_plugin_repo "dummy"
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
-  [ "$output" = "plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy" ]
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
+  [ "$output" = "plugin add path=${ASDF_DIR}/plugins/dummy source_url=${ASDF_DEV_BASE_DIR}/repo-dummy" ]
 }
 
 @test "plugin_add command executes configured pre hook (generic)" {
@@ -126,10 +126,10 @@ teardown() {
 pre_asdf_plugin_add = echo ADD ${@}
 EOM
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
   local expected_output="ADD dummy
-plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
+plugin add path=${ASDF_DIR}/plugins/dummy source_url=${ASDF_DEV_BASE_DIR}/repo-dummy"
   [ "$output" = "${expected_output}" ]
 }
 
@@ -140,10 +140,10 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 pre_asdf_plugin_add_dummy = echo ADD
 EOM
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
   local expected_output="ADD
-plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
+plugin add path=${ASDF_DIR}/plugins/dummy source_url=${ASDF_DEV_BASE_DIR}/repo-dummy"
   [ "$output" = "${expected_output}" ]
 }
 
@@ -154,9 +154,9 @@ plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy"
 post_asdf_plugin_add = echo ADD ${@}
 EOM
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
-  local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy
+  local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${ASDF_DEV_BASE_DIR}/repo-dummy
 ADD dummy"
   [ "$output" = "${expected_output}" ]
 }
@@ -168,9 +168,9 @@ ADD dummy"
 post_asdf_plugin_add_dummy = echo ADD
 EOM
 
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
-  local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${BASE_DIR}/repo-dummy
+  local expected_output="plugin add path=${ASDF_DIR}/plugins/dummy source_url=${ASDF_DEV_BASE_DIR}/repo-dummy
 ADD"
   [ "$output" = "${expected_output}" ]
 }

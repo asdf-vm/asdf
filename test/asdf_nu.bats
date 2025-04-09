@@ -118,7 +118,7 @@ run_nushell() {
 #@test "parses the output of asdf plugin list --urls" {
 #  setup_repo
 #  install_mock_plugin_repo "dummy"
-#  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+#  asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
 #  run_nushell "asdf plugin list --urls | to csv -n"
 
@@ -133,7 +133,7 @@ run_nushell() {
 #@test "parses the output of asdf plugin list --refs" {
 #  setup_repo
 #  install_mock_plugin_repo "dummy"
-#  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+#  asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
 #  run_nushell "asdf plugin list --refs | to csv -n"
 
@@ -149,7 +149,7 @@ run_nushell() {
 #@test "parses the output of asdf plugin list --urls --refs" {
 #  setup_repo
 #  install_mock_plugin_repo "dummy"
-#  asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+#  asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 
 #  run_nushell "asdf plugin list --urls --refs | to csv -n"
 

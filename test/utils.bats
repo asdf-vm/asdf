@@ -247,7 +247,7 @@ teardown() {
 
 @test "get_preset_version_for returns the global version from home when project is outside of home" {
   echo "dummy 0.1.0" >"$HOME/.tool-versions"
-  PROJECT_DIR=$BASE_DIR/project
+  PROJECT_DIR=$ASDF_DEV_BASE_DIR/project
   mkdir -p "$PROJECT_DIR"
   run get_preset_version_for "dummy"
   [ "$status" -eq 0 ]

@@ -5,7 +5,7 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_mock_plugin_repo "dummy"
-  run asdf plugin add "dummy" "${BASE_DIR}/repo-dummy"
+  run asdf plugin add "dummy" "${ASDF_DEV_BASE_DIR}/repo-dummy"
 }
 
 teardown() {
@@ -22,7 +22,7 @@ teardown() {
 
 #@test "asdf plugin update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if default branch changes" {
 #  install_mock_plugin_repo "dummy-remote"
-#  remote_dir="$BASE_DIR/repo-dummy-remote"
+#  remote_dir="$ASDF_DEV_BASE_DIR/repo-dummy-remote"
 #  # set HEAD to refs/head/main in dummy-remote
 #  git -C "${remote_dir}" checkout -b main
 #  # track & fetch remote repo (dummy-remote) in plugin (dummy)
@@ -40,7 +40,7 @@ teardown() {
 
 #@test "asdf plugin update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if the default branch contains a forward slash" {
 #  install_mock_plugin_repo "dummy-remote"
-#  remote_dir="$BASE_DIR/repo-dummy-remote"
+#  remote_dir="$ASDF_DEV_BASE_DIR/repo-dummy-remote"
 #  # set HEAD to refs/head/my/default in dummy-remote
 #  git -C "${remote_dir}" checkout -b my/default
 #  # track & fetch remote repo (dummy-remote) in plugin (dummy)
@@ -58,12 +58,12 @@ teardown() {
 
 #@test "asdf plugin update should pull latest default branch (refs/remotes/origin/HEAD) for plugin even if already set to specific ref" {
 #  # set plugin to specific sha
-#  current_sha="$(git --git-dir "${BASE_DIR}/repo-dummy/.git" --work-tree "$BASE_DIR/repo-dummy" rev-parse HEAD)"
+#  current_sha="$(git --git-dir "${ASDF_DEV_BASE_DIR}/repo-dummy/.git" --work-tree "$ASDF_DEV_BASE_DIR/repo-dummy" rev-parse HEAD)"
 #  run asdf plugin update dummy "${current_sha}"
 
 #  # setup mock plugin remote
 #  install_mock_plugin_repo "dummy-remote"
-#  remote_dir="$BASE_DIR/repo-dummy-remote"
+#  remote_dir="$ASDF_DEV_BASE_DIR/repo-dummy-remote"
 #  # set HEAD to refs/head/main in dummy-remote
 #  git -C "${remote_dir}" checkout -b main
 #  # track & fetch remote repo (dummy-remote) in plugin (dummy)
@@ -141,7 +141,7 @@ teardown() {
 
 #  # setup mock plugin remote
 #  install_mock_plugin_repo "dummy-remote"
-#  remote_dir="$BASE_DIR/repo-dummy-remote"
+#  remote_dir="$ASDF_DEV_BASE_DIR/repo-dummy-remote"
 #  # set HEAD to refs/head/main in dummy-remote
 #  git -C "${remote_dir}" checkout -b main
 #  # track & fetch remote repo (dummy-remote) in plugin (dummy)
