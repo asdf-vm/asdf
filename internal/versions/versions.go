@@ -26,6 +26,7 @@ const (
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
 	numericStartFilterRegex = "^\\s*[0-9]"
 	noLatestVersionErrMsg   = "no latest version found"
+	missingPluginErrMsg     = "missing plugin for %s"
 )
 
 // UninstallableVersionError is an error returned if someone tries to install the
@@ -42,6 +43,16 @@ func (e UninstallableVersionError) Error() string {
 // is not able to resolve one.
 type NoVersionSetError struct {
 	toolName string
+}
+
+// MissingPluginError is returned whenever an operation expects a plugin,
+// but it is not installed.
+type MissingPluginError struct {
+	toolName string
+}
+
+func (e MissingPluginError) Error() string {
+	return fmt.Sprintf(missingPluginErrMsg, e.toolName)
 }
 
 func (e NoVersionSetError) Error() string {
@@ -67,19 +78,38 @@ func (e VersionAlreadyInstalledError) Error() string {
 // installed, but it may be multiple versions if multiple versions for the tool
 // are specified in the .tool-versions file.
 func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writer) (failures []error) {
-	plugins, err := plugins.List(conf, false, false)
+	installedPlugins, err := plugins.List(conf, false, false)
 	if err != nil {
 		return []error{fmt.Errorf("unable to list plugins: %w", err)}
 	}
+	pluginsMap := map[string]plugins.Plugin{}
+	for _, plugin := range installedPlugins {
+		pluginsMap[plugin.Name] = plugin
+	}
 
-	// Ideally we should install these in the order they are specified in the
-	// closest .tool-versions file, but for now that is too complicated to
-	// implement.
-	for _, plugin := range plugins {
-		err := Install(conf, plugin, dir, stdOut, stdErr)
-		if err != nil {
+	toolVersions, err := resolve.AllVersions(conf, installedPlugins, dir)
+	if err != nil {
+		return []error{fmt.Errorf("unable to resolve versions: %w", err)}
+	}
+
+	for _, toolVersion := range toolVersions {
+		if plugin, isPluginResolved := pluginsMap[toolVersion.Name]; isPluginResolved {
+			delete(pluginsMap, plugin.Name)
+			for _, version := range toolVersion.Versions {
+				err := InstallOneVersion(conf, plugin, version, false, stdOut, stdErr)
+				if err != nil {
+					failures = append(failures, err)
+				}
+			}
+		} else {
+			err = MissingPluginError{toolName: toolVersion.Name}
 			failures = append(failures, err)
 		}
+	}
+
+	for _, plugin := range pluginsMap {
+		err := NoVersionSetError{toolName: plugin.Name}
+		failures = append(failures, err)
 	}
 
 	return failures
