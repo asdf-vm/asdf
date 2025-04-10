@@ -1,34 +1,47 @@
 package config
 
 import (
+	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestLoadConfig(t *testing.T) {
-	config, err := LoadConfig()
+	t.Run("With defaults", func(t *testing.T) {
+		config, err := LoadConfig()
+		assert.Nil(t, err, "Returned error when loading env for config")
 
-	assert.Nil(t, err, "Returned error when building config")
+		homeDir, err := os.UserHomeDir()
+		assert.Nil(t, err)
 
-	assert.NotZero(t, config.Home, "Expected Home to be set")
+		assert.Equal(t, homeDir, config.Home, "Home directory has the wrong value")
+		assert.True(t, strings.HasPrefix(config.DataDir, homeDir), "DataDir has the wrong value")
+		assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
+	})
+
+	t.Run("With ASDF_DATA_DIR containing a tilde", func(t *testing.T) {
+		t.Setenv("ASDF_DATA_DIR", "~/some/other/dir")
+		config, err := LoadConfig()
+		assert.Nil(t, err, "Returned error when loading env for config")
+
+		homeDir, err := os.UserHomeDir()
+		assert.Nil(t, err)
+
+		assert.Equal(t, homeDir, config.Home, "Home directory has the wrong value")
+		assert.Equal(t, homeDir+"/some/other/dir", config.DataDir, "DataDir has the wrong value")
+		assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
+	})
 }
 
-func TestLoadConfigEnv(t *testing.T) {
-	config, err := loadConfigEnv()
-
-	assert.Nil(t, err, "Returned error when loading env for config")
-
-	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
-}
-
-func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
+func TestLoadConfig_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "yes")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})
@@ -36,7 +49,7 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given YES", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "YES")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})
@@ -44,7 +57,7 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "no")
 
-		config, _ := loadConfigEnv()
+		config, _ := LoadConfig()
 
 		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
 	})
