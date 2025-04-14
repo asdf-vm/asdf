@@ -179,11 +179,6 @@ func Execute(version string) {
 			},
 			{
 				Name: "plugin",
-				Action: func(_ *cli.Context) error {
-					logger.Println("Unknown command: `asdf plugin`")
-					cli.OsExiter(1)
-					return nil
-				},
 				Subcommands: []*cli.Command{
 					{
 						Name: "add",
