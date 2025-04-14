@@ -76,12 +76,14 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 		if plugin.Exists() == nil {
 
 			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
+
 			if err != nil {
 				return "", plugins.Plugin{}, "", false, nil
 			}
 
 			if found {
-				tempVersions := toolversions.Intersect(shimToolVersion.Versions, versions.Versions)
+				tempVersions := toolversions.Intersect(versions.Versions, shimToolVersion.Versions)
+
 				if slices.Contains(versions.Versions, "system") {
 					tempVersions = append(tempVersions, "system")
 				}
