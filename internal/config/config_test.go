@@ -33,6 +33,14 @@ func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
 		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
 	})
 
+	t.Run("When ASDF_FORCE_PREPEND env given YES", func(t *testing.T) {
+		t.Setenv("ASDF_FORCE_PREPEND", "YES")
+
+		config, _ := loadConfigEnv()
+
+		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
+	})
+
 	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
 		t.Setenv("ASDF_FORCE_PREPEND", "no")
 

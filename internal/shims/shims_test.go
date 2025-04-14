@@ -24,6 +24,7 @@ func TestFindExecutable(t *testing.T) {
 	version := "1.1.0"
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
+	installVersion(t, conf, plugin, "2.0.0")
 	stdout, stderr := buildOutputs()
 	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
 	currentDir := t.TempDir()
@@ -47,6 +48,20 @@ func TestFindExecutable(t *testing.T) {
 	t.Run("returns string containing path to executable when found", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
+		assert.Equal(t, filepath.Base(executable), "dummy")
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, version, "1.1.0")
+		assert.True(t, found)
+		assert.Nil(t, err)
+	})
+
+	t.Run("returns path to executable with first version when multiple versions are set", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua 1.1.0 3.0.0 2.0.0")
 		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
 
 		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
@@ -97,6 +112,29 @@ func TestFindExecutable(t *testing.T) {
 		// see that it actually returns path to system ls
 		assert.Equal(t, filepath.Base(executable), "dummy")
 		assert.True(t, strings.HasPrefix(executable, dir))
+	})
+}
+
+func TestFindExecutable_Ref(t *testing.T) {
+	version := "ref:v1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	stdout, stderr := buildOutputs()
+	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+	currentDir := t.TempDir()
+
+	t.Run("returns string containing path to ref installed executable when found", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua ref:v1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Nil(t, err)
+		assert.True(t, found)
+		assert.Equal(t, "ref:v1.1.0", version)
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, "dummy", filepath.Base(executable))
+		assert.Equal(t, "ref-v1.1.0", filepath.Base(filepath.Dir(filepath.Dir(executable))))
 	})
 }
 

@@ -240,33 +240,31 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 	var stdErr strings.Builder
 
 	err = plugin.RunCallback("latest-stable", []string{query}, map[string]string{}, &stdOut, &stdErr)
-	if err != nil {
-		if _, ok := err.(plugins.NoCallbackError); !ok {
-			return version, err
-		}
-
-		allVersions, err := AllVersionsFiltered(plugin, query)
-		if err != nil {
-			return version, err
-		}
-
-		versions := filterOutByRegex(allVersions, numericStartFilterRegex, true)
-		versions = filterOutByRegex(versions, latestFilterRegex, false)
-
+	if err == nil {
+		versions := parseVersions(stdOut.String())
 		if len(versions) < 1 {
 			return version, errors.New(noLatestVersionErrMsg)
 		}
-
 		return versions[len(versions)-1], nil
 	}
 
-	// parse stdOut and return version
-	allVersions := parseVersions(stdOut.String())
+	// Fallback to list-all if latest-stable fails
+	if _, ok := err.(plugins.NoCallbackError); !ok {
+		return version, err
+	}
+
+	allVersions, err := AllVersionsFiltered(plugin, query)
+	if err != nil {
+		return version, err
+	}
+
 	versions := filterOutByRegex(allVersions, numericStartFilterRegex, true)
 	versions = filterOutByRegex(versions, latestFilterRegex, false)
+
 	if len(versions) < 1 {
 		return version, errors.New(noLatestVersionErrMsg)
 	}
+
 	return versions[len(versions)-1], nil
 }
 

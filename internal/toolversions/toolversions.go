@@ -189,6 +189,8 @@ func Format(version Version) string {
 		return "system"
 	case "path":
 		return fmt.Sprintf("path:%s", version.Value)
+	case "ref":
+		return fmt.Sprintf("ref:%s", version.Value)
 	default:
 		return version.Value
 	}
@@ -203,6 +205,15 @@ func FormatForFS(version Version) string {
 	default:
 		return version.Value
 	}
+}
+
+// VersionStringFromFSFormat takes a version string from directory name and
+// formats it as version string that can be parsed by the Parse function.
+func VersionStringFromFSFormat(version string) string {
+	if strings.HasPrefix(version, "ref-") {
+		return strings.Replace(version, "ref-", "ref:", 1)
+	}
+	return version
 }
 
 func readLines(content string) (lines []string) {
