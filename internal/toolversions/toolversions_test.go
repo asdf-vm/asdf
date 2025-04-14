@@ -153,25 +153,50 @@ func TestUpdateContentWithToolVersions(t *testing.T) {
 }
 
 func TestIntersect(t *testing.T) {
-	t.Run("when provided two empty ToolVersions returns empty ToolVersions", func(t *testing.T) {
-		got := Intersect([]string{}, []string{})
-		want := []string(nil)
+	tests := []struct {
+		desc   string
+		input1 []string
+		input2 []string
+		want   []string
+	}{
+		{
+			desc:   "when provided two empty ToolVersions returns empty ToolVersions",
+			input1: []string{},
+			input2: []string{},
+			want:   []string(nil),
+		},
+		{
+			desc:   "when provided ToolVersions with no matching versions return empty ToolVersions",
+			input1: []string{"1", "2"},
+			input2: []string{"3", "4"},
+			want:   []string(nil),
+		},
+		{
+			desc:   "when provided ToolVersions with different versions return new ToolVersions only containing versions in both",
+			input1: []string{"1", "2"},
+			input2: []string{"2", "3"},
+			want:   []string{"2"},
+		},
+		{
+			desc:   "preserves order of items in first argument",
+			input1: []string{"1", "3", "2"},
+			input2: []string{"2", "3"},
+			want:   []string{"3", "2"},
+		},
+		{
+			desc:   "preserves order of items in first argument (variant 2)",
+			input1: []string{"1", "4", "5", "3", "2"},
+			input2: []string{"2", "3", "4"},
+			want:   []string{"4", "3", "2"},
+		},
+	}
 
-		assert.Equal(t, got, want)
-	})
-
-	t.Run("when provided ToolVersions with no matching versions return empty ToolVersions", func(t *testing.T) {
-		got := Intersect([]string{"1", "2"}, []string{"3", "4"})
-
-		assert.Equal(t, got, []string(nil))
-	})
-
-	t.Run("when provided ToolVersions with different versions return new ToolVersions only containing versions in both", func(t *testing.T) {
-		got := Intersect([]string{"1", "2"}, []string{"2", "3"})
-		want := []string{"2"}
-
-		assert.Equal(t, got, want)
-	})
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			got := Intersect(tt.input1, tt.input2)
+			assert.Equal(t, tt.want, got)
+		})
+	}
 }
 
 func TestUnique(t *testing.T) {
