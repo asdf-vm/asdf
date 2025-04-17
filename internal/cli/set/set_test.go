@@ -32,13 +32,13 @@ func TestAll(t *testing.T) {
 		assert.Equal(t, stderr.String(), "version must be provided as an argument")
 	})
 
-	t.Run("prints error when both --parent and --home flags are set", func(t *testing.T) {
+	t.Run("prints error when both --parents and --home flags are set", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, true, true, homeFunc)
 
-		assert.Error(t, err, "home and parent flags cannot both be specified; must be one location or the other")
+		assert.Error(t, err, "home and parents flags cannot both be specified; must be one location or the other")
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "home and parent flags cannot both be specified; must be one location or the other")
+		assert.Equal(t, stderr.String(), "home and parents flags cannot both be specified; must be one location or the other")
 	})
 
 	t.Run("sets version in current directory when no flags provided", func(t *testing.T) {
@@ -58,7 +58,7 @@ func TestAll(t *testing.T) {
 		assert.Equal(t, "lua 5.2.3\n", string(bytes))
 	})
 
-	t.Run("sets version in parent directory when --parent flag provided", func(t *testing.T) {
+	t.Run("sets version in parents directory when --parents flag provided", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		dir := t.TempDir()
 		subdir := filepath.Join(dir, "subdir")
