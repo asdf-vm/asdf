@@ -193,7 +193,7 @@ Install a specific version of a tool to a specified location.
 
 - The script should install the specified version in the path `ASDF_INSTALL_PATH`.
 - Shims will be created by default for any files in `$ASDF_INSTALL_PATH/bin`. This behaviour can be customised with the optional
-[bin/list-bin-paths](#binlist-bin-paths) script.
+[bin/list-bin-paths](#bin-list-bin-paths) script.
 - Success should exit with `0`.
 - Failure should exit with a non-zero status.
 - To avoid TOCTOU (Time-of-Check-to-Time-of-Use) issues, ensure the script only places files in `ASDF_INSTALL_PATH` once the build and installation of the tool is deemed a success.
