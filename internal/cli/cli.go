@@ -959,7 +959,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	// Install plugin
 	err = plugins.Add(conf, testName, url, ref)
 	if err != nil {
-		failTest(l, fmt.Sprintf("%s was not properly installed", name))
+		failTest(l, fmt.Sprintf("%s was not properly installed reason: %s", name, err))
 	}
 
 	// Remove plugin
