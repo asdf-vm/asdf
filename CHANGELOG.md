@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.16.8](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.16.8) (2025-04-17)
+
+
+### Bug Fixes
+
+* address linter warning ([67581cf](https://github.com/asdf-vm/asdf/commit/67581cf030d4eb39f261acac5e861444fedad7f6))
+* correct intersection logic in `shims.FindExecutable` function so ordering of multiple versions is preserved ([#2063](https://github.com/asdf-vm/asdf/issues/2063)) ([083f20a](https://github.com/asdf-vm/asdf/commit/083f20aa3e21cad594b35972ca570eb47e389899))
+* remove default error action from plugin command ([#2027](https://github.com/asdf-vm/asdf/issues/2027)) ([c376481](https://github.com/asdf-vm/asdf/commit/c376481cb4d1fa1e67dd9ef326381c07c935151d))
+
 ## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
 
 
