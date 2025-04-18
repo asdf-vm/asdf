@@ -56,6 +56,17 @@ func (e NoCallbackError) Error() string {
 	return fmt.Sprintf(hasNoCallbackMsg, e.plugin, e.callback)
 }
 
+// NoShimTemplateError is an error returned by ShimTemplatePath when an shim
+// template was not found in the plugin shims directory, or the file is not executable
+type NoShimTemplateError struct {
+	shimName string
+	plugin   string
+}
+
+func (e NoShimTemplateError) Error() string {
+	return fmt.Sprintf(hasNoCallbackMsg, e.plugin, e.shimName)
+}
+
 // NoCommandError is an error returned by ExtensionCommandPath when an extension
 // command with the given name does not exist
 type NoCommandError struct {
@@ -73,6 +84,7 @@ const (
 	pluginAlreadyExistsMsg = "Plugin named %s already added"
 	pluginMissingMsg       = "Plugin named %s not installed"
 	hasNoCallbackMsg       = "Plugin named %s does not have a callback named %s"
+	hasNoShimTemplateMsg   = "Plugin named %s does not have a shim template named %s"
 	hasNoCommandMsg        = "Plugin named %s does not have a extension command named %s"
 )
 
@@ -186,6 +198,20 @@ func (p Plugin) CallbackPath(name string) (string, error) {
 	_, err := os.Stat(path)
 	if errors.Is(err, os.ErrNotExist) {
 		return "", NoCallbackError{callback: name, plugin: p.Name}
+	}
+
+	return path, nil
+}
+
+// ShimPath returns the full file path to a shim, if it exists
+func (p Plugin) ShimTemplatePath(shimName string) (string, error) {
+	const EXECUTABLE_MODE = 0o111
+
+	path := filepath.Join(p.Dir, "shims", shimName)
+	stat, err := os.Stat(path)
+
+	if errors.Is(err, os.ErrNotExist) || stat.Mode()&EXECUTABLE_MODE == 0 {
+		return "", NoShimTemplateError{shimName: shimName, plugin: p.Name}
 	}
 
 	return path, nil
