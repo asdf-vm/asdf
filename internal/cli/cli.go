@@ -519,7 +519,7 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
 		"ASDF_INSTALL_VERSION": parsedVersion.Value,
 		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
-		"PATH":                 setPath(execPaths),
+		"PATH":                 setPath(conf, execPaths),
 	}
 
 	if parsedVersion.Type != "system" {
@@ -542,8 +542,13 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 	return err
 }
 
-func setPath(paths []string) string {
-	return strings.Join(paths, ":") + ":" + os.Getenv("PATH")
+func setPath(conf config.Config, paths []string) string {
+	currentPaths := os.Getenv("PATH")
+
+	if conf.ForcePrepend {
+		return strings.Join(append(paths, currentPaths), ":")
+	}
+	return strings.Join(append([]string{currentPaths}, paths...), ":")
 }
 
 func execCommand(logger *log.Logger, command string, args []string) error {
@@ -578,7 +583,7 @@ func execCommand(logger *log.Logger, command string, args []string) error {
 		"ASDF_INSTALL_TYPE":    parsedVersion.Type,
 		"ASDF_INSTALL_VERSION": parsedVersion.Value,
 		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, parsedVersion),
-		"PATH":                 setPath(execPaths),
+		"PATH":                 setPath(conf, execPaths),
 	}
 
 	if parsedVersion.Type != "system" {
