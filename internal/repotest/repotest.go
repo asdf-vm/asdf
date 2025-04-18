@@ -206,6 +206,10 @@ func runCmd(cmdName string, args ...string) error {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
+	// Global env vars
+	// GIT_CONFIG_GLOBAL=/dev/null prevents git from looking for user settings like commit.gpgSign and user.name
+	cmd.Env = []string{"GIT_CONFIG_GLOBAL=/dev/null"}
+
 	err := cmd.Run()
 	if err != nil {
 		// If command fails print both stderr and stdout
