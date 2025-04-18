@@ -74,6 +74,11 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 	for _, shimToolVersion := range toolVersions {
 		plugin := plugins.New(conf, shimToolVersion.Name)
 		if plugin.Exists() == nil {
+			// If a shim template is found, we can return it before looping through versions
+			shimTemplate, err := plugin.ShimTemplatePath(shimName)
+			if err == nil {
+				return shimTemplate, plugin, "", true, nil
+			}
 
 			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
 
