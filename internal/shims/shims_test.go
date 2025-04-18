@@ -113,6 +113,27 @@ func TestFindExecutable(t *testing.T) {
 		assert.Equal(t, filepath.Base(executable), "dummy")
 		assert.True(t, strings.HasPrefix(executable, dir))
 	})
+
+	t.Run("returns string containing path to executable when shim template in plugin is set", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua 1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		// write a shim template to the plugin shims dir
+		setupShimTemplate(t, plugin, "dummy", "echo 'shim template'")
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Nil(t, err)
+
+		relativePath, err := filepath.Rel(conf.DataDir, executable)
+		assert.Nil(t, err)
+
+		assert.Equal(t, "plugins/lua/shims/dummy", relativePath)
+		assert.Equal(t, "dummy", filepath.Base(executable))
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, "", version)
+		assert.True(t, found)
+	})
 }
 
 func TestFindExecutable_Ref(t *testing.T) {
@@ -510,4 +531,20 @@ func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, ver
 	t.Helper()
 	err := installtest.InstallOneVersion(conf, plugin, "version", version)
 	assert.Nil(t, err)
+}
+
+func setupShimTemplate(t *testing.T, plugin plugins.Plugin, shimName string, script string) {
+	t.Helper()
+	shimsDirPath := filepath.Join(plugin.Dir, "shims")
+	os.MkdirAll(shimsDirPath, 0o777)
+
+	shimPath := filepath.Join(shimsDirPath, shimName)
+	contents := fmt.Sprintf("#!/usr/bin/env bash\n%s\n", script)
+	err := os.WriteFile(shimPath, []byte(contents), 0o777)
+	assert.Nil(t, err)
+
+	t.Cleanup(func() {
+		err := os.Remove(shimPath)
+		assert.Nil(t, err)
+	})
 }
