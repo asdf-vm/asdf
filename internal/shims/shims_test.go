@@ -464,6 +464,27 @@ func TestExecutablePaths(t *testing.T) {
 		assert.Equal(t, filepath.Base(path1), "foo")
 		assert.Equal(t, filepath.Base(path2), "bar")
 	})
+
+	t.Run("returns list of executable paths for tool version containing shim templates", func(t *testing.T) {
+		data := []byte("echo 'foo bar'")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
+		assert.Nil(t, err)
+
+		// write a shim template to the plugin shims dir
+		setupShimTemplate(t, plugin, "dummy", "echo 'shim template'")
+
+		executables, err := ExecutablePaths(conf, plugin, toolversions.Version{Type: "version", Value: "1.2.3"})
+		assert.Nil(t, err)
+		path1 := executables[0]
+		path2 := executables[1]
+		path3 := executables[2]
+		assert.Equal(t, "foo", filepath.Base(path2))
+		assert.Equal(t, "bar", filepath.Base(path3))
+
+		relativePath, err := filepath.Rel(conf.DataDir, path1)
+		assert.Nil(t, err)
+		assert.Equal(t, "plugins/lua/shims", relativePath)
+	})
 }
 
 func TestExecutableDirs(t *testing.T) {

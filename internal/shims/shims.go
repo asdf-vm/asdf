@@ -373,18 +373,25 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version toolvers
 
 // ExecutablePaths returns a slice of absolute directory paths that tool
 // executables are contained in.
-func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) ([]string, error) {
+func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) (paths []string, err error) {
 	dirs, err := ExecutableDirs(plugin)
 	if err != nil {
 		return []string{}, err
 	}
 
+	shimsDir, err := os.Stat(path.Join(plugin.Dir, "shims"))
+	if err == nil && shimsDir.IsDir() {
+		paths = append(paths, path.Join(plugin.Dir, "shims"))
+	}
+
 	installPath := installs.InstallPath(conf, plugin, version)
-	return dirsToPaths(dirs, installPath), nil
+	paths = append(paths, dirsToPaths(dirs, installPath)...)
+
+	return paths, nil
 }
 
-// ExecutableDirs returns a slice of directory names that tool executables are
-// contained in
+// ExecutableDirs returns a slice of relative directory names that tool executables are
+// contained in, *inside installs*
 func ExecutableDirs(plugin plugins.Plugin) ([]string, error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
