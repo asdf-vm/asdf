@@ -316,8 +316,6 @@ func (p Plugin) GetAvailableVersions() ([]string, error) {
 	return versions, nil
 }
 
-
-
 // List takes config and flags for what to return and builds a list of plugins
 // representing the currently installed plugins on the system.
 func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {

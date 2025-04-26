@@ -104,7 +104,6 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 	// If no ref is provided we take the default branch of the remote
 	if strings.TrimSpace(ref) == "" {
 		ref, err = r.remoteDefaultBranch()
-
 		if err != nil {
 			return "", "", "", err
 		}

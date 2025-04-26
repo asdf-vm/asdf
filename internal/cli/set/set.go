@@ -41,7 +41,7 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 	if err != nil {
 		return printError(stderr, fmt.Sprintf("error getting available plugin versions: %s", err))
 	}
-	
+
 	for _, version := range args[1:] {
 		parsedVersion := toolversions.ParseFromCliArg(version)
 		if parsedVersion.Type == "latest" {
@@ -54,7 +54,7 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		}
 		resolvedVersions = append(resolvedVersions, version)
 	}
-	
+
 	for _, version := range resolvedVersions {
 		if !slices.Contains(pluginAvailableVersions, version) {
 			return printError(stderr, fmt.Sprintf("version %s is not available for plugin %s\n", version, plugin.Name))
