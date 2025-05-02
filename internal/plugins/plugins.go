@@ -203,14 +203,14 @@ func (p Plugin) CallbackPath(name string) (string, error) {
 	return path, nil
 }
 
-// ShimPath returns the full file path to a shim, if it exists
+// ShimTemplatePath returns the full file path to a shim, if it exists
 func (p Plugin) ShimTemplatePath(shimName string) (string, error) {
-	const EXECUTABLE_MODE = 0o111
+	const executableMode = 0o111
 
 	path := filepath.Join(p.Dir, "shims", shimName)
 	stat, err := os.Stat(path)
 
-	if errors.Is(err, os.ErrNotExist) || stat.Mode()&EXECUTABLE_MODE == 0 {
+	if errors.Is(err, os.ErrNotExist) || stat.Mode()&executableMode == 0 {
 		return "", NoShimTemplateError{shimName: shimName, plugin: p.Name}
 	}
 

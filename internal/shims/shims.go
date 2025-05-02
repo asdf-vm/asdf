@@ -385,9 +385,7 @@ func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolvers
 	}
 
 	installPath := installs.InstallPath(conf, plugin, version)
-	paths = append(paths, dirsToPaths(dirs, installPath)...)
-
-	return paths, nil
+	return append(paths, dirsToPaths(dirs, installPath)...), nil
 }
 
 // ExecutableDirs returns a slice of relative directory names that tool executables are
