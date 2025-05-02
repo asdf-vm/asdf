@@ -21,7 +21,8 @@
     "SECURITY.md",
     "docs/guide/getting-started.md",
     "docs/pt-br/guide/getting-started.md",
-    "docs/zh-hans/guide/getting-started.md"
+    "docs/zh-hans/guide/getting-started.md",
+    "cmd/asdf/main.go"
   ],
   ".": "0.16.7"
 }
