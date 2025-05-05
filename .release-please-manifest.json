@@ -26,5 +26,5 @@
     "docs/ja-jp/guide/getting-started.md",
     "cmd/asdf/main.go"
   ],
-  ".": "0.16.7"
+  ".": "0.17.0"
 }
