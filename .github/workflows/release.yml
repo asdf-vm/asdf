@@ -18,3 +18,4 @@ jobs:
         with:
           token: ${{ secrets.ASDF_WORKFLOW_TOKEN }}
           release-type: go
+          manifest-file: .release-please-manifest.json
