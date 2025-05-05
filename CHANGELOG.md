@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.17.0](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.17.0) (2025-05-05)
+
+
+### Features
+
+* log failure to add plugin in "plugin test" ([#2059](https://github.com/asdf-vm/asdf/issues/2059)) ([92de803](https://github.com/asdf-vm/asdf/commit/92de803ff15f1a887f031d570ae6404f008d829d))
+
+
+### Bug Fixes
+
+* address linter warning ([67581cf](https://github.com/asdf-vm/asdf/commit/67581cf030d4eb39f261acac5e861444fedad7f6))
+* correct intersection logic in `shims.FindExecutable` function so ordering of multiple versions is preserved ([#2063](https://github.com/asdf-vm/asdf/issues/2063)) ([083f20a](https://github.com/asdf-vm/asdf/commit/083f20aa3e21cad594b35972ca570eb47e389899))
+* remove default error action from plugin command ([#2027](https://github.com/asdf-vm/asdf/issues/2027)) ([c376481](https://github.com/asdf-vm/asdf/commit/c376481cb4d1fa1e67dd9ef326381c07c935151d))
+* set correct version for go install and make builds ([#2077](https://github.com/asdf-vm/asdf/issues/2077)) ([4c73527](https://github.com/asdf-vm/asdf/commit/4c73527d6323ca41d8ea9a9e78a8db49f3794d16))
+
 ## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
 
 
