@@ -17,4 +17,5 @@ jobs:
         name: create release
         with:
           token: ${{ secrets.ASDF_WORKFLOW_TOKEN }}
-          release-type: go
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
