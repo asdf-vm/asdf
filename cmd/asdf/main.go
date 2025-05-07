@@ -10,7 +10,7 @@ import (
 )
 
 // Do not touch this next line
-var version = "0.16.7" // x-release-please-version
+var version = "0.17.0" // x-release-please-version
 
 // Placeholder for the real code
 func main() {
