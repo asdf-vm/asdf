@@ -18,7 +18,8 @@ const testPluginName = "test-plugin"
 func TestVersion(t *testing.T) {
 	testDataDir := t.TempDir()
 	currentDir := t.TempDir()
-	conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
+	homeDir := t.TempDir()
+	conf := config.Config{Home: homeDir, DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
 	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
 	assert.Nil(t, err)
 	plugin := plugins.New(conf, testPluginName)
@@ -69,6 +70,105 @@ func TestVersion(t *testing.T) {
 		assert.Nil(t, err)
 		assert.True(t, found)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
+	})
+}
+
+func TestAllVersions(t *testing.T) {
+	testDataDir := t.TempDir()
+	currentDir := t.TempDir()
+	homeDir := t.TempDir()
+	conf := config.Config{Home: homeDir, DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
+	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
+	assert.Nil(t, err)
+	allPlugins := []plugins.Plugin{plugins.New(conf, testPluginName)}
+
+	t.Run("returns empty slice when non-existent version passed", func(t *testing.T) {
+		toolVersions, err := AllVersions(conf, allPlugins, t.TempDir())
+		assert.Nil(t, err)
+		assert.Empty(t, toolVersions)
+	})
+
+	t.Run("returns single version from .tool-versions file", func(t *testing.T) {
+		// write a version file
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+
+		toolVersions, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersions[0].Versions, []string{"1.2.3"})
+	})
+
+	t.Run("returns version from env when env variable set", func(t *testing.T) {
+		// Set env
+		t.Setenv(fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(testPluginName)), "2.3.4")
+
+		// write a version file
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+
+		// assert env variable takes precedence
+		toolVersions, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersions[0].Versions, []string{"2.3.4"})
+	})
+
+	t.Run("returns single version from .tool-versions file in parent directory", func(t *testing.T) {
+		// write a version file
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+
+		subDir := filepath.Join(currentDir, "subdir")
+		err = os.MkdirAll(subDir, 0o777)
+		assert.Nil(t, err)
+
+		toolVersion, err := AllVersions(conf, allPlugins, subDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
+	})
+
+	t.Run("returns single version from .tool-versions file in home directory", func(t *testing.T) {
+		// write a version file
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(filepath.Join(homeDir, ".tool-versions"), data, 0o666)
+
+		toolVersion, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
+	})
+
+	t.Run("returns unknown plugin version from .tool-versions file in parent directory", func(t *testing.T) {
+		// write a version file
+		unknownPluginName := "dummy_unknown_plugin"
+		data := []byte(fmt.Sprintf("%s 1.2.3", unknownPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+
+		subDir := filepath.Join(currentDir, "subdir")
+		err = os.MkdirAll(subDir, 0o777)
+		assert.Nil(t, err)
+
+		toolVersion, err := AllVersions(conf, allPlugins, subDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Name, unknownPluginName)
+		assert.Equal(t, toolVersion[0].Versions, []string{"1.2.3"})
+	})
+
+	t.Run("returns results in order from .tool-versions file", func(t *testing.T) {
+		testPluginTwoName := "dummy_plugin_two"
+		_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginTwoName)
+		assert.Nil(t, err)
+		allPlugins := []plugins.Plugin{plugins.New(conf, testPluginName), plugins.New(conf, testPluginTwoName)}
+
+		// write a version file
+		unknownPluginName := "dummy_unknown_plugin"
+		data := []byte(fmt.Sprintf("%s 1.2.3\n%s 1.2.3\n%s 1.2.3", testPluginTwoName, testPluginName, unknownPluginName))
+		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		assert.Nil(t, err)
+
+		toolVersion, err := AllVersions(conf, allPlugins, currentDir)
+		assert.Nil(t, err)
+		assert.Equal(t, toolVersion[0].Name, testPluginTwoName)
+		assert.Equal(t, toolVersion[1].Name, testPluginName)
+		assert.Equal(t, toolVersion[2].Name, unknownPluginName)
 	})
 }
 
