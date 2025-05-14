@@ -3,11 +3,13 @@
 package git
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
+	"os"
+	"strings"
 
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/config"
-	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/asdf-vm/asdf/internal/execute"
 )
 
 // DefaultRemoteName for Git repositories in asdf
@@ -39,18 +41,15 @@ func NewRepo(directory string) Repo {
 
 // Clone installs a plugin via Git
 func (r Repo) Clone(pluginURL, ref string) error {
-	options := git.CloneOptions{
-		URL: pluginURL,
-	}
+	cmdStr := []string{"git", "clone", pluginURL, r.Directory}
 
-	// if ref is provided set it on CloneOptions
 	if ref != "" {
-		options.ReferenceName = plumbing.NewBranchReferenceName(ref)
+		cmdStr = []string{"git", "clone", pluginURL, r.Directory, "--branch", ref}
 	}
 
-	_, err := git.PlainClone(r.Directory, false, &options)
+	_, stderr, err := exec(cmdStr)
 	if err != nil {
-		return fmt.Errorf("unable to clone plugin: %w", err)
+		return fmt.Errorf("unable to clone plugin: %s", stdErrToErrMsg(stderr))
 	}
 
 	return nil
@@ -58,98 +57,139 @@ func (r Repo) Clone(pluginURL, ref string) error {
 
 // Head returns the current HEAD ref of the plugin's Git repository
 func (r Repo) Head() (string, error) {
-	repo, err := gitOpen(r.Directory)
+	err := repositoryExists(r.Directory)
 	if err != nil {
 		return "", err
 	}
 
-	ref, err := repo.Head()
+	stdout, stderr, err := exec([]string{"git", "-C", r.Directory, "rev-parse", "HEAD"})
 	if err != nil {
-		return "", err
+		return "", errors.New(stdErrToErrMsg(stderr))
 	}
 
-	return ref.Hash().String(), nil
+	return strings.TrimSpace(stdout), nil
 }
 
 // RemoteURL returns the URL of the default remote for the plugin's Git repository
 func (r Repo) RemoteURL() (string, error) {
-	repo, err := gitOpen(r.Directory)
+	err := repositoryExists(r.Directory)
 	if err != nil {
 		return "", err
 	}
 
-	remotes, err := repo.Remotes()
+	remote, err := r.defaultRemote()
 	if err != nil {
 		return "", err
 	}
 
-	return remotes[0].Config().URLs[0], nil
+	stdout, _, err := exec([]string{"git", "-C", r.Directory, "remote", "get-url", remote})
+	return stdout, err
 }
 
 // Update updates the plugin's Git repository to the ref if provided, or the
 // latest commit on the current branch
 func (r Repo) Update(ref string) (string, string, string, error) {
-	repo, err := gitOpen(r.Directory)
+	shortRef := ref
+
+	oldHash, err := r.Head()
 	if err != nil {
 		return "", "", "", err
 	}
 
-	oldHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
+	remoteName, err := r.defaultRemote()
 	if err != nil {
 		return "", "", "", err
 	}
 
-	var checkoutOptions git.CheckoutOptions
+	// If no ref is provided we take the default branch of the remote
+	if strings.TrimSpace(ref) == "" {
+		ref, err = r.remoteDefaultBranch()
 
-	if ref == "" {
-		// If no ref is provided checkout latest commit on current branch
-		head, err := repo.Head()
 		if err != nil {
 			return "", "", "", err
 		}
 
-		if !head.Name().IsBranch() {
-			return "", "", "", fmt.Errorf("not on a branch, unable to update")
-		}
-
-		// If on a branch checkout the latest version of it from the remote
-		branch := head.Name()
-		ref = branch.String()
-		checkoutOptions = git.CheckoutOptions{Branch: branch, Keep: true}
-	} else {
-		// Checkout ref if provided
-		checkoutOptions = git.CheckoutOptions{Hash: plumbing.NewHash(ref), Keep: true}
+		shortRef = strings.SplitN(ref, "/", 3)[2]
 	}
 
-	fetchOptions := git.FetchOptions{RemoteName: DefaultRemoteName, Force: true, RefSpecs: []config.RefSpec{
-		config.RefSpec(ref + ":" + ref),
-	}}
+	commonOpts := []string{"git", "-C", r.Directory}
 
-	err = repo.Fetch(&fetchOptions)
+	refSpec := fmt.Sprintf("%s:%s", shortRef, shortRef)
+	cmdStr := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", remoteName, refSpec}...)
 
-	if err != nil && err != git.NoErrAlreadyUpToDate {
-		return "", "", "", err
-	}
-
-	worktree, err := repo.Worktree()
+	_, stderr, err := exec(cmdStr)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", errors.New(stdErrToErrMsg(stderr))
 	}
 
-	err = worktree.Checkout(&checkoutOptions)
+	cmdStr = append(commonOpts, []string{"-c", "advice.detachedHead=false", "checkout", "--force", shortRef}...)
+	_, stderr, err = exec(cmdStr)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", errors.New(stdErrToErrMsg(stderr))
 	}
 
-	newHash, err := repo.ResolveRevision(plumbing.Revision("HEAD"))
-	return ref, oldHash.String(), newHash.String(), err
+	newHash, err := r.Head()
+	if err != nil {
+		return ref, oldHash, newHash, fmt.Errorf("unable to resolve plugin new Git HEAD: %w", err)
+	}
+	return ref, oldHash, newHash, nil
 }
 
-func gitOpen(directory string) (*git.Repository, error) {
-	repo, err := git.PlainOpen(directory)
+func (r Repo) defaultRemote() (string, error) {
+	stdout, _, err := exec([]string{"git", "-C", r.Directory, "remote"})
 	if err != nil {
-		return repo, fmt.Errorf("unable to open plugin Git repository: %w", err)
+		return "", err
 	}
 
-	return repo, nil
+	return strings.SplitN(stdout, "\n", 2)[0], nil
+}
+
+func (r Repo) remoteDefaultBranch() (string, error) {
+	remote, err := r.defaultRemote()
+	if err != nil {
+		return "", err
+	}
+
+	stdout, stderr, err := exec([]string{"git", "-C", r.Directory, "ls-remote", "--symref", remote, "HEAD"})
+	if err != nil {
+		return "", errors.New(stdErrToErrMsg(stderr))
+	}
+	return strings.Fields(strings.Split(stdout, "\n")[0])[1], nil
+}
+
+func stdErrToErrMsg(stdErr string) string {
+	lines := strings.Split(strings.TrimSuffix(stdErr, "\n"), "\n")
+	return lines[len(lines)-1]
+}
+
+func exec(command []string) (string, string, error) {
+	cmd := execute.New(command[0], command[1:])
+
+	var stdOut strings.Builder
+	var stdErr strings.Builder
+	cmd.Stdout = &stdOut
+	cmd.Stderr = &stdErr
+	err := cmd.Run()
+
+	return stdOut.String(), stdErr.String(), err
+}
+
+func repositoryExists(directory string) error {
+	stat, err := os.Stat(directory)
+	if err != nil {
+		err, _ := err.(*fs.PathError)
+		return err.Err
+	}
+
+	if stat.IsDir() {
+		// directory exists
+		stdout, _, _ := exec([]string{"git", "-C", directory, "rev-parse", "--is-inside-work-tree"})
+		if strings.TrimSpace(stdout) == "true" {
+			return nil
+		}
+
+		return errors.New("not a git repository")
+	}
+
+	return errors.New("not a directory")
 }

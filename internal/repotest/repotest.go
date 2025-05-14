@@ -118,7 +118,7 @@ func getModuleRoot() (string, error) {
 func createGitRepo(location string) (string, error) {
 	// Definitely some opportunities to refactor here. This code might be
 	// simplified by switching to the Go git library
-	err := runCmd("git", "-C", location, "init", "-q")
+	err := runCmd("git", "-C", location, "init", "-q", "-b", "master")
 	if err != nil {
 		return location, err
 	}
