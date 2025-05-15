@@ -24,32 +24,6 @@ func TestLoadConfigEnv(t *testing.T) {
 	assert.Zero(t, config.Home, "Shouldn't set Home property when loading config")
 }
 
-func TestLoadConfigEnv_WithForcePrependEnv(t *testing.T) {
-	t.Run("When ASDF_FORCE_PREPEND env given yes", func(t *testing.T) {
-		t.Setenv("ASDF_FORCE_PREPEND", "yes")
-
-		config, _ := loadConfigEnv()
-
-		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
-	})
-
-	t.Run("When ASDF_FORCE_PREPEND env given YES", func(t *testing.T) {
-		t.Setenv("ASDF_FORCE_PREPEND", "YES")
-
-		config, _ := loadConfigEnv()
-
-		assert.True(t, config.ForcePrepend, "Then ForcePrepend property is true")
-	})
-
-	t.Run("When ASDF_FORCE_PREPEND env given any string other than yes", func(t *testing.T) {
-		t.Setenv("ASDF_FORCE_PREPEND", "no")
-
-		config, _ := loadConfigEnv()
-
-		assert.False(t, config.ForcePrepend, "Then ForcePrepend property is false")
-	})
-}
-
 func TestLoadSettings(t *testing.T) {
 	t.Run("When given invalid path returns error", func(t *testing.T) {
 		settings, err := loadSettings("./foobar")

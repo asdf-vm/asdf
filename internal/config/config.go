@@ -16,7 +16,6 @@ import (
 )
 
 const (
-	forcePrependDefault                = false
 	dataDirDefault                     = "~/.asdf"
 	configFileDefault                  = "~/.asdfrc"
 	defaultToolVersionsFilenameDefault = ".tool-versions"
@@ -40,8 +39,7 @@ type Config struct {
 	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
 	// Unclear if this value will be needed with the golang implementation.
 	// AsdfDir string
-	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
-	ForcePrepend bool
+	DataDir string `env:"ASDF_DATA_DIR, overwrite"`
 	// Field that stores the settings struct if it is loaded
 	Settings       Settings
 	PluginIndexURL string
@@ -61,13 +59,7 @@ type Settings struct {
 }
 
 func defaultConfig(dataDir, configFile string) *Config {
-	forcePrepend := forcePrependDefault
-	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
-	if strings.ToLower(forcePrependEnv) == "yes" || (forcePrependEnv == "" && runtime.GOOS == "darwin") {
-		forcePrepend = true
-	}
 	return &Config{
-		ForcePrepend:                forcePrepend,
 		DataDir:                     dataDir,
 		ConfigFile:                  configFile,
 		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,

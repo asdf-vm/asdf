@@ -211,15 +211,6 @@ pre_foo_bar = echo Executing with args: $@
 - 미설정 시: asdf 설정 `concurrency` 값이 사용됩니다.
 - 사용법: `export ASDF_CONCURRENCY=32`
 
-### `ASDF_FORCE_PREPEND`
-
-`PATH`의 맨 앞(최우선순위) 부분에 `asdf` shim과 경로 디렉토리를 추가할 것인지 여부.
-
-- 미설정 시: 맥 운영체제에서, `yes`가 기본값; 다른 시스템에서는 `no`가 기본값
-- `yes`: `PATH`의 앞 부분에 `asdf` 디렉토리 강제 추가
-- `yes` 이외의 _다른_ 문자열: `PATH`의 앞 부분에 `asdf` 디렉토리 강제로 추가하지 _않음_
-- 사용법: `ASDF_FORCE_PREPEND=no . "<path-to-asdf-directory>/asdf.sh"`
-
 ## 전체 설정의 예시
 
 다음을 이용한 간단한 asdf 설치는:
