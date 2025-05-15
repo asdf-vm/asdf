@@ -205,15 +205,6 @@ pre_foo_bar = echo Executing with args: $@
 - 未設定の場合: asdf構成ファイルの`concurrency`の値が使用されます。
 - 使用方法: `export ASDF_CONCURRENCY=32`
 
-### `ASDF_FORCE_PREPEND`
-
-`asdf`のShimやパスのディレクトリを`PATH`の先頭(最高優先度)に追加するかどうかを設定します。
-
-- 未設定の場合: macOSでのデフォルト値は`yes`、その他のシステムでのデフォルト値は`no`です。
-- `yes`の場合: `asdf`ディレクトリを強制的に`PATH`の先頭に配置します。
-- `yes`以外の文字列を設定した場合: `asdf`ディレクトリを強制的に`PATH`の先頭に配置することは _しません_ 。
-- Usage: `ASDF_FORCE_PREPEND=no . "<path-to-asdf-directory>/asdf.sh"`
-
 ## 完全な構成の例
 
 下記のように、asdfをシンプルにセットアップしたとします:
