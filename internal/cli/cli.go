@@ -1214,21 +1214,12 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 		return err
 	}
 
-	var stdout strings.Builder
-	var stderr strings.Builder
-
-	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+	versions, err := plugin.GetAvailableVersions()
 	if err != nil {
-		fmt.Printf("Plugin %s's list-all callback script failed with output:\n", plugin.Name)
-		// Print to stderr
-		os.Stderr.WriteString(stderr.String())
-		os.Stderr.WriteString(stdout.String())
-
+		logger.Printf("%v", err)
 		cli.OsExiter(1)
 		return err
 	}
-
-	versions := strings.Split(stdout.String(), " ")
 
 	if filter != "" {
 		versions = filterByExactMatch(versions, filter)
@@ -1241,7 +1232,7 @@ func listAllCommand(logger *log.Logger, conf config.Config, toolName, filter str
 	}
 
 	for _, version := range versions {
-		fmt.Printf("%s\n", version)
+		logger.Printf("%s\n", version)
 	}
 
 	return nil
