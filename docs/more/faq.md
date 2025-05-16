@@ -23,3 +23,13 @@ We intend to run out test suite on WSL2 when host runner support is available on
 ## Shell not detecting newly installed shims?
 
 If `asdf reshim` is not resolving your issue, then it is most-likely due to the sourcing of `asdf.sh` or `asdf.fish` _not_ being at the **BOTTOM** of your Shell config file (`.bash_profile`, `.zshrc`, `config.fish` etc). It needs to be sourced **AFTER** you have set your `$PATH` and **AFTER** you have sourced your framework (oh-my-zsh etc) if any.
+
+## Why can't I use a version of `latest` in the `.tool-versions` file?
+
+asdf must always have an exact version of every tool in the current directory, not version ranges or special values like `latest` are not permitted. This ensure that asdf behaves in a deterministic and consistent way across time and across different machines. A special version like `latest` would change over time, and could vary between machines if `asdf install` was run at different times. As such it's allowed in asdf commands like `asdf set <tool> latest`, but forbidden in the `.tool-versions` file.
+
+Think of `.tool-versions` file as `Gemfile.lock` or `package-lock.json`. It is a file that contains the exact version of every tool your project depends on.
+
+Note that the `system` version is allowed in `.tool-versions` files, and it could resolve to different versions when used. It is a special value that  effectively disables asdf for a particular tool in the given directory.
+
+See issue https://github.com/asdf-vm/asdf/issues/1012
