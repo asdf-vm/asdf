@@ -33,3 +33,9 @@ Think of `.tool-versions` file as `Gemfile.lock` or `package-lock.json`. It is a
 Note that the `system` version is allowed in `.tool-versions` files, and it could resolve to different versions when used. It is a special value that  effectively disables asdf for a particular tool in the given directory.
 
 See issue https://github.com/asdf-vm/asdf/issues/1012
+
+## Why can't version ranges be used in the `.tool-versions` files?
+
+Similar to the question above on the use of `latest`. With a version range specified, asdf would be free to choose any installed version in the specified range. This could result in different behavior across machines if they have different versions installed. The intent is for asdf to be fully deterministic so the same `.tool-versions` file produces the exact same environment across time and across different computers.
+
+See issue https://github.com/asdf-vm/asdf-nodejs/issues/235#issuecomment-885809776
