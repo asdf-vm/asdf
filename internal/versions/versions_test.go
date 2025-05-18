@@ -196,7 +196,7 @@ func TestInstallOneVersion(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		err := InstallOneVersion(conf, plugin, "path:/foo/bar", false, &stdout, &stderr)
 
-		assert.ErrorContains(t, err, "uninstallable version: path")
+		assert.ErrorContains(t, err, "uninstallable version path of testlua")
 	})
 
 	t.Run("returns error when plugin version is 'system'", func(t *testing.T) {
