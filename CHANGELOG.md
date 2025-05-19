@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.17.0](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.17.0) (2025-05-19)
+
+
+### Features
+
+* **golang-rewrite:** add support for shim templates resolution ([#2076](https://github.com/asdf-vm/asdf/issues/2076)) ([a3bccea](https://github.com/asdf-vm/asdf/commit/a3bccea5c9b64bf81675efaa5c76d6eb367fd37f))
+* log failure to add plugin in "plugin test" ([#2059](https://github.com/asdf-vm/asdf/issues/2059)) ([92de803](https://github.com/asdf-vm/asdf/commit/92de803ff15f1a887f031d570ae6404f008d829d))
+* switch back to native git client ([#1998](https://github.com/asdf-vm/asdf/issues/1998)) ([1efa2bb](https://github.com/asdf-vm/asdf/commit/1efa2bbd04b833d0435a15bddd882beb973cfc2d))
+
+
+### Bug Fixes
+
+* address linter warning ([67581cf](https://github.com/asdf-vm/asdf/commit/67581cf030d4eb39f261acac5e861444fedad7f6))
+* correct intersection logic in `shims.FindExecutable` function so ordering of multiple versions is preserved ([#2063](https://github.com/asdf-vm/asdf/issues/2063)) ([083f20a](https://github.com/asdf-vm/asdf/commit/083f20aa3e21cad594b35972ca570eb47e389899))
+* correct output of install command when system or path version set ([#2097](https://github.com/asdf-vm/asdf/issues/2097)) ([82d67e3](https://github.com/asdf-vm/asdf/commit/82d67e3242b0ac4d01cccd9712daaae574ce6eca))
+* ensures output always ends with a newline when printed ([#2098](https://github.com/asdf-vm/asdf/issues/2098)) ([6f4837e](https://github.com/asdf-vm/asdf/commit/6f4837ea9b82b442fdfa78c3bb315b088e60dc9c))
+* handle tilde in env vars ([#2092](https://github.com/asdf-vm/asdf/issues/2092)) ([6da599a](https://github.com/asdf-vm/asdf/commit/6da599a93ad2655c2bf061c038da330ee4413985))
+* remove default error action from plugin command ([#2027](https://github.com/asdf-vm/asdf/issues/2027)) ([c376481](https://github.com/asdf-vm/asdf/commit/c376481cb4d1fa1e67dd9ef326381c07c935151d))
+* remove unused ForcePrepend option from Go code ([#2089](https://github.com/asdf-vm/asdf/issues/2089)) ([49e9f33](https://github.com/asdf-vm/asdf/commit/49e9f330a719de6bd599b84c90b93e7d7358043c))
+* set correct version for go install and make builds ([#2077](https://github.com/asdf-vm/asdf/issues/2077)) ([4c73527](https://github.com/asdf-vm/asdf/commit/4c73527d6323ca41d8ea9a9e78a8db49f3794d16))
+
 ## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
 
 
