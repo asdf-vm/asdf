@@ -22,7 +22,6 @@ import (
 const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
-	uninstallableVersionMsg = "uninstallable version: %s"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
 	numericStartFilterRegex = "^\\s*[0-9]"
 	noLatestVersionErrMsg   = "no latest version found"
@@ -31,11 +30,12 @@ const (
 // UninstallableVersionError is an error returned if someone tries to install the
 // system version.
 type UninstallableVersionError struct {
+	toolName    string
 	versionType string
 }
 
 func (e UninstallableVersionError) Error() string {
-	return fmt.Sprintf(uninstallableVersionMsg, e.versionType)
+	return fmt.Sprintf("uninstallable version %s of %s", e.versionType, e.toolName)
 }
 
 // NoVersionSetError is returned whenever an operation that requires a version
@@ -145,13 +145,13 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	}
 
 	if versionStr == systemVersion {
-		return UninstallableVersionError{versionType: systemVersion}
+		return UninstallableVersionError{toolName: plugin.Name, versionType: systemVersion}
 	}
 
 	version := toolversions.Parse(versionStr)
 
 	if version.Type == "path" {
-		return UninstallableVersionError{versionType: "path"}
+		return UninstallableVersionError{toolName: plugin.Name, versionType: "path"}
 	}
 	downloadDir := installs.DownloadPath(conf, plugin, version)
 	installDir := installs.InstallPath(conf, plugin, version)
