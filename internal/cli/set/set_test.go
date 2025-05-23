@@ -20,7 +20,7 @@ func TestAll(t *testing.T) {
 
 		assert.Error(t, err, "tool and version must be provided as arguments")
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "tool and version must be provided as arguments")
+		assert.Equal(t, stderr.String(), "tool and version must be provided as arguments\n")
 	})
 
 	t.Run("prints error when no version specified", func(t *testing.T) {
@@ -29,7 +29,7 @@ func TestAll(t *testing.T) {
 
 		assert.Error(t, err, "version must be provided as an argument")
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "version must be provided as an argument")
+		assert.Equal(t, stderr.String(), "version must be provided as an argument\n")
 	})
 
 	t.Run("prints error when both --parents and --home flags are set", func(t *testing.T) {
@@ -38,7 +38,7 @@ func TestAll(t *testing.T) {
 
 		assert.Error(t, err, "home and parents flags cannot both be specified; must be one location or the other")
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "home and parents flags cannot both be specified; must be one location or the other")
+		assert.Equal(t, stderr.String(), "home and parents flags cannot both be specified; must be one location or the other\n")
 	})
 
 	t.Run("sets version in current directory when no flags provided", func(t *testing.T) {

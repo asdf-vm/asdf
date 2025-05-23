@@ -73,7 +73,7 @@ EOF
   run asdf help
 
   [ "$status" -eq 0 ]
-  [[ $output == 'version: v'* ]]
+  [[ $output =~ $'version: '[0-9]* ]]
   [[ $output == *$'MANAGE PLUGINS\n'* ]]
   [[ $output == *$'MANAGE TOOLS\n'* ]]
   [[ $output == *$'UTILS\n'* ]]

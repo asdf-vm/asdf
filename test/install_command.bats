@@ -220,7 +220,7 @@ EOM
 @test "install_command doesn't install system version" {
   run asdf install dummy system
   [ "$status" -eq 1 ]
-  [ "$output" = "error installing version: uninstallable version: system" ]
+  [ "$output" = "error installing version: uninstallable version system of dummy" ]
   [ ! -f "$ASDF_DIR/installs/dummy/system/version" ]
 }
 

@@ -972,7 +972,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	// Install plugin
 	err = plugins.Add(conf, testName, url, ref)
 	if err != nil {
-		failTest(l, fmt.Sprintf("%s was not properly installed", name))
+		failTest(l, fmt.Sprintf("%s was not properly installed reason: %s", name, err))
 	}
 
 	// Remove plugin
@@ -1085,10 +1085,18 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 			for _, err := range errs {
 				// Don't print error if no version set, this just means the current
 				// dir doesn't use a particular plugin that is installed.
-				if _, ok := err.(versions.NoVersionSetError); !ok {
-					os.Stderr.Write([]byte(err.Error()))
-					os.Stderr.Write([]byte("\n"))
+				if _, ok := err.(versions.NoVersionSetError); ok {
+					continue
 				}
+
+				if _, ok := err.(versions.UninstallableVersionError); ok {
+					msg := fmt.Sprintf("skipping %s\n", err.Error())
+					os.Stderr.Write([]byte(msg))
+					continue
+				}
+
+				os.Stderr.Write([]byte(err.Error()))
+				os.Stderr.Write([]byte("\n"))
 			}
 
 			filtered := filterInstallErrors(errs)

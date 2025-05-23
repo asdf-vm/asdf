@@ -1,12 +1,40 @@
 // Main entrypoint for the CLI app
 package main
 
-import "github.com/asdf-vm/asdf/internal/cli"
+import (
+	"fmt"
+	"runtime/debug"
+	"slices"
 
-// Replaced with the real version during a typical build
-var version = "v-dev"
+	"github.com/asdf-vm/asdf/internal/cli"
+)
+
+// Do not touch this next line
+var version = "0.17.0" // x-release-please-version
 
 // Placeholder for the real code
 func main() {
-	cli.Execute(version)
+	fullVersion := buildFullVersion(version)
+	cli.Execute(fullVersion)
+}
+
+func buildFullVersion(version string) string {
+	var shortRef string
+
+	info, ok := debug.ReadBuildInfo()
+
+	if !ok {
+		panic("can't get build info")
+	}
+	idx := slices.IndexFunc(info.Settings, func(s debug.BuildSetting) bool {
+		return s.Key == "vcs.revision"
+	})
+
+	if idx < 0 {
+		shortRef = "unknown"
+	} else {
+		shortRef = info.Settings[idx].Value[0:7]
+	}
+
+	return fmt.Sprintf("%s (revision %s)", version, shortRef)
 }

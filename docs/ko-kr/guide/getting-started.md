@@ -36,7 +36,7 @@ asdf는 `git` & `curl`이 필요합니다. _당신이_ 필요한 패키지 매�
 
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.17.0
 
 ```
 
@@ -361,11 +361,7 @@ export ASDF_DIR="/opt/asdf-vm"
 
 :::
 
-`asdf` 스크립트들은 `$PATH` 설정한 **이후에** 프레임워크 (oh-my-zsh 등) source **이후에** source 되어야 합니다. 
-
-::: 경고
-macOS에서, Bash 혹은 Zsh 셸 시작시에 자동적으로 `path_helper` 유틸리티를 실행시킵니다. `path_helper`는 `PATH` (와 `MANPATH`)에 항목들을 재배열 시켜 특정 순서를 요구하는 툴들의 일관된 동작을 방해합니다. 이를 방지하기 위해, macOS에서 `asdf`는 `PATH` 앞부분에 (가장 높은 우선순위) 강제로 추가합니다. 이는 `ASDF_FORCE_PREPEND`를 통해 변경가능합니다.
-:::
+`asdf` 스크립트들은 `$PATH` 설정한 **이후에** 프레임워크 (oh-my-zsh 등) source **이후에** source 되어야 합니다.
 
 `PATH` 업데이트를 위해 셸을 재시작하세요. 새로운 터미널을 여는 경우 대부분 해결됩니다.
 

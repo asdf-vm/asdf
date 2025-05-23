@@ -6,17 +6,16 @@ import (
 	"context"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/sethvargo/go-envconfig"
 	"gopkg.in/ini.v1"
 )
 
 const (
-	forcePrependDefault                = false
 	dataDirDefault                     = "~/.asdf"
 	configFileDefault                  = "~/.asdfrc"
 	defaultToolVersionsFilenameDefault = ".tool-versions"
@@ -40,8 +39,7 @@ type Config struct {
 	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
 	// Unclear if this value will be needed with the golang implementation.
 	// AsdfDir string
-	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
-	ForcePrepend bool
+	DataDir string `env:"ASDF_DATA_DIR, overwrite"`
 	// Field that stores the settings struct if it is loaded
 	Settings       Settings
 	PluginIndexURL string
@@ -61,13 +59,7 @@ type Settings struct {
 }
 
 func defaultConfig(dataDir, configFile string) *Config {
-	forcePrepend := forcePrependDefault
-	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
-	if strings.ToLower(forcePrependEnv) == "yes" || (forcePrependEnv == "" && runtime.GOOS == "darwin") {
-		forcePrepend = true
-	}
 	return &Config{
-		ForcePrepend:                forcePrepend,
 		DataDir:                     dataDir,
 		ConfigFile:                  configFile,
 		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
@@ -103,19 +95,24 @@ func newPluginRepoCheckDuration(checkDuration string) PluginRepoCheckDuration {
 
 // LoadConfig builds the Config struct from environment variables
 func LoadConfig() (Config, error) {
-	config, err := loadConfigEnv()
+	config := defaultConfig(dataDirDefault, configFileDefault)
+
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return config, err
+		return Config{}, err
 	}
 
-	homeDir, err := homedir.Dir()
+	ctx := context.Background()
+	err = envconfig.Process(ctx, config)
 	if err != nil {
-		return config, err
+		return Config{}, err
 	}
 
 	config.Home = homeDir
+	config.DataDir = normalizePath(homeDir, config.DataDir)
+	config.ConfigFile = normalizePath(homeDir, config.ConfigFile)
 
-	return config, nil
+	return *config, nil
 }
 
 // Methods on the Config struct that allow it to load and cache values from the
@@ -211,23 +208,11 @@ func (c *Config) loadSettings() error {
 	return nil
 }
 
-func loadConfigEnv() (Config, error) {
-	dataDir, err := homedir.Expand(dataDirDefault)
-	if err != nil {
-		return Config{}, err
+func normalizePath(homeDir string, path string) string {
+	if path == "~" || strings.HasPrefix(path, "~/") {
+		path = filepath.Join(homeDir, path[1:])
 	}
-
-	configFile, err := homedir.Expand(configFileDefault)
-	if err != nil {
-		return Config{}, err
-	}
-
-	config := defaultConfig(dataDir, configFile)
-
-	context := context.Background()
-	err = envconfig.Process(context, config)
-
-	return *config, err
+	return filepath.Clean(path)
 }
 
 func loadSettings(asdfrcPath string) (Settings, error) {

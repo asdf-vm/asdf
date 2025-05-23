@@ -34,7 +34,7 @@ asdf can be installed in several different ways:
 
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
-2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.0`
+2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.17.0`
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf can be installed in several different ways:
 <!-- x-release-please-start-version -->
 1. Clone the asdf repository:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.16.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.17.0
   ```
 <!-- x-release-please-end -->
 2. Run `make`
@@ -324,10 +324,6 @@ export ASDF_DATA_DIR="/your/custom/data/dir"
 :::
 
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
-
-::: warning
-On macOS, starting a Bash or Zsh shell automatically calls a utility called `path_helper`. `path_helper` can rearrange items in `PATH` (and `MANPATH`), causing inconsistent behavior for tools that require specific ordering. To workaround this, `asdf` on macOS defaults to forcibly adding its `PATH`-entries to the front (taking highest priority). This is controllable with the `ASDF_FORCE_PREPEND` variable.
-:::
 
 Restart your shell so that `PATH` changes take effect. Opening a new terminal tab will usually do it.
 
