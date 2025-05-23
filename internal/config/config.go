@@ -3,7 +3,6 @@
 package config
 
 import (
-	"context"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -11,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/sethvargo/go-envconfig"
 	"gopkg.in/ini.v1"
 )
 
@@ -35,14 +33,11 @@ var pluginRepoCheckDurationDefault = PluginRepoCheckDuration{Every: 60}
 // Config is the primary value this package builds and returns
 type Config struct {
 	Home                        string
-	ConfigFile                  string `env:"ASDF_CONFIG_FILE, overwrite"`
-	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
-	// Unclear if this value will be needed with the golang implementation.
-	// AsdfDir string
-	DataDir string `env:"ASDF_DATA_DIR, overwrite"`
-	// Field that stores the settings struct if it is loaded
-	Settings       Settings
-	PluginIndexURL string
+	ConfigFile                  string
+	DefaultToolVersionsFilename string
+	DataDir                     string
+	Settings                    Settings
+	PluginIndexURL              string
 }
 
 // Settings is a struct that stores config values from the asdfrc file
@@ -102,10 +97,26 @@ func LoadConfig() (Config, error) {
 		return Config{}, err
 	}
 
-	ctx := context.Background()
-	err = envconfig.Process(ctx, config)
-	if err != nil {
-		return Config{}, err
+	configFile := os.Getenv("ASDF_CONFIG_FILE")
+	if configFile != "" {
+		config.ConfigFile = configFile
+	}
+
+	dataDir := os.Getenv("ASDF_DATA_DIR")
+	if dataDir != "" {
+		config.DataDir = dataDir
+	}
+
+	versionFilename := os.Getenv("ASDF_TOOL_VERSIONS_FILENAME")
+	if versionFilename != "" {
+		config.DefaultToolVersionsFilename = versionFilename
+	} else {
+		// ASDF_TOOL_VERSIONS_FILENAME is the new environment variable name. It used
+		// to be named ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+		versionFilename = os.Getenv("ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")
+		if versionFilename != "" {
+			config.DefaultToolVersionsFilename = versionFilename
+		}
 	}
 
 	config.Home = homeDir
