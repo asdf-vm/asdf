@@ -92,6 +92,6 @@ concurrency = auto
 ## 环境变量
 
 - `ASDF_CONFIG_FILE` - 如上所述默认为 `~/.asdfrc` 文件。可以被设置在任何位置。
-- `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` - 存储工具名称和版本的文件名。默认为 `.tool-versions`。可以是任何有效的文件名。通常，除非你知道你希望 asdf 忽略 `.tool-versions` 文件，否则不应该覆盖默认值。
+- `ASDF_TOOL_VERSIONS_FILENAME` - 存储工具名称和版本的文件名。默认为 `.tool-versions`。可以是任何有效的文件名。通常，除非你知道你希望 asdf 忽略 `.tool-versions` 文件，否则不应该覆盖默认值。
 - `ASDF_DIR` - 默认为 `~/.asdf` - `asdf` 脚本的位置。如果你把 `asdf` 安装到了其他目录，请设置该变量到那个目录。比如，如果通过 AUR 进行安装，则应设置该变量为 `/opt/asdf-vm`。
 - `ASDF_DATA_DIR` - 默认为 `~/.asdf` - `asdf` 安装插件、垫片和安装器的位置。可以被设置在上一节提到的生效 `asdf.sh` 或者 `asdf.fish` 之间的任何位置。对于 Elvish，这可以设置在 `use asdf` 上面。
