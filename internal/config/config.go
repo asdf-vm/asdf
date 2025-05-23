@@ -111,6 +111,8 @@ func LoadConfig() (Config, error) {
 	if versionFilename != "" {
 		config.DefaultToolVersionsFilename = versionFilename
 	} else {
+		// ASDF_TOOL_VERSIONS_FILENAME is the new environment variable name. It used
+		// to be named ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
 		versionFilename = os.Getenv("ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")
 		if versionFilename != "" {
 			config.DefaultToolVersionsFilename = versionFilename
