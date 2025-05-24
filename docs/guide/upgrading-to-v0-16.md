@@ -8,8 +8,8 @@ a binary rather than a set of scripts.
 
 ## Installation
 
-Installation of version 0.16.0 is much simpler than previous versions of asdf.
-It's just three steps:
+Installation of version 0.16.0 and newer is much simpler than previous versions
+of asdf. It's just three steps:
 
 * Download the appropriate `asdf` binary for your operating system/architecture combo from the [GitHub releases page](https://github.com/asdf-vm/asdf/releases) and place it in a directory on your `$PATH`
 * Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH`.
@@ -65,7 +65,28 @@ export ASDF_DATA_DIR="/home/myuser/.asdf"
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
 ```
 
-#### 4. Regenerate Shims
+#### 4. Remove Old Config
+
+In your shells RC file you'll have the old code running the asdf shell script at
+startup. It'll probably look something like this:
+
+```
+. "$HOME/.asdf/asdf.sh"
+```
+
+Or this:
+
+```
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+```
+
+Comment out these lines or remove them entirely.
+
+If you are not using Zsh or Bash please see the legacy
+[Getting Started guide](https://asdf-vm.com/guide/getting-started-legacy.html#_3-install-asdf)
+for the code snippet you need to remove.
+
+#### 5. Regenerate Shims
 
 Verify that `asdf` command in your shell session is version 0.16.0+ by running
 `asdf --help`. If you still see an older version you will need to start a new
@@ -77,12 +98,12 @@ the old Bash version.
 
 ### Testing
 
-
 If you aren't sure if the upgrade to 0.16.0 will break things for you can you
 can test by installing 0.16.0 in addition to your existing version as described
 above in "Upgrading Without Losing Data". If it turns out that the upgrade to
-0.16.0 breaks things for you simply remove the lines you added to your shell
-RC file.
+0.16.0 or greater breaks things for you you can revert back to the older
+version. Remove the lines you added to your shell RC file, and add back in the
+lines you removed or commented out.
 
 ## Breaking Changes
 
