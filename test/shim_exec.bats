@@ -88,13 +88,14 @@ teardown() {
 
   touch "$PROJECT_DIR/.tool-versions"
 
-  run "$ASDF_DIR/shims/dummy" world hello
+  run --separate-stderr "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
 
-  echo "$output" | grep -q "No version is set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
-  echo "$output" | grep -q "dummy 2.0.0" 2>/dev/null
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "No version is set for command dummy" 2>/dev/null
+  echo "${stderr:?}" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "${stderr:?}" | grep -q "dummy 1.0" 2>/dev/null
+  echo "${stderr:?}" | grep -q "dummy 2.0.0" 2>/dev/null
 }
 
 @test "shim exec should suggest different plugins providing same tool when no version is selected" {
