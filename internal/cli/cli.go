@@ -666,16 +666,16 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 				logger.Printf("No preset version installed for command %s", command)
 				for _, toolVersion := range toolVersions {
 					for _, version := range toolVersion.Versions {
-						fmt.Printf("asdf install %s %s\n", toolVersion.Name, version)
+						logger.Printf("asdf install %s %s\n", toolVersion.Name, version)
 					}
 				}
 
-				fmt.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
 			}
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
-					fmt.Printf("%s %s\n", toolVersion.Name, version)
+					logger.Printf("%s %s\n", toolVersion.Name, version)
 				}
 			}
 		}
