@@ -263,7 +263,7 @@ func TestInstallOneVersion(t *testing.T) {
 		stdout, stderr := buildOutputs()
 
 		installScript := filepath.Join(conf.DataDir, "plugins", plugin.Name, "bin", "install")
-		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o777)
 		assert.Nil(t, err)
 		_, err = f.WriteString("\nexit 1")
 		assert.Nil(t, err)
@@ -347,7 +347,7 @@ func TestLatest(t *testing.T) {
 
 		// Replace latest-stable script so it returns a dev version that would be otherwise filtered out
 		latestScript := filepath.Join(pluginDir, "bin", "latest-stable")
-		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0777)
+		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0o777)
 		assert.Nil(t, err)
 
 		version, err := Latest(plugin, "")

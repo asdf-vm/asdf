@@ -39,3 +39,13 @@ See issue https://github.com/asdf-vm/asdf/issues/1012
 Similar to the question above on the use of `latest`. With a version range specified, asdf would be free to choose any installed version in the specified range. This could result in different behavior across machines if they have different versions installed. The intent is for asdf to be fully deterministic so the same `.tool-versions` file produces the exact same environment across time and across different computers.
 
 See issue https://github.com/asdf-vm/asdf-nodejs/issues/235#issuecomment-885809776
+
+## Why is a command completely unrelated to the plugins I'm using is getting shimmed by asdf?
+
+**asdf is only going to generate shims for executables it manages**. If for example you use the Ruby plugin then you'll expect to see commands like `ruby` and `irb` replaced with shims, along with other executables present in Ruby packages you installed.
+
+If you see a shim that you don't expect, it's likely because you installed a package under a tool that was managed by asdf, and the package provided the executable.
+
+This is surprising when the executable has the same name as an executable already on your system. [Some users reported](https://github.com/asdf-vm/asdf/issues/584) a Node.JS package that provided it's own version of the `which` command. This resulted in asdf creating a shim for it, and it replacing the version of the `which` command present on the operating system. In such instances it's best to locate the package introducing the executable and remove it. `asdf which <command>` is helping in showing you where the offending executable is located, making it possible to determine what package added it.
+
+See issues https://github.com/asdf-vm/asdf/issues/584 https://github.com/asdf-vm/asdf/issues/1653
