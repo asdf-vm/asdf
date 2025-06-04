@@ -1287,8 +1287,11 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		}
 
 		if len(versions) == 0 {
-			logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
-			cli.OsExiter(1)
+			if filter == "" {
+				logger.Printf("No compatible versions installed (%s)", plugin.Name)
+			} else {
+				logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
+			}
 			return nil
 		}
 
