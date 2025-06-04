@@ -105,6 +105,25 @@ above in "Upgrading Without Losing Data". If it turns out that the upgrade to
 version. Remove the lines you added to your shell RC file, and add back in the
 lines you removed or commented out.
 
+### Removing old files
+
+**Only do this after you've completed all the steps above and have verified
+your new asdf installation is working correctly!** After upgrade there are
+various files you can remove from the old Bash-script based versions of asdf.
+Most of the files in your data directory (typically `~/.asdf/`) can be removed.
+The only directories that must be **kept** are:
+
+* `downloads/`
+* `installs/`
+* `plugins/`
+* `shims/`
+
+The rest can be deleted. This can be done in one command with `find`:
+
+```
+find . -maxdepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -rf {} \;
+```
+
 ## Breaking Changes
 
 ### Hyphenated commands have been removed
