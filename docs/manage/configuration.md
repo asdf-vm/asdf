@@ -48,7 +48,7 @@ Edit the file directly or use `asdf set` which updates it.
 
 The `.asdfrc` file defines the user's machine specific configuration.
 
-`${HOME}/.asdfrc` is the default location used by asdf. This can be set with the [Environment Variable `ASDF_CONFIG_FILE`](#asdfconfigfile).
+`${HOME}/.asdfrc` is the default location used by asdf. This can be set with the [Environment Variable `ASDF_CONFIG_FILE`](#asdf-config-file).
 
 The below file shows the required format with the default values:
 
