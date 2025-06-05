@@ -54,7 +54,7 @@ python 3.7.2 2.7.15 system
 
 `.asdfrc` 파일은 사용자의 머신별 설정을 정의합니다.
 
-`${HOME}/.asdfrc`는 asdf가 사용하는 기본 위치입니다. 이는 [환경 변수 `ASDF_CONFIG_FILE`](#asdfconfigfile)로 설정 가능합니다.
+`${HOME}/.asdfrc`는 asdf가 사용하는 기본 위치입니다. 이는 [환경 변수 `ASDF_CONFIG_FILE`](#asdf-config-file)로 설정 가능합니다.
 
 아래 파일은 필수적인 형식과 기본값들을 보여줍니다:
 
