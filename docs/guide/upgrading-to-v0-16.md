@@ -11,7 +11,9 @@ a binary rather than a set of scripts.
 Installation of version 0.16.0 and newer is much simpler than previous versions
 of asdf. It's just three steps:
 
-* Download the appropriate `asdf` binary for your operating system/architecture combo from the [GitHub releases page](https://github.com/asdf-vm/asdf/releases) and place it in a directory on your `$PATH`
+* Download the appropriate `asdf` binary for your operating system/architecture
+combo via [any of the install methods available](/guide/getting-started.html#_1-install-asdf).
+If using a package manager verify it's installing version 0.16.0 or later.
 * Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH`.
 * Optionally, if you previously had a customized location for asdf data, set
 `ASDF_DATA_DIR` to the directory you already had the old version installing
