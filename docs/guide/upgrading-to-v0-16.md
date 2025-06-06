@@ -123,7 +123,7 @@ The only directories that must be **kept** are:
 The rest can be deleted. This can be done in one command with `find`:
 
 ```
-find . -maxdepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -rf {} \;
+find ${ASDF_DATA_DIR:-$HOME/.asdf}/ -maxdepth 1 -mindepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -r {} \;
 ```
 
 ## Breaking Changes
