@@ -36,7 +36,7 @@ asdf는 `git` & `curl`이 필요합니다. _당신이_ 필요한 패키지 매�
 
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.17.0
 
 ```
 
