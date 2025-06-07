@@ -33,7 +33,7 @@ asdfはいくつかの方法でインストールできます:
 
 <!-- x-release-please-start-version -->
 1. [Goをインストールする](https://go.dev/doc/install)
-2. コマンドを実行: `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0`
+2. コマンドを実行: `go install github.com/asdf-vm/asdf/cmd/asdf@v0.17.0`
 <!-- x-release-please-end -->
 
 ::::
@@ -47,7 +47,7 @@ asdfはいくつかの方法でインストールできます:
 <!-- x-release-please-start-version -->
 1. asdfリポジトリをクローン:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.17.0
   ```
 <!-- x-release-please-end -->
 2. `make`を実行。
