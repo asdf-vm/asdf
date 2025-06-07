@@ -16,13 +16,13 @@ jobs:
       matrix:
         # windows isn't working on windows right now, add it to this list once
         # I fix the code.
-        goos: [linux, darwin]
+        goos: [linux, darwin, windows]
         goarch: ["386", amd64, arm64]
         exclude:
           - goarch: "386"
             goos: darwin
-          #- goarch: arm64
-          #  goos: windows
+          - goarch: arm64
+            goos: windows
     steps:
       - name: Checkout
         uses: actions/checkout@v4
