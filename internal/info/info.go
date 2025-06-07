@@ -47,7 +47,7 @@ func Write(conf config.Config, version string, writer io.Writer) error {
 	fmt.Fprintf(writer, "%s\n", version)
 
 	fmt.Fprintln(writer, "\nASDF INTERNAL VARIABLES:")
-	fmt.Fprintf(writer, "ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=%s\n", conf.DefaultToolVersionsFilename)
+	fmt.Fprintf(writer, "ASDF_TOOL_VERSIONS_FILENAME=%s\n", conf.DefaultToolVersionsFilename)
 	fmt.Fprintf(writer, "ASDF_DATA_DIR=%s\n", conf.DataDir)
 	fmt.Fprintf(writer, "ASDF_CONFIG_FILE=%s\n", conf.ConfigFile)
 
