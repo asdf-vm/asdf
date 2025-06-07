@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.18.0](https://github.com/asdf-vm/asdf/compare/v0.17.0...v0.18.0) (2025-06-07)
+
+
+### Features
+
+* `asdf list` exit with status code of 0 when no versions installed ([#2116](https://github.com/asdf-vm/asdf/issues/2116)) ([e7d5289](https://github.com/asdf-vm/asdf/commit/e7d5289c57894ebbc0f966cb91794efd970377af))
+
+
+### Bug Fixes
+
+* correct flag handling in commands run by `asdf exec` ([#2115](https://github.com/asdf-vm/asdf/issues/2115)) ([d6cd693](https://github.com/asdf-vm/asdf/commit/d6cd6930cff8e7159cb2f1a57b23bd0ec1faa6ac))
+* only return version starting with number when no filter is supplied ([#2120](https://github.com/asdf-vm/asdf/issues/2120)) ([cf29b51](https://github.com/asdf-vm/asdf/commit/cf29b5136bbe481ae3803dbdb78086c808eeef7a))
+* print all error output to stderr when shim can't be resolved ([#2109](https://github.com/asdf-vm/asdf/issues/2109)) ([c9049ea](https://github.com/asdf-vm/asdf/commit/c9049ea2fd09fc7958fb1a5a5b44e0670740465b))
+* rename tool version filename environment variable for clarity ([#2101](https://github.com/asdf-vm/asdf/issues/2101)) ([e3d6014](https://github.com/asdf-vm/asdf/commit/e3d6014419296281c4156fc65a3e02bb542495a2))
+* upgrade urfave/cli to version 3 ([#2105](https://github.com/asdf-vm/asdf/issues/2105)) ([392d09a](https://github.com/asdf-vm/asdf/commit/392d09a8b263a5ef18fd05f27312717bf9baa292))
+
 ## [0.17.0](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.17.0) (2025-05-19)
 
 
