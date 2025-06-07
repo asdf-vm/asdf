@@ -25,6 +25,7 @@ const en = [
     items: [
       { text: "Configuration", link: "/manage/configuration" },
       { text: "All Commands", link: "/manage/commands" },
+      { text: "Dependencies", link: "/manage/dependencies" },
       {
         text: "Plugin Shortname Index",
         link: "https://github.com/asdf-vm/asdf-plugins",
