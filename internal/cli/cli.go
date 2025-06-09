@@ -277,16 +277,28 @@ func Execute(version string) {
 						Usage:   "The version should be set in the current users home directory",
 					},
 					&cli.BoolFlag{
-						Name:    "parent",
+						Name:    "parents",
 						Aliases: []string{"p"},
-						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory",
+						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory.",
+					},
+					&cli.BoolFlag{
+						Name:    "parent",
+						Hidden:  false,
+						Usage:   "Has been renamed to --parents. See above.",
 					},
 				},
 				Action: func(_ context.Context, cmd *cli.Command) error {
 					args := cmd.Args().Slice()
 					home := cmd.Bool("home")
+					parents := cmd.Bool("parents")
 					parent := cmd.Bool("parent")
-					return set.Main(os.Stdout, os.Stderr, args, home, parent, func() (string, error) {
+
+					if parent {
+						const msg = "Warning: set --parent has been renamed to --parents. Please use --parents instead."
+						logger.Println(msg)
+					}
+          
+					return set.Main(os.Stdout, os.Stderr, args, home, parents || parent, func() (string, error) {
 						return os.UserHomeDir()
 					})
 				},
