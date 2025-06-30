@@ -34,6 +34,15 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "asdf exec should pass all arguments including flags to executable" {
+  echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
+  run asdf install
+
+  run asdf exec dummy --mytestflag hello
+  [ "$output" = "This is Dummy 1.0! hello --mytestflag" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "asdf exec should pass all arguments to executable even if shim is not in PATH" {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install

@@ -104,6 +104,10 @@ func Execute(version string) {
 			},
 			{
 				Name: "exec",
+				// We want all arguments to exec to remain unparsed so we can pass them
+				// directly to the command asdf whill exec on behalf of the shim/user.
+				// SkipFlagParsing tells urfave/cli to do this.
+				SkipFlagParsing: true,
 				Action: func(_ context.Context, cmd *cli.Command) error {
 					command := cmd.Args().Get(0)
 					args := cmd.Args().Slice()
@@ -1295,8 +1299,11 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		}
 
 		if len(versions) == 0 {
-			logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
-			cli.OsExiter(1)
+			if filter == "" {
+				logger.Printf("No compatible versions installed (%s)", plugin.Name)
+			} else {
+				logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
+			}
 			return nil
 		}
 

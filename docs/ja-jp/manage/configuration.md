@@ -177,12 +177,12 @@ pre_foo_bar = echo Executing with args: $@
 - 未設定の場合: `$HOME/.asdfrc`の値が使用されます。
 - 使用方法: `export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
 
-### `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`
+### `ASDF_TOOL_VERSIONS_FILENAME`
 
 ツール名とバージョンの情報を格納するファイルのファイル名です。有効なファイル名であれば何でも設定できます。通常、`.tool-versions`ファイルを無視したい場合を除き、この値を変更するべきではありません。
 
 - 未設定の場合: `.tool-versions`の値が使用されます。
-- 使用方法: `export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=tool_versions`
+- 使用方法: `export ASDF_TOOL_VERSIONS_FILENAME=tool_versions`
 
 ### `ASDF_DIR`
 
@@ -220,7 +220,7 @@ pre_foo_bar = echo Executing with args: $@
 | 構成                                  | 値               | 値がセットされる過程                                                                                                                  |
 | :------------------------------------ | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
 | config file location                  | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE`は空なので、`$HOME/.asdfrc`が使用されます。                                                                         |
-| default tool versions filename        | `.tool-versions` | `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`は空なので、`.tool-versions`が使用されます。                                                     |
+| default tool versions filename        | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME`は空なので、`.tool-versions`が使用されます。                                                     |
 | asdf dir                              | `$HOME/.asdf`    | `ASDF_DIR`は空なので、`bin/asdf`の親ディレクトリが使用されます。                                                                      |
 | asdf data dir                         | `$HOME/.asdf`    | `ASDF_DATA_DIR`は空であり、`$HOME`が存在するので、`$HOME/.asdf`が使用されます。                                                       |
 | concurrency                           | `auto`           | `ASDF_CONCURRENCY`は空なので、[デフォルト構成](https://github.com/asdf-vm/asdf/blob/master/defaults)の`concurrency`の値に依存します。 |

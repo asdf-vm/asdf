@@ -11,7 +11,9 @@ a binary rather than a set of scripts.
 Installation of version 0.16.0 and newer is much simpler than previous versions
 of asdf. It's just three steps:
 
-* Download the appropriate `asdf` binary for your operating system/architecture combo from the [GitHub releases page](https://github.com/asdf-vm/asdf/releases) and place it in a directory on your `$PATH`
+* Download the appropriate `asdf` binary for your operating system/architecture
+combo via [any of the install methods available](/guide/getting-started.html#_1-install-asdf).
+If using a package manager verify it's installing version 0.16.0 or later.
 * Add `$ASDF_DATA_DIR/shims` to the front of your `$PATH`.
 * Optionally, if you previously had a customized location for asdf data, set
 `ASDF_DATA_DIR` to the directory you already had the old version installing
@@ -104,6 +106,26 @@ above in "Upgrading Without Losing Data". If it turns out that the upgrade to
 0.16.0 or greater breaks things for you you can revert back to the older
 version. Remove the lines you added to your shell RC file, and add back in the
 lines you removed or commented out.
+
+### Removing old files
+
+**Only do this after you've completed all the steps above and have verified
+your new asdf installation is working correctly!** After upgrade there are
+various files you can remove from the old Bash-script based versions of asdf.
+Most of the files in your data directory (typically `~/.asdf/`) can be removed.
+Note that you don't have to do this. There is no harm in keeping the files from
+old versions of asdf around. The only directories that must be **kept** are:
+
+* `downloads/`
+* `installs/`
+* `plugins/`
+* `shims/`
+
+The rest can be deleted. This can be done in one command with `find`:
+
+```
+find ${ASDF_DATA_DIR:-$HOME/.asdf}/ -maxdepth 1 -mindepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -r {} \;
+```
 
 ## Breaking Changes
 

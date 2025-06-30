@@ -3,6 +3,12 @@ name: Build Binaries for Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build binaries for'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -38,6 +44,6 @@ jobs:
           goversion: "1.23.4"
           binary_name: "asdf"
           project_path: ./cmd/asdf
-          release_tag: ${{ github.event.release.tag_name }}
-          release_name: ${{ github.event.release.tag_name }}
-          ldflags: -s -X main.version=${{ github.event.release.tag_name }}
+          release_tag: ${{ github.event.release.tag_name || inputs.tag }}
+          release_name: ${{ github.event.release.tag_name || inputs.tag }}
+          ldflags: -s -X main.version=${{ github.event.release.tag_name || inputs.tag }}

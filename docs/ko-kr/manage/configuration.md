@@ -54,7 +54,7 @@ python 3.7.2 2.7.15 system
 
 `.asdfrc` 파일은 사용자의 머신별 설정을 정의합니다.
 
-`${HOME}/.asdfrc`는 asdf가 사용하는 기본 위치입니다. 이는 [환경 변수 `ASDF_CONFIG_FILE`](#asdfconfigfile)로 설정 가능합니다.
+`${HOME}/.asdfrc`는 asdf가 사용하는 기본 위치입니다. 이는 [환경 변수 `ASDF_CONFIG_FILE`](#asdf-config-file)로 설정 가능합니다.
 
 아래 파일은 필수적인 형식과 기본값들을 보여줍니다:
 
@@ -183,12 +183,12 @@ pre_foo_bar = echo Executing with args: $@
 - 미설정 시: `$HOME/.asdfrc`가 사용됩니다.
 - 사용법: `export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
 
-### `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`
+### `ASDF_TOOL_VERSIONS_FILENAME`
 
 툴 이름과 버전을 저장하는 파일의 파일이름입니다. 임의의 유효한 파일 이름이면 됩니다. 일반적으로, `.tool-version` 파일들을 무시하고 싶을 때 해당 값을 설정하세요.
 
 - 미설정 시: `.tool-versions`가 사용됩니다.
-- 사용법: `export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=tool_versions`
+- 사용법: `export ASDF_TOOL_VERSIONS_FILENAME=tool_versions`
 
 ### `ASDF_DIR`
 
@@ -226,7 +226,7 @@ pre_foo_bar = echo Executing with args: $@
 | 항목                                  | 값               | 값이 세팅되는 과정                                                                                                           |
 | :------------------------------------ | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
 | config file location                  | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE`가 비었으므로, `$HOME/.asdfrc`을 사용                                                                      |
-| default tool versions filename        | `.tool-versions` | `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`가 비었으므로, `.tool-versions`을 사용                                                  |
+| default tool versions filename        | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME`가 비었으므로, `.tool-versions`을 사용                                                  |
 | asdf dir                              | `$HOME/.asdf`    | `ASDF_DIR`가 비었으므로, `bin/asdf`의 한 단계 상위 디렉토리 사용                                                             |
 | asdf data dir                         | `$HOME/.asdf`    | `ASDF_DATA_DIR`가 비었으므로, `$HOME/.asdf`를 `$HOME`으로 사용.                                                              |
 | concurrency                           | `auto`           | `ASDF_CONCURRENCY`가 비었으므로, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)의 `concurrency` 값에 의존 |
