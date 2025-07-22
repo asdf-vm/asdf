@@ -184,6 +184,12 @@ func Execute(version string) {
 				Commands: []*cli.Command{
 					{
 						Name: "add",
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name:  "ref",
+								Usage: "Specific ref to use for this plugin",
+							},
+						},
 						Action: func(_ context.Context, cmd *cli.Command) error {
 							args := cmd.Args()
 							conf, err := config.LoadConfig()
@@ -710,7 +716,7 @@ func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) 
 	return false
 }
 
-func pluginAddCommand(_ *cli.Command, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
+func pluginAddCommand(cmd *cli.Command, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
 	if pluginName == "" {
 		// Invalid arguments
 		// Maybe one day switch this to show the generated help
@@ -718,7 +724,9 @@ func pluginAddCommand(_ *cli.Command, conf config.Config, logger *log.Logger, pl
 		return cli.Exit("usage: asdf plugin add <name> [<git-url>]", 1)
 	}
 
-	err := plugins.Add(conf, pluginName, pluginRepo, "")
+	ref := cmd.String("ref")
+
+	err := plugins.Add(conf, pluginName, pluginRepo, ref)
 	if err != nil {
 		logger.Printf("%s", err)
 
