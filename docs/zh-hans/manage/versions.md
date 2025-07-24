@@ -65,33 +65,43 @@ asdf latest <name> <version>
 # asdf latest erlang 17
 ```
 
-## 设置当前版本
+## 设置版本
+
+#### 通过 `.tool-versions` 文件
 
 ```shell
-asdf global <name> <version> [<version>...]
-asdf shell <name> <version> [<version>...]
-asdf local <name> <version> [<version>...]
-# asdf global elixir 1.2.4
+asdf set [flags] <name> <version> [<version>...]
+# asdf set elixir 1.2.4 # set in current dir
+# asdf set -u elixir 1.2.4 # set in .tool-versions file in home directory
+# asdf set -p elixir 1.2.4 # set in existing .tool-versions file in a parent dir
 
-asdf global <name> latest[:<version>]
-asdf local <name> latest[:<version>]
-# asdf global elixir latest
+asdf set <name> latest[:<version>]
+# asdf set elixir latest
 ```
 
-`global` 将版本写到 `$HOME/.tool-versions` 文件中。
+`asdf set` 将版本信息写入当前目录下的 `.tool-versions` 文件中，若该文件不存在则自动创建。此功能仅为方便使用而设。你可以将其视为执行 `echo "<tool> <version>" > .tool-versions` 的操作。
 
-`shell` 仅为当前 shell 会话将版本设置为一个名为 `ASDF_${LANG}_VERSION` 的环境变量。
+使用 `-u`/`--home` 选项时，`asdf set` 将写入位于 `$HOME` 目录下的 `.tool-versions` 文件，如果该文件不存在则创建它。
 
-`local` 将版本写到 `$PWD/.tool-versions` 文件中，如果有需要也会创建此文件。
+使用 `-p`/`--parent` 选项时，`asdf set` 会寻找在当前目录的最近父目录的 `.tool-versions` 文件进行操作。
+
+#### 通过环境变量
+
+在确定版本时，系统会查询符合模式的环境变量 `ASDF_${TOOL}_VERISON`。该版本格式与 `.tool-versions` 文件中支持的格式一致。如果设置了该环境变量，其值将覆盖任何 `.tool-versions` 文件中为该工具设置的版本。例如：
+
+```shell
+export ASDF_ELIXIR_VERSION=1.18.1
+```
+
+这将会告诉 asdf 在当前会话中使用 Elixir `1.18.1`。
+
+:::warning 警告
+由于这是一个环境变量，它仅在设置的位置生效。其他正在运行的 shell 会话仍将使用在 `.tool-versions` 文件中设置的版本。
 
 请查看 [配置部分](/zh-hans/manage/configuration.md) 的 `.tool-versions` 文件了解更多详情。
-
-:::warning 可选
-如果你只是想为当前 shell 会话或者在特定工具版本下执行一条命令，你可以设置一个类似 `ASDF_${TOOL}_VERSION` 的环境变量。
 :::
 
 下面的示例在版本为 `1.4.0` 的 Elixir 项目上运行测试。
-版本格式与 `.tool-versions` 文件支持的版本格式相同。
 
 ```shell
 ASDF_ELIXIR_VERSION=1.4.0 mix test
@@ -101,11 +111,11 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 要使用工具 `<name>` 的系统版本而非 asdf 管理版本，你可以将工具的版本设置为 `system`。
 
-使用 `global`、`local` 或者 `shell` 设置系统，如上面的 [设置当前版本](#设置当前版本) 部分所述。
+使用 `asdf set` 命令或如上文 [设置版本](#设置版本) 部分所述的环境变量来设置系统。
 
 ```shell
-asdf local <name> system
-# asdf local python system
+asdf set <name> system
+# asdf set python system
 ```
 
 ## 显示当前版本
@@ -113,12 +123,12 @@ asdf local <name> system
 ```shell
 asdf current
 # asdf current
-# erlang 17.3 (set by /Users/kim/.tool-versions)
-# nodejs 6.11.5 (set by /Users/kim/cool-node-project/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
+# nodejs          6.11.5        /Users/kim/cool-node-project/.tool-versions
 
 asdf current <name>
 # asdf current erlang
-# 17.3 (set by /Users/kim/.tool-versions)
+# erlang          17.3          /Users/kim/.tool-versions
 ```
 
 ## 卸载版本
@@ -145,7 +155,7 @@ asdf uninstall <name> <version>
 source $(asdf which ${PLUGIN})/../script.sh
 
 # 返回软件包安装目录的路径
-source $(asdf where ${PLUGIN} $(asdf current ${PLUGIN}))/bin/script.sh
+source $(asdf where ${PLUGIN})/bin/script.sh
 ```
 
 ### 绕过 asdf 垫片

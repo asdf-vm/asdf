@@ -457,8 +457,13 @@ const zh_hans = [
     text: "指导",
     collapsed: false,
     items: [
-      { text: "什么是asdf？", link: "/zh-hans/guide/introduction" },
+      { text: "什么是 asdf？", link: "/zh-hans/guide/introduction" },
       { text: "快速入门", link: "/zh-hans/guide/getting-started" },
+      {
+        text: "快速入门 (0.16.0 之前)",
+        link: "/zh-hans/guide/getting-started-legacy",
+      },
+      { text: "升级到 0.16.0", link: "/zh-hans/guide/upgrading-to-v0-16" },
     ],
   },
   {
@@ -476,6 +481,7 @@ const zh_hans = [
     items: [
       { text: "配置", link: "/zh-hans/manage/configuration" },
       { text: "所有命令", link: "/zh-hans/manage/commands" },
+      { text: "依赖", link: "/zh-hans/manage/dependencies" },
       {
         text: "插件缩写索引",
         link: "https://github.com/asdf-vm/asdf-plugins",
