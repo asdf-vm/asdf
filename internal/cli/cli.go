@@ -223,7 +223,7 @@ func Execute(version string) {
 						Name: "remove",
 						Action: func(_ context.Context, cmd *cli.Command) error {
 							args := cmd.Args()
-							return pluginRemoveCommand(cmd, logger, args.Get(0))
+							return pluginRemoveCommand(cmd, logger, args.Slice()...)
 						},
 					},
 					{
@@ -736,36 +736,42 @@ func pluginAddCommand(_ *cli.Command, conf config.Config, logger *log.Logger, pl
 	return nil
 }
 
-func pluginRemoveCommand(_ *cli.Command, logger *log.Logger, pluginName string) error {
-	if pluginName == "" {
-		logger.Print("No plugin given")
-		cli.OsExiter(1)
-		return nil
+func pluginRemoveCommand(_ *cli.Command, logger *log.Logger, pluginNames ...string) error {
+	for _, pluginName := range pluginNames {
+		if pluginName == "" {
+			logger.Print("No plugin given")
+			cli.OsExiter(1)
+			return nil
+		}
+
+		conf, err := config.LoadConfig()
+		if err != nil {
+			logger.Printf("error loading config: %s", err)
+			return err
+		}
+
+		err = plugins.Remove(conf, pluginName, os.Stdout, os.Stderr)
+		if err != nil {
+			// Needed to match output of old version
+			logger.Printf("%s", err)
+		}
+
+		// This feels a little hacky but it works, to re-generate shims we delete them
+		// all and generate them again.
+		err2 := shims.RemoveAll(conf)
+		if err2 != nil {
+			logger.Printf("%s", err2)
+			cli.OsExiter(1)
+			return err2
+		}
+
+		shims.GenerateAll(conf, os.Stdout, os.Stderr)
+		if err != nil {
+			return err
+		}
 	}
 
-	conf, err := config.LoadConfig()
-	if err != nil {
-		logger.Printf("error loading config: %s", err)
-		return err
-	}
-
-	err = plugins.Remove(conf, pluginName, os.Stdout, os.Stderr)
-	if err != nil {
-		// Needed to match output of old version
-		logger.Printf("%s", err)
-	}
-
-	// This feels a little hacky but it works, to re-generate shims we delete them
-	// all and generate them again.
-	err2 := shims.RemoveAll(conf)
-	if err2 != nil {
-		logger.Printf("%s", err2)
-		cli.OsExiter(1)
-		return err2
-	}
-
-	shims.GenerateAll(conf, os.Stdout, os.Stderr)
-	return err
+	return nil
 }
 
 func pluginListCommand(cCtx *cli.Command, logger *log.Logger) error {
