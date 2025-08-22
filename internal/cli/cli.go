@@ -21,6 +21,7 @@ import (
 	"github.com/asdf-vm/asdf/internal/exec"
 	"github.com/asdf-vm/asdf/internal/execenv"
 	"github.com/asdf-vm/asdf/internal/execute"
+	"github.com/asdf-vm/asdf/internal/git"
 	"github.com/asdf-vm/asdf/internal/help"
 	"github.com/asdf-vm/asdf/internal/hook"
 	"github.com/asdf-vm/asdf/internal/info"
@@ -202,9 +203,8 @@ func Execute(version string) {
 							case 2:
 								pluginName = args.Get(0)
 								// Could be either <git-url> or <git-ref>
-								// If it looks like a URL (contains :// or @) it's a URL, otherwise it's a git-ref
 								arg1 := args.Get(1)
-								if strings.Contains(arg1, "://") || strings.Contains(arg1, "@") {
+								if git.IsURL(arg1) {
 									pluginRepo = arg1
 								} else {
 									gitRef = arg1

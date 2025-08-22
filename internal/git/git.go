@@ -23,6 +23,69 @@ func isSHA(ref string) bool {
 	return matched
 }
 
+// IsURL determines if a string is a Git URL based on Git's supported protocols
+// Reference: https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols
+func IsURL(s string) bool {
+	// Special case: "." and ".." are directory references, not git repository URLs
+	if s == "." || s == ".." {
+		return false
+	}
+	
+	// HTTP/HTTPS protocols - must have proper :// format
+	if strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://") {
+		return strings.Contains(s, "://") // Double check for proper format
+	}
+	
+	// Git protocol
+	if strings.HasPrefix(s, "git://") {
+		return true
+	}
+	
+	// SSH protocol variants
+	if strings.HasPrefix(s, "ssh://") {
+		return true
+	}
+	
+	// SSH shorthand (user@host:path) - must not contain spaces
+	if strings.Contains(s, "@") && strings.Contains(s, ":") && !strings.Contains(s, " ") {
+		parts := strings.Split(s, "@")
+		if len(parts) == 2 {
+			hostPath := parts[1]
+			// Must have : after the host part and before path
+			return strings.Contains(hostPath, ":") && len(strings.Split(hostPath, ":")) >= 2
+		}
+	}
+	
+	// File protocol
+	if strings.HasPrefix(s, "file://") {
+		return true
+	}
+	
+	// Absolute paths are always URLs (Git branch names cannot start with /)
+	if strings.HasPrefix(s, "/") {
+		return true
+	}
+	
+	// Explicit relative paths are always URLs (Git branch names cannot start with ./ or ../)
+	if strings.HasPrefix(s, "./") || strings.HasPrefix(s, "../") {
+		return true
+	}
+	
+	// Windows-style paths are always URLs (Git branch names cannot contain \)
+	if len(s) >= 3 && s[1] == ':' && (s[2] == '\\' || s[2] == '/') {
+		return true
+	}
+	
+	// For anything else, check if it exists as a file or directory
+	// If it exists, it's more likely a file path (URL), otherwise it's likely a git ref
+	if _, err := os.Stat(s); err == nil {
+		return true
+	}
+	
+	// If it doesn't exist, it's more likely a git ref (branch, tag, commit)
+	return false
+}
+
 // Repoer is an interface for operations that can be applied to asdf plugins.
 // Right now we only support Git, but in the future we might have other
 // mechanisms to install and upgrade plugins. asdf doesn't require a plugin
