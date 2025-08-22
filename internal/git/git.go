@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/execute"
@@ -14,6 +15,13 @@ import (
 
 // DefaultRemoteName for Git repositories in asdf
 const DefaultRemoteName = "origin"
+
+// isSHA returns true if the ref looks like a SHA commit hash
+func isSHA(ref string) bool {
+	// Match 7-40 hex characters (common range for git SHAs)
+	matched, _ := regexp.MatchString("^[0-9a-f]{7,40}$", ref)
+	return matched
+}
 
 // Repoer is an interface for operations that can be applied to asdf plugins.
 // Right now we only support Git, but in the future we might have other
@@ -41,15 +49,33 @@ func NewRepo(directory string) Repo {
 
 // Clone installs a plugin via Git
 func (r Repo) Clone(pluginURL, ref string) error {
-	cmdStr := []string{"git", "clone", pluginURL, r.Directory}
+	var cmdStr []string
 
-	if ref != "" {
-		cmdStr = []string{"git", "clone", pluginURL, r.Directory, "--branch", ref}
-	}
+	if ref != "" && isSHA(ref) {
+		// For SHA commits, we need to clone first and then checkout the specific commit
+		cmdStr = []string{"git", "clone", pluginURL, r.Directory}
+		_, stderr, err := exec(cmdStr)
+		if err != nil {
+			return fmt.Errorf("unable to clone plugin: %s", stdErrToErrMsg(stderr))
+		}
 
-	_, stderr, err := exec(cmdStr)
-	if err != nil {
-		return fmt.Errorf("unable to clone plugin: %s", stdErrToErrMsg(stderr))
+		// Now checkout the specific commit
+		checkoutCmd := []string{"git", "-C", r.Directory, "-c", "advice.detachedHead=false", "checkout", ref}
+		_, stderr, err = exec(checkoutCmd)
+		if err != nil {
+			return fmt.Errorf("unable to checkout commit %s: %s", ref, stdErrToErrMsg(stderr))
+		}
+	} else {
+		// For branches and tags, use --branch flag
+		cmdStr = []string{"git", "clone", pluginURL, r.Directory}
+		if ref != "" {
+			cmdStr = []string{"git", "clone", pluginURL, r.Directory, "--branch", ref}
+		}
+
+		_, stderr, err := exec(cmdStr)
+		if err != nil {
+			return fmt.Errorf("unable to clone plugin: %s", stdErrToErrMsg(stderr))
+		}
 	}
 
 	return nil
@@ -113,16 +139,25 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 
 	commonOpts := []string{"git", "-C", r.Directory}
 
-	refSpec := fmt.Sprintf("%s:%s", shortRef, shortRef)
-	cmdStr := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", remoteName, refSpec}...)
-
-	_, stderr, err := exec(cmdStr)
-	if err != nil {
-		return "", "", "", errors.New(stdErrToErrMsg(stderr))
+	if isSHA(shortRef) {
+		// For SHA commits, fetch all refs and then checkout the specific commit
+		fetchCmd := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", remoteName}...)
+		_, stderr, err := exec(fetchCmd)
+		if err != nil {
+			return "", "", "", errors.New(stdErrToErrMsg(stderr))
+		}
+	} else {
+		// For branches and tags, use refspec to create local tracking branch
+		refSpec := fmt.Sprintf("%s:%s", shortRef, shortRef)
+		fetchCmd := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", remoteName, refSpec}...)
+		_, stderr, err := exec(fetchCmd)
+		if err != nil {
+			return "", "", "", errors.New(stdErrToErrMsg(stderr))
+		}
 	}
 
-	cmdStr = append(commonOpts, []string{"-c", "advice.detachedHead=false", "checkout", "--force", shortRef}...)
-	_, stderr, err = exec(cmdStr)
+	cmdStr := append(commonOpts, []string{"-c", "advice.detachedHead=false", "checkout", "--force", shortRef}...)
+	_, stderr, err := exec(cmdStr)
 	if err != nil {
 		return "", "", "", errors.New(stdErrToErrMsg(stderr))
 	}

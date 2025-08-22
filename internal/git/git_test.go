@@ -11,6 +11,37 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestIsSHA(t *testing.T) {
+	tests := []struct {
+		name     string
+		ref      string
+		expected bool
+	}{
+		{"Full SHA", "907ef6a8bc38f144f041e888109ed301dc3d8aaa", true},
+		{"Short SHA 7 chars", "907ef6a", true},
+		{"Short SHA 8 chars", "907ef6a8", true},
+		{"Short SHA 12 chars", "907ef6a8bc38", true},
+		{"Branch name", "main", false},
+		{"Branch with numbers", "v1.2.3", false},
+		{"Tag", "v1.0.0", false},
+		{"Tag with numbers", "1.0.0", false},
+		{"Mixed case", "907EF6A", false},                                 // SHA should be lowercase
+		{"Too short", "907ef6", false},                                   // Less than 7 chars
+		{"Too long", "907ef6a8bc38f144f041e888109ed301dc3d8aaab", false}, // More than 40 chars
+		{"With special chars", "907ef6a#", false},
+		{"Empty string", "", false},
+		{"Only numbers", "1234567", true},        // Valid hex (numbers 0-9 are valid hex)
+		{"Letters and numbers", "abc1234", true}, // Valid hex
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := isSHA(tt.ref)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestRepoClone(t *testing.T) {
 	t.Run("when repo name is valid but URL is invalid prints an error", func(t *testing.T) {
 		repo := NewRepo(t.TempDir())

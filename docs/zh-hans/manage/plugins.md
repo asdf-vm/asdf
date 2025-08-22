@@ -10,7 +10,16 @@
 
 ```shell
 asdf plugin add <name> <git-url>
-# asdf plugin add elm https://github.com/vic/asdf-elm
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo
+```
+
+您也可以使用 `<git-ref>` 参数来指定任何 Git 引用（分支、标签或提交）：
+
+```shell
+asdf plugin add <name> <git-url> [<git-ref>]
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 
 或者通过插件存储库中的缩写添加插件：
@@ -77,7 +86,7 @@ asdf plugin remove <name>
 缩写存储库将同步到你的本地计算机并定期刷新。这个周期由以下方法确定：
 
 - 命令触发的同步事件：
-    - `asdf plugin add <name>` 
+    - `asdf plugin add <name>`
     - `asdf plugin list all`
 - 如果配置选项 `disable_plugin_short_name_repository` 设置为 `yes`，那么同步操作将提前终止。请查看 [asdf 配置文档](/zh-hans/manage/configuration.md) 了解更多。
 - 如果在过去的 `X` 分钟内没有同步，则进行同步。

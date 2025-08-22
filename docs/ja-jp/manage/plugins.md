@@ -10,7 +10,16 @@
 
 ```shell
 asdf plugin add <name> <git-url>
-# asdf plugin add elm https://github.com/vic/asdf-elm
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo
+```
+
+また、`<git-ref>`引数で任意のGit参照（ブランチ、タグ、またはコミット）を指定することもできます:
+
+```shell
+asdf plugin add <name> <git-url> [<git-ref>]
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 
 または下記のコマンドで、プラグインリポジトリのショートネームを指定して追加します:
