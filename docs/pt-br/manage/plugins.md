@@ -18,9 +18,9 @@ asdf plugin add <name> <git-url>
 Você também pode especificar qualquer referência Git (branch, tag, ou commit) com o argumento `<git-ref>`:
 
 ```shell
-asdf plugin add <name> <git-url> [<git-ref>]
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
 # asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 

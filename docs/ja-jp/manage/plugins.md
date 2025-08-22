@@ -16,9 +16,9 @@ asdf plugin add <name> <git-url>
 また、`<git-ref>`引数で任意のGit参照（ブランチ、タグ、またはコミット）を指定することもできます:
 
 ```shell
-asdf plugin add <name> <git-url> [<git-ref>]
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
 # asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 

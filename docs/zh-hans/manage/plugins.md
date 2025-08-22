@@ -16,9 +16,9 @@ asdf plugin add <name> <git-url>
 您也可以使用 `<git-ref>` 参数来指定任何 Git 引用（分支、标签或提交）：
 
 ```shell
-asdf plugin add <name> <git-url> [<git-ref>]
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
 # asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 

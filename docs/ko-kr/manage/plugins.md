@@ -16,9 +16,9 @@ asdf plugin add <name> <git-url>
 `<git-ref>` 인수를 사용하여 임의의 Git 참조 (브랜치, 태그, 또는 커밋)를 지정할 수도 있습니다:
 
 ```shell
-asdf plugin add <name> <git-url> [<git-ref>]
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo main
-# asdf plugin add odo https://github.com/asdf-community/asdf-odo v3.1.1
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
 # asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 
