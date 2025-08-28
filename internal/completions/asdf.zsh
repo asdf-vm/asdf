@@ -310,7 +310,7 @@ case "$subcmd" in
           _asdf__installed_plugins
         else
           # Complete with installed versions for the plugin
-          _asdf__installed_versions_of ${words[3]}
+          _asdf__installed_versions_of_plus_system ${words[3]}
         fi
         ;;
       *)
