@@ -309,13 +309,8 @@ case "$subcmd" in
           # After flag, complete with plugin name
           _asdf__installed_plugins
         else
-          # Complete with available versions for the plugin
-          local versions
-          if versions=$(asdf list all "${words[3]}" 2>/dev/null); then
-            _wanted "versions-${words[3]}" \
-              expl "Available versions of ${words[3]}" \
-              compadd -- ${(f)versions}
-          fi
+          # Complete with installed versions for the plugin
+          _asdf__installed_versions_of ${words[3]}
         fi
         ;;
       *)
