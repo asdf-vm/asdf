@@ -320,12 +320,7 @@ case "$subcmd" in
         else
           local plugin="${words[3]}"
         fi
-        local versions
-        if versions=$(asdf list all "$plugin" 2>/dev/null); then
-          _wanted "versions-$plugin" \
-            expl "Available versions of $plugin" \
-            compadd -- ${(f)versions}
-        fi
+        _asdf__installed_versions_of_plus_system $plugin
         ;;
     esac
     ;;
