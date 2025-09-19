@@ -171,7 +171,7 @@ EOM
 
 #  run asdf install
 #  [ "$status" -eq 1 ]
-#  [ "$output" = "dum plugin is not installed" ]
+#  [ "$output" = "dumb plugin is not installed" ]
 #}
 
 @test "install_command fails when tool is specified but no version of the tool is configured in config file" {
