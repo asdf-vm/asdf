@@ -87,7 +87,7 @@ asdf set <name> latest[:<version>]
 
 #### 通过环境变量
 
-在确定版本时，系统会查询符合模式的环境变量 `ASDF_${TOOL}_VERISON`。该版本格式与 `.tool-versions` 文件中支持的格式一致。如果设置了该环境变量，其值将覆盖任何 `.tool-versions` 文件中为该工具设置的版本。例如：
+在确定版本时，系统会查询符合模式的环境变量 `ASDF_${TOOL}_VERSION`。该版本格式与 `.tool-versions` 文件中支持的格式一致。如果设置了该环境变量，其值将覆盖任何 `.tool-versions` 文件中为该工具设置的版本。例如：
 
 ```shell
 export ASDF_ELIXIR_VERSION=1.18.1
