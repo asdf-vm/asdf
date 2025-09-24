@@ -56,7 +56,7 @@ func (e NoExecutableForPluginError) Error() string {
 
 // FindExecutable takes a shim name and a current directory and returns the path
 // to the executable that the shim resolves to.
-func FindExecutable(conf config.Config, shimName, currentDirectory string) (path string, plugin plugins.Plugin, version string, found bool, err error) {
+func FindExecutable(conf config.Config, shimName string) (path string, plugin plugins.Plugin, version string, found bool, err error) {
 	shimPath := Path(conf, shimName)
 
 	if _, err := os.Stat(shimPath); err != nil {
@@ -80,7 +80,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 				return shimTemplate, plugin, "", true, nil
 			}
 
-			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
+			versions, found, err := resolve.Version(conf, plugin)
 			if err != nil {
 				return "", plugins.Plugin{}, "", false, nil
 			}
