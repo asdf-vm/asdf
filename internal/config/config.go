@@ -99,9 +99,14 @@ func LoadConfig() (Config, error) {
 		return Config{}, err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return Config{}, fmt.Errorf("unable to get current directory: %w", err)
+	toolVersionsDir := os.Getenv("ASDF_TOOL_VERSIONS_DIR")
+	if toolVersionsDir == "" {
+		currentDir, err := os.Getwd()
+		if err != nil {
+			return Config{}, fmt.Errorf("unable to get current directory: %w", err)
+		}
+
+		toolVersionsDir = currentDir
 	}
 
 	configFile := os.Getenv("ASDF_CONFIG_FILE")
@@ -129,7 +134,7 @@ func LoadConfig() (Config, error) {
 	config.Home = homeDir
 	config.DataDir = normalizePath(homeDir, config.DataDir)
 	config.ConfigFile = normalizePath(homeDir, config.ConfigFile)
-	config.ToolVersionsDir = currentDir
+	config.ToolVersionsDir = normalizePath(homeDir, toolVersionsDir)
 
 	return *config, nil
 }
