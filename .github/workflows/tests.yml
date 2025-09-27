@@ -15,7 +15,7 @@ jobs:
       cli: ${{ steps.filter.outputs.cli }}
       go: ${{ steps.filter.outputs.go }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: dorny/paths-filter@v3
@@ -48,7 +48,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -71,7 +71,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && needs.detect-changes.outputs.documentation == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # fetch all commits to get git log info for Vuepress
           fetch-depth: 0

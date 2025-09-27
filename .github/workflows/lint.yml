@@ -13,7 +13,7 @@ jobs:
   asdf-bash:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: asdf-vm/actions/install@v3
       - uses: actions/setup-python@v5
         with:
@@ -24,7 +24,7 @@ jobs:
   asdf-golang:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -47,7 +47,7 @@ jobs:
   actions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check workflow files
         uses: docker://rhysd/actionlint:1.6.24
         with:
