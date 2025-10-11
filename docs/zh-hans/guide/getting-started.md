@@ -1,360 +1,322 @@
 # 快速入门
 
-`asdf` 安装过程包括：
+## 1. 安装 asdf
 
-1. 安装依赖
-2. 下载 `asdf` 核心
-3. 安装 `asdf`
-4. 为每一个你想要管理的工具/运行环境安装插件
-5. 安装工具/运行环境的一个版本
-6. 通过 `.tool-versions` 配置文件设置全局和项目版本
+asdf 的安装方式有以下几种：
 
-## 1. 安装依赖
+::: details 使用包管理器 - **推荐**
 
-asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
-
-| OS    | Package Manager | Command                            |
-| ----- | --------------- | ---------------------------------- |
-| linux | Aptitude        | `apt install curl git`             |
-| linux | DNF             | `dnf install curl git`             |
-| linux | Pacman          | `pacman -S curl git`               |
-| linux | Zypper          | `zypper install curl git`          |
-| macOS | Homebrew        | `brew install coreutils curl git`  |
-| macOS | Spack           | `spack install coreutils curl git` |
-
-::: tip Note
-
-`sudo` may be required depending on your system configuration.
+| 包管理器 | 命令 |
+| -------- | ----- |
+| Homebrew | `brew install asdf` |
+| Zypper | `zypper install asdf` |
+| Pacman | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` 或者你希望使用 [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
 
 :::
 
-## 2. 下载 asdf
+:::: details 下载预编译二进制 - **简单**
 
-### Official Download
+<!--@include: @/zh-hans/parts/install-dependencies.md-->
+
+##### 安装 asdf
+
+1. 访问 https://github.com/asdf-vm/asdf/releases 并下载与操作系统和架构匹配的压缩包。
+2. 从压缩包中解压 `asdf` 二进制文件到 `$PATH` 路径的某个文件夹.
+3. 运行 `type -a asdf` 来验证 `asdf` 是否已经在 `$PATH` 路径中。放置 `asdf` 二进制文件的目录应该包含在 `type` 命令的输出中。如果不在，那么意味着第 2 步不是完全正确。
+
+::::
+
+:::: details 使用 `go install`
+
+<!--@include: @/zh-hans/parts/install-dependencies.md-->
+
+##### 安装 asdf
 
 <!-- x-release-please-start-version -->
-
-```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
-```
-
+1. [安装 Go](https://go.dev/doc/install)
+2. 运行 `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0`
 <!-- x-release-please-end -->
 
-### Community Supported Download Methods
+::::
 
-We highly recommend using the official `git` method.
+:::: details 从源码构建
 
-| Method   | Command                                                                                                                                                             |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homebrew | `brew install asdf`                                                                                                                                                 |
-| Pacman   | `git clone https://aur.archlinux.org/asdf-vm.git && cd asdf-vm && makepkg -si` or use your preferred [AUR helper](https://wiki.archlinux.org/index.php/AUR_helpers) |
+<!--@include: @/zh-hans/parts/install-dependencies.md-->
 
-## 3. 安装 asdf
+##### 安装 asdf
 
-根据 Shell 脚本、操作系统和安装方法的组合不同，相应的配置也会不同。展开以下与你的系统最匹配的选项：
+<!-- x-release-please-start-version -->
+1. 克隆 asdf 仓库:
+  ```shell
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.0
+  ```
+<!-- x-release-please-end -->
+2. 运行 `make`
+3. 复制 `asdf` 二进制文件到 `$PATH` 路径的某个文件夹.
+4. 运行 `type -a asdf` 来验证 `asdf` 是否已经在 `$PATH` 路径中。放置 `asdf` 二进制文件的目录应该包含在 `type` 命令的输出中。如果不在，那么意味着第 3 步不是完全正确。
 
-::: details Bash & Git
+::::
 
-在 `~/.bashrc` 文件中加入以下内容：
+## 2. 配置 asdf
+
+::: tip 注意
+大部分用户 **不** 需要自定义 asdf 插件、安装包、垫片数据的位置。但是，如果 `$HOME/.asdf` 不是你想要 asdf 写入的目录，你可以修改它。请通过在 Shell 的 RC 文件中定义 `ASDF_DATA_DIR` 变量来指定你想要的目录。
+:::
+
+根据 Shell 脚本、操作系统和安装方法的组合不同，相应的配置方式也会有所不同。展开以下与你的系统最匹配的选项。
+
+**macOS 用户，请务必阅读本节最后关于 `path_helper` 的警告。**
+
+::: details Bash
+
+**macOS Catalina 或者更新的版本**： 默认的 shell 已经被修改为 **ZSH**。除非修改回 Bash, 否则请遵循 ZSH 的说明。
+
+**Pacman**： 补全功能需要安装 [`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options)。
+
+##### 将垫片目录添加到路径（必须）
+
+在 `~/.bash_profile` 文件中添加以下内容：
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-补全功能必须在 `.bashrc` 文件中加入以下内容来配置完成：
+###### 自定义数据目录（可选）
+
+在 `~/.bash_profile` 文件中上面一行声明之前添加以下变量声明：
 
 ```shell
-. "$HOME/.asdf/completions/asdf.bash"
+export ASDF_DATA_DIR="/your/custom/data/dir"
+```
+
+##### 设置 shell 补全（可选）
+
+在 `.bashrc` 文件中添加下面内容来配置补全功能：
+
+```shell
+. <(asdf completion bash)
 ```
 
 :::
 
-::: details Bash & Git (macOS)
+::: details Fish
 
-如果你正在使用 **macOS Catalina 或者更新的版本**, 默认的 shell 已经被修改为 **ZSH**。除非修改回 Bash, 否则请遵循 ZSH 的说明。
+##### 将垫片目录添加到路径（必须）
 
-在 `~/.bash_profile` 文件中加入以下内容：
+在 `~/.config/fish/config.fish` 文件中添加以下内容：
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+# ASDF configuration code
+if test -z $ASDF_DATA_DIR
+    set _asdf_shims "$HOME/.asdf/shims"
+else
+    set _asdf_shims "$ASDF_DATA_DIR/shims"
+end
+
+# Do not use fish_add_path (added in Fish 3.2) because it
+# potentially changes the order of items in PATH
+if not contains $_asdf_shims $PATH
+    set -gx --prepend PATH $_asdf_shims
+end
+set --erase _asdf_shims
 ```
 
-补全功能必须在 `.bash_profile` 文件中使用以下内容手动配置完成：
+###### 自定义数据目录（可选）
+
+**Pacman**: 补全功能会在 AUR 包安装时自动配置。
+
+在 `~/.config/fish/config.fish` 文件中上面一行声明之前添加下面内容：
 
 ```shell
-. "$HOME/.asdf/completions/asdf.bash"
+set -gx --prepend ASDF_DATA_DIR "/your/custom/data/dir"
 ```
 
-:::
+##### 设置 shell 补全（可选）
 
-::: details Bash & Homebrew
-
-使用以下命令将 `asdf.sh` 加入到 `~/.bashrc` 文件中：
+必须通过以下命令手动配置补全功能：
 
 ```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bashrc
-```
-
-补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bashrc
-```
-
-:::
-
-::: details Bash & Homebrew (macOS)
-
-如果你正在使用 **macOS Catalina 或者更新的版本**, 默认的 shell 已经被修改为 **ZSH**。除非修改回 Bash, 否则请遵循 ZSH 的说明。
-
-使用以下命令将 `asdf.sh` 加入到 `~/.bash_profile` 文件中：
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.bash_profile
-```
-
-补全功能将需要 [按照 Homebrew 的说明完成配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-bash) 或者执行以下命令：
-
-```shell
-echo -e "\n. \"$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash\"" >> ~/.bash_profile
+$ asdf completion fish > ~/.config/fish/completions/asdf.fish
 ```
 
 :::
 
-::: details Bash & Pacman
+::: details Elvish
 
-在 `~/.bashrc` 文件中加入以下内容：
+##### 将垫片目录添加到路径（必须）
 
-```shell
-. /opt/asdf-vm/asdf.sh
-```
-
-为了让补全功能正常工作需要安装 [`bash-completion`](https://wiki.archlinux.org/title/bash#Common_programs_and_options) 。
-:::
-
-::: details Fish & Git
-
-在 `~/.config/fish/config.fish` 文件中加入以下内容：
+在 `~/.config/elvish/rc.elv` 文件中添加以下内容：
 
 ```shell
-source ~/.asdf/asdf.fish
+var asdf_data_dir = ~'/.asdf'
+if (and (has-env ASDF_DATA_DIR) (!=s $E:ASDF_DATA_DIR '')) {
+  set asdf_data_dir = $E:ASDF_DATA_DIR
+}
+
+if (not (has-value $paths $asdf_data_dir'/shims')) {
+  set paths = [$path $@paths]
+}
 ```
 
-补全功能必须按照以下命令手动配置完成：
+###### 自定义数据目录（可选）
+
+修改在上面片段之前的如下一行内容为自定义数据目录：
+
+```diff
+-var asdf_data_dir = ~'/.asdf'
++var asdf_data_dir = '/your/custom/data/dir'
+```
+
+##### 设置 shell 补全（可选）
 
 ```shell
-mkdir -p ~/.config/fish/completions; and ln -s ~/.asdf/completions/asdf.fish ~/.config/fish/completions
+$ asdf completion elvish >> ~/.config/elvish/rc.elv
+$ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
 ```
-
-:::
-
-::: details Fish & Homebrew
-
-使用以下命令将 `asdf.fish` 加入到 `~/.config/fish/config.fish` 文件中：
-
-```shell
-echo -e "\nsource "(brew --prefix asdf)"/libexec/asdf.fish" >> ~/.config/fish/config.fish
-```
-
-Fish shell 的补全功能可以交给 [Homebrew 处理](https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish). 很友好！
-:::
-
-::: details Fish & Pacman
-
-在 `~/.config/fish/config.fish` 文件中加入以下内容：
-
-```shell
-source /opt/asdf-vm/asdf.fish
-```
-
-补全功能将会在安装过程中由 AUR 包管理器自动配置完成。
-:::
-
-::: details Elvish & Git
-
-使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
-
-```shell
-mkdir -p ~/.config/elvish/lib; ln -s ~/.asdf/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
-```
-
-补全功能将会自动配置。
 
 :::
 
-::: details Elvish & Homebrew
+::: details ZSH
 
-使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
+**Pacman**： 补全功能被放置在对 ZSH 友好的位置，但是 [ZSH 必须配置使用自动补全](https://wiki.archlinux.org/index.php/zsh#Command_completion)。
 
+##### 将垫片目录添加到路径（必须）
+
+在 `~/.zshrc` 文件中添加以下内容：
 ```shell
-mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-补全功能将会自动配置。
+###### 自定义数据目录（可选）
 
-:::
-
-::: details Elvish & Pacman
-
-使用以下命令将 `asdf.elv` 加入到 `~/.config/elvish/rc.elv` 文件中：
+在 `~/.zshrc` 文件中上面一行声明之前添加以下内容：
 
 ```shell
-mkdir -p ~/.config/elvish/lib; ln -s /opt/asdf-vm/asdf.elv ~/.config/elvish/lib/asdf.elv
-echo "\n"'use asdf _asdf; var asdf~ = $_asdf:asdf~' >> ~/.config/elvish/rc.elv
-echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/.config/elvish/rc.elv
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
-补全功能将会自动配置。
+##### 设置 shell 补全（可选）
 
-:::
-
-::: details ZSH & Git
-
-在 `~/.zshrc` 文件中加入以下内容：
+补全功能可以通过 ZSH 框架的 `asdf` 插件 (类似 [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf)) 或如下操作启用：
 
 ```shell
-. "$HOME/.asdf/asdf.sh"
+$ mkdir -p "${ASDF_DATA_DIR:-$HOME/.asdf}/completions"
+$ asdf completion zsh > "${ASDF_DATA_DIR:-$HOME/.asdf}/completions/_asdf"
 ```
 
-**或者** 使用 ZSH 框架插件，比如 [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) 将会使脚本生效并安装补全功能。
-
-补全功能会被 ZSH 框架 `asdf` 插件或者通过在 `.zshrc` 文件中加入以下内容自动配置：
+然后在 `.zshrc` 文件中添加以下内容：
 
 ```shell
-# append completions to fpath
-fpath=(${ASDF_DIR}/completions $fpath)
-# initialise completions with ZSH's compinit
+# 添加补全功能到 fpath
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+# 使用 ZSH 的 compinit 初始化补全功能
 autoload -Uz compinit && compinit
 ```
 
-- 如果你正在使用自定义的 `compinit` 配置，请确保 `compinit` 在 `asdf.sh` 生效位置的下方
-- 如果你正在使用自定义的 `compinit` 配置和 ZSH 框架，请确保 `compinit` 在框架生效位置的下方
+**注意**
 
-**警告**
+如果你正在 ZSH 框架中使用自定义的 `compinit` 设置 ，请确保 `compinit` 在框架加载之后加载。
 
-如果你正在使用 ZSH 框架，有关的 `asdf` 插件或许需要更新才能通过 `fpath` 正确地使用最新的 ZSH 补全功能。Oh-My-ZSH asdf 插件还在更新中，请查看 [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 了解更多。
+补全功能可以通过 ZSH 框架 `asdf` 或者将需要 [按照 Homebrew 的说明进行配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). 如果你正在使用 ZSH 框架，与 asdf 关联的插件或许需要更新以便通过 `fpath` 正确使用新 ZSH。 Oh-My-ZSH asdf 插件尚未更新，请查看 [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 了解更多。
 :::
 
-::: details ZSH & Homebrew
+::: details PowerShell Core
 
-使用以下命令将 `asdf.sh` 加入到 `~/.zshrc` 文件中：
+##### 将垫片目录添加到路径（必须）
 
+在 `~/.config/powershell/profile.ps1` 文件中添加以下内容：
 ```shell
-echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
+# 确定垫片目录的位置
+if ($null -eq $ASDF_DATA_DIR -or $ASDF_DATA_DIR -eq '') {
+  $_asdf_shims = "${env:HOME}/.asdf/shims"
+}
+else {
+  $_asdf_shims = "$ASDF_DATA_DIR/shims"
+}
+
+# 然后添加到 path 路径
+$env:PATH = "${_asdf_shims}:${env:PATH}"
 ```
 
-**或者** 使用 ZSH 框架插件，比如 [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) 将会使脚本生效并安装补全功能。
+###### 自定义数据目录（可选）
 
-补全功能可以被 ZSH 框架 `asdf` 或者 [按照 Homebrew 的指引](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh) 完成配置。如果你正在使用 ZSH 框架，有关的 `asdf` 插件或许需要更新才能通过 `fpath` 正确地使用最新的 ZSH 补全功能。Oh-My-ZSH asdf 插件还在更新中，请查看 [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 了解更多。
-:::
-
-::: details ZSH & Pacman
-
-在 `~/.zshrc` 文件中加入以下内容：
+在 `~/.config/powershell/profile.ps1` 文件中上面片段之前添加以下内容：
 
 ```shell
-. /opt/asdf-vm/asdf.sh
+$env:ASDF_DATA_DIR = "/your/custom/data/dir"
 ```
 
-补全功能会被放在一个对 ZSH 很友好的位置，但是 [ZSH 必须使用自动补全完成配置](https://wiki.archlinux.org/index.php/zsh#Command_completion)。
+Shell 补全功能不支持 PowerShell。
+
 :::
 
-::: details PowerShell Core & Git
+::: details Nushell
 
-在 `~/.config/powershell/profile.ps1` 文件中加入以下内容：
+##### 将垫片目录添加到路径（必须）
+
+在 `~/.config/nushell/config.nu` 文件中添加以下内容：
 
 ```shell
-. "$HOME/.asdf/asdf.ps1"
+let shims_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  } | path join 'shims'
+)
+$env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
 ```
 
-:::
+###### 自定义数据目录（可选）
 
-::: details PowerShell Core & Homebrew
-
-使用以下命令将 `asdf.ps1` 加入到 `~/.config/powershell/profile.ps1` 文件中：
+在 `~/.config/nushell/config.nu` 文件中上面内容之前添加下面变量声明：
 
 ```shell
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.ps1\"" >> ~/.config/powershell/profile.ps1
+$env.ASDF_DATA_DIR = "/your/custom/data/dir"
 ```
 
-:::
-
-::: details PowerShell Core & Pacman
-
-在 `~/.config/powershell/profile.ps1` 文件中加入以下内容：
+##### 设置 shell 补全（可选）
 
 ```shell
-. /opt/asdf-vm/asdf.ps1
+# If you've not customized the asdf data directory:
+$ mkdir $"($env.HOME)/.asdf/completions"
+$ asdf completion nushell | save $"($env.HOME)/.asdf/completions/nushell.nu"
+
+# If you have customized the data directory by setting ASDF_DATA_DIR:
+$ mkdir $"($env.ASDF_DATA_DIR)/completions"
+$ asdf completion nushell | save $"($env.ASDF_DATA_DIR)/completions/nushell.nu"
 ```
 
-:::
-
-::: details Nushell & Git
-
-使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中：
+然后在 `~/.config/nushell/config.nu` 文件中添加以下内容：
 
 ```shell
-"\n$env.ASDF_DIR = ($env.HOME | path join '.asdf')\n source " + ($env.HOME | path join '.asdf/asdf.nu') | save --append $nu.config-path
-```
-
-补全功能将会自动配置。
-:::
-
-::: details Nushell & Homebrew
-
-使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
-
-```shell
-"\n$env.ASDF_DIR = (brew --prefix asdf | str trim | into string | path join 'libexec')\n source " +  (brew --prefix asdf | str trim | into string | path join 'libexec/asdf.nu') | save --append $nu.config-path
-```
-
-补全功能将会自动配置。
-:::
-
-::: details Nushell & Pacman
-
-使用以下命令将 `asdf.nu` 加入到 `~/.config/nushell/config.nu` 文件中:
-
-```shell
-"\n$env.ASDF_DIR = '/opt/asdf-vm/'\n source /opt/asdf-vm/asdf.nu" | save --append $nu.config-path
-```
-
-补全功能将会自动配置。
-:::
-
-::: details POSIX Shell & Git
-
-在 `~/.profile` 文件中加入以下内容：
-
-```shell
-export ASDF_DIR="$HOME/.asdf"
-. "$HOME/.asdf/asdf.sh"
+let asdf_data_dir = (
+  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
+    $env.HOME | path join '.asdf'
+  } else {
+    $env.ASDF_DATA_DIR
+  }
+)
+. "$asdf_data_dir/completions/nushell.nu"
 ```
 
 :::
 
-::: details POSIX Shell & Homebrew
+::: details POSIX Shell
 
-使用以下命令将 `asdf.sh` 加入到 `~/.profile` 文件中：
+##### 将垫片目录添加到路径（必须）
 
+在 `~/.profile` 文件中添加以下内容：
 ```shell
-echo -e "\nexport ASDF_DIR=\"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
-echo -e "\n. \"$(brew --prefix asdf)/libexec/asdf.sh\"" >> ~/.profile
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 ```
 
-:::
+###### 自定义数据目录（可选）
 
-::: details POSIX Shell & Pacman
-
-在 `~/.profile` 文件中加入以下内容：
+在 `~/.profile` 文件中上面一行内容之前添加以下内容：
 
 ```shell
-export ASDF_DIR="/opt/asdf-vm"
-. /opt/asdf-vm/asdf.sh
+export ASDF_DATA_DIR="/your/custom/data/dir"
 ```
 
 :::
@@ -377,10 +339,11 @@ export ASDF_DIR="/opt/asdf-vm"
 
 每个插件都有依赖，所以我们需要确认应该列举了这些依赖的插件源码。对于 `asdf-nodejs` 来说，它们是：
 
-| 操作系统       | 安装依赖                                |
-| -------------- | --------------------------------------- |
-| Linux (Debian) | `apt-get install dirmngr gpg curl gawk` |
-| macOS          | `brew install gpg gawk`                 |
+| 操作系统                         | 安装依赖                                |
+| ------------------------------ | --------------------------------------- |
+| Debian                         | `apt-get install dirmngr gpg curl gawk` |
+| CentOS/ Rocky Linux/ AlmaLinux | `yum install gnupg2 curl gawk`          |
+| macOS                          | `brew install gpg gawk`                 |
 
 我们应该提前安装这些依赖，因为有些插件有 post-install 钩子。
 
@@ -414,31 +377,29 @@ asdf install nodejs latest
 如果没有为工具找到指定的版本，则会出现**错误**。`asdf current` 将显示当前目录中的工具和版本解析结果，或者不存在，以便你可以观察哪些工具将无法执行。
 :::
 
-### 全局
+因为 asdf 会在当前目录寻找 `.tool-versions` 文件，如果没有找到将会继续逐层向上在父目录寻找 `.tool-versions` 文件直到找到。如果在父目录也没有找到 `.tool-versions` 文件，版本解析进程将会失败并且打印错误。
 
-全局默认配置在 `$HOME/.tool-versions` 文件中进行管理。使用以下命令可以设置一个全局版本：
+如果你想要设置一个默认版本用来应用在你工作的所有目录，你可以在 `$HOME/.tool-versions` 文件中定义版本。任何在家目录下的子目录都会被解析为同样的版本，除非子目录中设置了另外一个版本。
 
 ```shell
-asdf global nodejs latest
+asdf set -u nodejs 16.5.0
 ```
 
-`$HOME/.tool-versions` 文件内容将会如下所示：
+`$HOME/.tool-versions` 文件内容将会变成：
 
 ```
 nodejs 16.5.0
 ```
 
-某些操作系统已经有一些由系统而非 `asdf` 安装和管理的工具了，`python` 就是一个常见的例子。你需要告诉 `asdf` 将管理权还给系统。[版本参考部分](/zh-hans/manage/versions.md) 将会引导你。
+某些操作系统已经有一些由系统而非 `asdf` 安装和管理的工具了，`python` 就是一个常见的例子。你需要告诉 `asdf` 将管理权还给系统。[版本](/zh-hans/manage/versions.md) 参考页面将会引导你。
 
-### 本地
-
-本地版本被定义在 `$PWD/.tool-versions` 文件中（当前工作目录）。通常，这将会是一个项目的 Git 存储库。当在你想要的目录执行：
+asdf 首先从当前工作目录的 `$PWD/.tool-versions` 文件中寻找版本。这可能是一个包含源代码或某个项目 Git 存储库的目录。当在你想要的目录执行时，你可以用 `asdf set` 来设置版本：
 
 ```shell
-asdf local nodejs latest
+asdf set nodejs 16.5.0
 ```
 
-`$PWD/.tool-versions` 文件内容将会如下所示：
+`$PWD/.tool-versions` 文件内容将会变成：
 
 ```
 nodejs 16.5.0
@@ -448,13 +409,13 @@ nodejs 16.5.0
 
 `asdf` 支持从其他版本管理器的现有版本文件中迁移过来，比如 `rbenv` 的 `.ruby-version` 文件。这在每个插件中都原生支持。
 
-[`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) 支持从 `.nvmrc` 和 `.node-version` 文件进行迁移。为了启用此功能，请在 `asdf` 配置文件 `$HOME/.asdfrc` 中加入以下内容：
+[`asdf-nodejs`](https://github.com/asdf-vm/asdf-nodejs/) 支持从 `.nvmrc` 和 `.node-version` 文件进行迁移。为了启用此功能，请在 `asdf` 配置文件 `$HOME/.asdfrc` 中添加以下内容：
 
 ```
 legacy_version_file = yes
 ```
 
-请查看 [配置](/zh-hans/manage/configuration.md) 参考页面可以了解更多配置选项。
+查看 [配置](/zh-hans/manage/configuration.md) 参考页面可以了解更多配置选项。
 
 ## 完成指南！
 

@@ -41,13 +41,14 @@ asdf install
 
 ```shell
 # 脚本检查
-./scripts/shellcheck.bash
+./scripts/lint.bash --check
 
 # 格式化
-./scripts/shfmt.bash
+./scripts/lint.bash --fix
 
 # 测试：所有案例
-bats test/
+./scripts/test.bash
+
 # 测试：特定命令
 bats test/list_commands.bash
 ```
@@ -58,9 +59,54 @@ bats test/list_commands.bash
 
 :::
 
+### Gitignore
+
+以下是 `asdf-vm/asdf` 仓库中的 `.gitignore` 文件。我们忽略项目特定的文件。与操作系统、工具或工作流程相关的文件应在全 `.gitignore` 配置中忽略， [请查看此处](http://stratus3d.com/blog/2018/06/03/stop-excluding-editor-temp-files-in-gitignore/) 了解更多。
+
+<<< @/../.gitignore
+
+### `.git-blame-ignore-revs`
+
+`asdf` 使用 `.git-blame-ignore-revs` 文件来减少在运行 blame 命令时的噪音。请查看 [git blame documentation](https://git-scm.com/docs/git-blame) 了解更多。
+
+使用 `git blame` 时，可通过以下方式使用该文件：
+
+```sh
+git blame --ignore-revs-file .git-blame-ignore-revs ./test/install_command.bats
+```
+
+可选地，配置为在每次调用 `blame` 时自动使用该文件，无需手动提供：
+
+```sh
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+可以配置集成开发环境（IDEs）使用该文件。例如，在使用 VSCode (搭配 [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)) 时，将以下内容写入 `.vscode/settings.json`：
+
+```json
+{
+  "gitlens.advanced.blame.customArguments": [
+    "--ignore-revs-file",
+    ".git-blame-ignore-revs"
+  ]
+}
+```
+
 ## Bats 测试
 
-**强烈建议**在编写测试之前检查现有的测试套件和 [bats-core 文档](https://bats-core.readthedocs.io/en/stable/index.html)。
+在本地执行测试：
+
+```shell
+./scripts/test.bash
+```
+
+在编写测试之前，**请务必阅读**：
+
+- `test/` 目录中的现有测试
+- [bats-core 文档](https://bats-core.readthedocs.io/en/stable/index.html)
+- `scripts/test.bash` 中使用的现有 Bats 设置
+
+### Bats 提示
 
 Bats 调试有时可能很困难。使用带有 `-t` 标识的 TAP 输出将使你能够在测试执行期间打印带有特殊文件描述符 `>&3` 的输出，从而简化调试。例如：
 
@@ -71,7 +117,7 @@ printf "%s\n" "Will not be printed during bats test/some_tests.bats"
 printf "%s\n" "Will be printed during bats -t test/some_tests.bats" >&3
 ```
 
-进一步相关文档请查看 bats-core 的 [Printing to the Terminal](https://bats-core.readthedocs.io/en/stable/writing-tests.html#printing-to-the-terminal) 部分.
+进一步相关文档请查看 bats-core 的 [终端打印](https://bats-core.readthedocs.io/en/stable/writing-tests.html#printing-to-the-terminal) 部分.
 
 ## 拉取请求、发布以及约定式提交
 
