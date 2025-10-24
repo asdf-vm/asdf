@@ -1,6 +1,6 @@
 module github.com/asdf-vm/asdf
 
-go 1.23.4
+go 1.24.9
 
 require (
 	github.com/go-git/go-git/v5 v5.13.0
