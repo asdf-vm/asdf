@@ -312,11 +312,24 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 	}
 
 	for _, file := range files {
+		location := filepath.Join(pluginsDir, file.Name())
+
+		// Check if it's a directory OR a symlink to a directory
+		isPlugin := false
 		if file.IsDir() {
+			isPlugin = true
+		} else if file.Type()&fs.ModeSymlink != 0 {
+			// Follow the symlink to see if it points to a directory
+			info, err := os.Stat(location)
+			if err == nil && info.IsDir() {
+				isPlugin = true
+			}
+		}
+
+		if isPlugin {
 			if refs || urls {
 				var url string
 				var refString string
-				location := filepath.Join(pluginsDir, file.Name())
 				repo := git.NewRepo(location)
 
 				// TODO: Improve these error messages
@@ -347,7 +360,7 @@ func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
 			} else {
 				plugins = append(plugins, Plugin{
 					Name: file.Name(),
-					Dir:  filepath.Join(pluginsDir, file.Name()),
+					Dir:  location,
 				})
 			}
 		}
