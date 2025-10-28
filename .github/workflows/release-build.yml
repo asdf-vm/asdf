@@ -41,7 +41,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          goversion: "1.23.4"
+          goversion: "1.24.9"
           binary_name: "asdf"
           project_path: ./cmd/asdf
           release_tag: ${{ github.event.release.tag_name || inputs.tag }}
