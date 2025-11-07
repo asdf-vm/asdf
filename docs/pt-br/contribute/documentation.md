@@ -52,7 +52,7 @@ npm run dev
 Formate o código antes de confirmar:
 
 ```shell
-npm run format
+npm run fmt
 ```
 
 ## Pull Requests, Releases e Commits Convencionais
