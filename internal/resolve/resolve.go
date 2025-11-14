@@ -131,5 +131,5 @@ func parseVersion(rawVersions string) []string {
 }
 
 func variableVersionName(toolName string) string {
-	return fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(toolName))
+	return fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(strings.ReplaceAll(toolName, "-", "_"))
 }
