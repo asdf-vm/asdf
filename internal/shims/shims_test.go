@@ -490,9 +490,10 @@ func TestExecutablePaths(t *testing.T) {
 func TestExecutableDirs(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, "1.2.3")
+  versionStruct := toolversions.Version{Type: "version", Value: "1.2.3"}
 
 	t.Run("returns list only containing 'bin' when list-bin-paths callback missing", func(t *testing.T) {
-		executables, err := ExecutableDirs(plugin)
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
 		assert.Nil(t, err)
 		assert.Equal(t, executables, []string{"bin"})
 	})
@@ -502,9 +503,20 @@ func TestExecutableDirs(t *testing.T) {
 		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
 		assert.Nil(t, err)
 
-		executables, err := ExecutableDirs(plugin)
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
 		assert.Nil(t, err)
 		assert.Equal(t, executables, []string{"foo", "bar"})
+	})
+
+	t.Run("returns environment variables that begin with ASDF_INSTALL", func(t *testing.T) {
+		data := []byte("echo ${ASDF_INSTALL_TYPE} ${ASDF_INSTALL_VERSION} ${ASDF_INSTALL_PATH}")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
+		assert.Nil(t, err)
+
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
+		assert.Nil(t, err)
+		assert.Equal(t, []string{"version", "1.2.3"}, executables[0:2])
+		assert.Contains(t, executables[2], "lua/1.2.3")
 	})
 }
 
