@@ -63,6 +63,29 @@ func TestInstalled(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, installedVersions, []string{"1.0.0"})
 	})
+
+	t.Run("returns symlinked version directories", func(t *testing.T) {
+		mockInstall(t, conf, plugin, "2.0.0")
+
+		// Create a real version directory elsewhere
+		realVersionDir := filepath.Join(t.TempDir(), "real_version")
+		err := os.MkdirAll(realVersionDir, 0o755)
+		assert.Nil(t, err)
+
+		// Create a symlink to it in the installs directory
+		installsDir := InstallPath(conf, plugin, toolversions.Version{Type: "version", Value: "dummy"})
+		installsDir = filepath.Dir(installsDir) // Get the parent directory (removes /dummy)
+		symlinkPath := filepath.Join(installsDir, "3.0.0")
+		err = os.Symlink(realVersionDir, symlinkPath)
+		assert.Nil(t, err)
+
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+
+		// Should find both regular and symlinked versions
+		assert.Contains(t, installedVersions, "2.0.0")
+		assert.Contains(t, installedVersions, "3.0.0")
+	})
 }
 
 func TestIsInstalled(t *testing.T) {
