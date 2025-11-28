@@ -40,7 +40,7 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		parsedVersion := toolversions.ParseFromCliArg(version)
 		if parsedVersion.Type == "latest" {
 			plugin := plugins.New(conf, args[0])
-			resolvedVersion, err := versions.Latest(plugin, parsedVersion.Value)
+			resolvedVersion, err := versions.Latest(plugin, parsedVersion.Value, os.Stderr)
 			if err != nil {
 				return fmt.Errorf("unable to resolve latest version for %s", plugin.Name)
 			}
