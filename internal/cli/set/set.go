@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -35,11 +36,15 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 	}
 
 	resolvedVersions := []string{}
+	plugin := plugins.New(conf, args[0])
+	pluginAvailableVersions, err := plugin.GetAvailableVersions()
+	if err != nil {
+		return printError(stderr, fmt.Sprintf("error getting available plugin versions: %s", err))
+	}
 
 	for _, version := range args[1:] {
 		parsedVersion := toolversions.ParseFromCliArg(version)
 		if parsedVersion.Type == "latest" {
-			plugin := plugins.New(conf, args[0])
 			resolvedVersion, err := versions.Latest(plugin, parsedVersion.Value)
 			if err != nil {
 				return fmt.Errorf("unable to resolve latest version for %s", plugin.Name)
@@ -48,6 +53,12 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 			continue
 		}
 		resolvedVersions = append(resolvedVersions, version)
+	}
+
+	for _, version := range resolvedVersions {
+		if !slices.Contains(pluginAvailableVersions, version) {
+			return printError(stderr, fmt.Sprintf("version %s is not available for plugin %s\n", version, plugin.Name))
+		}
 	}
 
 	tv := toolversions.ToolVersions{Name: args[0], Versions: resolvedVersions}
