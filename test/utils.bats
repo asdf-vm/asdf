@@ -338,7 +338,7 @@ teardown() {
   [ "$output" = "$PROJECT_DIR/.tool-versions" ]
 }
 
-@test "find_tool_versions will find a .tool-versions path if it exists in parent directory" {
+@test "find_tool_versions will find a .tool-versions path if it exists in any parent directory" {
   echo "dummy 0.1.0" >"$PROJECT_DIR/.tool-versions"
   mkdir -p "$PROJECT_DIR/child"
   cd "$PROJECT_DIR"/child

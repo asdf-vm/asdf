@@ -254,6 +254,9 @@ def main():
         for file in Path.cwd().glob('**/*'):
             if '.git' in str(file.absolute()):
                 continue
+            
+            if file.name == '.DS_Store':
+                continue
 
             if file.is_file():
                 lintfile(file, rules, options)
