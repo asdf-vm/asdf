@@ -66,14 +66,9 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 		return err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		return printError(stderr, fmt.Sprintf("unable to get current directory: %s", err))
-	}
-
 	if parent {
 		// locate file in parent dir and update it
-		path, found := findVersionFileInParentDir(conf, currentDir)
+		path, found := findVersionFileInParentDir(conf)
 		if !found {
 			return printError(stderr, fmt.Sprintf("No %s version file found in parent directory", conf.DefaultToolVersionsFilename))
 		}
@@ -86,7 +81,7 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 	}
 
 	// Write new file in current dir
-	filepath := filepath.Join(currentDir, conf.DefaultToolVersionsFilename)
+	filepath := filepath.Join(conf.ToolVersionsDir, conf.DefaultToolVersionsFilename)
 	return toolversions.WriteToolVersionsToFile(filepath, []toolversions.ToolVersions{tv})
 }
 
@@ -98,8 +93,8 @@ func printError(stderr io.Writer, msg string) error {
 	return errors.New(strings.TrimSuffix(msg, "\n"))
 }
 
-func findVersionFileInParentDir(conf config.Config, directory string) (string, bool) {
-	directory = filepath.Dir(directory)
+func findVersionFileInParentDir(conf config.Config) (string, bool) {
+	directory := filepath.Dir(conf.ToolVersionsDir)
 
 	for {
 		path := filepath.Join(directory, conf.DefaultToolVersionsFilename)

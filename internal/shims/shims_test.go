@@ -27,10 +27,9 @@ func TestFindExecutable(t *testing.T) {
 	installVersion(t, conf, plugin, "2.0.0")
 	stdout, stderr := buildOutputs()
 	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
-	currentDir := t.TempDir()
 
 	t.Run("returns error when shim with name does not exist", func(t *testing.T) {
-		executable, _, version, found, err := FindExecutable(conf, "foo", currentDir)
+		executable, _, version, found, err := FindExecutable(conf, "foo")
 		assert.Empty(t, executable)
 		assert.False(t, found)
 		assert.Empty(t, version)
@@ -38,7 +37,7 @@ func TestFindExecutable(t *testing.T) {
 	})
 
 	t.Run("returns error when shim is present but no version is set", func(t *testing.T) {
-		executable, _, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, _, version, found, err := FindExecutable(conf, "dummy")
 		assert.Empty(t, executable)
 		assert.False(t, found)
 		assert.Empty(t, version)
@@ -48,9 +47,9 @@ func TestFindExecutable(t *testing.T) {
 	t.Run("returns string containing path to executable when found", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0")
-		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+		assert.Nil(t, os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666))
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy")
 		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
 		assert.Equal(t, filepath.Base(executable), "dummy")
 		assert.Equal(t, plugin, gotPlugin)
@@ -62,9 +61,9 @@ func TestFindExecutable(t *testing.T) {
 	t.Run("returns path to executable with first version when multiple versions are set", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0 3.0.0 2.0.0")
-		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+		assert.Nil(t, os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666))
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy")
 		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
 		assert.Equal(t, filepath.Base(executable), "dummy")
 		assert.Equal(t, plugin, gotPlugin)
@@ -80,11 +79,11 @@ func TestFindExecutable(t *testing.T) {
 		assert.Nil(t, os.WriteFile(path, []byte("echo 'I'm ls'"), 0o777))
 
 		// write system version to version file
-		toolpath := filepath.Join(currentDir, ".tool-versions")
+		toolpath := filepath.Join(conf.ToolVersionsDir, ".tool-versions")
 		assert.Nil(t, os.WriteFile(toolpath, []byte("lua system\n"), 0o666))
 		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "ls", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "ls")
 		assert.Equal(t, plugin, gotPlugin)
 		assert.Equal(t, version, "system")
 		assert.True(t, found)
@@ -97,13 +96,13 @@ func TestFindExecutable(t *testing.T) {
 
 	t.Run("returns path to executable on path when path version set", func(t *testing.T) {
 		// write system version to version file
-		toolpath := filepath.Join(currentDir, ".tool-versions")
+		toolpath := filepath.Join(conf.ToolVersionsDir, ".tool-versions")
 		dir := installs.InstallPath(conf, plugin, toolversions.Version{Type: "version", Value: "1.1.0"})
 		pathVersion := fmt.Sprintf("path:%s/./", dir)
 		assert.Nil(t, os.WriteFile(toolpath, []byte(fmt.Sprintf("lua %s\n", pathVersion)), 0o666))
 		assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy")
 		assert.Equal(t, plugin, gotPlugin)
 		assert.Equal(t, version, pathVersion)
 		assert.True(t, found)
@@ -117,12 +116,12 @@ func TestFindExecutable(t *testing.T) {
 	t.Run("returns string containing path to executable when shim template in plugin is set", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0")
-		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+		assert.Nil(t, os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666))
 
 		// write a shim template to the plugin shims dir
 		setupShimTemplate(t, plugin, "dummy", "echo 'shim template'")
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy")
 		assert.Nil(t, err)
 
 		relativePath, err := filepath.Rel(conf.DataDir, executable)
@@ -142,14 +141,13 @@ func TestFindExecutable_Ref(t *testing.T) {
 	installVersion(t, conf, plugin, version)
 	stdout, stderr := buildOutputs()
 	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
-	currentDir := t.TempDir()
 
 	t.Run("returns string containing path to ref installed executable when found", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua ref:v1.1.0")
-		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+		assert.Nil(t, os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666))
 
-		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy")
 		assert.Nil(t, err)
 		assert.True(t, found)
 		assert.Equal(t, "ref:v1.1.0", version)
@@ -522,6 +520,7 @@ func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
+	conf.ToolVersionsDir = t.TempDir()
 
 	return conf, installPlugin(t, conf, "dummy_plugin", testPluginName)
 }

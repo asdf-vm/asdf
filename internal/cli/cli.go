@@ -371,12 +371,6 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 		return err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return err
-	}
-
 	// settings here to match legacy implementation
 	w := tabwriter.NewWriter(os.Stdout, 16, 0, 1, ' ', 0)
 	if !noHeader {
@@ -396,7 +390,7 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 		}
 
 		for _, plugin := range allPlugins {
-			toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin, currentDir)
+			toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin)
 			formatCurrentVersionLine(w, plugin, toolversion, versionFound, versionInstalled, err)
 		}
 		w.Flush()
@@ -410,7 +404,7 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 	pluginExists := !ok
 
 	if pluginExists {
-		toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin, currentDir)
+		toolversion, versionFound, versionInstalled := getVersionInfo(conf, plugin)
 		formatCurrentVersionLine(w, plugin, toolversion, versionFound, versionInstalled, err)
 		w.Flush()
 		if !versionFound {
@@ -428,8 +422,8 @@ func currentCommand(logger *log.Logger, tool string, noHeader bool) error {
 	return nil
 }
 
-func getVersionInfo(conf config.Config, plugin plugins.Plugin, currentDir string) (resolve.ToolVersions, bool, bool) {
-	toolversion, found, _ := resolve.Version(conf, plugin, currentDir)
+func getVersionInfo(conf config.Config, plugin plugins.Plugin) (resolve.ToolVersions, bool, bool) {
+	toolversion, found, _ := resolve.Version(conf, plugin)
 	installed := false
 	if found {
 		firstVersion := toolversion.Versions[0]
@@ -645,13 +639,7 @@ func runExtensionCommand(plugin plugins.Plugin, args []string) (err error) {
 }
 
 func getExecutable(logger *log.Logger, conf config.Config, command string) (executable string, plugin plugins.Plugin, version string, err error) {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return "", plugins.Plugin{}, "", err
-	}
-
-	executable, plugin, version, found, err := shims.FindExecutable(conf, command, currentDir)
+	executable, plugin, version, found, err := shims.FindExecutable(conf, command)
 	if err != nil {
 
 		if _, ok := err.(shims.NoExecutableForPluginError); ok {
@@ -665,7 +653,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 		if len(toolVersions) > 0 {
 			if anyInstalled(conf, toolVersions) {
 				logger.Printf("No version is set for command %s", command)
-				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", conf.ToolVersionsDir)
 			} else {
 				logger.Printf("No preset version installed for command %s", command)
 				for _, toolVersion := range toolVersions {
@@ -674,7 +662,7 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 					}
 				}
 
-				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", conf.ToolVersionsDir)
 			}
 
 			for _, toolVersion := range toolVersions {
@@ -1062,14 +1050,9 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 		return err
 	}
 
-	dir, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("unable to fetch current directory: %w", err)
-	}
-
 	if toolName == "" {
 		// Install all versions
-		errs := versions.InstallAll(conf, dir, os.Stdout, os.Stderr)
+		errs := versions.InstallAll(conf, os.Stdout, os.Stderr)
 		if len(errs) > 0 {
 			for _, err := range errs {
 				// Don't print error if no version set, this just means the current
@@ -1099,7 +1082,7 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 		plugin := plugins.New(conf, toolName)
 
 		if version == "" {
-			err = versions.Install(conf, plugin, dir, os.Stdout, os.Stderr)
+			err = versions.Install(conf, plugin, os.Stdout, os.Stderr)
 			if err != nil {
 				var vaiErr versions.VersionAlreadyInstalledError
 				if errors.As(err, &vaiErr) {
@@ -1268,12 +1251,6 @@ func filterByExactMatch(allVersions []string, pattern string) (versions []string
 }
 
 func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter string) error {
-	currentDir, err := os.Getwd()
-	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return err
-	}
-
 	if pluginName != "" {
 		plugin, err := loadPlugin(logger, conf, pluginName)
 		if err != nil {
@@ -1295,7 +1272,7 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 			return nil
 		}
 
-		currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
+		currentVersions, _, err := resolve.Version(conf, plugin)
 		if err != nil {
 			cli.OsExiter(1)
 			return err
@@ -1322,7 +1299,7 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		versions, _ := installs.Installed(conf, plugin)
 
 		if len(versions) > 0 {
-			currentVersions, _, err := resolve.Version(conf, plugin, currentDir)
+			currentVersions, _, err := resolve.Version(conf, plugin)
 			if err != nil {
 				cli.OsExiter(1)
 				return err
@@ -1405,18 +1382,12 @@ func whichCommand(logger *log.Logger, command string) error {
 		return err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return err
-	}
-
 	if command == "" {
 		fmt.Println("usage: asdf which <command>")
 		return errors.New("must provide command")
 	}
 
-	path, _, _, _, err := shims.FindExecutable(conf, command, currentDir)
+	path, _, _, _, err := shims.FindExecutable(conf, command)
 	if _, ok := err.(shims.UnknownCommandError); ok {
 		logger.Printf("unknown command: %s. Perhaps you have to reshim?", command)
 		return errors.New("command not found")
@@ -1477,12 +1448,6 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 		return err
 	}
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		logger.Printf("unable to get current directory: %s", err)
-		return err
-	}
-
 	plugin := plugins.New(conf, tool)
 	err = plugin.Exists()
 	if err != nil {
@@ -1501,7 +1466,7 @@ func whereCommand(logger *log.Logger, tool, versionStr string) error {
 
 	if version.Value == "" {
 		// resolve version
-		versions, found, err := resolve.Version(conf, plugin, currentDir)
+		versions, found, err := resolve.Version(conf, plugin)
 		if err != nil {
 			fmt.Printf("err %#+v\n", err)
 			return err
