@@ -10,7 +10,16 @@ Git URL로 플러그인 추가하기:
 
 ```shell
 asdf plugin add <name> <git-url>
-# asdf plugin add elm https://github.com/vic/asdf-elm
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo
+```
+
+`<git-ref>` 인수를 사용하여 임의의 Git 참조 (브랜치, 태그, 또는 커밋)를 지정할 수도 있습니다:
+
+```shell
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 
 또는 플러그인 리포지토리에 short-name을 통해 추가하기:
