@@ -56,7 +56,7 @@ func TestVersion(t *testing.T) {
 		assert.Equal(t, toolVersion.Versions, []string{"2.3.4"})
 	})
 
-	t.Run("returns single version from .tool-versions file in parent directory", func(t *testing.T) {
+	t.Run("returns single version from .tool-versions file in closest parent directory", func(t *testing.T) {
 		// write a version file
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
