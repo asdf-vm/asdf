@@ -298,6 +298,24 @@ func (p Plugin) Update(conf config.Config, ref string, out, errout io.Writer) (s
 	return newRef, nil
 }
 
+// GetAvailableVersions retrieves all available versions of the plugin
+func (p Plugin) GetAvailableVersions() ([]string, error) {
+	var stdout, stderr strings.Builder
+
+	err := p.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+	if err != nil {
+		msg := fmt.Sprintf(
+			"Plugin %s's list-all callback script failed with error:\n%v\nStderr:\n%v\nStdout:\n%v\n",
+			p.Name, err, stderr.String(), stdout.String(),
+		)
+
+		return nil, errors.New(msg)
+	}
+
+	versions := strings.Split(stdout.String(), " ")
+	return versions, nil
+}
+
 // List takes config and flags for what to return and builds a list of plugins
 // representing the currently installed plugins on the system.
 func List(config config.Config, urls, refs bool) (plugins []Plugin, err error) {
