@@ -48,7 +48,7 @@ python 3.7.2 2.7.15 system
 
 `.tool-versions` 파일에 정의된 하나의 툴을 설치하려면 `.tool-version` 파일이 포함된 디렉토리에서 `asdf install <name>`를 실행합니다. 이 툴은 `.tool-versions` 파일에 정의된 버전으로 설치됩니다.
 
-해당 파일은 직접 편집하거나 `asdf local` 명령어(또는 `asdf global` 명령어)를 사용하여 업데이트해 주세요.
+해당 파일은 직접 편집하거나 `asdf set` 명령어(또는 `asdf set --home` 명령어)를 사용하여 업데이트해 주세요.
 
 ## `.asdfrc`
 
@@ -226,12 +226,12 @@ pre_foo_bar = echo Executing with args: $@
 | 항목                                  | 값               | 값이 세팅되는 과정                                                                                                           |
 | :------------------------------------ | :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
 | config file location                  | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE`가 비었으므로, `$HOME/.asdfrc`을 사용                                                                      |
-| default tool versions filename        | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME`가 비었으므로, `.tool-versions`을 사용                                                  |
+| default tool versions filename        | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME`가 비었으므로, `.tool-versions`을 사용                                                          |
 | asdf dir                              | `$HOME/.asdf`    | `ASDF_DIR`가 비었으므로, `bin/asdf`의 한 단계 상위 디렉토리 사용                                                             |
 | asdf data dir                         | `$HOME/.asdf`    | `ASDF_DATA_DIR`가 비었으므로, `$HOME/.asdf`를 `$HOME`으로 사용.                                                              |
 | concurrency                           | `auto`           | `ASDF_CONCURRENCY`가 비었으므로, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)의 `concurrency` 값에 의존 |
 | legacy_version_file                   | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults) 사용                                  |
-| use_release_candidates                | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
-| always_keep_download                  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
-| plugin_repository_last_check_duration | `60`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
-| disable_plugin_short_name_repository  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults)  사용                                 |
+| use_release_candidates                | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults) 사용                                  |
+| always_keep_download                  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults) 사용                                  |
+| plugin_repository_last_check_duration | `60`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults) 사용                                  |
+| disable_plugin_short_name_repository  | `no`             | 맞춤 `.asdfrc` 없음, [기본 설정](https://github.com/asdf-vm/asdf/blob/master/defaults) 사용                                  |
