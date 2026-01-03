@@ -13,9 +13,9 @@ jobs:
   asdf-bash:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: asdf-vm/actions/install@v3
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_MIN_VERSION }}
       - run: scripts/install_dependencies.bash
@@ -24,11 +24,11 @@ jobs:
   asdf-golang:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.23.4'
+          go-version: '1.24.9'
       - name: Install dependencies
         run: go get ./...
       - name: Run 'gofumpt'
@@ -47,7 +47,7 @@ jobs:
   actions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check workflow files
         uses: docker://rhysd/actionlint:1.6.24
         with:

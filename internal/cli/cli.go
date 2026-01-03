@@ -105,7 +105,7 @@ func Execute(version string) {
 			{
 				Name: "exec",
 				// We want all arguments to exec to remain unparsed so we can pass them
-				// directly to the command asdf whill exec on behalf of the shim/user.
+				// directly to the command asdf will exec on behalf of the shim/user.
 				// SkipFlagParsing tells urfave/cli to do this.
 				SkipFlagParsing: true,
 				Action: func(_ context.Context, cmd *cli.Command) error {

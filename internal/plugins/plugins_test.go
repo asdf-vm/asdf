@@ -125,6 +125,8 @@ func TestAdd(t *testing.T) {
 	})
 
 	t.Run("when plugin name is valid but URL is invalid prints an error", func(t *testing.T) {
+		t.Setenv("LANG", "C") // git error messages are locale dependent
+
 		conf := config.Config{DataDir: testDataDir}
 
 		err := Add(conf, "foo", "foobar", "")
