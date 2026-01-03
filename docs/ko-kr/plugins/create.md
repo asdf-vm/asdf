@@ -151,7 +151,7 @@ asdf core는 각 버전을 각각의 행에 출력하여, 일부 버전을 화�
 
 **레거시 플러그인**
 
-비록 이 스크립트는 모든 플러그인에서 _필수_로 되어 있지만, 이 스크립트가 도입되기 이전의 "레거시" 플러그인에서는 _선택_ 입니다.
+비록 이 스크립트는 모든 플러그인에서 *필수*로 되어 있지만, 이 스크립트가 도입되기 이전의 "레거시" 플러그인에서는 _선택_ 입니다.
 
 이 스크립트가 없는 경우, asdf는 `bin/install` 스크립트가 있다고 가정하고 해당 버전을 다운로드 **그리고** 설치합니다.
 
@@ -193,7 +193,7 @@ asdf core는 각 버전을 각각의 행에 출력하여, 일부 버전을 화�
 
 - 스크립트는 `ASDF_INSTALL_PATH` 경로에 지정된 버전을 설치해야합니다.
 - Shim은 `$ASDF_INSTALL_PATH/bin`에 있는 어떠한 파일에 대해서든 기본적으로 생성됩니다. 이 동작은
-선택적 [bin/list-bin-paths](#binlist-bin-paths) 스크립트로 맞춤 설정 가능합니다.
+  선택적 [bin/list-bin-paths](#binlist-bin-paths) 스크립트로 맞춤 설정 가능합니다.
 - 성공 시에는 `0`이 종료 코드입니다.
 - 실패 시에는 0이 아닌 상태의 종료 코드입니다.
 - TOCTOU(Time-of-Check-to-Off-Use) 문제를 방지하려면, 툴의 빌드 및 설치가 성공적이라고 판단될때만 스크립트에서 파일을 `ASDF_INSTALL_PATH`에 배치합니다.
@@ -267,8 +267,7 @@ asdf core는 각 버전을 각각의 행에 출력하여, 일부 버전을 화�
 
 **이 스크립트를 호출하는 명령어**
 
-- `asdf global <tool> latest`: 툴의 글로벌 버전을 해당 툴의 최신 안정 버전으로 설정합니다.
-- `asdf local <name> latest`: 툴의 로컬 버전을 해당 툴의 최신 안정 버전으로 설정합니다.
+- `asdf set <tool> latest`: 툴의 버전을 해당 툴의 최신 안정 버전으로 설정합니다.
 - `asdf install <tool> latest`: 최신 버전의 툴을 설치합니다.
 - `asdf latest <tool> [<version>]`: 선택적인 필터를 기반으로 도구의 최신 버전을 출력합니다.
 - `asdf latest --all`: asdf에서 관리하는 모든 툴의 최신 버전과 설치 여부를 출력합니다.
@@ -451,6 +450,7 @@ bin tools veggies
 ```
 
 이는 asdf가 그 파일들을 위한 shim들을 다음 위치에 생성하게 지시합니다:
+
 - `"${ASDF_INSTALL_PATH}"/bin`
 - `"${ASDF_INSTALL_PATH}"/tools`
 - `"${ASDF_INSTALL_PATH}"/veggies`

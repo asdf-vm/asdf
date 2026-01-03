@@ -190,7 +190,7 @@ module asdf {
         command: string # Name of command
     ]
 
-    # Display install path for an installled package version
+    # Display install path for an installed package version
     export extern "asdf where" [
         name: string@"complete asdf installed" # Name of installed package
         version?: string@"complete asdf plugin versions installed" # Version of installed package

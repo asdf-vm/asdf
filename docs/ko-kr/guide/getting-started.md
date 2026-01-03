@@ -34,7 +34,6 @@ asdf는 `git` & `curl`이 필요합니다. _당신이_ 필요한 패키지 매�
 
 <!-- x-release-please-start-version -->
 
-
 ```shell
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
 
@@ -422,9 +421,8 @@ asdf install nodejs latest
 글로벌 기본값들은 `$HOME/.tool-versions`에서 관리됩니다. 글로벌 버전을 다음을 이용해 설정하세요:
 
 ```shell
-asdf global nodejs latest
+asdf set --home nodejs 16.5.0
 ```
-
 
 `$HOME/.tool-versions`은 다음과 같습니다:
 
@@ -439,7 +437,7 @@ nodejs 16.5.0
 로컬 버전들은 (현재 작업 디렉토리) `$PWD/.tool-versions` 파일에 정의 되어 있습니다. 보통, 이 디렉토리는 하나의 프로젝트의 Git 리포지토리입니다. 툴 버전을 설정하고 싶은 디렉토리에서 다음을 실행시키세요:
 
 ```shell
-asdf local nodejs latest
+asdf set nodejs latest
 ```
 
 `$PWD/.tool-versions`은 다음과 같습니다:
