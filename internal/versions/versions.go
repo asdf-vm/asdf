@@ -66,7 +66,7 @@ func (e VersionAlreadyInstalledError) Error() string {
 // directory. Typically this will just be a single version, if not already
 // installed, but it may be multiple versions if multiple versions for the tool
 // are specified in the .tool-versions file.
-func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writer) (failures []error) {
+func InstallAll(conf config.Config, stdOut io.Writer, stdErr io.Writer) (failures []error) {
 	plugins, err := plugins.List(conf, false, false)
 	if err != nil {
 		return []error{fmt.Errorf("unable to list plugins: %w", err)}
@@ -76,7 +76,7 @@ func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writ
 	// closest .tool-versions file, but for now that is too complicated to
 	// implement.
 	for _, plugin := range plugins {
-		err := Install(conf, plugin, dir, stdOut, stdErr)
+		err := Install(conf, plugin, stdOut, stdErr)
 		if err != nil {
 			failures = append(failures, err)
 		}
@@ -89,13 +89,13 @@ func InstallAll(conf config.Config, dir string, stdOut io.Writer, stdErr io.Writ
 // Typically this will just be a single version, if not already installed, but
 // it may be multiple versions if multiple versions for the tool are specified
 // in the .tool-versions file.
-func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Writer, stdErr io.Writer) error {
+func Install(conf config.Config, plugin plugins.Plugin, stdOut io.Writer, stdErr io.Writer) error {
 	err := plugin.Exists()
 	if err != nil {
 		return err
 	}
 
-	versions, found, err := resolve.Version(conf, plugin, dir)
+	versions, found, err := resolve.Version(conf, plugin)
 	if err != nil {
 		return err
 	}

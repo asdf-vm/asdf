@@ -23,12 +23,13 @@ type ToolVersions struct {
 
 // Version takes a plugin and a directory and resolves the tool to one or more
 // versions.
-func Version(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
+func Version(conf config.Config, plugin plugins.Plugin) (versions ToolVersions, found bool, err error) {
 	version, envVariableName, found := findVersionsInEnv(plugin.Name)
 	if found {
 		return ToolVersions{Versions: version, Source: envVariableName}, true, nil
 	}
 
+	directory := conf.ToolVersionsDir
 	for !found {
 		versions, found, err = findVersionsInDir(conf, plugin, directory)
 		if err != nil {

@@ -16,56 +16,70 @@ import (
 const testPluginName = "test-plugin"
 
 func TestVersion(t *testing.T) {
-	testDataDir := t.TempDir()
-	currentDir := t.TempDir()
-	conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc"}
-	_, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, testPluginName)
-	assert.Nil(t, err)
-	plugin := plugins.New(conf, testPluginName)
+	setupTest := func(t *testing.T) (config.Config, plugins.Plugin) {
+		testDataDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: ".tool-versions", ConfigFile: "testdata/asdfrc", ToolVersionsDir: toolVersionsDir}
+		_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, testPluginName)
+
+		return conf, plugin
+	}
 
 	t.Run("returns empty slice when non-existent version passed", func(t *testing.T) {
-		toolVersion, found, err := Version(conf, plugin, t.TempDir())
+		conf, plugin := setupTest(t)
+		conf.ToolVersionsDir = t.TempDir()
+
+		toolVersion, found, err := Version(conf, plugin)
 		assert.Nil(t, err)
 		assert.False(t, found)
 		assert.Empty(t, toolVersion.Versions)
 	})
 
 	t.Run("returns single version from .tool-versions file", func(t *testing.T) {
+		conf, plugin := setupTest(t)
+
 		// write a version file
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 
-		toolVersion, found, err := Version(conf, plugin, currentDir)
+		toolVersion, found, err := Version(conf, plugin)
 		assert.Nil(t, err)
 		assert.True(t, found)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
 	})
 
 	t.Run("returns version from env when env variable set", func(t *testing.T) {
+		conf, plugin := setupTest(t)
+
 		// Set env
 		t.Setenv(fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(testPluginName)), "2.3.4")
 
 		// write a version file
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 
 		// assert env variable takes precedence
-		toolVersion, found, err := Version(conf, plugin, currentDir)
+		toolVersion, found, err := Version(conf, plugin)
 		assert.Nil(t, err)
 		assert.True(t, found)
 		assert.Equal(t, toolVersion.Versions, []string{"2.3.4"})
 	})
 
 	t.Run("returns single version from .tool-versions file in parent directory", func(t *testing.T) {
+		conf, plugin := setupTest(t)
+
 		// write a version file
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 
-		subDir := filepath.Join(currentDir, "subdir")
+		subDir := filepath.Join(conf.ToolVersionsDir, "subdir")
 		err = os.MkdirAll(subDir, 0o777)
 		assert.Nil(t, err)
 
-		toolVersion, found, err := Version(conf, plugin, subDir)
+		conf.ToolVersionsDir = subDir
+		toolVersion, found, err := Version(conf, plugin)
 		assert.Nil(t, err)
 		assert.True(t, found)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
@@ -90,12 +104,13 @@ func TestFindVersionsInDir(t *testing.T) {
 	})
 
 	t.Run("when version is set returns found true and version", func(t *testing.T) {
-		currentDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf.ToolVersionsDir = toolVersionsDir
 
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, ".tool-versions"), data, 0o666)
 
-		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+		toolVersion, found, err := findVersionsInDir(conf, plugin, toolVersionsDir)
 
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
 		assert.True(t, found)
@@ -103,12 +118,13 @@ func TestFindVersionsInDir(t *testing.T) {
 	})
 
 	t.Run("when multiple versions present in .tool-versions returns found true and versions", func(t *testing.T) {
-		currentDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf.ToolVersionsDir = toolVersionsDir
 
 		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, ".tool-versions"), data, 0o666)
 
-		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+		toolVersion, found, err := findVersionsInDir(conf, plugin, toolVersionsDir)
 
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3", "2.3.4"})
 		assert.True(t, found)
@@ -117,12 +133,13 @@ func TestFindVersionsInDir(t *testing.T) {
 
 	t.Run("when DefaultToolVersionsFilename is set reads from file with that name if exists", func(t *testing.T) {
 		conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: "custom-file"}
-		currentDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf.ToolVersionsDir = toolVersionsDir
 
 		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, "custom-file"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, "custom-file"), data, 0o666)
 
-		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+		toolVersion, found, err := findVersionsInDir(conf, plugin, toolVersionsDir)
 
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3", "2.3.4"})
 		assert.True(t, found)
@@ -130,30 +147,32 @@ func TestFindVersionsInDir(t *testing.T) {
 	})
 
 	t.Run("when .tool-version exists and legacy file support is on looks up version in .tool-versions", func(t *testing.T) {
-		currentDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf.ToolVersionsDir = toolVersionsDir
 
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
-		err = os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, ".tool-versions"), data, 0o666)
 		assert.NoError(t, err)
 
 		data = []byte("2.3.4 3.4.5")
-		err = os.WriteFile(filepath.Join(currentDir, ".dummy-version"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, ".dummy-version"), data, 0o666)
 		assert.NoError(t, err)
 
-		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+		toolVersion, found, err := findVersionsInDir(conf, plugin, toolVersionsDir)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
 		assert.True(t, found)
 		assert.NoError(t, err)
 	})
 
 	t.Run("when .tool-version does not exist and legacy file support is on looks up version in legacy file", func(t *testing.T) {
-		currentDir := t.TempDir()
+		toolVersionsDir := t.TempDir()
+		conf.ToolVersionsDir = toolVersionsDir
 
 		data := []byte("1.2.3 2.3.4")
-		err = os.WriteFile(filepath.Join(currentDir, ".dummy-version"), data, 0o666)
+		err = os.WriteFile(filepath.Join(toolVersionsDir, ".dummy-version"), data, 0o666)
 		assert.NoError(t, err)
 
-		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+		toolVersion, found, err := findVersionsInDir(conf, plugin, toolVersionsDir)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3", "2.3.4"})
 		assert.True(t, found)
 		assert.NoError(t, err)
