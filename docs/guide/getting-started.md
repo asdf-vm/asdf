@@ -68,8 +68,6 @@ a variable named `ASDF_DATA_DIR` in your shell's RC file.
 
 There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
 
-**macOS users, be sure to read the warning about `path_helper` at the end of this section.**
-
 ::: details Bash
 
 **macOS Catalina or newer**: The default shell has changed to **ZSH**. Unless changing back to Bash, follow the ZSH instructions.
