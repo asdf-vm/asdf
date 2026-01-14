@@ -373,7 +373,7 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version toolvers
 // ExecutablePaths returns a slice of absolute directory paths that tool
 // executables are contained in.
 func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) (paths []string, err error) {
-	dirs, err := ExecutableDirs(plugin)
+	dirs, err := ExecutableDirs(conf, plugin, version)
 	if err != nil {
 		return []string{}, err
 	}
@@ -389,11 +389,17 @@ func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolvers
 
 // ExecutableDirs returns a slice of relative directory names that tool executables are
 // contained in, *inside installs*
-func ExecutableDirs(plugin plugins.Plugin) ([]string, error) {
+func ExecutableDirs(conf config.Config, plugin plugins.Plugin, version toolversions.Version) ([]string, error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
 
-	err := plugin.RunCallback("list-bin-paths", []string{}, map[string]string{}, &stdOut, &stdErr)
+	env := map[string]string{
+		"ASDF_INSTALL_TYPE":    version.Type,
+		"ASDF_INSTALL_VERSION": version.Value,
+		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, version),
+	}
+
+	err := plugin.RunCallback("list-bin-paths", []string{}, env, &stdOut, &stdErr)
 	if err != nil {
 		if _, ok := err.(plugins.NoCallbackError); ok {
 			// assume all executables are located in /bin directory
