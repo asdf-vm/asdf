@@ -44,7 +44,7 @@ func TestAll(t *testing.T) {
 	t.Run("sets version in current directory when no flags provided", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		dir := t.TempDir()
-		assert.Nil(t, os.Chdir(dir))
+		chdir(t, dir)
 
 		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
 
@@ -63,7 +63,7 @@ func TestAll(t *testing.T) {
 		dir := t.TempDir()
 		subdir := filepath.Join(dir, "subdir")
 		assert.Nil(t, os.Mkdir(subdir, 0o777))
-		assert.Nil(t, os.Chdir(subdir))
+		chdir(t, subdir)
 		assert.Nil(t, os.WriteFile(filepath.Join(dir, ".tool-versions"), []byte("lua 4.0.0"), 0o666))
 
 		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, true, homeFunc)
@@ -99,7 +99,7 @@ func TestAll(t *testing.T) {
 	t.Run("sets version in current directory only once", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		dir := t.TempDir()
-		assert.Nil(t, os.Chdir(dir))
+		chdir(t, dir)
 
 		_ = Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
 		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
@@ -120,4 +120,22 @@ func buildOutputs() (strings.Builder, strings.Builder) {
 	var stderr strings.Builder
 
 	return stdout, stderr
+}
+
+func chdir(t *testing.T, dir string) {
+	// in Go 1.24+ this whole func can be replaced with t.Chdir(dir)
+	old, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Cleanup(func() {
+		if err := os.Chdir(old); err != nil {
+			panic("chdir: " + err.Error())
+		}
+	})
 }

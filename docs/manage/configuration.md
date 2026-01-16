@@ -184,6 +184,15 @@ The filename of the file storing the tool names and versions. Can be any valid f
 - If Unset: `.tool-versions` will be used.
 - Usage: `export ASDF_TOOL_VERSIONS_FILENAME=tool_versions`
 
+### `ASDF_TOOL_VERSIONS_DIR`
+
+The starting directory path from which `asdf` should begin searching for `.tool-versions` files.
+
+- If Unset: default behavior is to search upwards from the current working directory.
+- Usage: `export ASDF_TOOL_VERSIONS_DIR=/path/to/my/versions/dir`
+
+Path to begin lookup of `.tool-versions` instead of current directory.
+
 ### `ASDF_DIR`
 
 The location of `asdf` core scripts. Can be set to any location. Must be an absolute path.

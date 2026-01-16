@@ -18,9 +18,13 @@ func TestLoadConfig(t *testing.T) {
 		homeDir, err := os.UserHomeDir()
 		assert.Nil(t, err)
 
+		currentDir, err := os.Getwd()
+		assert.Nil(t, err)
+
 		assert.Equal(t, homeDir, config.Home, "Home directory has the wrong value")
 		assert.True(t, strings.HasPrefix(config.DataDir, homeDir), "DataDir has the wrong value")
 		assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
+		assert.Equal(t, currentDir, config.ToolVersionsDir, "ToolVersionsDir has the wrong value")
 	})
 
 	t.Run("With ASDF_DATA_DIR containing a tilde", func(t *testing.T) {
@@ -34,6 +38,17 @@ func TestLoadConfig(t *testing.T) {
 		assert.Equal(t, homeDir, config.Home, "Home directory has the wrong value")
 		assert.Equal(t, homeDir+"/some/other/dir", config.DataDir, "DataDir has the wrong value")
 		assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
+	})
+
+	t.Run("With ASDF_TOOL_VERSIONS_DIR set", func(t *testing.T) {
+		t.Setenv("ASDF_TOOL_VERSIONS_DIR", "~/some/other/dir")
+		config, err := LoadConfig()
+		assert.Nil(t, err, "Returned error when loading env for config")
+
+		homeDir, err := os.UserHomeDir()
+		assert.Nil(t, err)
+
+		assert.Equal(t, homeDir+"/some/other/dir", config.ToolVersionsDir, "ToolVersionsDir has the wrong value")
 	})
 }
 

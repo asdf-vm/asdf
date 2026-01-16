@@ -20,15 +20,14 @@ func TestInstallAll(t *testing.T) {
 	t.Run("installs multiple tools when multiple tool versions are specified", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
 		secondPlugin := installPlugin(t, conf, "dummy_plugin", "another")
 		version := "1.0.0"
 
 		// write a version file
 		content := fmt.Sprintf("%s %s\n%s %s", plugin.Name, version, secondPlugin.Name, version)
-		writeVersionFile(t, currentDir, content)
+		writeVersionFile(t, conf.ToolVersionsDir, content)
 
-		err := InstallAll(conf, currentDir, &stdout, &stderr)
+		err := InstallAll(conf, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
@@ -38,15 +37,14 @@ func TestInstallAll(t *testing.T) {
 	t.Run("only installs tools with versions specified for current directory", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
 		secondPlugin := installPlugin(t, conf, "dummy_plugin", "another")
 		version := "1.0.0"
 
 		// write a version file
 		content := fmt.Sprintf("%s %s\n", plugin.Name, version)
-		writeVersionFile(t, currentDir, content)
+		writeVersionFile(t, conf.ToolVersionsDir, content)
 
-		err := InstallAll(conf, currentDir, &stdout, &stderr)
+		err := InstallAll(conf, &stdout, &stderr)
 		assert.ErrorContains(t, err[0], "no version set")
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
@@ -56,15 +54,14 @@ func TestInstallAll(t *testing.T) {
 	t.Run("installs all tools even after one fails to install", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
 		secondPlugin := installPlugin(t, conf, "dummy_plugin", "another")
 		version := "1.0.0"
 
 		// write a version file
 		content := fmt.Sprintf("%s %s\n%s %s", secondPlugin.Name, "non-existent-version", plugin.Name, version)
-		writeVersionFile(t, currentDir, content)
+		writeVersionFile(t, conf.ToolVersionsDir, content)
 
-		err := InstallAll(conf, currentDir, &stdout, &stderr)
+		err := InstallAll(conf, &stdout, &stderr)
 		assert.Empty(t, err)
 
 		assertNotInstalled(t, conf.DataDir, secondPlugin.Name, version)
@@ -75,16 +72,14 @@ func TestInstallAll(t *testing.T) {
 func TestInstall(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	stdout, stderr := buildOutputs()
-	currentDir := t.TempDir()
-
 	t.Run("installs version of tool specified for current directory", func(t *testing.T) {
 		version := "1.0.0"
 		// write a version file
 		data := []byte(fmt.Sprintf("%s %s", plugin.Name, version))
-		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 		assert.Nil(t, err)
 
-		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		err = Install(conf, plugin, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, version)
@@ -93,30 +88,28 @@ func TestInstall(t *testing.T) {
 	t.Run("returns error when plugin doesn't exist", func(t *testing.T) {
 		conf, _ := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		err := Install(conf, plugins.New(conf, "non-existent"), currentDir, &stdout, &stderr)
+		err := Install(conf, plugins.New(conf, "non-existent"), &stdout, &stderr)
 		assert.IsType(t, plugins.PluginMissing{}, err)
 	})
 
 	t.Run("returns error when no version set", func(t *testing.T) {
 		conf, _ := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
-		err := Install(conf, plugin, currentDir, &stdout, &stderr)
+		err := Install(conf, plugin, &stdout, &stderr)
 		assert.EqualError(t, err, "no version set")
 	})
 
 	t.Run("if multiple versions are defined installs all of them", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
 
 		versions := "1.0.0 2.0.0"
 		// write a version file
 		data := []byte(fmt.Sprintf("%s %s", plugin.Name, versions))
-		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 		assert.Nil(t, err)
 
-		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		err = Install(conf, plugin, &stdout, &stderr)
 		assert.Nil(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
@@ -126,21 +119,20 @@ func TestInstall(t *testing.T) {
 	t.Run("if multiple versions are defined and installed returns an error", func(t *testing.T) {
 		conf, plugin := generateConfig(t)
 		stdout, stderr := buildOutputs()
-		currentDir := t.TempDir()
 
 		versions := "1.0.0 2.0.0"
 		// write a version file
 		data := []byte(fmt.Sprintf("%s %s", plugin.Name, versions))
-		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		err := os.WriteFile(filepath.Join(conf.ToolVersionsDir, ".tool-versions"), data, 0o666)
 		assert.NoError(t, err)
 
-		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		err = Install(conf, plugin, &stdout, &stderr)
 		assert.NoError(t, err)
 
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
 		assertVersionInstalled(t, conf.DataDir, plugin.Name, "2.0.0")
 
-		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		err = Install(conf, plugin, &stdout, &stderr)
 		assert.Error(t, err)
 		// Expect a VersionAlreadyInstalledError
 		var eerr VersionAlreadyInstalledError
@@ -556,9 +548,11 @@ func assertNotInstalled(t *testing.T, dataDir, pluginName, version string) {
 func generateConfig(t *testing.T) (config.Config, plugins.Plugin) {
 	t.Helper()
 	testDataDir := t.TempDir()
+	testToolVersionsDir := t.TempDir()
 	conf, err := config.LoadConfig()
 	assert.Nil(t, err)
 	conf.DataDir = testDataDir
+	conf.ToolVersionsDir = testToolVersionsDir
 
 	_, err = repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
 	assert.Nil(t, err)
