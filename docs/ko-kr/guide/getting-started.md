@@ -237,7 +237,7 @@ autoload -Uz compinit && compinit
 
 **경고**
 
-만약 ZSH 프레임워크를 사용중이라면, `fpath`를 통해 새로운 ZSH 자동완성을 사용하려면 관련된 `asdf` 플러그인이 업데이트 되어야합니다. Oh-My-ZSH asdf 플로그인이 아직 업데이트 되지 않았습니다, [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 참고.
+만약 ZSH 프레임워크를 사용중이라면, `fpath`를 통해 새로운 ZSH 자동완성을 사용하려면 관련된 `asdf` 플러그인이 업데이트 되어야합니다.
 :::
 
 ::: details ZSH & Homebrew
@@ -250,7 +250,7 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 **혹은** 위 스크립트와 자동완성을 설정하는 [asdf를 위한 oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf)와 같은 ZSH 프레임워크 플러그인을 사용하세요.
 
-자동완성은 `asdf` ZSH 프레임워크 혹은 [Homebrew'의 방법](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)에 따라 설정되어야 합니다. 만약 ZSH 프레임워크를 사용중이라면, `fpath`를 통해 새로운 ZSH 자동완성을 사용하려면 관련된 asdf 플러그인이 업데이트 되어야합니다. Oh-My-ZSH asdf 플로그인이 아직 업데이트 되지 않았습니다, [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 참고.
+자동완성은 `asdf` ZSH 프레임워크 혹은 [Homebrew'의 방법](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)에 따라 설정되어야 합니다. 만약 ZSH 프레임워크를 사용중이라면, `fpath`를 통해 새로운 ZSH 자동완성을 사용하려면 관련된 asdf 플러그인이 업데이트 되어야합니다.
 :::
 
 ::: details ZSH & Pacman

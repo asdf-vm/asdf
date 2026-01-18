@@ -216,7 +216,7 @@ autoload -Uz compinit && compinit
 
 ZSHフレームワークでカスタムされた`compinit`セットアップを使っている場合は、`compinit`がフレームワークのソース配下にあることを確認してください。
 
-コマンド補完はZSHフレームワークの`asdf`で設定するか、[Homebrewの指示に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)する必要があります。ZSHフレームワークを使っている場合、asdf用のプラグインを更新して`fpath`経由で新しいZSH補完機能を正しく使えるようにする必要があるかもしれません。なお、Oh-My-ZSH asdfプラグインはまだ対応していません。[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) を参照してください。
+コマンド補完はZSHフレームワークの`asdf`で設定するか、[Homebrewの指示に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)する必要があります。ZSHフレームワークを使っている場合、asdf用のプラグインを更新して`fpath`経由で新しいZSH補完機能を正しく使えるようにする必要があるかもしれません。
 :::
 
 ::: details PowerShell Core
