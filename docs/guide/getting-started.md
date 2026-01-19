@@ -35,6 +35,11 @@ asdf can be installed in several different ways:
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
 2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0`
+3. Add the following to `~/.bash_profile`:
+```shell
+export ASDF_DATA_DIR="$HOME/go/bin"
+export PATH="$ASDF_DATA_DIR:$PATH"
+```
 <!-- x-release-please-end -->
 
 ::::
