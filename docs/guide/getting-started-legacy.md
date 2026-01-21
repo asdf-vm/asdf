@@ -434,6 +434,8 @@ nodejs 16.5.0
 
 Some OSs already have tools installed that are managed by the system and not `asdf`, `python` is a common example. You need to tell `asdf` to pass the management back to the system. The [Versions reference section](/manage/versions.md) will guide you.
 
+Note: `asdf global` has been superceded by `asdf local` in later version
+
 ### Local
 
 Local versions are defined in the `$PWD/.tool-versions` file (your current working directory). Usually, this will be the Git repository for a project. When in your desired directory execute:
