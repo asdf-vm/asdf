@@ -545,7 +545,7 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 }
 
 func setPath(paths []string) string {
-	return strings.Join(paths, ":") + ":" + os.Getenv("PATH")
+	return strings.Join(paths, string(os.PathListSeparator)) + string(os.PathListSeparator) + os.Getenv("PATH")
 }
 
 func execCommand(logger *log.Logger, command string, args []string) error {

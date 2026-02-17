@@ -4,6 +4,7 @@
 package paths
 
 import (
+	"path/filepath"
 	"strings"
 )
 
@@ -11,11 +12,11 @@ import (
 func RemoveFromPath(currentPath, pathToRemove string) string {
 	var newPaths []string
 
-	for _, fspath := range strings.Split(currentPath, ":") {
+	for _, fspath := range filepath.SplitList(currentPath) {
 		if fspath != pathToRemove {
 			newPaths = append(newPaths, fspath)
 		}
 	}
 
-	return strings.Join(newPaths, ":")
+	return strings.Join(newPaths, string(filepath.ListSeparator))
 }
