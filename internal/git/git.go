@@ -83,7 +83,7 @@ func (r Repo) RemoteURL() (string, error) {
 	}
 
 	stdout, _, err := exec([]string{"git", "-C", r.Directory, "remote", "get-url", remote})
-	return stdout, err
+	return strings.TrimSpace(stdout), nil
 }
 
 // Update updates the plugin's Git repository to the ref if provided, or the
