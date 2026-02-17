@@ -153,7 +153,7 @@ terminology was wrong and also misleading. asdf doesn't actually support
 current directory specifying a different version. This was confusing to users.
 The new `asdf set` behaves the same as `asdf local` by default, but also has
 flags for setting versions in the user's home directory (`--home`) and in an
-existing `.tool-versions` file in one of the parent directories (`--parent`).
+existing `.tool-versions` file in one of the parent directories (`--parents`).
 This new interface will hopefully convey a better understanding of how asdf
 resolves versions and provide equivalent functionality.
 

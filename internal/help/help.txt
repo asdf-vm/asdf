@@ -36,8 +36,8 @@ asdf list <name> [version]              List installed versions of a package and
 asdf list all <name> [<version>]        List all versions of a package and
                                         optionally filter the returned versions
 asdf set [-u] [-p] <name> <versions...> Set a tool version in a .tool-version in
-                                        the current directory, or a parent
-                                        directory.
+                                        the current directory, or the closest
+                                        parent directory.
 asdf uninstall <name> <version>         Remove a specific version of a package
 asdf where <name> [<version>]           Display install path for an installed
                                         or current version
