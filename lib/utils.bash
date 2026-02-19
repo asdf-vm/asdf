@@ -803,6 +803,7 @@ with_shim_executable() {
   (
     local preset_plugin_versions
     preset_plugin_versions=()
+    local preset_plugin_installed=
     local closest_tool_version
     closest_tool_version=$(find_tool_versions)
 
@@ -815,22 +816,32 @@ with_shim_executable() {
       IFS=' ' read -r -a shim_versions <<<"$version_string"
       local usable_plugin_versions
       for shim_version in "${shim_versions[@]}"; do
-        preset_plugin_versions+=("$shim_plugin $shim_version")
+        if grep -q "$shim_version" <<<"$(asdf list "$shim_plugin")"; then
+          preset_plugin_installed="yes"
+        else
+          preset_plugin_versions+=("$shim_plugin $shim_version")
+        fi
       done
     done
 
-    if [ -n "${preset_plugin_versions[*]}" ]; then
-      printf "%s %s\n" "No preset version installed for command" "$shim_name"
-      printf "%s\n\n" "Please install a version by running one of the following:"
-      for preset_plugin_version in "${preset_plugin_versions[@]}"; do
-        printf "%s %s\n" "asdf install" "$preset_plugin_version"
-      done
-      printf "\n%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
+    if [ -n "$preset_plugin_installed" ]; then
+      printf "%s '%s' %s\n" "Shimmed command" "$shim_name" "has no matched plugin version"
+      printf "%s %s %s\n" "Check the executable or try install" "$shim_name" "for your preset plugin version"
     else
-      printf "%s %s\n" "No version is set for command" "$shim_name"
-      printf "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
+      if [ -n "${preset_plugin_versions[*]}" ]; then
+        printf "%s %s\n" "No preset version installed for command" "$shim_name"
+        printf "%s\n\n" "Please install a version by running one of the following:"
+        for preset_plugin_version in "${preset_plugin_versions[@]}"; do
+          printf "%s %s\n" "asdf install" "$preset_plugin_version"
+        done
+        printf "\n%s %s\n" "or add one of the following versions in your config file at" "$closest_tool_version"
+        shim_plugin_versions "${shim_name}"
+      else
+        printf "%s %s\n" "No version is set for command" "$shim_name"
+        printf "%s %s\n" "Consider adding one of the following versions in your config file at" "$closest_tool_version"
+        shim_plugin_versions "${shim_name}"
+      fi
     fi
-    shim_plugin_versions "${shim_name}"
   ) >&2
 
   return 126
