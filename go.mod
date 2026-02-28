@@ -6,7 +6,7 @@ require (
 	github.com/go-git/go-git/v5 v5.13.0
 	github.com/mgechev/revive v1.7.0
 	github.com/otiai10/copy v1.14.0
-	github.com/rogpeppe/go-internal v1.12.0
+	github.com/rogpeppe/go-internal v1.14.0
 	github.com/stretchr/testify v1.10.0
 	github.com/urfave/cli/v3 v3.3.3
 	golang.org/x/sys v0.38.0
