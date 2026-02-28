@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/asdf-vm/asdf/compare/v0.18.0...v0.18.1) (2026-02-28)
+
+
+### Bug Fixes
+
+* set LANG=C for locale-dependent tests ([#2197](https://github.com/asdf-vm/asdf/issues/2197)) ([2423f6d](https://github.com/asdf-vm/asdf/commit/2423f6da496b5b1955ce9cb19d524dc0a7b88e26))
+
 ## [0.18.0](https://github.com/asdf-vm/asdf/compare/v0.17.0...v0.18.0) (2025-06-07)
 
 
