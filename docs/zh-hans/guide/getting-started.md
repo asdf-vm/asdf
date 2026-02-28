@@ -34,7 +34,7 @@ asdf 的安装方式有以下几种：
 
 <!-- x-release-please-start-version -->
 1. [安装 Go](https://go.dev/doc/install)
-2. 运行 `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0`
+2. 运行 `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.1`
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf 的安装方式有以下几种：
 <!-- x-release-please-start-version -->
 1. 克隆 asdf 仓库:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.1
   ```
 <!-- x-release-please-end -->
 2. 运行 `make`
