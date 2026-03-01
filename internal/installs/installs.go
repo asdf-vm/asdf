@@ -27,7 +27,20 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 	}
 
 	for _, file := range files {
-		if !file.IsDir() {
+		// Check if it's a directory OR a symlink to a directory
+		isVersion := false
+		if file.IsDir() {
+			isVersion = true
+		} else if file.Type()&fs.ModeSymlink != 0 {
+			// Follow the symlink to see if it points to a directory
+			location := filepath.Join(installDirectory, file.Name())
+			info, err := os.Stat(location)
+			if err == nil && info.IsDir() {
+				isVersion = true
+			}
+		}
+
+		if !isVersion {
 			continue
 		}
 

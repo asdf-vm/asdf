@@ -12,7 +12,16 @@ Adicione os plugins via sua Url Git:
 
 ```shell
 asdf plugin add <name> <git-url>
-# asdf plugin add elm https://github.com/vic/asdf-elm
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo
+```
+
+Você também pode especificar qualquer referência Git (branch, tag, ou commit) com o argumento `<git-ref>`:
+
+```shell
+asdf plugin add <name> [<git-url>] [<git-ref>]
+# asdf plugin add odo main
+# asdf plugin add odo v3.1.1
+# asdf plugin add odo https://github.com/asdf-community/asdf-odo 3ca6ab4
 ```
 
 ou pelo nome abreviado dentro do repositório de plugins:

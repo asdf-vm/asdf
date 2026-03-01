@@ -67,6 +67,31 @@ func TestList(t *testing.T) {
 		assert.NotZero(t, plugin.Ref)
 		assert.NotZero(t, plugin.URL)
 	})
+
+	t.Run("returns symlinked plugin directories", func(t *testing.T) {
+		// Create a real plugin directory in a different location
+		realPluginDir := filepath.Join(testDataDir, "real_plugin_location")
+		err := os.MkdirAll(realPluginDir, 0o755)
+		assert.Nil(t, err)
+
+		// Create a symlink to it in the plugins directory
+		pluginsDir := filepath.Join(testDataDir, "plugins")
+		symlinkPath := filepath.Join(pluginsDir, "symlinked-plugin")
+		err = os.Symlink(realPluginDir, symlinkPath)
+		assert.Nil(t, err)
+
+		plugins, err := List(conf, false, false)
+		assert.Nil(t, err)
+
+		// Should find both the regular plugin and the symlinked one
+		pluginNames := []string{}
+		for _, plugin := range plugins {
+			pluginNames = append(pluginNames, plugin.Name)
+		}
+
+		assert.Contains(t, pluginNames, "lua")
+		assert.Contains(t, pluginNames, "symlinked-plugin")
+	})
 }
 
 func TestNew(t *testing.T) {
