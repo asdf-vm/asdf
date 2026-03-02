@@ -50,7 +50,7 @@ npm run dev
 Format the code before committing:
 
 ```shell
-npm run format
+npm run fmt
 ```
 
 ## Pull Requests, Releases & Conventional Commits

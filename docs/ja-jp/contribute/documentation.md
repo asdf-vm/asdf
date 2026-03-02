@@ -50,7 +50,7 @@ npm run dev
 コミットする前にコードをフォーマットするには、次のように実行します:
 
 ```shell
-npm run format
+npm run fmt
 ```
 
 ## プルリクエスト、リリース、Conventional Commits
