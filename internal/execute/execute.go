@@ -36,17 +36,18 @@ func NewExpression(expression string, args []string) Command {
 
 // Run executes a Command with Bash and returns the error if there is one
 func (c Command) Run() error {
-	var command string
+	var bashArgs []string
+
 	if c.Expression != "" {
-		// Expressions need to be invoked inside a Bash function, so variables like
-		// $0 and $@ are available
-		command = fmt.Sprintf("fn() { %s; }; fn %s", c.Expression, formatArgString(c.Args))
+		script := fmt.Sprintf(`fn() { %s; }; fn "$@"`, c.Expression)
+		bashArgs = append([]string{"-c", script, "asdf"}, c.Args...)
+	} else if len(c.Args) > 0 {
+		bashArgs = append([]string{"-c", `exec "$0" "$@"`, c.Command}, c.Args...)
 	} else {
-		// Scripts can be invoked directly, with args provided
-		command = fmt.Sprintf("%s %s", c.Command, formatArgString(c.Args))
+		bashArgs = []string{"-c", c.Command}
 	}
 
-	cmd := exec.Command("bash", "-c", command)
+	cmd := exec.Command("bash", bashArgs...)
 
 	if len(c.Env) > 0 {
 		cmd.Env = MergeWithCurrentEnv(c.Env)
@@ -55,8 +56,6 @@ func (c Command) Run() error {
 	}
 
 	cmd.Stdin = c.Stdin
-
-	// Capture stdout and stderr
 	cmd.Stdout = c.Stdout
 	cmd.Stderr = c.Stderr
 
@@ -104,12 +103,4 @@ func SliceToMap(env []string) map[string]string {
 	}
 
 	return envMap
-}
-
-func formatArgString(args []string) string {
-	var newArgs []string
-	for _, str := range args {
-		newArgs = append(newArgs, fmt.Sprintf("\"%s\"", str))
-	}
-	return strings.Join(newArgs, " ")
 }
