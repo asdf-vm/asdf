@@ -128,7 +128,7 @@ func InstallVersion(conf config.Config, plugin plugins.Plugin, version toolversi
 
 	resolvedVersion := ""
 	if version.Type == latestVersion {
-		resolvedVersion, err = Latest(plugin, version.Value)
+		resolvedVersion, err = Latest(plugin, version.Value, stdErr)
 		if err != nil {
 			return err
 		}
@@ -235,11 +235,10 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 // the version it returns. If the callback is missing it invokes the list-all
 // callback and returns the last version matching the query, if a query is
 // provided.
-func Latest(plugin plugins.Plugin, query string) (version string, err error) {
+func Latest(plugin plugins.Plugin, query string, stdErr io.Writer) (version string, err error) {
 	var stdOut strings.Builder
-	var stdErr strings.Builder
 
-	err = plugin.RunCallback("latest-stable", []string{query}, map[string]string{}, &stdOut, &stdErr)
+	err = plugin.RunCallback("latest-stable", []string{query}, map[string]string{}, &stdOut, stdErr)
 	if err == nil {
 		versions := parseVersions(stdOut.String())
 		if len(versions) < 1 {
@@ -253,7 +252,7 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 		return version, err
 	}
 
-	allVersions, err := AllVersions(plugin)
+	allVersions, err := AllVersions(plugin, stdErr)
 	if err != nil {
 		return version, err
 	}
@@ -276,11 +275,10 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 
 // AllVersions returns a slice of all available versions for the tool managed by
 // the given plugin by invoking the plugin's list-all callback
-func AllVersions(plugin plugins.Plugin) (versions []string, err error) {
+func AllVersions(plugin plugins.Plugin, stdErr io.Writer) (versions []string, err error) {
 	var stdout strings.Builder
-	var stderr strings.Builder
 
-	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, &stderr)
+	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &stdout, stdErr)
 	if err != nil {
 		return versions, err
 	}
