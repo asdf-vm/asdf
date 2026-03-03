@@ -86,7 +86,7 @@ just doing `echo "<tool> <version>" > .tool-versions`.
 With the `-u`/`--home` flag `asdf set` writes to the `.tool-versions` file in
 your `$HOME` directory, creating the file if it does not exist.
 
-With the `-p`/`--parent` flag `asdf set` finds a `.tool-versions` file in the
+With the `-p`/`--parents` flag `asdf set` finds a `.tool-versions` file in the
 closest parent directory of the current directory.
 
 #### Via Environment Variable
