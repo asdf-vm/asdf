@@ -5,6 +5,7 @@
 
 ### Bug Fixes
 
+* Only show already installed versions in shell completion for the asdf set command ([#2172](https://github.com/asdf-vm/asdf/pull/2172)) ([c3910d7](https://github.com/asdf-vm/asdf/commit/c3910d73776980e649605205352334c09c8c85b1))
 * set LANG=C for locale-dependent tests ([#2197](https://github.com/asdf-vm/asdf/issues/2197)) ([2423f6d](https://github.com/asdf-vm/asdf/commit/2423f6da496b5b1955ce9cb19d524dc0a7b88e26))
 
 ## [0.18.0](https://github.com/asdf-vm/asdf/compare/v0.17.0...v0.18.0) (2025-06-07)
