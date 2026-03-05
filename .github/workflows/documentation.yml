@@ -49,7 +49,7 @@ jobs:
         run: cp CNAME .vitepress/dist
 
       - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v4
+        uses: crazy-max/ghaction-github-pages@v5
         with:
           # deploy to gh-pages branch
           target_branch: gh-pages
