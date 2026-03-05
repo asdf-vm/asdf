@@ -50,7 +50,7 @@ func (c Command) Run() error {
 
 	} else {
     binary := strings.Trim(c.Command, "'\"")
-    args := append([]string{"-c", `"$0" "$@"`, binary}, c.Args...)
+    args := append([]string{"-c", `exec "$0" "$@"`, binary}, c.Args...)
     cmd = exec.Command("bash", args...)
 	}
 
