@@ -1028,10 +1028,18 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 		failTest(l, "list-all did not return any version")
 	}
 
-	// grab first version returned by list-all callback if no version provided as
-	// a CLI argument
+	// Resolve version: if empty use first from list-all; if "latest" or
+	// "latest:<query>" resolve via the plugin's latest-stable callback.
 	if toolVersion == "" {
 		toolVersion = allVersions[0]
+	} else if toolVersion == "latest" || strings.HasPrefix(toolVersion, "latest:") {
+		query := strings.TrimPrefix(toolVersion, "latest")
+		query = strings.TrimPrefix(query, ":")
+		resolved, err := versions.Latest(plugin, query)
+		if err != nil || resolved == "" {
+			failTest(l, "could not get latest version")
+		}
+		toolVersion = resolved
 	}
 
 	err = versions.InstallOneVersion(conf, plugin, toolVersion, false, os.Stdout, os.Stderr)
