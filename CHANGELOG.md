@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/asdf-vm/asdf/compare/v0.18.1...v0.18.2) (2026-04-03)
+
+
+### Bug Fixes
+
+* nushell completions --ignore-errors deprecation ([#2157](https://github.com/asdf-vm/asdf/issues/2157)) ([a813610](https://github.com/asdf-vm/asdf/commit/a813610611852b963c19d90b03c66d05e9a2a7de))
+
 ## [0.18.1](https://github.com/asdf-vm/asdf/compare/v0.18.0...v0.18.1) (2026-03-04)
 
 
