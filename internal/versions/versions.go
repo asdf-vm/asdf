@@ -155,16 +155,22 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	}
 	downloadDir := installs.DownloadPath(conf, plugin, version)
 	installDir := installs.InstallPath(conf, plugin, version)
+	stagingDir := installs.StagingPath(conf, plugin, version)
 
 	if installs.IsInstalled(conf, plugin, version) {
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
+	}
+
+	// Remove any incomplete staging directory from a previously interrupted install
+	if err := installs.CleanIncomplete(conf, plugin, version); err != nil {
+		return fmt.Errorf("unable to clean up incomplete install: %w", err)
 	}
 
 	concurrency, _ := conf.Concurrency()
 	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    version.Type,
 		"ASDF_INSTALL_VERSION": version.Value,
-		"ASDF_INSTALL_PATH":    installDir,
+		"ASDF_INSTALL_PATH":    stagingDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
 		"ASDF_CONCURRENCY":     concurrency,
 	}
@@ -189,17 +195,27 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		return fmt.Errorf("failed to run pre-install hook: %w", err)
 	}
 
-	err = os.MkdirAll(installDir, 0o777)
+	err = os.MkdirAll(stagingDir, 0o777)
 	if err != nil {
-		return fmt.Errorf("unable to create install dir: %w", err)
+		return fmt.Errorf("unable to create staging install dir: %w", err)
 	}
 
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
-		if rmErr := os.RemoveAll(installDir); rmErr != nil {
-			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
+		if rmErr := os.RemoveAll(stagingDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up staging dir '%s' due to %s\n", stagingDir, rmErr)
 		}
 		return fmt.Errorf("failed to run install callback: %w", err)
+	}
+
+	// Atomically move the staging directory to the final install path so that
+	// interrupted installs never appear as valid installed versions.
+	err = os.Rename(stagingDir, installDir)
+	if err != nil {
+		if rmErr := os.RemoveAll(stagingDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up staging dir '%s' due to %s\n", stagingDir, rmErr)
+		}
+		return fmt.Errorf("failed to move staging install to final path: %w", err)
 	}
 
 	// Reshim
