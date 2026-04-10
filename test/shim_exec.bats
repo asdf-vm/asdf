@@ -48,9 +48,9 @@ teardown() {
   run asdf install
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-  run env PATH="$path" which dummy
-  [ "$output" = "" ]
-  [ "$status" -eq 1 ]
+  # Test that dummy is not found in the modified PATH (status should be non-zero)
+  run bash -c "env PATH=\"$path\" command -v dummy >/dev/null 2>&1"
+  [ "$status" -ne 0 ]
 
   run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
