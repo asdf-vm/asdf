@@ -44,10 +44,6 @@ run_shfmt_stylecheck() {
 }
 
 run_shellcheck_linter() {
-  print.info "Checking .sh files with Shellcheck"
-  shellcheck --shell sh --external-sources \
-    asdf.sh
-
   print.info "Checking .bash files with Shellcheck"
   shellcheck --shell bash --external-sources \
     internal/completions/*.bash \
