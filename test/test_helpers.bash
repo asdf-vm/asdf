@@ -2,7 +2,7 @@
 
 bats_require_minimum_version 1.7.0
 
-# shellcheck source=lib/utils.bash
+# shellcheck source=test/utils.bash
 . "$(dirname "$BATS_TEST_DIRNAME")"/test/utils.bash
 
 setup_asdf_dir() {
