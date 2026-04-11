@@ -362,14 +362,12 @@ teardown() {
 }
 
 @test "shell wrapper function should export ENV var" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
   [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "shell wrapper function with --unset should unset ENV var" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
   [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   asdf shell "dummy" --unset
@@ -378,7 +376,6 @@ teardown() {
 }
 
 @test "shell wrapper function should return an error for missing plugins" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   expected="No such plugin: nonexistent
 version 1.0.0 is not installed for nonexistent"
 
@@ -449,14 +446,12 @@ false"
 }
 
 @test "[shell - dummy_plugin] wrapper function should support latest" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "latest"
   [ "$ASDF_DUMMY_VERSION" = "2.0.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "[shell - dummy_legacy_plugin] wrapper function should support latest" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "legacy-dummy" "latest"
   [ "$ASDF_LEGACY_DUMMY_VERSION" = "5.1.0" ]
   unset ASDF_LEGACY_DUMMY_VERSION
