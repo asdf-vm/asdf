@@ -2,8 +2,6 @@
 
 load test_helpers
 
-
-
 cleaned_path() {
   echo "$PATH" | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
 }
