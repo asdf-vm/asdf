@@ -10,9 +10,6 @@ setup() {
   PROJECT_DIR="$HOME/project"
   mkdir -p "$PROJECT_DIR"
   cd "$PROJECT_DIR"
-
-  # asdf lib needed to run generated shims
-  cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
 }
 
 teardown() {
