@@ -6,6 +6,8 @@ load test_helpers
 setup() {
   setup_asdf_dir
   install_dummy_plugin
+  PROJECT_DIR="$HOME/project"
+  mkdir -p "$PROJECT_DIR"
   local plugin_path
   plugin_path="$(get_plugin_path dummy)"
   mkdir -p "$plugin_path/lib/commands"

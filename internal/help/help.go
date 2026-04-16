@@ -100,6 +100,10 @@ func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io
 		version := toolversions.Parse(toolVersion)
 		env["ASDF_INSTALL_VERSION"] = version.Value
 		env["ASDF_INSTALL_TYPE"] = version.Type
+	} else {
+		// Clear version-related environment variables when no version is specified
+		env["ASDF_INSTALL_VERSION"] = ""
+		env["ASDF_INSTALL_TYPE"] = ""
 	}
 
 	if err := plugin.Exists(); err != nil {
