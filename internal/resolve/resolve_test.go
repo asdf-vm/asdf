@@ -70,6 +70,21 @@ func TestVersion(t *testing.T) {
 		assert.True(t, found)
 		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
 	})
+
+	t.Run("returns version from absolute DefaultToolVersionsFilename", func(t *testing.T) {
+		currentDir := t.TempDir()
+		customFile := filepath.Join(t.TempDir(), "custom-file")
+		conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: customFile, ConfigFile: "testdata/asdfrc"}
+
+		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
+		err = os.WriteFile(customFile, data, 0o666)
+		assert.Nil(t, err)
+
+		toolVersion, found, err := Version(conf, plugin, currentDir)
+		assert.Nil(t, err)
+		assert.True(t, found)
+		assert.Equal(t, toolVersion.Versions, []string{"1.2.3"})
+	})
 }
 
 func TestFindVersionsInDir(t *testing.T) {
@@ -121,6 +136,22 @@ func TestFindVersionsInDir(t *testing.T) {
 
 		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
 		err = os.WriteFile(filepath.Join(currentDir, "custom-file"), data, 0o666)
+
+		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
+
+		assert.Equal(t, toolVersion.Versions, []string{"1.2.3", "2.3.4"})
+		assert.True(t, found)
+		assert.Nil(t, err)
+	})
+
+	t.Run("when DefaultToolVersionsFilename is an absolute path reads from that path", func(t *testing.T) {
+		currentDir := t.TempDir()
+		customFile := filepath.Join(t.TempDir(), "custom-file")
+
+		conf := config.Config{DataDir: testDataDir, DefaultToolVersionsFilename: customFile}
+
+		data := []byte(fmt.Sprintf("%s 1.2.3 2.3.4", testPluginName))
+		err = os.WriteFile(customFile, data, 0o666)
 
 		toolVersion, found, err := findVersionsInDir(conf, plugin, currentDir)
 

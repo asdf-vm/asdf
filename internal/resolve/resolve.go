@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -56,10 +57,13 @@ func Version(conf config.Config, plugin plugins.Plugin, directory string) (versi
 }
 
 func findVersionsInDir(conf config.Config, plugin plugins.Plugin, directory string) (versions ToolVersions, found bool, err error) {
-	filepath := path.Join(directory, conf.DefaultToolVersionsFilename)
+	toolVersionsPath := conf.DefaultToolVersionsFilename
+	if !filepath.IsAbs(toolVersionsPath) {
+		toolVersionsPath = path.Join(directory, toolVersionsPath)
+	}
 
-	if _, err = os.Stat(filepath); err == nil {
-		versions, found, err := toolversions.FindToolVersions(filepath, plugin.Name)
+	if _, err = os.Stat(toolVersionsPath); err == nil {
+		versions, found, err := toolversions.FindToolVersions(toolVersionsPath, plugin.Name)
 		if found || err != nil {
 			return ToolVersions{Versions: versions, Source: conf.DefaultToolVersionsFilename, Directory: directory}, found, err
 		}
