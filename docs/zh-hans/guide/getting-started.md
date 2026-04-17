@@ -34,7 +34,7 @@ asdf 的安装方式有以下几种：
 
 <!-- x-release-please-start-version -->
 1. [安装 Go](https://go.dev/doc/install)
-2. 运行 `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.0`
+2. 运行 `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.1`
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf 的安装方式有以下几种：
 <!-- x-release-please-start-version -->
 1. 克隆 asdf 仓库:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.1
   ```
 <!-- x-release-please-end -->
 2. 运行 `make`
@@ -217,7 +217,7 @@ autoload -Uz compinit && compinit
 
 如果你正在 ZSH 框架中使用自定义的 `compinit` 设置 ，请确保 `compinit` 在框架加载之后加载。
 
-补全功能可以通过 ZSH 框架 `asdf` 或者将需要 [按照 Homebrew 的说明进行配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). 如果你正在使用 ZSH 框架，与 asdf 关联的插件或许需要更新以便通过 `fpath` 正确使用新 ZSH。 Oh-My-ZSH asdf 插件尚未更新，请查看 [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) 了解更多。
+补全功能可以通过 ZSH 框架 `asdf` 或者将需要 [按照 Homebrew 的说明进行配置](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). 如果你正在使用 ZSH 框架，与 asdf 关联的插件或许需要更新以便通过 `fpath` 正确使用新 ZSH。
 :::
 
 ::: details PowerShell Core
