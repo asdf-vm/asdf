@@ -3,7 +3,7 @@ module github.com/asdf-vm/asdf
 go 1.24.9
 
 require (
-	github.com/go-git/go-git/v5 v5.17.1
+	github.com/go-git/go-git/v5 v5.18.0
 	github.com/mgechev/revive v1.7.0
 	github.com/otiai10/copy v1.14.0
 	github.com/rogpeppe/go-internal v1.14.1
