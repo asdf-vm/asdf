@@ -28,7 +28,8 @@ func TestNewExpression(t *testing.T) {
 
 func TestRun_Command(t *testing.T) {
 	t.Run("command is executed with bash", func(t *testing.T) {
-		cmd := New("echo $(type -a sh);", []string{})
+		// "type" (bash) output is locale sensitive
+		cmd := New("echo $(LANG=C type -a sh);", []string{})
 
 		var stdout strings.Builder
 		cmd.Stdout = &stdout
@@ -130,7 +131,8 @@ func TestRun_Command(t *testing.T) {
 
 func TestRun_Expression(t *testing.T) {
 	t.Run("expression is executed with bash", func(t *testing.T) {
-		cmd := NewExpression("echo $(type -a sh)", []string{})
+		// "type" (bash) output is locale sensitive
+		cmd := NewExpression("echo $(LANG=C type -a sh)", []string{})
 
 		var stdout strings.Builder
 		cmd.Stdout = &stdout

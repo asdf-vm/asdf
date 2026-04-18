@@ -12,6 +12,8 @@ import (
 )
 
 func TestRepoClone(t *testing.T) {
+	t.Setenv("LANG", "C") // error messages from git are locale dependent
+
 	t.Run("when repo name is valid but URL is invalid prints an error", func(t *testing.T) {
 		repo := NewRepo(t.TempDir())
 		err := repo.Clone("foobar", "")
@@ -94,6 +96,8 @@ func TestRepoRemoteURL(t *testing.T) {
 }
 
 func TestRepoUpdate(t *testing.T) {
+	t.Setenv("LANG", "C") // error messages from git are locale dependent
+
 	repoDir := generateRepo(t)
 	directory := t.TempDir()
 
