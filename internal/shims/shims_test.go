@@ -508,7 +508,7 @@ func TestExecutableDirs(t *testing.T) {
 		assert.Equal(t, executables, []string{"foo", "bar"})
 	})
 
-	t.Run("returns environment variables that begin with ASDF_INSTALL", func(t *testing.T) {
+	t.Run("exposes ASDF_INSTALL_* env vars to list-bin-paths", func(t *testing.T) {
 		data := []byte("echo ${ASDF_INSTALL_TYPE} ${ASDF_INSTALL_VERSION} ${ASDF_INSTALL_PATH}")
 		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
 		assert.Nil(t, err)
