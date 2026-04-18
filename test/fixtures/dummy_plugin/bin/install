@@ -2,7 +2,7 @@
 
 # We want certain versions to fail installation for various reasons in the tests
 check_dummy_versions() {
-  local bad_versions=" other-dummy "
+  local bad_versions=" other-dummy latest "
   if [[ "$bad_versions" == *" $ASDF_INSTALL_VERSION "* ]]; then
     echo "Dummy couldn't install version: $ASDF_INSTALL_VERSION (on purpose)"
     exit 1
