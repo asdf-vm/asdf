@@ -76,6 +76,9 @@ asdf plugin remove <name>
 
 缩写存储库将同步到你的本地计算机并定期刷新。这个周期由以下方法确定：
 
-- 命令 `asdf plugin add <name>` 或者 `asdf plugin list all` 将会触发同步
-- 如果在过去的 `X` 分钟内没有同步，则进行同步
-- `X` 默认是 `60`，但可以通过在 `.asdfrc` 文件中配置 `plugin_repository_last_check_duration` 选项来进行配置。请查看 [asdf 配置文档](/zh-hans/manage/configuration.md) 了解更多。
+- 命令触发的同步事件：
+    - `asdf plugin add <name>` 
+    - `asdf plugin list all`
+- 如果配置选项 `disable_plugin_short_name_repository` 设置为 `yes`，那么同步操作将提前终止。请查看 [asdf 配置文档](/zh-hans/manage/configuration.md) 了解更多。
+- 如果在过去的 `X` 分钟内没有同步，则进行同步。
+    - `X` 默认是 `60`，但可以通过在 `.asdfrc` 文件中配置 `plugin_repository_last_check_duration` 选项来进行配置。请查看 [asdf 配置文档](/zh-hans/manage/configuration.md) 了解更多。

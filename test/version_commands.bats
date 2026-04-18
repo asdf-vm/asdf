@@ -23,9 +23,6 @@ setup() {
   mkdir -p "$CHILD_DIR"
 
   cd "$PROJECT_DIR"
-
-  # asdf lib needed to run asdf.sh
-  cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
 }
 
 teardown() {
@@ -282,42 +279,42 @@ teardown() {
   [ "$(cat "$HOME/.tool-versions")" = "dummy path:$PROJECT_DIR/local" ]
 }
 
-@test "local should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
+@test "local should write to ASDF_TOOL_VERSIONS_FILENAME" {
+  export ASDF_TOOL_VERSIONS_FILENAME="local-tool-versions"
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
+  [ "$(cat "$ASDF_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
   [ -z "$(cat .tool-versions)" ]
-  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  unset ASDF_TOOL_VERSIONS_FILENAME
 }
 
-@test "local should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="local-tool-versions"
-  echo 'dummy 1.0.0' >>"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+@test "local should overwrite contents of ASDF_TOOL_VERSIONS_FILENAME if set" {
+  export ASDF_TOOL_VERSIONS_FILENAME="local-tool-versions"
+  echo 'dummy 1.0.0' >>"$ASDF_TOOL_VERSIONS_FILENAME"
   run asdf local "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat "$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
+  [ "$(cat "$ASDF_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
   [ -z "$(cat .tool-versions)" ]
-  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  unset ASDF_TOOL_VERSIONS_FILENAME
 }
 
-@test "global should write to ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
+@test "global should write to ASDF_TOOL_VERSIONS_FILENAME" {
+  export ASDF_TOOL_VERSIONS_FILENAME="global-tool-versions"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat "$HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
+  [ "$(cat "$HOME/$ASDF_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
   [ -z "$(cat "$HOME/.tool-versions")" ]
-  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  unset ASDF_TOOL_VERSIONS_FILENAME
 }
 
-@test "global should overwrite contents of ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="global-tool-versions"
-  echo 'dummy 1.0.0' >>"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+@test "global should overwrite contents of ASDF_TOOL_VERSIONS_FILENAME if set" {
+  export ASDF_TOOL_VERSIONS_FILENAME="global-tool-versions"
+  echo 'dummy 1.0.0' >>"$ASDF_TOOL_VERSIONS_FILENAME"
   run asdf global "dummy" "1.1.0"
   [ "$status" -eq 0 ]
-  [ "$(cat "$HOME/$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
+  [ "$(cat "$HOME/$ASDF_TOOL_VERSIONS_FILENAME")" = "dummy 1.1.0" ]
   [ -z "$(cat "$HOME/.tool-versions")" ]
-  unset ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+  unset ASDF_TOOL_VERSIONS_FILENAME
 }
 
 @test "local should preserve symlinks when setting versions" {
@@ -365,14 +362,12 @@ teardown() {
 }
 
 @test "shell wrapper function should export ENV var" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
   [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "shell wrapper function with --unset should unset ENV var" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "1.1.0"
   [ "$ASDF_DUMMY_VERSION" = "1.1.0" ]
   asdf shell "dummy" --unset
@@ -381,7 +376,6 @@ teardown() {
 }
 
 @test "shell wrapper function should return an error for missing plugins" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   expected="No such plugin: nonexistent
 version 1.0.0 is not installed for nonexistent"
 
@@ -452,14 +446,12 @@ false"
 }
 
 @test "[shell - dummy_plugin] wrapper function should support latest" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "dummy" "latest"
   [ "$ASDF_DUMMY_VERSION" = "2.0.0" ]
   unset ASDF_DUMMY_VERSION
 }
 
 @test "[shell - dummy_legacy_plugin] wrapper function should support latest" {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
   asdf shell "legacy-dummy" "latest"
   [ "$ASDF_LEGACY_DUMMY_VERSION" = "5.1.0" ]
   unset ASDF_LEGACY_DUMMY_VERSION

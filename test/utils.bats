@@ -133,7 +133,7 @@ teardown() {
   [ "$output" = "path:/some/dummy path" ]
 }
 
-@test "parse_asdf_version_file should output path version with tilda" {
+@test "parse_asdf_version_file should output path version with tilde" {
   echo "dummy path:~/some/dummy path" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
@@ -217,18 +217,18 @@ teardown() {
   [ "$output" = "" ]
 }
 
-@test "find_versions should return \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME if set" {
-  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  echo "dummy 0.1.0" >"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+@test "find_versions should return \$ASDF_TOOL_VERSIONS_FILENAME if set" {
+  ASDF_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  echo "dummy 0.1.0" >"$ASDF_TOOL_VERSIONS_FILENAME"
 
   run find_versions "dummy" "$PROJECT_DIR"
   [ "$status" -eq 0 ]
-  [ "$output" = "0.1.0|$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" ]
+  [ "$output" = "0.1.0|$ASDF_TOOL_VERSIONS_FILENAME" ]
 }
 
-@test "find_versions should check \$HOME legacy files before \$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
-  ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
-  echo "dummy 0.2.0" >"$ASDF_DEFAULT_TOOL_VERSIONS_FILENAME"
+@test "find_versions should check \$HOME legacy files before \$ASDF_TOOL_VERSIONS_FILENAME" {
+  ASDF_TOOL_VERSIONS_FILENAME="$PROJECT_DIR/global-tool-versions"
+  echo "dummy 0.2.0" >"$ASDF_TOOL_VERSIONS_FILENAME"
   echo "dummy 0.1.0" >"$HOME/.dummy-version"
   echo "legacy_version_file = yes" >"$HOME/.asdfrc"
 
@@ -278,7 +278,7 @@ teardown() {
   [ "$output" = "path:/some/place with spaces" ]
 }
 
-@test "get_preset_version_for should return path version with tilda" {
+@test "get_preset_version_for should return path version with tilde" {
   cd "$PROJECT_DIR"
   echo "dummy path:~/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"

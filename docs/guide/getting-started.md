@@ -34,7 +34,7 @@ asdf can be installed in several different ways:
 
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
-2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.17.0`
+2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.18.1`
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf can be installed in several different ways:
 <!-- x-release-please-start-version -->
 1. Clone the asdf repository:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.17.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.18.1
   ```
 <!-- x-release-please-end -->
 2. Run `make`
@@ -67,8 +67,6 @@ a variable named `ASDF_DATA_DIR` in your shell's RC file.
 :::
 
 There are many different combinations of Shells, OSs & Installation methods all of which affect the configuration here. Expand the selection below that best matches your system.
-
-**macOS users, be sure to read the warning about `path_helper` at the end of this section.**
 
 ::: details Bash
 
@@ -219,7 +217,7 @@ autoload -Uz compinit && compinit
 
 If you are using a custom `compinit` setup with a ZSH Framework, ensure `compinit` is below your sourcing of the framework
 
-Completions are configured by either a ZSH Framework `asdf` or will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated plugin for asdf may need to be updated to use the new ZSH completions properly via `fpath`. The Oh-My-ZSH asdf plugin is yet to be updated, see [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+Completions are configured by either a ZSH Framework `asdf` or will need to be [configured as per Homebrew's instructions](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). If you are using a ZSH Framework the associated plugin for asdf may need to be updated to use the new ZSH completions properly via `fpath`.
 :::
 
 ::: details PowerShell Core

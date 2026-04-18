@@ -95,12 +95,12 @@ module asdf {
         let template = '(?P<name>.+)' + (
                             $params |
                             where enabled |
-                            get --ignore-errors template |
+                            get --optional template |
                             str join '' |
                             str trim
                         )
 
-        let flags = ($params | where enabled | get --ignore-errors flag | default '' )
+        let flags = ($params | where enabled | get --optional flag | default '' )
 
         ^asdf plugin list ...$flags | lines | parse -r $template | str trim
     }
@@ -161,7 +161,7 @@ module asdf {
         command: string # Name of command
     ]
 
-    # Display install path for an installled package version
+    # Display install path for an installed package version
     export extern "asdf where" [
         name: string@"complete asdf installed" # Name of installed package
         version?: string@"complete asdf plugin versions installed" # Version of installed package

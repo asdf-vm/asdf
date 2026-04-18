@@ -33,6 +33,6 @@ features:
     details: "Suporta Bash, ZSH, Fish & Elvish com autocomplete."
     icon: 🐚
   - title: "GitHub Actions"
-    details: "Fornece um GitHub Action para instalar e utilizar seu .tool-verions em seu fluxo de trabalho CICD."
+    details: "Fornece um GitHub Action para instalar e utilizar seu .tool-versions em seu fluxo de trabalho CICD."
     icon: 🤖
 ---

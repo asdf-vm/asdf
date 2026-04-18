@@ -48,7 +48,7 @@ Edit the file directly or use `asdf set` which updates it.
 
 The `.asdfrc` file defines the user's machine specific configuration.
 
-`${HOME}/.asdfrc` is the default location used by asdf. This can be set with the [Environment Variable `ASDF_CONFIG_FILE`](#asdfconfigfile).
+`${HOME}/.asdfrc` is the default location used by asdf. This can be set with the [Environment Variable `ASDF_CONFIG_FILE`](#asdf-config-file).
 
 The below file shows the required format with the default values:
 
@@ -177,12 +177,12 @@ Path to the `.asdfrc` configuration file. Can be set to any location. Must be an
 - If Unset: `$HOME/.asdfrc` will be used.
 - Usage: `export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
 
-### `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME`
+### `ASDF_TOOL_VERSIONS_FILENAME`
 
 The filename of the file storing the tool names and versions. Can be any valid filename. Typically, you should not set this value unless you want to ignore `.tool-versions` files.
 
 - If Unset: `.tool-versions` will be used.
-- Usage: `export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=tool_versions`
+- Usage: `export ASDF_TOOL_VERSIONS_FILENAME=tool_versions`
 
 ### `ASDF_DIR`
 
@@ -220,7 +220,7 @@ would result in the following outcomes:
 | Configuration                         | Value            | Calculated by                                                                                                                                      |
 | :------------------------------------ | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
 | config file location                  | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE` is empty, so use `$HOME/.asdfrc`                                                                                                |
-| default tool versions filename        | `.tool-versions` | `ASDF_DEFAULT_TOOL_VERSIONS_FILENAME` is empty, so use `.tool-versions`                                                                            |
+| default tool versions filename        | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME` is empty, so use `.tool-versions`                                                                            |
 | asdf dir                              | `$HOME/.asdf`    | `ASDF_DIR` is empty, so use parent dir of `bin/asdf`                                                                                               |
 | asdf data dir                         | `$HOME/.asdf`    | `ASDF_DATA_DIR` is empty so use `$HOME/.asdf` as `$HOME` exists.                                                                                   |
 | concurrency                           | `auto`           | `ASDF_CONCURRENCY` is empty, so rely on `concurrency` value from the [default configuration](https://github.com/asdf-vm/asdf/blob/master/defaults) |

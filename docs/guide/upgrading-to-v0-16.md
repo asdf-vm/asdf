@@ -113,7 +113,8 @@ lines you removed or commented out.
 your new asdf installation is working correctly!** After upgrade there are
 various files you can remove from the old Bash-script based versions of asdf.
 Most of the files in your data directory (typically `~/.asdf/`) can be removed.
-The only directories that must be **kept** are:
+Note that you don't have to do this. There is no harm in keeping the files from
+old versions of asdf around. The only directories that must be **kept** are:
 
 * `downloads/`
 * `installs/`
@@ -123,7 +124,7 @@ The only directories that must be **kept** are:
 The rest can be deleted. This can be done in one command with `find`:
 
 ```
-find . -maxdepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -rf {} \;
+find ${ASDF_DATA_DIR:-$HOME/.asdf}/ -maxdepth 1 -mindepth 1 -not -name downloads -not -name plugins -not -name installs -not -name shims -exec rm -r {} \;
 ```
 
 ## Breaking Changes
