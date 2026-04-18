@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.18.2](https://github.com/asdf-vm/asdf/compare/v0.18.1...v0.18.2) (2026-04-18)
+
+
+### Bug Fixes
+
+* convert hyphens to underscores when converting plugin names to generate valid environment variables ([2ffb5b8](https://github.com/asdf-vm/asdf/commit/2ffb5b871c9339a3edbaa4fe4ffecf62a90afc81))
+* nushell completions --ignore-errors deprecation ([#2157](https://github.com/asdf-vm/asdf/issues/2157)) ([a813610](https://github.com/asdf-vm/asdf/commit/a813610611852b963c19d90b03c66d05e9a2a7de))
+* return error from repo.RemoteUrl function ([71e9567](https://github.com/asdf-vm/asdf/commit/71e9567497b5b66be1dc3e0c143a2eb5d042ffa5))
+* set ASDF_INSTALL_* environment variables for reshim command ([3ec1610](https://github.com/asdf-vm/asdf/commit/3ec1610956426b4aca271edff9df6f63572108bc))
+* use os.PathListSeparator ([#2195](https://github.com/asdf-vm/asdf/issues/2195)) ([d5efb1e](https://github.com/asdf-vm/asdf/commit/d5efb1edd45028f2c113a98b7a11244c08254369))
+
 ## [0.18.1](https://github.com/asdf-vm/asdf/compare/v0.18.0...v0.18.1) (2026-03-04)
 
 
