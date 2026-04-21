@@ -319,6 +319,68 @@ func TestInstallOneVersion(t *testing.T) {
 		// no-download install script prints 'install'
 		assert.Equal(t, "install", stdout.String())
 	})
+
+	t.Run("staging directory does not exist after successful install", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		err := InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Nil(t, err)
+
+		// The .incomplete staging directory should not remain
+		stagingPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0.incomplete")
+		_, err = os.Stat(stagingPath)
+		assert.True(t, os.IsNotExist(err), "staging directory should be renamed away after successful install")
+
+		// But the final install path should exist
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+	})
+
+	t.Run("staging directory is cleaned up when install fails", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+
+		installScript := filepath.Join(conf.DataDir, "plugins", plugin.Name, "bin", "install")
+		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o777)
+		assert.Nil(t, err)
+		_, err = f.WriteString("\nexit 1")
+		assert.Nil(t, err)
+		err = f.Close()
+		assert.Nil(t, err)
+
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Error(t, err)
+
+		// Both the staging dir and the final dir should not exist
+		stagingPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0.incomplete")
+		_, err = os.Stat(stagingPath)
+		assert.True(t, os.IsNotExist(err), "staging directory should be removed after failed install")
+
+		installPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0")
+		_, err = os.Stat(installPath)
+		assert.True(t, os.IsNotExist(err), "final install directory should not exist after failed install")
+	})
+
+	t.Run("cleans up stale incomplete directory from previous failed install", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+
+		// Simulate a stale .incomplete directory left behind by a previous interrupted install
+		stagingPath := filepath.Join(conf.DataDir, "installs", plugin.Name, "1.0.0.incomplete")
+		err := os.MkdirAll(stagingPath, 0o777)
+		assert.Nil(t, err)
+		err = os.WriteFile(filepath.Join(stagingPath, "stale-file"), []byte("leftover"), 0o666)
+		assert.Nil(t, err)
+
+		// A new install should succeed, cleaning up the stale dir first
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Nil(t, err)
+
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+
+		// Staging dir should not exist
+		_, err = os.Stat(stagingPath)
+		assert.True(t, os.IsNotExist(err))
+	})
 }
 
 func TestLatest(t *testing.T) {
