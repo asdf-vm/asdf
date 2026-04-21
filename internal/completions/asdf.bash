@@ -63,6 +63,7 @@ _asdf() {
     if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list all "$prev" 2>/dev/null)
+      compopt -o nosort
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
@@ -82,6 +83,7 @@ _asdf() {
     if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list all "$prev" 2>/dev/null)
+      compopt -o nosort
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
@@ -94,6 +96,7 @@ _asdf() {
       local versions
       # The first two columns are either blank or contain the "current" marker.
       versions=$(asdf list "$prev" 2>/dev/null | colrm 1 2)
+      compopt -o nosort
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
@@ -107,6 +110,7 @@ _asdf() {
       # The first two columns are either blank or contain the "current" marker.
       versions=$(asdf list "$prev" 2>/dev/null | colrm 1 2)
       versions+=" system"
+      compopt -o nosort
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
@@ -118,6 +122,7 @@ _asdf() {
     if [[ " $plugins " == *" $prev "* ]]; then
       local versions
       versions=$(asdf list all "$prev" 2>/dev/null)
+      compopt -o nosort
       # shellcheck disable=SC2207
       COMPREPLY=($(compgen -W "$versions" -- "$cur"))
     else
