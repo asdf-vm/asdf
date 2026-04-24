@@ -85,6 +85,12 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 				return "", plugins.Plugin{}, "", false, nil
 			}
 
+			if !found {
+				if _, ok := SystemExecutableOnPath(conf, shimName); ok {
+					versions, found, err = resolve.ToolVersions{Versions: []string{"system"}, Directory: currentDirectory}, true, nil
+				}
+			}
+
 			if found {
 				tempVersions := toolversions.Intersect(versions.Versions, shimToolVersion.Versions)
 
