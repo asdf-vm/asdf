@@ -345,6 +345,7 @@ func Execute(version string) {
 	}
 
 	if err = app.Run(context.Background(), os.Args); err != nil {
+		logger.Print(err)
 		cli.OsExiter(1)
 	}
 }
