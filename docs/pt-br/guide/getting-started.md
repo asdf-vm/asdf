@@ -39,7 +39,7 @@ asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of comma
 <!-- x-release-please-start-version -->
 
 ```shell
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.0
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.18.1
 ```
 
 <!-- x-release-please-end -->
@@ -238,7 +238,7 @@ autoload -Uz compinit && compinit
 
 **Aviso**
 
-Se você está utilizando um framework para ZSH, o plugin do asdf pode precisar ser atualizado para utilização adequada do novo auto completar do ZSH através do `fpath`. O plugin do asdf para o oh-my-zsh ainda não foi atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+Se você está utilizando um framework para ZSH, o plugin do asdf pode precisar ser atualizado para utilização adequada do novo auto completar do ZSH através do `fpath`.
 :::
 
 ::: details ZSH & Homebrew
@@ -251,7 +251,7 @@ echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 **OU** utilize um framework para ZSH, como [asdf para oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) que irá adicionar o script e o auto completar.
 
-O auto completar pode ser configurado ou pelo framework para ZSH, ou de acordo com as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). Se você está usando um framework para ZSH, pode ser que seja necessário atualizar o plugin do asdf para que o novo auto completar funcione adequadamente através do `fpath`. O plugin do asdf para o Oh-My-ZSH ainda será atualizado, veja: [ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837).
+O auto completar pode ser configurado ou pelo framework para ZSH, ou de acordo com as [instruções da Homebrew](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh). Se você está usando um framework para ZSH, pode ser que seja necessário atualizar o plugin do asdf para que o novo auto completar funcione adequadamente através do `fpath`.
 :::
 
 ::: details ZSH & Pacman
