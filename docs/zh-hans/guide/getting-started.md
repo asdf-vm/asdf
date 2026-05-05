@@ -297,7 +297,7 @@ let asdf_data_dir = (
     $env.ASDF_DATA_DIR
   }
 )
-. "$asdf_data_dir/completions/nushell.nu"
+source "$asdf_data_dir/completions/nushell.nu"
 ```
 
 :::
