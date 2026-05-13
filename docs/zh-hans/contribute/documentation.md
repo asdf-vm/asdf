@@ -50,7 +50,7 @@ npm run dev
 在提交之前格式化代码：
 
 ```shell
-npm run format
+npm run fmt
 ```
 
 ## 拉取请求、发布以及约定式提交

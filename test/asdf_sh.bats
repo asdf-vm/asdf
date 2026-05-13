@@ -2,11 +2,6 @@
 
 load test_helpers
 
-# Helper function to handle sourcing of asdf.sh
-source_asdf_sh() {
-  . "$(dirname "$BATS_TEST_DIRNAME")/asdf.sh"
-}
-
 cleaned_path() {
   echo "$PATH" | tr ':' '\n' | grep -v "asdf" | tr '\n' ':'
 }
@@ -17,7 +12,6 @@ cleaned_path() {
     unset ASDF_DIR
     PATH=$(cleaned_path)
 
-    source_asdf_sh
     echo "$ASDF_DIR"
   )
 
@@ -32,7 +26,6 @@ cleaned_path() {
     PATH=$(cleaned_path)
     set -o nounset
 
-    source_asdf_sh
     echo "$ASDF_DIR"
   )
 
@@ -46,7 +39,6 @@ cleaned_path() {
     unset ASDF_DIR
     PATH=$(cleaned_path)
 
-    source_asdf_sh
     echo "$PATH"
   )
 
@@ -60,8 +52,6 @@ cleaned_path() {
     unset ASDF_DIR
     PATH=$(cleaned_path)
 
-    source_asdf_sh
-    source_asdf_sh
     echo "$PATH"
   )
 
@@ -75,7 +65,6 @@ cleaned_path() {
     unset ASDF_DIR
     PATH=$(cleaned_path)
 
-    source_asdf_sh
     type asdf
   )
 
@@ -88,7 +77,6 @@ cleaned_path() {
     ASDF_DIR=$PWD
     PATH=$(cleaned_path)
 
-    source_asdf_sh
     asdf info
   )
 

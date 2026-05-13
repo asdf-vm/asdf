@@ -19,7 +19,7 @@ func execit() {
 }
 
 func TestMain(m *testing.M) {
-	testscript.Main(m, map[string]func() {
+	testscript.Main(m, map[string]func(){
 		"execit": execit,
 	})
 }

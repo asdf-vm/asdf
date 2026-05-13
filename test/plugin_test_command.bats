@@ -32,3 +32,8 @@ teardown() {
   run asdf plugin test dummy "${BASE_DIR}/repo-dummy" --asdf-tool-version 1.0.0 --asdf-plugin-gitref master
   [ "$status" -eq 0 ]
 }
+
+@test "plugin_test_command resolves latest version when --asdf-tool-version latest is provided" {
+  run asdf plugin test dummy "${BASE_DIR}/repo-dummy" --asdf-tool-version latest
+  [ "$status" -eq 0 ]
+}
