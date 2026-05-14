@@ -45,7 +45,7 @@ jobs:
     if: ${{ needs.detect-changes.outputs.go == 'true' || needs.detect-changes.outputs.cli == 'true' }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
