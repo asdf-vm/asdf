@@ -251,4 +251,4 @@ module asdf {
 
 }
 
-use asdf *
+export use asdf *
