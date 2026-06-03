@@ -257,47 +257,30 @@ Shell completions not available for PowerShell
 Add the following to `~/.config/nushell/config.nu`:
 
 ```shell
-let shims_dir = (
-  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
-    $env.HOME | path join '.asdf'
-  } else {
-    $env.ASDF_DATA_DIR
-  } | path join 'shims'
-)
-$env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
+const asdf_data_dir = '~/.asdf' | path expand # or wherever you like
+const asdf_shims = [$asdf_data_dir shims] | path join
+$env.PATH = $env.PATH | where {$in != $asdf_shims} | prepend $asdf_shims
 ```
 
-###### Custom data directory (optional)
+###### Custom data directory (required when $asdf_data_dir != '~/.asdf')
 
-Add the following to `~/.config/nushell/config.nu` above the line you added above:
+Add the following to `~/.config/nushell/config.nu`:
 
 ```shell
-$env.ASDF_DATA_DIR = "/your/custom/data/dir"
+$env.ASDF_DATA_DIR = $asdf_data_dir
 ```
 
 ##### Set up shell completions (optional)
 
-```shell
-# If you've not customized the asdf data directory:
-$ mkdir $"($env.HOME)/.asdf/completions"
-$ asdf completion nushell | save $"($env.HOME)/.asdf/completions/nushell.nu"
-
-# If you have customized the data directory by setting ASDF_DATA_DIR:
-$ mkdir $"($env.ASDF_DATA_DIR)/completions"
-$ asdf completion nushell | save $"($env.ASDF_DATA_DIR)/completions/nushell.nu"
-```
-
-Then add the following to `~/.config/nushell/config.nu`:
+Add the following to `~/.config/nushell/config.nu`, after the required setup:
 
 ```shell
-let asdf_data_dir = (
-  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
-    $env.HOME | path join '.asdf'
-  } else {
-    $env.ASDF_DATA_DIR
-  }
-)
-source "$asdf_data_dir/completions/nushell.nu"
+const asdf_cmp = [$asdf_data_dir completions nushell.nu] | path join
+if not ($asdf_cmp | path exists) {
+  mkdir ($asdf_cmp | path dirname)
+  asdf completion nushell | save -f $asdf_cmp
+}
+source $asdf_cmp
 ```
 
 :::
