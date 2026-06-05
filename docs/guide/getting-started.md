@@ -264,7 +264,7 @@ $env.PATH = $env.PATH | where {$in != $asdf_shims} | prepend $asdf_shims
 
 ###### Custom data directory (required when $asdf_data_dir != '~/.asdf')
 
-Add the following to `~/.config/nushell/config.nu`:
+If you set $asdf_data_dir to something different than the default `~/.asdf` then you must add the following to `~/.config/nushell/config.nu`:
 
 ```shell
 $env.ASDF_DATA_DIR = $asdf_data_dir
