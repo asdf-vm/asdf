@@ -276,10 +276,8 @@ Add the following to `~/.config/nushell/config.nu`, after the required setup:
 
 ```shell
 const asdf_cmp = [$asdf_data_dir completions nushell.nu] | path join
-if not ($asdf_cmp | path exists) {
-  mkdir ($asdf_cmp | path dirname)
-  asdf completion nushell | save -f $asdf_cmp
-}
+mkdir ($asdf_cmp | path dirname)
+asdf completion nushell | save -f $asdf_cmp
 source $asdf_cmp
 ```
 
