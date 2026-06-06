@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.1](https://github.com/asdf-vm/asdf/compare/v0.19.0...v0.19.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* shallow clone plugin repositories for faster installs ([#2256](https://github.com/asdf-vm/asdf/issues/2256)) ([badc9db](https://github.com/asdf-vm/asdf/commit/badc9db33e7b662addb525b4f10476be1d75de60))
+* update nushell completion code so it works on latest version of nushell ([#2275](https://github.com/asdf-vm/asdf/issues/2275)) ([51ebfb4](https://github.com/asdf-vm/asdf/commit/51ebfb46a47820b2e914d7c5fb228fc9496f1cf5))
+
 ## [0.19.0](https://github.com/asdf-vm/asdf/compare/v0.18.1...v0.19.0) (2026-04-24)
 
 
