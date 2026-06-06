@@ -2,6 +2,7 @@ package execute
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -16,6 +17,22 @@ func TestNew(t *testing.T) {
 		assert.Equal(t, "echo", cmd.Command)
 		assert.Equal(t, "", cmd.Expression)
 	})
+}
+
+func TestRun_NoArgInjection(t *testing.T) {
+	tmp := t.TempDir()
+	injected := tmp + "/injected"
+
+	payload := fmt.Sprintf(`http://x"; : > %s #`, injected)
+
+	cmd := New("git", []string{"clone", payload, tmp + "/noop"})
+	cmd.Stdout = io.Discard
+	cmd.Stderr = io.Discard
+	_ = cmd.Run()
+
+	if _, err := os.Stat(injected); err == nil {
+		t.Fatalf("injection succeeded: %s was created", injected)
+	}
 }
 
 func TestNewExpression(t *testing.T) {
