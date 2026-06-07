@@ -77,6 +77,68 @@ func TestIsInstalled(t *testing.T) {
 		version := toolversions.Version{Type: "version", Value: "1.0.0"}
 		assert.True(t, IsInstalled(conf, plugin, version))
 	})
+	t.Run("returns false for incomplete installation", func(t *testing.T) {
+		// Create an .incomplete staging directory (simulating interrupted install)
+		version := toolversions.Version{Type: "version", Value: "2.0.0"}
+		stagingPath := InstallPath(conf, plugin, version) + ".incomplete"
+		err := os.MkdirAll(stagingPath, os.ModePerm)
+		assert.Nil(t, err)
+
+		assert.False(t, IsInstalled(conf, plugin, version))
+	})
+}
+
+func TestInstalled_FiltersIncomplete(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("does not list incomplete installations", func(t *testing.T) {
+		// Install a real version
+		mockInstall(t, conf, plugin, "1.0.0")
+
+		// Create an .incomplete staging directory
+		incompletePath := filepath.Join(conf.DataDir, "installs", testPluginName, "2.0.0.incomplete")
+		err := os.MkdirAll(incompletePath, os.ModePerm)
+		assert.Nil(t, err)
+
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+		assert.Equal(t, []string{"1.0.0"}, installedVersions)
+	})
+}
+
+func TestStagingPath(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("returns install path with .incomplete suffix", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "1.2.3"}
+		path := StagingPath(conf, plugin, version)
+		assert.Equal(t, filepath.Join(conf.DataDir, "installs", "lua", "1.2.3.incomplete"), path)
+	})
+}
+
+func TestCleanIncomplete(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("removes incomplete staging directory", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "1.2.3"}
+		stagingPath := StagingPath(conf, plugin, version)
+		err := os.MkdirAll(stagingPath, os.ModePerm)
+		assert.Nil(t, err)
+		err = os.WriteFile(filepath.Join(stagingPath, "somefile"), []byte("data"), 0o666)
+		assert.Nil(t, err)
+
+		err = CleanIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		_, err = os.Stat(stagingPath)
+		assert.True(t, os.IsNotExist(err))
+	})
+
+	t.Run("succeeds even when no incomplete directory exists", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "9.9.9"}
+		err := CleanIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+	})
 }
 
 // helper functions

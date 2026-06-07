@@ -32,11 +32,15 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionType, v
 
 	downloadDir := DownloadPath(conf, plugin, version)
 	installDir := InstallPath(conf, plugin, version)
+	stagingDir := installDir + ".incomplete"
+
+	// Clean up any previous incomplete install
+	os.RemoveAll(stagingDir)
 
 	env := map[string]string{
 		"ASDF_INSTALL_TYPE":    versionType,
 		"ASDF_INSTALL_VERSION": version,
-		"ASDF_INSTALL_PATH":    installDir,
+		"ASDF_INSTALL_PATH":    stagingDir,
 		"ASDF_DOWNLOAD_PATH":   downloadDir,
 		"ASDF_CONCURRENCY":     "1",
 	}
@@ -51,14 +55,21 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionType, v
 		return fmt.Errorf("failed to run download callback: %w", err)
 	}
 
-	err = os.MkdirAll(installDir, 0o777)
+	err = os.MkdirAll(stagingDir, 0o777)
 	if err != nil {
-		return fmt.Errorf("unable to create install dir: %w", err)
+		return fmt.Errorf("unable to create staging install dir: %w", err)
 	}
 
 	err = plugin.RunCallback("install", []string{}, env, &stdOut, &stdErr)
 	if err != nil {
+		os.RemoveAll(stagingDir)
 		return fmt.Errorf("failed to run install callback: %w", err)
+	}
+
+	err = os.Rename(stagingDir, installDir)
+	if err != nil {
+		os.RemoveAll(stagingDir)
+		return fmt.Errorf("failed to move staging install to final path: %w", err)
 	}
 
 	return nil
