@@ -23,9 +23,11 @@ jobs:
         # windows isn't working on windows right now, add it to this list once
         # I fix the code.
         goos: [linux, darwin]
-        goarch: ["386", amd64, arm64]
+        goarch: ["386", amd64, arm64, ppc64le]
         exclude:
           - goarch: "386"
+            goos: darwin
+          - goarch: ppc64le
             goos: darwin
           #- goarch: arm64
           #  goos: windows
