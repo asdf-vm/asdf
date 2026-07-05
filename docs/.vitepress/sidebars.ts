@@ -142,7 +142,7 @@ const ko_kr = [
     items: [
       { text: "설정", link: "/ko-kr/manage/configuration" },
       { text: "모든 명령어", link: "/ko-kr/manage/commands" },
-      { text: "Dependencies", link: "/ko-kr/manage/dependencies" },
+      { text: "의존성", link: "/ko-kr/manage/dependencies" },
       {
         text: "플러그인 Shortname 인덱스",
         link: "https://github.com/asdf-vm/asdf-plugins",

@@ -308,7 +308,7 @@ export ASDF_DATA_DIR="/your/custom/data/dir"
 
 `asdf` 코어 설치를 완료했습니다 :tada:
 
-`asdf`는 **플러그인**을 설치하고, **도구**을 설치하고, **버전**들을 관리해야 유용합니다. 그 방법을 배우려면 아래 가이드를 계속 진행하세요.
+`asdf`는 **플러그인**을 설치하고, **도구**를 설치하고, **버전**들을 관리해야 유용합니다. 그 방법을 배우려면 아래 가이드를 계속 진행하세요.
 
 ## 4. 플러그인 설치
 
@@ -334,7 +334,7 @@ asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
 ## 5. 버전 설치
 
-이제 Node.js 플러그인을 통해 Node.js 를 설치할 수 있습니다.
+이제 `Node.js` 플러그인을 통해 `Node.js`를 설치할 수 있습니다.
 
 `asdf list all nodejs`를 통해 어떤 버전들이 이용가능한지, 혹은 `asdf list all nodejs 14`를 통해 버전의 하위 집합을 확인할 수 있습니다.
 
@@ -350,7 +350,7 @@ asdf install nodejs latest
 
 ## 6. 버전 설정
 
-`asdf`는 현재 작업 디렉토리부터 `$HOME` 디렉토리까지 모든 `.tool-versions` 파일에서 도구의 버전 검색을 수행합니다. 검색은 `asdf`가 관리하는 도구을 실행할 때 그 시점에 맞춰(just-in-time) 실행됩니다.
+`asdf`는 현재 작업 디렉토리부터 `$HOME` 디렉토리까지 모든 `.tool-versions` 파일에서 도구의 버전 검색을 수행합니다. 검색은 `asdf`가 관리하는 도구를 실행할 때 그 시점에 맞춰(just-in-time) 실행됩니다.
 
 ::: warning 경고
 도구에 버전이 지정되지 않으면 도구는 실행되지 않고 **에러**가 발생합니다. `asdf current`는 현재 디렉토리에서의 도구 & 버전 정보를 표시하여, 어떤 도구가 버전이 지정되지 않았는지 확인할 수 있습니다.
@@ -378,7 +378,7 @@ asdf가 버전을 찾는 첫 번째 위치는 현재 작업 디렉토리(`$PWD/.
 asdf set nodejs 16.5.0
 ```
 
-`$PWD/.tool-versions`에는 아ㅐㄹ와 같이 기록됩니다:
+`$PWD/.tool-versions`에는 아래와 같이 기록됩니다:
 
 ```
 nodejs 16.5.0
