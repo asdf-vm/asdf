@@ -189,7 +189,7 @@ echo "\n"'set edit:completion:arg-completer[asdf] = $_asdf:arg-completer~' >> ~/
 
 ::: details Elvish & Homebrew
 
-Add `asdf.elv` to your `~/.config/elvish/rc.elv` with:
+`~/.config/elvish/rc.elv`에 `asdf.elv`를 다음과 같이 추가하세요:
 
 ```shell
 mkdir -p ~/.config/elvish/lib; ln -s (brew --prefix asdf)/libexec/asdf.elv ~/.config/elvish/lib/asdf.elv
