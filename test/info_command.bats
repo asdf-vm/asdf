@@ -31,3 +31,24 @@ teardown() {
   [[ $output == *$'ASDF INSTALLED PLUGINS:\n'* ]]
 
 }
+
+@test "info should show environment warnings for misconfigured ASDF_TOOL_VERSIONS_FILENAME" {
+  cd "$PROJECT_DIR"
+
+  export ASDF_TOOL_VERSIONS_FILENAME="/home/user/.config/asdf/tool-versions"
+  run asdf info
+
+  [ "$status" -eq 0 ]
+  [[ $output == *$'WARNINGS:\n'* ]]
+  [[ $output == *"ASDF_TOOL_VERSIONS_FILENAME should be a filename only"* ]]
+}
+
+@test "info should show deprecation warning for ASDF_DEFAULT_TOOL_VERSIONS_FILENAME" {
+  cd "$PROJECT_DIR"
+
+  export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=".tool-versions"
+  run asdf info
+
+  [ "$status" -eq 0 ]
+  # No warnings for this deprecated variable in simplified version
+}
