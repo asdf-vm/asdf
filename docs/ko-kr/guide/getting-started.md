@@ -34,7 +34,7 @@ asdf는 여러가지 방법으로 설치할 수 있습니다:
 
 <!-- x-release-please-start-version -->
 1. [Go 설치](https://go.dev/doc/install)
-2. `go install github.com/asdf-vm/asdf/cmd/asdf@v0.19.0` 실행
+2. `go install github.com/asdf-vm/asdf/cmd/asdf@v0.20.0` 실행
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf는 여러가지 방법으로 설치할 수 있습니다:
 <!-- x-release-please-start-version -->
 1. asdf 리포지토리 클론:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.19.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.20.0
   ```
 <!-- x-release-please-end -->
 2. `make` 실행
