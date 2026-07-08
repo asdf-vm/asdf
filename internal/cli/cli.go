@@ -54,14 +54,35 @@ func Execute(version string) {
 	log.SetFlags(0)
 
 	app := &cli.Command{
+		HideHelp:  true,
 		Name:      "asdf",
 		Version:   version,
 		Copyright: "(c) 2024 Trevor Brown",
 		Authors: []any{
-			mail.Address{Name: "Trevor Brown", Address: "someguy@example.com"},
+			mail.Address{Name: "Trevor Brown"},
 		},
 		Usage:     "The multiple runtime version manager",
 		UsageText: usageText,
+		Action: func(_ context.Context, cmd *cli.Command) error {
+			// If no args, show help
+			if cmd.Args().Len() == 0 {
+				return helpCommand(logger, version, "", "")
+			}
+
+			// Check if first arg matches any command - if so, let urfave/cli handle it
+			firstArg := cmd.Args().Get(0)
+			for _, c := range cmd.Commands {
+				if c.Name == firstArg {
+					return nil
+				}
+			}
+
+			// No matching command - manually invoke CommandNotFound behavior
+			logger.Printf("invalid command provided: %s\n\n", firstArg)
+			helpCommand(logger, version, "", "")
+			cli.OsExiter(1)
+			return cli.Exit("", 1)
+		},
 		Commands: []*cli.Command{
 			{
 				Name: "cmd",
