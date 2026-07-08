@@ -22,7 +22,15 @@ Executes the command shim for the current version.
 asdf env <command> [util]
 ```
 
-<!-- TODO: expand on this with example -->
+`<command>` is the name of a shimmed binary (for example `node`, `python`, `ruby`), not an arbitrary shell command. `asdf env` resolves the plugin and version that would handle that shim and runs `[util]` (defaults to `env`) inside the same environment, so you can inspect or invoke other tools with the plugin's `PATH` and `ASDF_*` variables already set.
+
+```shell
+# Print the environment that `node` runs in.
+$ asdf env node
+
+# Run `which` inside that same environment to confirm where `npm` resolves.
+$ asdf env node which npm
+```
 
 ## Info
 

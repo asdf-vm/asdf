@@ -248,7 +248,7 @@ echo -e "\n. $(brew --prefix asdf)/libexec/asdf.sh" >> ${ZDOTDIR:-~}/.zshrc
 
 **OR** use a ZSH Framework plugin like [asdf for oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf) which will source this script and setup completions.
 
-コマンド補完は、ZSHフレームワーク`asdf`によって設定されるか、[Homebrewの説明に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)必要があります。ZSHフレームワークを使用している場合、新しいZSHコマンド補完を使用するには、`fpath`経由で、関連する`asdf`プラグインの更新が必要となることがあります。Oh-My-ZSH asdfプラグインは、[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837)でご覧いただくと分かるとおり、まだ更新されていません。
+コマンド補完は、ZSHフレームワーク`asdf`によって設定されるか、[Homebrewの説明に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)必要があります。ZSHフレームワークを使用している場合、新しいZSHコマンド補完を使用するには、`fpath`経由で、関連する`asdf`プラグインの更新が必要となることがあります。
 :::
 
 ::: details ZSH & Pacman

@@ -50,7 +50,7 @@ npm run dev
 커밋 전 코드 형식 맞추기:
 
 ```shell
-npm run format
+npm run fmt
 ```
 
 ## 풀 리퀘스트, 릴리스 & 관습적 커밋

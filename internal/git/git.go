@@ -41,10 +41,10 @@ func NewRepo(directory string) Repo {
 
 // Clone installs a plugin via Git
 func (r Repo) Clone(pluginURL, ref string) error {
-	cmdStr := []string{"git", "clone", pluginURL, r.Directory}
+	cmdStr := []string{"git", "clone", "--depth", "1", pluginURL, r.Directory}
 
 	if ref != "" {
-		cmdStr = []string{"git", "clone", pluginURL, r.Directory, "--branch", ref}
+		cmdStr = []string{"git", "clone", "--depth", "1", pluginURL, r.Directory, "--branch", ref}
 	}
 
 	_, stderr, err := exec(cmdStr)
@@ -83,7 +83,7 @@ func (r Repo) RemoteURL() (string, error) {
 	}
 
 	stdout, _, err := exec([]string{"git", "-C", r.Directory, "remote", "get-url", remote})
-	return stdout, err
+	return strings.TrimSpace(stdout), err
 }
 
 // Update updates the plugin's Git repository to the ref if provided, or the

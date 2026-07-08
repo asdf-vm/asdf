@@ -133,7 +133,7 @@ teardown() {
   [ "$output" = "path:/some/dummy path" ]
 }
 
-@test "parse_asdf_version_file should output path version with tilda" {
+@test "parse_asdf_version_file should output path version with tilde" {
   echo "dummy path:~/some/dummy path" >"$PROJECT_DIR/.tool-versions"
   run parse_asdf_version_file "$PROJECT_DIR/.tool-versions" dummy
   [ "$status" -eq 0 ]
@@ -278,7 +278,7 @@ teardown() {
   [ "$output" = "path:/some/place with spaces" ]
 }
 
-@test "get_preset_version_for should return path version with tilda" {
+@test "get_preset_version_for should return path version with tilde" {
   cd "$PROJECT_DIR"
   echo "dummy path:~/some/place with spaces" >"$PROJECT_DIR/.tool-versions"
   run get_preset_version_for "dummy"

@@ -1,2 +1,0 @@
-# -*- sh -*-
-asdf_version
