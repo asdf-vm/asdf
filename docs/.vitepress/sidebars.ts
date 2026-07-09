@@ -121,6 +121,10 @@ const ko_kr = [
     items: [
       { text: "asdf이란?", link: "/ko-kr/guide/introduction" },
       { text: "시작하기", link: "/ko-kr/guide/getting-started" },
+      {
+        text: "시작하기 (0.16.0 이전)",
+        link: "/ko-kr/guide/getting-started-legacy",
+      },
     ],
   },
   {
@@ -138,6 +142,7 @@ const ko_kr = [
     items: [
       { text: "설정", link: "/ko-kr/manage/configuration" },
       { text: "모든 명령어", link: "/ko-kr/manage/commands" },
+      { text: "의존성", link: "/ko-kr/manage/dependencies" },
       {
         text: "플러그인 Shortname 인덱스",
         link: "https://github.com/asdf-vm/asdf-plugins",
@@ -457,8 +462,13 @@ const zh_hans = [
     text: "指导",
     collapsed: false,
     items: [
-      { text: "什么是asdf？", link: "/zh-hans/guide/introduction" },
+      { text: "什么是 asdf？", link: "/zh-hans/guide/introduction" },
       { text: "快速入门", link: "/zh-hans/guide/getting-started" },
+      {
+        text: "快速入门 (0.16.0 之前)",
+        link: "/zh-hans/guide/getting-started-legacy",
+      },
+      { text: "升级到 0.16.0", link: "/zh-hans/guide/upgrading-to-v0-16" },
     ],
   },
   {
@@ -476,6 +486,7 @@ const zh_hans = [
     items: [
       { text: "配置", link: "/zh-hans/manage/configuration" },
       { text: "所有命令", link: "/zh-hans/manage/commands" },
+      { text: "依赖", link: "/zh-hans/manage/dependencies" },
       {
         text: "插件缩写索引",
         link: "https://github.com/asdf-vm/asdf-plugins",

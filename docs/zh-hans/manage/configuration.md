@@ -6,11 +6,7 @@
 
 无论何时 `.tool-versions` 出现在目录中，它所声明的工具版本将会被用于该目录和任意子目录。
 
-::: warning 注意
-全局默认配置将设置在文件`$HOME/.tool-versions` 中
-:::
-
-一个 `.tool-versions` 文件示例如下所示：
+`.tool-versions` 文件示例如下所示：
 
 ```
 ruby 2.5.3
@@ -48,9 +44,13 @@ python 3.7.2 2.7.15 system
 
 可以直接编辑这个文件或者使用 `asdf local` （或者 `asdf global`）来更新工具版本。
 
-## `$HOME/.asdfrc`
+## `.asdfrc`
 
-给你的家目录添加一个 `.asdfrc` 文件然后 asdf 将会使用这个文件所指定的配置。下面的文件展示了所需的格式，其中包含用于演示的默认值：
+`.asdfrc` 文件定义了用户机器的特定配置。
+
+`$HOME/.asdfrc` 是 asdf 使用的默认位置。这可以通过 [环境变量 `ASDF_CONFIG_FILE`](#asdf-config-file) 进行配置。
+
+以下文件展示了所需的格式及其默认值：
 
 ```txt
 legacy_version_file = no
@@ -77,7 +77,7 @@ concurrency = auto
 | 选项                                                    | 描述                               |
 | :------------------------------------------------------ | :--------------------------------- |
 | `no` <Badge type="tip" text="默认" vertical="middle" /> | 在成功安装后删除源代码或二进制文件 |
-| `yes`                                                   | 在成功安装后保留源代码或二进制文件 |
+| `yes`                                                   | 在安装后保留源代码或二进制文件 |
 
 ### `plugin_repository_last_check_duration`
 
@@ -89,9 +89,143 @@ concurrency = auto
 | `0`                                                                                           | 每个触发器事件发生时同步                           |
 | `never`                                                                                       | 从不同步                                           |
 
+同步事件在执行以下命令时发生：
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` 不会触发插件同步。
+
+::: warning 注意
+
+将值设置为 `never` 并不会阻止插件仓库的初始同步，如需实现此行为，请查看 `disable_plugin_short_name_repository` 了解更多。
+
+:::
+
+### `disable_plugin_short_name_repository`
+
+禁用 asdf 插件的缩写仓库同步功能。如果缩写仓库被禁用，同步事件将提前退出。
+
+| 选项                                                        | 描述                                |
+| :--------------------------------------------------------- | :--------------------------------- |
+| `no` <Badge type="tip" text="default" vertical="middle" /> | 在同步事件发生时克隆或更新 asdf 插件仓库 |
+| `yes`                                                      | 禁用插件缩写仓库                      |
+
+同步事件在执行以下命令时发生：
+
+- `asdf plugin add <name>`
+- `asdf plugin list all`
+
+`asdf plugin add <name> <git-url>` 不会触发插件同步。
+
+::: warning 注意
+
+禁用插件缩写仓库不会删除该仓库，如果它已经同步过。使用 `rm --recursive --trash $ASDF_DATA_DIR/repository` 才可以删除插件仓库。
+
+禁用插件缩写仓库不会删除从该源之前安装的插件。可使用 `asdf plugin remove <name>` 命令删除插件。删除插件将移除该管理工具所有已安装版本。
+
+:::
+
+### `concurrency`
+
+编译时使用的默认核心数。
+
+| 选项 | 描述                                                                                        |
+| :------ | :--------------------------------------------------------------------------------------------------- |
+| integer | 编译源代码时使用的核心数 code                                                |
+| `auto`  | 使用 `nproc` 命令计算核心数量，然后使用 `sysctl hw.ncpu` 命令，接着查看 `/proc/cpuinfo` 文件，如果无法获取则默认使用 `1`。 |
+
+注意：如果设置了环境变量 `ASDF_CONCURRENCY`，则该变量具有优先级。
+
+### 插件钩子
+
+可以执行自定义代码：
+
+- 在插件安装、重新加载、更新或卸载之前或之后
+- 在执行插件命令之前或之后
+
+比如，如果安装了一个名为 `foo` 的插件并提供了 `bar` 可执行文件，则可以使用以下钩子在执行插件命令之前先执行自定义代码：
+
+```text
+pre_foo_bar = echo Executing with args: $@
+```
+
+支持以下模式：
+
+- `pre_<plugin_name>_<command>`
+- `pre_asdf_download_<plugin_name>`
+- `{pre,post}_asdf_{install,reshim,uninstall}_<plugin_name>`
+  - `$1`: 完整版本
+- `{pre,post}_asdf_plugin_{add,update,remove,reshim}`
+  - `$1`: 插件名称
+- `{pre,post}_asdf_plugin_{add,update,remove}_<plugin_name>`
+
+请查看 [创建插件](../plugins/create.md) 了解在哪些命令执行之前或之后会运行哪些命令钩子。
+
 ## 环境变量
 
-- `ASDF_CONFIG_FILE` - 如上所述默认为 `~/.asdfrc` 文件。可以被设置在任何位置。
-- `ASDF_TOOL_VERSIONS_FILENAME` - 存储工具名称和版本的文件名。默认为 `.tool-versions`。可以是任何有效的文件名。通常，除非你知道你希望 asdf 忽略 `.tool-versions` 文件，否则不应该覆盖默认值。
-- `ASDF_DIR` - 默认为 `~/.asdf` - `asdf` 脚本的位置。如果你把 `asdf` 安装到了其他目录，请设置该变量到那个目录。比如，如果通过 AUR 进行安装，则应设置该变量为 `/opt/asdf-vm`。
-- `ASDF_DATA_DIR` - 默认为 `~/.asdf` - `asdf` 安装插件、垫片和安装器的位置。可以被设置在上一节提到的生效 `asdf.sh` 或者 `asdf.fish` 之间的任何位置。对于 Elvish，这可以设置在 `use asdf` 上面。
+设置环境变量会因系统和 Shell 的不同而有所差异。默认位置取决于安装位置和方法（Git 克隆、Homebrew、AUR）。
+
+环境变量通常应在加载 `asdf.sh`/`asdf.fish` 等文件之前设置。对于 Elvish，应在 `use asdf` 之前设置。
+
+以下内容描述了在 Bash Shell 中的使用方法。
+
+### `ASDF_CONFIG_FILE`
+
+`.asdfrc` 配置文件的路径。可以设置为任何位置。必须是绝对路径。
+
+- 如果未设置：将使用 `$HOME/.asdfrc`。
+- 使用方法：`export ASDF_CONFIG_FILE=/home/john_doe/.config/asdf/.asdfrc`
+
+### `ASDF_TOOL_VERSIONS_FILENAME`
+
+用于存储工具名称和版本的文件名。可以是任何合法的文件名。通常不建议设置这个值，除非你希望忽略 `.tool-versions` 文件。
+
+- 如果未设置：将使用 `.tool-versions`。
+- 使用方法：`export ASDF_TOOL_VERSIONS_FILENAME=tool_versions`
+
+### `ASDF_DIR`
+
+`asdf` 核心脚本的位置。可以设置为任何位置，必须是绝对路径。
+
+- 如果未设置，将使用 `bin/asdf` 可执行文件的父目录。
+- 使用方法：`export ASDF_DIR=/home/john_doe/.config/asdf`
+
+### `ASDF_DATA_DIR`
+
+`asdf` 安装插件、垫片和工具版本的位置，可以设置为任何位置，必须是绝对路径。
+
+- 如果未设置：将使用 `$HOME/.asdf` 如果存在，或者 `ASDF_DIR` 的值。
+- 使用方法：`export ASDF_DATA_DIR=/home/john_doe/.asdf`
+
+### `ASDF_CONCURRENCY`
+
+编译源代码时使用的 CPU 核心数。如果设置了这个值，它将优先于 asdf 配置中的 `concurrency` 值。
+
+- 如果未设置：将使用 asdf 配置中的 `concurrency` 值。
+- 使用方法：`export ASDF_CONCURRENCY=32`
+
+## 全配置样例
+
+按照以下简单的 asdf 配置：
+
+- 使用 Bash Shell
+- 安装位置为 `$HOME/.asdf`
+- 通过 Git 安装
+- **未**设置任何环境变量
+- **没有**自定义的 `.asdfrc` 文件
+
+将会产生以下结果：
+
+| 配置                                   | 值               | 如何计算                                                                                                               |
+| :------------------------------------ | :--------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| 配置文件位置                            | `$HOME/.asdfrc`  | `ASDF_CONFIG_FILE` 是空的，所以请使用 `$HOME/.asdfrc`                                                                    |
+| 默认工具版本声明文件名                    | `.tool-versions` | `ASDF_TOOL_VERSIONS_FILENAME` 是空的，所以请使用 `.tool-versions`                                                       |
+| asdf 目录                              | `$HOME/.asdf`    | `ASDF_DIR` 是空的，所以请使用 `bin/asdf` 的父目录                                                                         |
+| asdf 数据目录                          | `$HOME/.asdf`     | `ASDF_DATA_DIR` 是空的，所以请使用 `$HOME/.asdf` 因为 `$HOME` 存在                                                        |
+| concurrency                           | `auto`           | `ASDF_CONCURRENCY` 是空的，所以依赖于 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults) 的 `concurrency` 值 |
+| legacy_version_file                   | `no`             | 没有自定义 `.asdfrc`，所以请使用 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults)                          |
+| use_release_candidates                | `no`             | 没有自定义 `.asdfrc`，所以请使用 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults)                          |
+| always_keep_download                  | `no`             | 没有自定义 `.asdfrc`，所以请使用 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults)                          |
+| plugin_repository_last_check_duration | `60`             | 没有自定义 `.asdfrc`，所以请使用 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults)                          |
+| disable_plugin_short_name_repository  | `no`             | 没有自定义 `.asdfrc`，所以请使用 [默认配置](https://github.com/asdf-vm/asdf/blob/master/defaults)                          |

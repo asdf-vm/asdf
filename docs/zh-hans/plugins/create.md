@@ -1,174 +1,723 @@
 # 创建插件
 
-## 插件里有什么
+插件是一个包含一些可执行脚本的 Git 存储库，用于支持对某种语言/工具进行版本控制。这些脚本由 asdf 通过命令运行，以支持诸如 `asdf list-all <name>`、`asdf install <name> <version>` 等功能。
 
-插件是一个包含几个可执行脚本的 git 存储库，用于支持对某种语言或工具进行版本控制。这些脚本在执行 `list-all`、`install` 或者 `uninstall` 命令时被执行。你可以设定或取消设定环境变量，并执行设置工具环境所需的任何操作。
+## 快速入门
+
+创建自己的插件有两种方式：
+
+1. 使用 [asdf-vm/asdf-plugin-template](https://github.com/asdf-vm/asdf-plugin-template) 仓库来 [生成](https://github.com/asdf-vm/asdf-plugin-template/generate) 一个插件仓库（命名为 `asdf-<tool_name>`），其中已实现默认脚本。生成后，克隆该仓库并运行 `setup.bash` 脚本以交互式更新模版。
+2. 创建名为 `asdf-<tool_name>` 的仓库，并实现文档中列出的所需脚本。
+
+### 插件脚本的黄金规则
+
+- 脚本**不应**调用其他 `asdf` 命令
+- 保持 Shell 工具/命令的依赖列表简短
+- 避免使用非便携式工具或命令标志。例如，`sort -V`。请参考 asdf 核心 [禁止命令列表](https://github.com/asdf-vm/asdf/blob/master/test/banned_commands.bats)。
+
+## 脚本概述
+
+可从 asdf 调用的所有脚本的完整列表。
+
+| 脚本                                                                                                   | 描述                                   |
+| :---------------------------------------------------------------------------------------------------- |:---------------------------------------|
+| [bin/list-all](#bin-list-all) <Badge type="tip" text="必要" vertical="middle" />                       | 列出所有可安装的版本                      |
+| [bin/download](#bin-download) <Badge type="warning" text="推荐" vertical="middle" />                   | 下载指定版本的源代码或二进制文件            |
+| [bin/install](#bin-install) <Badge type="tip" text="必要" vertical="middle" />                         | 安装指定版本                             |
+| [bin/latest-stable](#bin-latest-stable) <Badge type="warning" text="推荐" vertical="middle" />         | 列出指定工具的最新稳定版本                 |
+| [bin/help.overview](#bin-help.overview)                                                               | 输出插件及工具的通用描述                   |
+| [bin/help.deps](#bin-help.deps)                                                                       | 输出按操作系统分类的依赖项列表              |
+| [bin/help.config](#bin-help.config)                                                                   | 输出插件或工具的配置信息                   |
+| [bin/help.links](#bin-help.links)                                                                     | 输出插件或工具的链接列表                   |
+| [bin/list-bin-paths](#bin-list-bin-paths)                                                             | 列出包含二进制文件的目录的相对路径以创建垫片  |
+| [bin/exec-env](#bin-exec-env)                                                                         | 为运行二进制文件准备环境                   |
+| [bin/exec-path](#bin-exec-path)                                                                       | 输出工具某个版本的可执行路径                |
+| [bin/uninstall](#bin-uninstall)                                                                       | 卸载工具的特定版本Uninstall               |
+| [bin/list-legacy-filenames](#bin-list-legacy-filenames)                                               | 输出旧版本文件的文件名：`.ruby-version`    |
+| [bin/parse-legacy-file](#bin-parse-legacy-file)                                                       | 用于解析旧版本文件的自定义解析器            |
+| [bin/post-plugin-add](#bin-post-plugin-add)                                                           | 在插件添加后执行的钩子                    |
+| [bin/post-plugin-update](#bin-post-plugin-update)                                                     | 插件更新后执行的钩子                      |
+| [bin/pre-plugin-remove](#bin-pre-plugin-remove)                                                       | 插件删除前执行的钩子                      |
+
+要查看哪些命令调用了哪些脚本，请参考每个脚本的详细文档。
+
+## 环境变量概述
+
+所有脚本中使用的环境变量完整列表。
+
+| 环境变量                  | 描述                                            |
+| :----------------------- |:-----------------------------------------------|
+| `ASDF_INSTALL_TYPE`      | `version` 或 `ref`                             |
+| `ASDF_INSTALL_VERSION`   | 完整版本号或 Git 引用，取决于 `ASDF_INSTALL_TYPE`  |
+| `ASDF_INSTALL_PATH`      | 工具 _应_ 安装或 _已_ 安装的路径                   |
+| `ASDF_CONCURRENCY`       | 编译源代码时使用的核心数。用于设置 `make -j`        |
+| `ASDF_DOWNLOAD_PATH`     | `bin/download` 下载源代码或二进制文件的路径        |
+| `ASDF_PLUGIN_PATH`       | 插件的安装路径                                   |
+| `ASDF_PLUGIN_SOURCE_URL` | 插件的来源 URL                                  |
+| `ASDF_PLUGIN_PREV_REF`   | 插件仓库的上一版本 `git-ref`                     |
+| `ASDF_PLUGIN_POST_REF`   | 插件仓库的更新版本 `git-ref`                     |
+| `ASDF_CMD_FILE`          | 解析为被引用的文件的完整路径                       |
+
+::: tip 注意
+
+**并非所有环境变量在所有脚本中都可以用。** 请查看下方每个脚本的文档，以了解其可用的环境变量。
+
+:::
 
 ## 必要的脚本
 
-- `bin/list-all` - 列举所有可安装的版本
-- `bin/download` - 下载指定版本的源代码或二进制文件
-- `bin/install` - 安装指定版本
+### `bin/list-all` <Badge type="tip" text="必要" vertical="middle" />
 
-## 环境变量
+**描述**
 
-所有脚本除了 `bin/list-all` 之外对以下环境变量有权限进行操作：
+列出所有可安装的版本。
 
-- `ASDF_INSTALL_TYPE` - `version` 或者 `ref`
-- `ASDF_INSTALL_VERSION` - 如果 `ASDF_INSTALL_TYPE` 是 `version`，那么这将是版本号。否则它将传递为 git 的 ref。可能指向存储库的一个标签/提交/分支。
-- `ASDF_INSTALL_PATH` - _已经_ 安装到的目录（或 `bin/install` 脚本执行情况下 _应该_ 安装到的目录）
+**输出格式**
 
-这些附加的环境变量将可用于 `bin/install` 脚本：
+必须打印一个以**空格分隔**的版本列表字符串。例如：
 
-- `ASDF_CONCURRENCY` - 编译源代码时使用的内核数。对于配置 `make -j` 非常有用。
-- `ASDF_DOWNLOAD_PATH` - `bin/download` 脚本下载源代码或二进制文件的路径。
-
-这些附加的环境变量将可用于 `bin/download` 脚本：
-
-- `ASDF_DOWNLOAD_PATH` - 源代码或二进制文件应该下载到的路径。
-
-#### bin/list-all
-
-必须打印一个带有空格分隔的版本列表的字符串，示例输出如下所示：
-
-```shell
+```txt
 1.0.1 1.0.2 1.3.0 1.4
 ```
 
-请注意，最新版本应列在最后，以便它看起来更接近用户的提示。这很有帮助，因为 `list-all` 命令会在自己的行打印每个版本。如果有很多版本，那么早期版本可能会不在屏幕上。
+最新版本应放在最后。
 
-如果从网站上的发布页面拉取版本，建议尽可能不对版本进行排序。通常，版本已经按照正确的顺序排列，或者以相反的顺序排列，在这种情况下，像 `tac` 这样的东西就足够了。如果必须手动对版本进行排序，则不能依赖 `sort -V`，因为 OSX 操作系统不支持。一种可以替代的排序功能是 [更好的选择](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6)。
+asdf core 会将每个版本单独打印在单独的行上，可能导致部分版本超出屏幕范围。
 
-#### bin/download
+**排序**
 
-此脚本必须下载源代码或者二进制文件到 `ASDF_DOWNLOAD_PATH` 环境变量包含的路径。如果下载的源代码或者二进制文件是压缩的，则只有未压缩的源代码或二进制文件会放置在 `ASDF_DOWNLOAD_PATH` 目录中。
+如果版本是从网站的发布页面获取的，建议保持提供的顺序，因为它们通常已经按正确顺序排列。如果版本顺序相反，通过 `tac` 管道处理应
+能解决问题。
 
-下载成功后脚本必须以 `0` 状态退出。如果下载失败，脚本必须以任何非零退出状态退出。
+如果排序不可避免，`sort -V` 不可移植，因此我们建议：
 
-如果可能，脚本应该仅将文件放在 `ASDF_DOWNLOAD_PATH` 中。如果下载失败，则不应将任何文件放在目录中。
+- [使用 Git 的排序功能](https://github.com/asdf-vm/asdf-plugin-template/blob/main/template/lib/utils.bash)
+  （需要 Git >= `v2.18.0`）
+- [编写自定义排序方法](https://github.com/vic/asdf-idris/blob/master/bin/list-all#L6)
+  （需要 `sed`、`sort` 和 `awk`）
 
-如果此脚本不存在，asdf 将假设存在 `bin/install` 脚本，将下载并安装该版本。asdf 仅在没有此脚本的情况下才能支持传统插件。所有插件都必须包含此脚本，最终将删除对传统插件的支持。
+**脚本可用的环境变量**
 
-#### bin/install
+此脚本未提供任何环境变量。
 
-本脚本应在 `ASDF_INSTALL_PATH` 中安装版本。默认情况下，asdf 将为 `$ASDF_INSTALL_PATH/bin` （可以通过可选的 [bin/list-bin-paths](#binlist-bin-paths) 脚本自定义）目录中的任意文件创建垫片。
+**调用此脚本的命令**
 
-安装成功时，安装脚本应以 `0` 状态退出。如果安装失败，脚本应以任何非零退出状态退出。
+- `asdf list all <name> [version]`
+- `asdf list all nodejs`：列出此脚本返回的所有版本，每个版本占一行。
+- `asdf list all nodejs 18`：列出此脚本返回的所有版本，每个版本占一行，并应用过滤器匹配以 `18` 开头的任何版本。
 
-如果可能，脚本应仅在安装脚本认为工具的生成和安装成功后，才将文件放在 `ASDF_INSTALL_PATH` 目录中。asdf 检查 `ASDF_INSTALL_PATH` 目录的 [扩展](https://github.com/asdf-vm/asdf/blob/242d132afbf710fe3c7ec23c68cec7bdd2c78ab5/lib/utils.sh#L44) 以确认是否安装了该工具版本。如果在安装过程开始时填充了 `ASDF_INSTALL_PATH` 目录，则在安装过程中在其他终端中运行的其他 asdf 命令可能会认为该工具版本已经安装，即使它还未完全安装。
+**asdf 核心调用签名**
 
-如果你希望你的插件使用 asdf 0.7._ 及更早版本和 0.8._ 及更高版本，请检查是否存在 `ASDF_DOWNLOAD_PATH` 环境变量。如果未设置，请在 `bin/install` 脚本回调时下载源代码。如果设置，则假设 `bin/download` 脚本已经下载源代码。
+未提供参数。
+
+```bash
+“${plugin_path}/bin/list-all”
+```
+
+---
+
+### `bin/download` <Badge type="tip" text="必要" vertical="middle" />
+
+**描述**
+
+将特定版本的工具的源代码或二进制文件下载到指定位置。
+
+**实现细节**
+
+- 脚本必须将源代码或二进制文件下载到由 `ASDF_DOWNLOAD_PATH` 指定的目录中。
+- 仅应将解压后的源代码或二进制文件放置在 `ASDF_DOWNLOAD_PATH` 目录中。
+- 失败时，不应将任何文件放置在 `ASDF_DOWNLOAD_PATH` 中。
+- 成功时应以 `0` 退出。
+- 失败时应以非零状态退出。
+
+**旧插件**
+
+尽管此脚本被标记为所有插件的 _必需_，但对于在引入此脚本之前存在的“旧”插件，它是 _可选_ 的。
+
+如果此脚本缺失，asdf 将假设 `bin/install` 脚本存在，并会下载**并**安装该版本。
+
+所有插件必须包含此脚本，因为对旧插件的支持最终将被移除。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 如果 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 如果 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+- `ASDF_DOWNLOAD_PATH`：源代码或二进制文件的下载路径。
+
+**调用此脚本的命令**
+
+- `asdf install <tool> [version]]`
+- `asdf install <tool> latest[:version]`
+- `asdf install nodejs 18.0.0`：下载 Node.js 版本 `18.0.0` 的源代码或二进制文件，
+  并将它们放置在 `ASDF_DOWNLOAD_PATH` 目录中。然后运行 `bin/install` 脚本。
+
+**asdf 核心的调用签名**
+
+未提供参数。
+
+```bash
+"${plugin_path}"/bin/download
+```
+
+---
+
+### `bin/install` <Badge type="tip" text="必要" vertical="middle" />
+
+**描述**
+
+将特定版本的工具安装到指定位置。
+
+**实现细节**
+
+- 脚本应将指定版本安装到路径 `ASDF_INSTALL_PATH` 中。
+- 默认情况下，`$ASDF_INSTALL_PATH/bin` 目录下的文件将自动垫片（shims）。此行为可通过可选的
+[bin/list-bin-paths](#bin-list-bin-paths) 脚本进行自定义。
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
+- 为避免 TOCTOU（Time-of-Check-to-Time-of-Use）问题，确保脚本仅在工具的构建和安装被视为成功后，才将文件放置在 `ASDF_INSTALL_PATH` 中。
+
+**旧插件**
+
+如果 `bin/download` 脚本不存在，该脚本应下载并安装指定版本。
+
+为了与 `0.7._` 之前和 `0.8._` 之后的 asdf 核心版本兼容，检查 `ASDF_DOWNLOAD_PATH` 环境变量的存在。如果设置了该变量，则假设 `bin/download` 脚本已下载该版本，否则在 `bin/install` 脚本中下载源代码。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+- 如果 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 如果 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+- `ASDF_CONCURRENCY`：编译源代码时使用的核心数。可用于设置如 `make -j` 之类的标志。
+- `ASDF_DOWNLOAD_PATH`：源代码或二进制文件的下载路径。
+
+**调用此脚本的命令**
+
+- `asdf install`
+- `asdf install <tool>`
+- `asdf install <tool> [version]]`
+- `asdf install <tool> latest[:version]`
+- `asdf install nodejs 18.0.0`：在
+`ASDF_INSTALL_PATH` 目录中安装 Node.js 版本 `18.0.0`。
+
+**asdf 核心的调用签名**
+
+未提供参数。
+
+```bash
+"${plugin_path}"/bin/install
+```
 
 ## 可选脚本
 
-#### bin/help 脚本
+### `bin/latest-stable` <Badge type="warning" text="推荐" vertical="middle" />
 
-这不是一个回调脚本，而是一组回调脚本，每个脚本将打印不同的文档到 STDOUT。下面列出了可能的回调脚本。请注意，`bin/help.overview` 是一种特殊情况，因为必须存在才能为脚本显示任何帮助输出。
+**描述**
 
-- `bin/help.overview` - 此脚本应该输出有关插件和所管理工具的一般描述。不应该打印任何标题，因为 asdf 将打印标题。输出可以是自由格式的文本，但理想情况下只有一个短段落。如果你希望 asdf 为你的插件提供帮助信息，则必须存在此脚本。所有其他的帮助回调脚本都是可选的。
-- `bin/help.deps` - 此脚本应该输出为操作系统量身定制的依赖项列表。每行一个依赖项。
-- `bin/help.config` - 此脚本应该打印对插件和工具可能有用的任何必需或可选配置。安装或编译该工具所需的任何环境变量或其他标志（尽可能针对用户的操作系统）。输出可以是自由格式的文本。
-- `bin/help.links` - 这应该是与插件和工具相关的链接列表（同样，尽可能针对当前操作系统量身定制）。每行一个链接。行的格式可以是 `<title>: <link>` 或只是 `<link>`。
+确定工具的最新稳定版本。如果不存在，asdf 核心将 `tail` `bin/list-all` 的输出，这可能是不希望看到的。
 
-这些脚本的每一个都应根据当前操作系统调整其输出。例如，在 Ubuntu 上，依赖脚本可以将依赖项输出为必须安装的 apt-get 包。设置变量时，脚本还应该根据设置变量 `ASDF_INSTALL_VERSION` 和 `ASDF_INSTALL_TYPE` 的值。它们是可选的，并不总是被设置。
+**实现细节**
 
-帮助回调脚本**不得**输出核心 asdf-vm 文档中已涵盖的任何信息。不得出现一般的 asdf 使用信息。
+- 脚本应将工具的最新稳定版本打印到标准输出。
+- 不稳定版本或发布候选版本应被省略。
+- 脚本的第一个参数提供了一个过滤查询。这应用于按版本号或工具提供商过滤输出。
+  - 例如，来自 [ruby 插件](https://github.com/asdf-vm/asdf-ruby) 的 `asdf list all ruby` 输出列出了来自多个提供商的 Ruby 版本：`jruby`、`rbx` 和 `truffleruby` 等。用户提供的过滤器可由插件用于过滤语义化版本和/或提供商。
+    ```
+    > asdf latest ruby
+    3.2.2
+    > asdf latest ruby 2
+    2.7.8
+    > asdf latest ruby truffleruby
+    truffleruby+graalvm-22.3.1
+    ```
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
 
-#### bin/latest-stable
+**脚本可用的环境变量**
 
-如果实现了此回调，asdf 将使用它来确定工具的最新稳定版本，而不是尝试自行判断。`asdf latest` 通过查看由 `list-all` 回调打印的最新版本，在从输出中排除了几种类型的版本（如发布候选版本）之后推断出最新版本。当你的插件的 `list-all` 回调打印同一工具的不同变体并且最新版本不是你希望默认使用的变体的最新稳定版本时，这种默认行为是不可取的。例如，对于 Ruby，最新的稳定版本应该是 Ruby（MRI）的常规实现，但最后 `list-all` 回调打印的是 truffleruby 版本。
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
 
-此回调使用单个 “过滤器” 字符串调用，因为它是唯一的参数。这应该用于过滤所有最新稳定版本。例如对于 Ruby，用户可以选择传入 `jruby` 以选择 `jruby` 的最新稳定版本。
+**调用此脚本的命令**
 
-#### bin/list-bin-paths
+- `asdf set <tool> latest`：将工具的版本设置为该工具的最新稳定版本。
+- `asdf install <tool> latest`：安装工具的最新版本。
+- `asdf latest <tool> [<version>]`：根据可选过滤器输出工具的最新版本。
+- `asdf latest --all`：输出由 asdf 管理的所有工具的最新版本及其安装状态。
 
-列举指定工具版本的可执行程序。必须打印一个带有空格分隔的包含可执行文件的目录路径列表的字符串。路径必须相对于传递的安装路径。示例输出如下所示：
+**asdf 核心的调用签名**
 
-```shell
+该脚本应接受一个参数，即过滤查询。
+
+```bash
+"${plugin_path}"/bin/latest-stable "$query"
+```
+
+---
+
+### `bin/help.overview`
+
+**描述**
+
+输出关于插件和所管理工具的通用描述。
+
+**实现细节**
+
+- 该脚本是显示插件帮助输出所必需的。
+- 不得打印任何标题，因为 asdf 核心会打印标题。
+- 输出可以是自由格式文本，但理想情况下应仅包含一个简短段落。
+- 不得输出已在 asdf-vm 核心文档中涵盖的任何信息。
+- 应根据所安装工具的操作系统和版本进行定制（可选设置环境变量 `ASDF_INSTALL_VERSION` 和 `ASDF_INSTALL_TYPE`）。
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+- `asdf help <name> [<version>]`：输出插件和工具的文档
+
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}"/bin/help.overview
+```
+
+---
+
+### `bin/help.deps`
+
+**描述**
+
+输出针对操作系统定制的依赖项列表。每个依赖项占一行。
+
+```bash
+git
+curl
+sed
+```
+
+**实现细节**
+
+- 该脚本需要 `bin/help.overview` 才能被视为有效输出。
+- 应根据操作系统和要安装的工具版本进行定制（可选设置环境变量 `ASDF_INSTALL_VERSION` 和 `ASDF_INSTALL_TYPE`）。
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+- `asdf help <name> [<version>]`：输出插件和工具的文档
+
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}"/bin/help.deps
+```
+
+---
+
+### `bin/help.config`
+
+**描述**
+
+输出插件和工具所需的任何必要或可选配置。例如，描述安装或编译工具所需的任何环境变量或其他标志。
+
+**实现细节**
+
+- 该脚本需要 `bin/help.overview` 才能被视为有效输出。
+- 输出可以是自由格式文本。
+- 应根据所安装工具的操作系统和版本进行定制（可选设置环境变量 `ASDF_INSTALL_VERSION` 和 `ASDF_INSTALL_TYPE`）。
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+- `asdf help <name> [<version>]`：输出插件和工具的文档
+
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}"/bin/help.config
+```
+
+---
+
+### `bin/help.links`
+
+**描述**
+
+输出与插件和工具相关的链接列表。每个链接占一行。
+
+```bash
+Git Repository:	https://github.com/vlang/v
+Documentation:	https://vlang.io
+```
+
+**实现细节**
+
+- 该脚本需要 `bin/help.overview` 才能被视为有效输出。
+- 每行一个链接。
+- 格式必须为以下之一：
+  - `<标题>: <链接>`
+  - 或仅 `<链接>`
+- 应根据所安装工具的操作系统和版本进行调整（可选设置环境变量 `ASDF_INSTALL_VERSION` 和 `ASDF_INSTALL_TYPE`）。
+- 成功应以 `0` 退出。
+- 失败应以非零状态退出。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+- `asdf help <name> [<version>]`：输出插件和工具的文档
+
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}"/bin/help.links
+```
+
+---
+
+### `bin/list-bin-paths`
+
+**描述**
+
+列出包含指定版本工具可执行文件的目录。
+
+**实现细节**
+
+- 如果该脚本不存在，asdf 将搜索 `“${ASDF_INSTALL_PATH}”/bin` 目录中的二进制文件并为其创建垫片。
+- 输出包含可执行文件的路径列表，路径以空格分隔。
+- 路径必须相对于 `ASDF_INSTALL_PATH`。示例输出如下：
+
+```bash
 bin tools veggies
 ```
 
-这将指示 asdf 为 `<install-path>/bin`、`<install-path>/tools` 和 `<install-path>/veggies` 中的文件创建垫片。
+这将指示 asdf 为以下目录中的文件创建垫片：
+- `“${ASDF_INSTALL_PATH}”/bin`
+- `“${ASDF_INSTALL_PATH}”/tools`
+- `“${ASDF_INSTALL_PATH}”/veggies`
 
-如果未指定此脚本，asdf 将在安装中查找 `bin` 目录并为这些脚本创建垫片。
+**脚本可用的环境变量**
 
-#### bin/exec-env
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+- 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 如果 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
 
-设置环境变量以运行包中的二进制文件。
+**调用此脚本的命令**
 
-#### bin/exec-path
+- `asdf install <tool> [version]`：初始创建二进制文件的垫片。
+- `asdf reshim <tool> <version>`：重新创建二进制文件的垫片。
 
-获取工具的指定版本的可执行程序路径。必须打印具有相对可执行程序路径的字符串。这允许插件有条件地覆盖垫片指定的可执行程序路径，否则返回垫片指定的默认路径。
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}/bin/list-bin-paths"
+```
+
+---
+
+### `bin/exec-env`
+
+**描述**
+
+在执行工具二进制文件的垫片之前，请先准备好环境。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`: `version` 或 `ref`
+- `ASDF_INSTALL_VERSION`:
+- 如果 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 如果 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+- `asdf which <command>`：显示可执行文件的路径
+- `asdf exec <command> [args...]`：执行当前版本的命令垫片
+- `asdf env <command> [util]`：在命令垫片执行所用的环境中运行工具（默认：`env`）。
+
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}/bin/exec-env"
+```
+
+---
+
+### `bin/exec-path`
+
+获取指定版本工具的可执行文件路径。必须输出一个
+包含相对可执行文件路径的字符串。这允许插件
+在满足条件时覆盖 Shim 指定的可执行文件路径，否则返回
+Shim 指定的默认路径。
+
+**描述**
+
+获取指定版本工具的可执行文件路径。
+
+**实现细节**
+
+- 必须输出包含相对可执行文件路径的字符串。
+- 条件性地覆盖shim指定的可执行文件路径，否则返回shim指定的默认路径。
 
 ```shell
-用法：
+Usage:
   plugin/bin/exec-path <install-path> <command> <executable-path>
 
-例子调用：
+Example Call:
   ~/.asdf/plugins/foo/bin/exec-path "~/.asdf/installs/foo/1.0" "foo" "bin/foo"
 
-输出：
+Output:
   bin/foox
 ```
 
-#### bin/uninstall
+**脚本可用的环境变量**
 
-卸载某个工具的指定版本。
+- `ASDF_INSTALL_TYPE`: `version` 或 `ref`
+- `ASDF_INSTALL_VERSION`:
+- 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 如果 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
 
-#### bin/list-legacy-filenames
+**调用此脚本的命令**
 
-为此插件注册其他设置器文件。必须打印一个带有空格分隔的文件名列表的字符串。
+- `asdf which <command>`：显示可执行文件的路径
+- `asdf exec <command> [args...]`：执行当前版本的命令垫片
+- `asdf env <command> [util]`：在命令垫片执行所用的环境中运行工具（默认：`env`）。
 
-```shell
-.ruby-version .rvmrc
+**asdf 核心的调用签名**
+
+```bash
+"${plugin_path}/bin/exec-path" "$install_path" "$cmd" "$relative_path"
 ```
 
-注意：这仅适用于在 `~/.asdfrc` 配置文件中启用了 `legacy_version_file` 选项的用户。
+---
 
-#### bin/parse-legacy-file
+### `bin/uninstall`
 
-这可用于进一步解析 asdf 找到的传统文件。如果 `parse-legacy-file` 未实现，asdf 将会简单读取文件来确定版本。脚本将传递文件路径作为其第一个参数。
+**描述**
 
-#### bin/post-plugin-add
+卸载提供的工具版本。
 
-这可用于在插件添加到 asdf 后运行任何安装后操作。
+**输出格式**
 
-该脚本可以访问插件的安装路径（`${ASDF_PLUGIN_PATH}`）和源 URL（`${ASDF_PLUGIN_SOURCE_URL}`），如果有的话。
+输出应根据用户情况发送到 `stdout` 或 `stderr`。后续核心执行不会读取任何输出。
 
-其他请参考相关钩子：
+**脚本可用的环境变量**
+
+此脚本未提供任何环境变量。
+
+**调用此脚本的命令**
+
+- `asdf list all <name> <version>`
+- `asdf uninstall nodejs 18.15.0`：卸载 nodejs 的版本`18.15.0`，并移除所有垫片，包括通过`npm i -g`全局安装的垫片
+
+**asdf 核心的调用签名**
+
+不提供参数。
+
+```bash
+"${plugin_path}/bin/uninstall"
+```
+
+---
+
+### `bin/list-legacy-filenames`
+
+**描述**
+
+列出用于确定指定工具版本的旧配置文件名。
+
+**实现细节**
+
+- 输出以空格分隔的文件名列表。
+```bash
+  .ruby-version .rvmrc
+  ```
+- 仅适用于在 `“${HOME}”/.asdfrc` 中启用了 `legacy_version_file` 选项的用户。
+
+**脚本可用的环境变量**
+
+- `ASDF_INSTALL_TYPE`：`version` 或 `ref`
+- `ASDF_INSTALL_VERSION`：
+  - 若 `ASDF_INSTALL_TYPE=version`，则为完整版本号。
+  - 若 `ASDF_INSTALL_TYPE=ref`，则为 Git 引用（标签/提交/分支）。
+- `ASDF_INSTALL_PATH`：工具 _已_ 安装或 _应_ 安装的路径。
+
+**调用此脚本的命令**
+
+任何读取工具版本的命令。
+
+**asdf 核心的调用签名**
+
+未提供参数。
+
+```bash
+"${plugin_path}/bin/list-legacy-filenames"
+```
+
+---
+
+### `bin/parse-legacy-file`
+
+**描述**
+
+解析由 asdf 找到的旧文件以确定工具的版本。适用于从 JavaScript 的 `package.json` 或 Go 的 `go.mod` 等文件中提取版本号。
+
+**实现细节**
+
+- 如果不存在，asdf 将简单地使用 `cat` 命令读取旧文件以确定版本。
+- 该过程应具有 **确定性**，并始终返回完全相同的版本：
+  - 当解析同一旧文件时。
+  - 无论机器上安装了什么，或旧版本是否有效或完整。某些旧文件格式可能不适用。
+- 输出包含版本号的单行内容：
+  ```bash
+  1.2.3
+  ```
+
+**脚本可用的环境变量**
+
+在调用此脚本之前，没有专门设置的环境变量。
+
+**调用此脚本的命令**
+
+任何读取工具版本的命令。
+
+**asdf 核心的调用签名**
+
+该脚本应接受一个参数，即读取其内容的旧版文件的路径。
+
+```bash
+"${plugin_path}/bin/parse-legacy-file" "$file_path"
+```
+
+---
+
+### `bin/post-plugin-add`
+
+**描述**
+
+在使用 `asdf plugin add <tool>` 命令将插件添加到 asdf 之后，执行此回调脚本。
+
+参见相关命令钩子：
 
 - `pre_asdf_plugin_add`
 - `pre_asdf_plugin_add_${plugin_name}`
 - `post_asdf_plugin_add`
 - `post_asdf_plugin_add_${plugin_name}`
 
-#### bin/post-plugin-update
+**脚本可用的环境变量**
 
-这可用于在 asdf 下载更新的插件后运行任何插件更新后操作。
+- `ASDF_PLUGIN_PATH`：插件的安装路径。
+- `ASDF_PLUGIN_SOURCE_URL`：插件来源 URL。可以是本地目录路径。
 
-该脚本可以访问插件的安装路径（`${ASDF_PLUGIN_PATH}`）、更新前的 git-ref（`${ASDF_PLUGIN_PREV_REF}`）和更新后的 git-ref（`${ASDF_PLUGIN_POST_REF}`）。
+**asdf 核心的调用签名**
 
-其他请参考相关钩子：
+未提供参数。
+
+```bash
+"${plugin_path}/bin/post-plugin-add"
+```
+
+---
+
+### `bin/post-plugin-update`
+
+**描述**
+
+在 asdf 使用 `asdf plugin update <tool> [<git-ref>]` 命令下载 _update_ 插件**之后**，执行此回调脚本。
+
+参见相关命令钩子：
 
 - `pre_asdf_plugin_update`
 - `pre_asdf_plugin_update_${plugin_name}`
 - `post_asdf_plugin_update`
 - `post_asdf_plugin_update_${plugin_name}`
 
-#### bin/pre-plugin-remove
+**脚本可用的环境变量**
 
-这可用于在从 asdf 中删除插件之前运行任何预删除操作。
+- `ASDF_PLUGIN_PATH`：插件的安装路径。
+- `ASDF_PLUGIN_PREV_REF`：插件的上一版本 Git 引用。
+- `ASDF_PLUGIN_POST_REF`：插件的更新后 Git 引用。
 
-该脚本可以访问安装插件的路径（`${ASDF_PLUGIN_PATH}`）。
+**asdf 核心的调用签名**
 
-其他请参考相关钩子：
+未提供参数。
+
+```bash
+"${plugin_path}/bin/post-plugin-update"
+```
+
+---
+
+### `bin/pre-plugin-remove`
+
+**描述**
+
+在使用 `asdf plugin remove <工具>` 命令移除插件**之前**，执行此回调脚本。
+
+参见相关命令钩子：
 
 - `pre_asdf_plugin_remove`
 - `pre_asdf_plugin_remove_${plugin_name}`
 - `post_asdf_plugin_remove`
 - `post_asdf_plugin_remove_${plugin_name}`
 
-## asdf 命令行的扩展命令
+**脚本可用的环境变量**
+
+- `ASDF_PLUGIN_PATH`：插件的安装路径。
+
+**asdf 核心的调用签名**
+
+未提供参数。
+
+```bash
+"${plugin_path}/bin/pre-plugin-remove"
+```
+
+<!-- TODO: document command hooks -->
+<!-- ## Command Hooks -->
+
+## asdf 命令行的扩展命令 <Badge type="danger" text="进阶" vertical="middle" />
 
 插件可以通过提供 `lib/commands/command*.bash` 脚本或者可执行程序来定义新的 asdf 命令，这些脚本或可执行程序将使用插件名称作为 asdf 命令的子命令进行调用。
 
@@ -195,55 +744,82 @@ $ asdf foo bat baz # 等同于运行 `$ASDF_DATA_DIR/plugins/foo/lib/commands/co
 
 插件作者可以使用此功能来提供与其工具相关的实用命令，或者可以创建 asdf 本身的新命令扩展的插件。
 
-调用时，如果扩展命令未设置其可执行位，则它们将作为 bash 脚本获取，且具有来自 `$ASDF_DIR/lib/utils.bash` 的所有可用功能。
-此外，`$ASDF_CMD_FILE` 解析所获取文件的完整路径。
-如果设置了可执行位，则只是执行它们并替换 asdf 执行。
+如果可执行位被设置，脚本将被执行，替换 asdf 的执行。
+
+如果可执行位未被设置，asdf 将把脚本作为 Bash 脚本加载。
+
+`$ASDF_CMD_FILE` 解析为正在加载的文件的完整路径。
 
 这个功能的一个很好的例子是像 [`haxe`](https://github.com/asdf-community/asdf-haxe) 这样的插件。
 它提供了 `asdf haxe neko-dylibs-link` 来修复 haxe 可执行文件期望找到相对于可执行目录的动态链接库的问题。
 
 如果你的插件提供了 asdf 扩展命令，请务必在插件的 README 文件中提及。
 
-## 自定义垫片模板
+## 自定义垫片模板 <Badge type="danger" text="进阶" vertical="middle" />
 
-**请仅在真的需要时才使用此功能**
+::: warning 警告
+
+请仅在**真的需要**时才使用此功能
+
+:::
 
 asdf 允许自定义垫片模板。对于名为 `foo` 的可执行程序，如果有一个 `shims/foo` 的文件在插件中，那么 asdf 将复制这个文件替代使用标准垫片模板。
 
-必须明智地使用这一点。对于目前的 AFAIK，它仅仅被使用在了 Elixir 插件中，因为一个可执行程序除了是可执行程序文件之外，还被读作为 Elixir 文件，这使得无法使用标准的 bash 垫片。
+**这必须谨慎使用。**
 
-## 测试插件
+据 asdf 核心团队所知，此功能仅在官方 [Elixir 插件](https://github.com/asdf-vm/asdf-elixir) 中使用。这是
+因为可执行文件不仅被视为可执行文件，还被视为 Elixir 文件。这使得无法使用标准的 Bash 垫片。
 
-`asdf` 包含 `plugin-test` 命令用于测试插件。你可以像下面这样使用它：
+## 测试
+
+`asdf` 包含 `plugin-test` 命令用于测试插件：
 
 ```shell
 asdf plugin test <plugin-name> <plugin-url> [--asdf-tool-version <version>] [--asdf-plugin-gitref <git-ref>] [test-command*]
 ```
 
-只有前两个参数是必须的。
-如果指定了 \__version_，则该工具将随指定版本一起安装。默认返回为 `asdf latest <plugin-name>`。
-如果指定了 _git-ref_，则插件将检查提交/分支/标签。这对于在该插件的 CI 上测试拉取请求非常有用。默认值是插件仓库的默认分支。
+- `<plugin_name>` 和 `<plugin_url>` 是必需的
+- 如果指定了可选参数 `[--asdf-tool-version <version>]`，工具将以该特定版本进行安装。默认值为 `asdf latest <plugin_name>`
+- 如果指定了可选参数 `[--asdf-plugin-gitref <git_ref>]`，插件本身将从指定的提交/分支/标签检出。这在测试插件的 CI 中的拉取请求时非常有用。默认使用插件仓库的默认分支。
+- 可选参数 `[test_command...]` 是用于验证已安装工具是否正常工作的命令。通常为 `<tool> --version` 或
+  `<tool> --help`。例如，要测试 NodeJS 插件，我们可以运行
+  ```shell
+  # asdf plugin test <plugin_name>  <plugin_url>                               [test_command]
+    asdf plugin test nodejs         https://github.com/asdf-vm/asdf-nodejs.git node --version
+  ```
 
-剩下的参数被视为要执行的命令，以确保安装的工具正常工作。通常情况下，它需要带 `--version` 或者 `--help`。例如，要测试 NodeJS 插件，我们可以运行：
-
-```shell
-asdf plugin test nodejs https://github.com/asdf-vm/asdf-nodejs.git node --version
-```
+::: tip 注意
 
 我们强烈建议你在 CI 环境中测试你的插件，并确保它可以在 Linux 和 OSX 上运行。
 
-#### GitHub Action 示例
+:::
 
-[asdf-vm/actions](https://github.com/asdf-vm/actions) 存储库为托管在 github 的项目提供了使用 Github Action 来测试插件的可能。
+### GitHub Action
+
+[asdf-vm/actions](https://github.com/asdf-vm/actions) 仓库提供了一个 GitHub Action，用于测试托管在 GitHub 上的插件。一个示例 `.github/workflows/test.yaml` Actions 工作流如下：
 
 ```yaml
-steps:
-  - name: asdf_plugin_test
-    uses: asdf-vm/actions/plugin-test@v1
-    with:
-      command: "my_tool --version"
-    env:
-      GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 自动提供
+name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  plugin_test:
+    name: asdf plugin test
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: asdf_plugin_test
+        uses: asdf-vm/actions/plugin-test@v2
+        with:
+          command: "<MY_TOOL> --version"
 ```
 
 #### TravisCI 配置示例
@@ -252,7 +828,7 @@ steps:
 
 ```yaml
 language: c
-script: asdf plugin test nodejs $TRAVIS_BUILD_DIR 'node --version'
+script: asdf plugin test <MY_TOOL> $TRAVIS_BUILD_DIR '<MY_TOOL> --version'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git asdf
   - . asdf/asdf.sh
@@ -261,22 +837,19 @@ os:
   - osx
 ```
 
-注意：
-当使用其他 CI 时，你将需要确认哪些变量映射到存储库路径。
+::: tip 注意
 
-你还可以选择将相对路径传递给 `plugin-test`。
+当使用其他 CI 时，可能需要传递插件位置的相对路径：
 
-例如，如果在存储库目录中运行测试脚本：`asdf plugin test nodejs . 'node --version'`。
+```shell
+asdf plugin test <tool_name> <path> '<tool_command> --version'
+```
 
-## GitHub API 频率限制
+:::
 
-如果你的插件的 `list-all` 依赖于访问 GitHub API，请确保在访问时提供授权令牌，否则你的测试可能会因频率限制而失败。
+## API 频率限制
 
-为此，创建一个仅具有 `public_repo` 权限的 [新个人令牌](https://github.com/settings/tokens/new)。
-
-然后，在 travis.ci 构建设置中添加一个名为 `GITHUB_API_TOKEN` 的 _安全_ 环境变量。并且 _绝对不要_ 在你的代码中公布你的 token。
-
-最后，添加如下内容到 `bin/list-all`：
+如果某个命令依赖于访问外部 API，例如 `bin/list-all` 或 `bin/latest-stable`，那么在自动化测试过程中可能会遇到频率限制问题。为了解决这个问题，请确保存在一条代码路径，通过环境变量提供认证令牌。例如：
 
 ```shell
 cmd="curl -s"
@@ -287,10 +860,31 @@ fi
 cmd="$cmd $releases_path"
 ```
 
-## 向官方插件存储库提交插件
+### `GITHUB_API_TOKEN`
 
-`asdf` 可以通过指定插件存储库 url 轻松安装插件，比如 `plugin add my-plugin https://github.com/user/asdf-my-plugin.git`。
+要使用 `GITHUB_API_TOKEN`，请创建一个 [新个人令牌](https://github.com/settings/tokens/new)，仅授予 `public_repo` 访问权限。
 
-为了使你的用户更轻松，你可以将插件添加到官方插件存储库中，以列出你的插件并使用较短的命令轻松安装，比如 `asdf plugin add my-plugin`。
+然后将此令牌添加到 CI 管道的环境变量中。
 
-请查看插件存储库 [asdf-vm/asdf-plugins](https://github.com/asdf-vm/asdf-plugins) 中的说明了解更多。
+::: tip 注意
+
+**切勿**将认证令牌发布到代码仓库中
+
+:::
+
+## 插件缩写索引
+
+::: tip 注意
+
+插件的推荐安装方法是通过直接 URL 安装：
+
+```shell
+# asdf plugin add <name> <git_url>
+  asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs
+```
+
+:::
+
+如果未提供 `git_url`，asdf 将使用 [缩写索引仓库](https://github.com/asdf-vm/asdf-plugins) 来确定要使用的确切 `git_url`。
+
+您可以通过遵循该仓库中的 [缩写索引](https://github.com/asdf-vm/asdf-plugins) 中的说明，将你的插件添加到缩写索引中。

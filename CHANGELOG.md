@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.20.0](https://github.com/asdf-vm/asdf/compare/v0.19.0...v0.20.0) (2026-07-07)
+
+
+### Features
+
+* add warning to `asdf info` output when `ASDF_TOOL_VERSIONS_FILENAME` value is invalid ([#2293](https://github.com/asdf-vm/asdf/issues/2293)) ([244e513](https://github.com/asdf-vm/asdf/commit/244e513e772b764745d7dffa02541c431788f2e1))
+
+
+### Bug Fixes
+
+* shallow clone plugin repositories for faster installs ([#2256](https://github.com/asdf-vm/asdf/issues/2256)) ([badc9db](https://github.com/asdf-vm/asdf/commit/badc9db33e7b662addb525b4f10476be1d75de60))
+* update nushell completion code so it works on latest version of nushell ([#2275](https://github.com/asdf-vm/asdf/issues/2275)) ([51ebfb4](https://github.com/asdf-vm/asdf/commit/51ebfb46a47820b2e914d7c5fb228fc9496f1cf5))
+
+## [0.19.0](https://github.com/asdf-vm/asdf/compare/v0.18.1...v0.19.0) (2026-04-24)
+
+
+### Features
+
+* don't override semver ordering during completion ([#2263](https://github.com/asdf-vm/asdf/issues/2263)) ([aaa84d2](https://github.com/asdf-vm/asdf/commit/aaa84d2f113f4d6514038c7953ba9f1f2311523a))
+
+
+### Bug Fixes
+
+* convert hyphens to underscores when converting plugin names to generate valid environment variables ([2ffb5b8](https://github.com/asdf-vm/asdf/commit/2ffb5b871c9339a3edbaa4fe4ffecf62a90afc81))
+* make plugin test command resolve latest version properly ([1485ff4](https://github.com/asdf-vm/asdf/commit/1485ff42e7a661846c12fd8b577c72c2969a9868))
+* nushell completions --ignore-errors deprecation ([#2157](https://github.com/asdf-vm/asdf/issues/2157)) ([a813610](https://github.com/asdf-vm/asdf/commit/a813610611852b963c19d90b03c66d05e9a2a7de))
+* return error from repo.RemoteUrl function ([71e9567](https://github.com/asdf-vm/asdf/commit/71e9567497b5b66be1dc3e0c143a2eb5d042ffa5))
+* set ASDF_INSTALL_* environment variables for reshim command ([3ec1610](https://github.com/asdf-vm/asdf/commit/3ec1610956426b4aca271edff9df6f63572108bc))
+* use os.PathListSeparator ([#2195](https://github.com/asdf-vm/asdf/issues/2195)) ([d5efb1e](https://github.com/asdf-vm/asdf/commit/d5efb1edd45028f2c113a98b7a11244c08254369))
+
+## [0.18.1](https://github.com/asdf-vm/asdf/compare/v0.18.0...v0.18.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* Only show already installed versions in shell completion for the asdf set command ([#2172](https://github.com/asdf-vm/asdf/pull/2172)) ([c3910d7](https://github.com/asdf-vm/asdf/commit/c3910d73776980e649605205352334c09c8c85b1))
+* set LANG=C for locale-dependent tests ([#2197](https://github.com/asdf-vm/asdf/issues/2197)) ([2423f6d](https://github.com/asdf-vm/asdf/commit/2423f6da496b5b1955ce9cb19d524dc0a7b88e26))
+
 ## [0.18.0](https://github.com/asdf-vm/asdf/compare/v0.17.0...v0.18.0) (2025-06-07)
 
 

@@ -43,7 +43,8 @@ func TestVersion(t *testing.T) {
 
 	t.Run("returns version from env when env variable set", func(t *testing.T) {
 		// Set env
-		t.Setenv(fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(testPluginName)), "2.3.4")
+		versionVariableName := fmt.Sprintf("ASDF_%s_VERSION", strings.ToUpper(strings.ReplaceAll(testPluginName, "-", "_")))
+		t.Setenv(versionVariableName, "2.3.4")
 
 		// write a version file
 		data := []byte(fmt.Sprintf("%s 1.2.3", testPluginName))
@@ -204,7 +205,7 @@ func TestFindVersionsInEnv(t *testing.T) {
 		versions, envVariableName, found := findVersionsInEnv("non-existent")
 		assert.False(t, found)
 		assert.Empty(t, versions)
-		assert.Equal(t, envVariableName, "ASDF_NON-EXISTENT_VERSION")
+		assert.Equal(t, envVariableName, "ASDF_NON_EXISTENT_VERSION")
 	})
 
 	t.Run("when env variable is set returns version", func(t *testing.T) {
@@ -242,7 +243,7 @@ func TestVariableVersionName(t *testing.T) {
 		},
 		{
 			input:  "foo-bar",
-			output: "ASDF_FOO-BAR_VERSION",
+			output: "ASDF_FOO_BAR_VERSION",
 		},
 	}
 
