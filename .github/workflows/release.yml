@@ -13,8 +13,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         name: create release
         with:
           token: ${{ secrets.ASDF_WORKFLOW_TOKEN }}
-          release-type: go
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

@@ -3,20 +3,17 @@
 package config
 
 import (
-	"context"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
-	"github.com/sethvargo/go-envconfig"
 	"gopkg.in/ini.v1"
 )
 
 const (
-	forcePrependDefault                = false
 	dataDirDefault                     = "~/.asdf"
 	configFileDefault                  = "~/.asdfrc"
 	defaultToolVersionsFilenameDefault = ".tool-versions"
@@ -36,15 +33,11 @@ var pluginRepoCheckDurationDefault = PluginRepoCheckDuration{Every: 60}
 // Config is the primary value this package builds and returns
 type Config struct {
 	Home                        string
-	ConfigFile                  string `env:"ASDF_CONFIG_FILE, overwrite"`
-	DefaultToolVersionsFilename string `env:"ASDF_DEFAULT_TOOL_VERSIONS_FILENAME, overwrite"`
-	// Unclear if this value will be needed with the golang implementation.
-	// AsdfDir string
-	DataDir      string `env:"ASDF_DATA_DIR, overwrite"`
-	ForcePrepend bool
-	// Field that stores the settings struct if it is loaded
-	Settings       Settings
-	PluginIndexURL string
+	ConfigFile                  string
+	DefaultToolVersionsFilename string
+	DataDir                     string
+	Settings                    Settings
+	PluginIndexURL              string
 }
 
 // Settings is a struct that stores config values from the asdfrc file
@@ -61,13 +54,7 @@ type Settings struct {
 }
 
 func defaultConfig(dataDir, configFile string) *Config {
-	forcePrepend := forcePrependDefault
-	forcePrependEnv := os.Getenv("ASDF_FORCE_PREPEND")
-	if strings.ToLower(forcePrependEnv) == "yes" || (forcePrependEnv == "" && runtime.GOOS == "darwin") {
-		forcePrepend = true
-	}
 	return &Config{
-		ForcePrepend:                forcePrepend,
 		DataDir:                     dataDir,
 		ConfigFile:                  configFile,
 		DefaultToolVersionsFilename: defaultToolVersionsFilenameDefault,
@@ -103,19 +90,40 @@ func newPluginRepoCheckDuration(checkDuration string) PluginRepoCheckDuration {
 
 // LoadConfig builds the Config struct from environment variables
 func LoadConfig() (Config, error) {
-	config, err := loadConfigEnv()
+	config := defaultConfig(dataDirDefault, configFileDefault)
+
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return config, err
+		return Config{}, err
 	}
 
-	homeDir, err := homedir.Dir()
-	if err != nil {
-		return config, err
+	configFile := os.Getenv("ASDF_CONFIG_FILE")
+	if configFile != "" {
+		config.ConfigFile = configFile
+	}
+
+	dataDir := os.Getenv("ASDF_DATA_DIR")
+	if dataDir != "" {
+		config.DataDir = dataDir
+	}
+
+	versionFilename := os.Getenv("ASDF_TOOL_VERSIONS_FILENAME")
+	if versionFilename != "" {
+		config.DefaultToolVersionsFilename = versionFilename
+	} else {
+		// ASDF_TOOL_VERSIONS_FILENAME is the new environment variable name. It used
+		// to be named ASDF_DEFAULT_TOOL_VERSIONS_FILENAME
+		versionFilename = os.Getenv("ASDF_DEFAULT_TOOL_VERSIONS_FILENAME")
+		if versionFilename != "" {
+			config.DefaultToolVersionsFilename = versionFilename
+		}
 	}
 
 	config.Home = homeDir
+	config.DataDir = normalizePath(homeDir, config.DataDir)
+	config.ConfigFile = normalizePath(homeDir, config.ConfigFile)
 
-	return config, nil
+	return *config, nil
 }
 
 // Methods on the Config struct that allow it to load and cache values from the
@@ -211,23 +219,11 @@ func (c *Config) loadSettings() error {
 	return nil
 }
 
-func loadConfigEnv() (Config, error) {
-	dataDir, err := homedir.Expand(dataDirDefault)
-	if err != nil {
-		return Config{}, err
+func normalizePath(homeDir string, path string) string {
+	if path == "~" || strings.HasPrefix(path, "~/") {
+		path = filepath.Join(homeDir, path[1:])
 	}
-
-	configFile, err := homedir.Expand(configFileDefault)
-	if err != nil {
-		return Config{}, err
-	}
-
-	config := defaultConfig(dataDir, configFile)
-
-	context := context.Background()
-	err = envconfig.Process(context, config)
-
-	return *config, err
+	return filepath.Clean(path)
 }
 
 func loadSettings(asdfrcPath string) (Settings, error) {

@@ -10,9 +10,6 @@ setup() {
   PROJECT_DIR="$HOME/project"
   mkdir -p "$PROJECT_DIR"
   cd "$PROJECT_DIR"
-
-  # asdf lib needed to run generated shims
-  cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
 }
 
 teardown() {
@@ -34,14 +31,23 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "asdf exec should pass all arguments including flags to executable" {
+  echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
+  run asdf install
+
+  run asdf exec dummy --mytestflag hello
+  [ "$output" = "This is Dummy 1.0! hello --mytestflag" ]
+  [ "$status" -eq 0 ]
+}
+
 @test "asdf exec should pass all arguments to executable even if shim is not in PATH" {
   echo "dummy 1.0" >"$PROJECT_DIR/.tool-versions"
   run asdf install
 
   path=$(echo "$PATH" | sed -e "s|$(asdf_data_dir)/shims||g; s|::|:|g")
-  run env PATH="$path" which dummy
-  [ "$output" = "" ]
-  [ "$status" -eq 1 ]
+  # Test that dummy is not found in the modified PATH (status should be non-zero)
+  run bash -c "env PATH=\"$path\" command -v dummy >/dev/null 2>&1"
+  [ "$status" -ne 0 ]
 
   run env PATH="$path" asdf exec dummy world hello
   [ "$output" = "This is Dummy 1.0! hello world" ]
@@ -88,13 +94,14 @@ teardown() {
 
   touch "$PROJECT_DIR/.tool-versions"
 
-  run "$ASDF_DIR/shims/dummy" world hello
+  run --separate-stderr "$ASDF_DIR/shims/dummy" world hello
   [ "$status" -eq 126 ]
 
-  echo "$output" | grep -q "No version is set for command dummy" 2>/dev/null
-  echo "$output" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
-  echo "$output" | grep -q "dummy 1.0" 2>/dev/null
-  echo "$output" | grep -q "dummy 2.0.0" 2>/dev/null
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "No version is set for command dummy" 2>/dev/null
+  echo "${stderr:?}" | grep -q "Consider adding one of the following versions in your config file at $PROJECT_DIR/.tool-versions" 2>/dev/null
+  echo "${stderr:?}" | grep -q "dummy 1.0" 2>/dev/null
+  echo "${stderr:?}" | grep -q "dummy 2.0.0" 2>/dev/null
 }
 
 @test "shim exec should suggest different plugins providing same tool when no version is selected" {

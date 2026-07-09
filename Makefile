@@ -1,13 +1,7 @@
 MAIN_PACKAGE_PATH := ./cmd/asdf
 TARGET_DIR := .
 TARGET := asdf
-
-# Because this Makefile isn't used as part of the actual release binary build,
-# It sets FULL_VERSION to a dev version containing the SHA of the current
-# commit. If we ever use this Makefile to generate release binaries this code
-# will need to change.
-FULL_VERSION = "$(shell git rev-parse --short HEAD)-dev"
-LINKER_FLAGS = '-s -X main.version=${FULL_VERSION}'
+LINKER_FLAGS = '-s'
 
 # Not sure what the default location should be for builds
 build: # test lint

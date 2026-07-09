@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/asdf-vm/asdf/internal/config"
@@ -19,6 +20,15 @@ func Print(conf config.Config, version string) error {
 
 // Write info output to an io.Writer
 func Write(conf config.Config, version string, writer io.Writer) error {
+	warnings := validateEnvironment()
+	if len(warnings) > 0 {
+		fmt.Fprintln(writer, "WARNINGS:")
+		for _, warning := range warnings {
+			fmt.Fprintf(writer, "%s\n", warning)
+		}
+		fmt.Fprintln(writer)
+	}
+
 	fmt.Fprintln(writer, "OS:")
 	uname := execute.NewExpression("uname -a", []string{})
 	uname.Stdout = writer
@@ -47,7 +57,7 @@ func Write(conf config.Config, version string, writer io.Writer) error {
 	fmt.Fprintf(writer, "%s\n", version)
 
 	fmt.Fprintln(writer, "\nASDF INTERNAL VARIABLES:")
-	fmt.Fprintf(writer, "ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=%s\n", conf.DefaultToolVersionsFilename)
+	fmt.Fprintf(writer, "ASDF_TOOL_VERSIONS_FILENAME=%s\n", conf.DefaultToolVersionsFilename)
 	fmt.Fprintf(writer, "ASDF_DATA_DIR=%s\n", conf.DataDir)
 	fmt.Fprintf(writer, "ASDF_CONFIG_FILE=%s\n", conf.ConfigFile)
 
@@ -71,4 +81,16 @@ func pluginsTable(plugins []plugins.Plugin, output io.Writer) error {
 	}
 
 	return writer.Flush()
+}
+
+func validateEnvironment() []string {
+	var warnings []string
+
+	if filename := os.Getenv("ASDF_TOOL_VERSIONS_FILENAME"); filename != "" {
+		if strings.Contains(filename, "/") || strings.Contains(filename, "\\") || strings.HasPrefix(filename, "~") {
+			warnings = append(warnings, "ASDF_TOOL_VERSIONS_FILENAME should be a filename only, not a path")
+		}
+	}
+
+	return warnings
 }

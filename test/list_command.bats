@@ -72,7 +72,7 @@ teardown() {
   run asdf install dummy 1.1
   run asdf list dummy 2
   [ "No compatible versions installed (dummy 2)" = "$output" ]
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 0 ]
 }
 
 @test "list_all_command lists available versions" {

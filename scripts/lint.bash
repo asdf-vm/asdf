@@ -32,11 +32,6 @@ run_shfmt_stylecheck() {
   print.info "Checking .bash with shfmt"
   shfmt --language-dialect bash --indent 2 "${shfmt_flag}" \
     internal/completions/*.bash \
-    bin/asdf \
-    bin/private/asdf-exec \
-    lib/utils.bash \
-    lib/commands/*.bash \
-    lib/functions/*.bash \
     scripts/*.bash \
     test/test_helpers.bash \
     test/fixtures/dummy_broken_plugin/bin/* \
@@ -49,18 +44,9 @@ run_shfmt_stylecheck() {
 }
 
 run_shellcheck_linter() {
-  print.info "Checking .sh files with Shellcheck"
-  shellcheck --shell sh --external-sources \
-    asdf.sh
-
   print.info "Checking .bash files with Shellcheck"
   shellcheck --shell bash --external-sources \
     internal/completions/*.bash \
-    bin/asdf \
-    bin/private/asdf-exec \
-    lib/utils.bash \
-    lib/commands/*.bash \
-    lib/functions/*.bash \
     scripts/*.bash \
     test/test_helpers.bash \
     test/fixtures/dummy_broken_plugin/bin/* \

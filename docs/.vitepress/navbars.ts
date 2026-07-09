@@ -3,9 +3,9 @@ import fs from "fs";
 import process from "process";
 
 export const getVersion = () => {
-  const versionFilepath = path.join(__dirname, "../version.txt");
+  const versionFilepath = path.join(__dirname, "../../.release-please-manifest.json");
   try {
-    const version = fs.readFileSync(versionFilepath, "utf8").trim();
+    const version = JSON.parse(fs.readFileSync(versionFilepath, "utf8"))['.'];
     console.log(`Found version ${version} from ${versionFilepath}`);
     return version;
   } catch (error) {

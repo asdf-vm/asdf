@@ -1,5 +1,87 @@
 # Changelog
 
+## [0.20.0](https://github.com/asdf-vm/asdf/compare/v0.19.0...v0.20.0) (2026-07-07)
+
+
+### Features
+
+* add warning to `asdf info` output when `ASDF_TOOL_VERSIONS_FILENAME` value is invalid ([#2293](https://github.com/asdf-vm/asdf/issues/2293)) ([244e513](https://github.com/asdf-vm/asdf/commit/244e513e772b764745d7dffa02541c431788f2e1))
+
+
+### Bug Fixes
+
+* shallow clone plugin repositories for faster installs ([#2256](https://github.com/asdf-vm/asdf/issues/2256)) ([badc9db](https://github.com/asdf-vm/asdf/commit/badc9db33e7b662addb525b4f10476be1d75de60))
+* update nushell completion code so it works on latest version of nushell ([#2275](https://github.com/asdf-vm/asdf/issues/2275)) ([51ebfb4](https://github.com/asdf-vm/asdf/commit/51ebfb46a47820b2e914d7c5fb228fc9496f1cf5))
+
+## [0.19.0](https://github.com/asdf-vm/asdf/compare/v0.18.1...v0.19.0) (2026-04-24)
+
+
+### Features
+
+* don't override semver ordering during completion ([#2263](https://github.com/asdf-vm/asdf/issues/2263)) ([aaa84d2](https://github.com/asdf-vm/asdf/commit/aaa84d2f113f4d6514038c7953ba9f1f2311523a))
+
+
+### Bug Fixes
+
+* convert hyphens to underscores when converting plugin names to generate valid environment variables ([2ffb5b8](https://github.com/asdf-vm/asdf/commit/2ffb5b871c9339a3edbaa4fe4ffecf62a90afc81))
+* make plugin test command resolve latest version properly ([1485ff4](https://github.com/asdf-vm/asdf/commit/1485ff42e7a661846c12fd8b577c72c2969a9868))
+* nushell completions --ignore-errors deprecation ([#2157](https://github.com/asdf-vm/asdf/issues/2157)) ([a813610](https://github.com/asdf-vm/asdf/commit/a813610611852b963c19d90b03c66d05e9a2a7de))
+* return error from repo.RemoteUrl function ([71e9567](https://github.com/asdf-vm/asdf/commit/71e9567497b5b66be1dc3e0c143a2eb5d042ffa5))
+* set ASDF_INSTALL_* environment variables for reshim command ([3ec1610](https://github.com/asdf-vm/asdf/commit/3ec1610956426b4aca271edff9df6f63572108bc))
+* use os.PathListSeparator ([#2195](https://github.com/asdf-vm/asdf/issues/2195)) ([d5efb1e](https://github.com/asdf-vm/asdf/commit/d5efb1edd45028f2c113a98b7a11244c08254369))
+
+## [0.18.1](https://github.com/asdf-vm/asdf/compare/v0.18.0...v0.18.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* Only show already installed versions in shell completion for the asdf set command ([#2172](https://github.com/asdf-vm/asdf/pull/2172)) ([c3910d7](https://github.com/asdf-vm/asdf/commit/c3910d73776980e649605205352334c09c8c85b1))
+* set LANG=C for locale-dependent tests ([#2197](https://github.com/asdf-vm/asdf/issues/2197)) ([2423f6d](https://github.com/asdf-vm/asdf/commit/2423f6da496b5b1955ce9cb19d524dc0a7b88e26))
+
+## [0.18.0](https://github.com/asdf-vm/asdf/compare/v0.17.0...v0.18.0) (2025-06-07)
+
+
+### Features
+
+* `asdf list` exit with status code of 0 when no versions installed ([#2116](https://github.com/asdf-vm/asdf/issues/2116)) ([e7d5289](https://github.com/asdf-vm/asdf/commit/e7d5289c57894ebbc0f966cb91794efd970377af))
+
+
+### Bug Fixes
+
+* correct flag handling in commands run by `asdf exec` ([#2115](https://github.com/asdf-vm/asdf/issues/2115)) ([d6cd693](https://github.com/asdf-vm/asdf/commit/d6cd6930cff8e7159cb2f1a57b23bd0ec1faa6ac))
+* only return version starting with number when no filter is supplied ([#2120](https://github.com/asdf-vm/asdf/issues/2120)) ([cf29b51](https://github.com/asdf-vm/asdf/commit/cf29b5136bbe481ae3803dbdb78086c808eeef7a))
+* print all error output to stderr when shim can't be resolved ([#2109](https://github.com/asdf-vm/asdf/issues/2109)) ([c9049ea](https://github.com/asdf-vm/asdf/commit/c9049ea2fd09fc7958fb1a5a5b44e0670740465b))
+* rename tool version filename environment variable for clarity ([#2101](https://github.com/asdf-vm/asdf/issues/2101)) ([e3d6014](https://github.com/asdf-vm/asdf/commit/e3d6014419296281c4156fc65a3e02bb542495a2))
+* upgrade urfave/cli to version 3 ([#2105](https://github.com/asdf-vm/asdf/issues/2105)) ([392d09a](https://github.com/asdf-vm/asdf/commit/392d09a8b263a5ef18fd05f27312717bf9baa292))
+
+## [0.17.0](https://github.com/asdf-vm/asdf/compare/v0.16.7...v0.17.0) (2025-05-19)
+
+
+### Features
+
+* **golang-rewrite:** add support for shim templates resolution ([#2076](https://github.com/asdf-vm/asdf/issues/2076)) ([a3bccea](https://github.com/asdf-vm/asdf/commit/a3bccea5c9b64bf81675efaa5c76d6eb367fd37f))
+* log failure to add plugin in "plugin test" ([#2059](https://github.com/asdf-vm/asdf/issues/2059)) ([92de803](https://github.com/asdf-vm/asdf/commit/92de803ff15f1a887f031d570ae6404f008d829d))
+* switch back to native git client ([#1998](https://github.com/asdf-vm/asdf/issues/1998)) ([1efa2bb](https://github.com/asdf-vm/asdf/commit/1efa2bbd04b833d0435a15bddd882beb973cfc2d))
+
+
+### Bug Fixes
+
+* address linter warning ([67581cf](https://github.com/asdf-vm/asdf/commit/67581cf030d4eb39f261acac5e861444fedad7f6))
+* correct intersection logic in `shims.FindExecutable` function so ordering of multiple versions is preserved ([#2063](https://github.com/asdf-vm/asdf/issues/2063)) ([083f20a](https://github.com/asdf-vm/asdf/commit/083f20aa3e21cad594b35972ca570eb47e389899))
+* correct output of install command when system or path version set ([#2097](https://github.com/asdf-vm/asdf/issues/2097)) ([82d67e3](https://github.com/asdf-vm/asdf/commit/82d67e3242b0ac4d01cccd9712daaae574ce6eca))
+* ensures output always ends with a newline when printed ([#2098](https://github.com/asdf-vm/asdf/issues/2098)) ([6f4837e](https://github.com/asdf-vm/asdf/commit/6f4837ea9b82b442fdfa78c3bb315b088e60dc9c))
+* handle tilde in env vars ([#2092](https://github.com/asdf-vm/asdf/issues/2092)) ([6da599a](https://github.com/asdf-vm/asdf/commit/6da599a93ad2655c2bf061c038da330ee4413985))
+* remove default error action from plugin command ([#2027](https://github.com/asdf-vm/asdf/issues/2027)) ([c376481](https://github.com/asdf-vm/asdf/commit/c376481cb4d1fa1e67dd9ef326381c07c935151d))
+* remove unused ForcePrepend option from Go code ([#2089](https://github.com/asdf-vm/asdf/issues/2089)) ([49e9f33](https://github.com/asdf-vm/asdf/commit/49e9f330a719de6bd599b84c90b93e7d7358043c))
+* set correct version for go install and make builds ([#2077](https://github.com/asdf-vm/asdf/issues/2077)) ([4c73527](https://github.com/asdf-vm/asdf/commit/4c73527d6323ca41d8ea9a9e78a8db49f3794d16))
+
+## [0.16.7](https://github.com/asdf-vm/asdf/compare/v0.16.6...v0.16.7) (2025-03-25)
+
+
+### Bug Fixes
+
+* remove comment from first line zsh completion output ([#2035](https://github.com/asdf-vm/asdf/issues/2035)) ([#2037](https://github.com/asdf-vm/asdf/issues/2037)) ([74d7b17](https://github.com/asdf-vm/asdf/commit/74d7b17a1cc9f640cf0f5134416d1cf7a56fe19f))
+
 ## [0.16.6](https://github.com/asdf-vm/asdf/compare/v0.16.5...v0.16.6) (2025-03-21)
 
 

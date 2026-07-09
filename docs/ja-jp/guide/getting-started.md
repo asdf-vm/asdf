@@ -33,7 +33,7 @@ asdfはいくつかの方法でインストールできます:
 
 <!-- x-release-please-start-version -->
 1. [Goをインストールする](https://go.dev/doc/install)
-2. コマンドを実行: `go install github.com/asdf-vm/asdf/cmd/asdf@v0.16.0`
+2. コマンドを実行: `go install github.com/asdf-vm/asdf/cmd/asdf@v0.20.0`
 <!-- x-release-please-end -->
 
 ::::
@@ -47,7 +47,7 @@ asdfはいくつかの方法でインストールできます:
 <!-- x-release-please-start-version -->
 1. asdfリポジトリをクローン:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.16.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.20.0
   ```
 <!-- x-release-please-end -->
 2. `make`を実行。
@@ -216,7 +216,7 @@ autoload -Uz compinit && compinit
 
 ZSHフレームワークでカスタムされた`compinit`セットアップを使っている場合は、`compinit`がフレームワークのソース配下にあることを確認してください。
 
-コマンド補完はZSHフレームワークの`asdf`で設定するか、[Homebrewの指示に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)する必要があります。ZSHフレームワークを使っている場合、asdf用のプラグインを更新して`fpath`経由で新しいZSH補完機能を正しく使えるようにする必要があるかもしれません。なお、Oh-My-ZSH asdfプラグインはまだ対応していません。[ohmyzsh/ohmyzsh#8837](https://github.com/ohmyzsh/ohmyzsh/pull/8837) を参照してください。
+コマンド補完はZSHフレームワークの`asdf`で設定するか、[Homebrewの指示に従って設定](https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh)する必要があります。ZSHフレームワークを使っている場合、asdf用のプラグインを更新して`fpath`経由で新しいZSH補完機能を正しく使えるようにする必要があるかもしれません。
 :::
 
 ::: details PowerShell Core
@@ -296,7 +296,7 @@ let asdf_data_dir = (
     $env.ASDF_DATA_DIR
   }
 )
-. "$asdf_data_dir/completions/nushell.nu"
+source "$asdf_data_dir/completions/nushell.nu"
 ```
 
 :::
@@ -321,10 +321,6 @@ export ASDF_DATA_DIR="/your/custom/data/dir"
 :::
 
 `asdf`のスクリプトは、`$PATH`を設定した**あと**、かつ、使用中のフレームワーク(oh-my-zsh など)を呼び出した**あと**に記述する必要があります。
-
-::: warning 警告
-macOSでは、BashまたはZSHシェルを起動すると、自動的に`path_helper`というユーティリティが呼び出されます。`path_helper`は`PATH`(および`MANPATH`)内の項目の順番を並び替えることができるため、特定の順序を必要とするツールの動作に一貫性が無くなってしまいます。これを回避するため、macOSで`asdf`を利用するときは強制的に`PATH`エントリの先頭に追加する(優先度を一番高くする)ようにしてください。これは、`ASDF_FORCE_PREPEND`環境変数で制御できます。
-:::
 
 `PATH`の変更を反映するために、シェルを再起動してください。たいていの場合、ターミナルのタブを新たに開けばOKです。
 

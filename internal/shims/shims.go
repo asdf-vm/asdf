@@ -56,7 +56,7 @@ func (e NoExecutableForPluginError) Error() string {
 
 // FindExecutable takes a shim name and a current directory and returns the path
 // to the executable that the shim resolves to.
-func FindExecutable(conf config.Config, shimName, currentDirectory string) (string, plugins.Plugin, string, bool, error) {
+func FindExecutable(conf config.Config, shimName, currentDirectory string) (path string, plugin plugins.Plugin, version string, found bool, err error) {
 	shimPath := Path(conf, shimName)
 
 	if _, err := os.Stat(shimPath); err != nil {
@@ -75,6 +75,11 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 	for _, shimToolVersion := range toolVersions {
 		plugin := plugins.New(conf, shimToolVersion.Name)
 		if plugin.Exists() == nil {
+			// If a shim template is found, we can return it before looping through versions
+			shimTemplate, err := plugin.ShimTemplatePath(shimName)
+			if err == nil {
+				return shimTemplate, plugin, "", true, nil
+			}
 
 			versions, found, err := resolve.Version(conf, plugin, currentDirectory)
 			if err != nil {
@@ -82,7 +87,8 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (stri
 			}
 
 			if found {
-				tempVersions := toolversions.Intersect(shimToolVersion.Versions, versions.Versions)
+				tempVersions := toolversions.Intersect(versions.Versions, shimToolVersion.Versions)
+
 				if slices.Contains(versions.Versions, "system") {
 					tempVersions = append(tempVersions, "system")
 				}
@@ -371,23 +377,34 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version toolvers
 
 // ExecutablePaths returns a slice of absolute directory paths that tool
 // executables are contained in.
-func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) ([]string, error) {
-	dirs, err := ExecutableDirs(plugin)
+func ExecutablePaths(conf config.Config, plugin plugins.Plugin, version toolversions.Version) (paths []string, err error) {
+	dirs, err := ExecutableDirs(conf, plugin, version)
 	if err != nil {
 		return []string{}, err
 	}
 
+	shimsDir, err := os.Stat(path.Join(plugin.Dir, "shims"))
+	if err == nil && shimsDir.IsDir() {
+		paths = append(paths, path.Join(plugin.Dir, "shims"))
+	}
+
 	installPath := installs.InstallPath(conf, plugin, version)
-	return dirsToPaths(dirs, installPath), nil
+	return append(paths, dirsToPaths(dirs, installPath)...), nil
 }
 
-// ExecutableDirs returns a slice of directory names that tool executables are
-// contained in
-func ExecutableDirs(plugin plugins.Plugin) ([]string, error) {
+// ExecutableDirs returns a slice of relative directory names that tool executables are
+// contained in, *inside installs*
+func ExecutableDirs(conf config.Config, plugin plugins.Plugin, version toolversions.Version) ([]string, error) {
 	var stdOut strings.Builder
 	var stdErr strings.Builder
 
-	err := plugin.RunCallback("list-bin-paths", []string{}, map[string]string{}, &stdOut, &stdErr)
+	env := map[string]string{
+		"ASDF_INSTALL_TYPE":    version.Type,
+		"ASDF_INSTALL_VERSION": version.Value,
+		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, version),
+	}
+
+	err := plugin.RunCallback("list-bin-paths", []string{}, env, &stdOut, &stdErr)
 	if err != nil {
 		if _, ok := err.(plugins.NoCallbackError); ok {
 			// assume all executables are located in /bin directory

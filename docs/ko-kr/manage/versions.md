@@ -68,34 +68,52 @@ asdf latest <name> <version>
 ## 현재 버전 설정 <a id='현재-버전-설정'></a>
 
 ```shell
-asdf global <name> <version> [<version>...]
-asdf shell <name> <version> [<version>...]
-asdf local <name> <version> [<version>...]
-# asdf global elixir 1.2.4
+asdf set [flags] <name> <version> [<version>...]
+# asdf set elixir 1.2.4 # set in current dir
+# asdf set -u elixir 1.2.4 # set in .tool-versions file in home directory
+# asdf set -p elixir 1.2.4 # set in existing .tool-versions file in a parent dir
 
-asdf global <name> latest[:<version>]
-asdf local <name> latest[:<version>]
-# asdf global elixir latest
+asdf set <name> latest[:<version>]
+# asdf set elixir latest
 ```
 
-`global`은 해당 버전을 `$HOME/.tool-versions`에 작성합니다.
+`asdf set`은 현재 디렉터리에 `.tool-versions` 파일에 버전을 기록하며, 파일이 없으면 새로 생성합니다. 이는 순전히 편의 기능으로,
+`echo "<tool> <version>" > .tool-versions` 를 실행하는 것과 같다고 생각하면 됩니다.
 
-현재 셸 세션에 대해서만, `shell`은 `ASDF_${TOOL}_VERSION`이라는 이름의 환경 변수로 버전을 설정합니다.
+`-u` / `--home` 플래그를 사용하면 `asdf set`은 `$HOME` 디렉터리에 있는 `.tool-versions` 파일에 기록하며, 해당 파일이 없을 경우 새로 생성합니다.
 
-`local`은 해당 버전을 `$PWD/.tool-versions`에 작성합니다, 존재하지 않을 시에 새로 만듦.
+`-p` / `--parent` 플래그를 사용하면 `asdf set`은 현재 디렉터리에서 가장 가까운 상위 디렉터리에 있는 `.tool-versions` 파일을 찾아 그 파일에 기록합니다.
 
-세부 내용은 `.tool-versions` [설정 섹션에 파일](/ko-kr/manage/configuration.md)을 참고하세요.
+### 환경 변수 사용 (Via Environment Variable)
 
-:::warning 대체수단
-현재 셸 세션에 대해서만 버전을 설정하려는 경우
-또는 특정 툴 버전 하에 단순히 한개의 명령어만 실행하기 위해, 당신은
-`ASDF_${TOOL}_VERSION`과 같은 환경 변수를 설정할 수 있습니다.
+버전을 결정할 때 `asdf`는 `ASDF_${TOOL}_VERSION` 형식의 환경 변수를 먼저 확인합니다.
+버전 형식은 `.tool-versions` 파일에서 지원하는 형식과 동일합니다.
+
+이 환경 변수가 설정되어 있으면, 어떤 `.tool-versions` 파일에 해당 도구의 버전이 설정되어 있더라도 **해당 값이 우선 적용**됩니다.
+
+예를 들어:
+
+```bash
+export ASDF_ELIXIR_VERSION=1.18.1
+```
+
+위 설정은 현재 셸 세션에서 `asdf`가 **Elixir 1.18.1**을 사용하도록 지정합니다.
+
+---
+
+:::warning 대체 수단
+
+이 설정은 **환경 변수**이기 때문에, **해당 변수가 설정된 위치(셸 세션)**에서만 적용됩니다.
+이미 실행 중인 다른 셸 세션들은 `.tool-versions` 파일에 설정된 버전을 계속 사용합니다.
+
+세부 내용은 Configuration 섹션의 `.tool-versions` [설정 섹션에 파일](/ko-kr/manage/configuration.md)을 참고하세요.
 :::
 
-다음 예시에서는 버전 `1.4.0`의 Elixir 프로젝트에서 테스트를 수행합니다.
-버전 형식은 `.tool-versions` 파일에서 지원되는 것과 동일하게 지원됩니다.
+---
 
-```shell
+다음 예시는 Elixir 프로젝트의 테스트를 **버전 1.4.0**으로 실행합니다:
+
+```bash
 ASDF_ELIXIR_VERSION=1.4.0 mix test
 ```
 
@@ -103,11 +121,11 @@ ASDF_ELIXIR_VERSION=1.4.0 mix test
 
 asdf 관리 버전이 아닌 `<name>` 도구의 시스템 버전을 사용하려면 도구의 버전을 `system`으로 설정할 수 있습니다.
 
-위에 [현재 버전 설정](#현재-버전-설정) 섹션에 나와있는대로, `system`을 `global`, `local` or `shell` 중에 하나로 설정하세요.
+위에 [현재 버전 설정](#현재-버전-설정) 섹션에 나와있는대로, `asdf set`이나 환경 변수를 사용하여 설정하세요.
 
 ```shell
-asdf local <name> system
-# asdf local python system
+asdf set <name> system
+# asdf set python system
 ```
 
 ## 현재 버전 보기
@@ -136,7 +154,13 @@ asdf는 패키지를 설치할 때 해당 패키지의 모든 실행 프로그�
 
 Shim 자체는 플러그인 이름과 shim이 감싸고 있는 설치된 패키지의 실행파일의 경로를 넘겨주는 `asdf exec`라는 헬퍼 프로그램을 `exec`시키는 매우 단순한 wrapper입니다.
 
-`asdf exec` 헬퍼는 (`.tool-version` 파일에 지정된 대로, `asdf local...` 또는 `asdf global...`에서 선택된 대로) 사용할 패키지의 버전을 결정합니다, (플러그인의 `exec-path` 콜백에 의해 조정될 수 있음) 패키지 설치 디렉토리의 실행 파일에 대한 최종 경로 및 (플러그인에 의해 제공된 - `exec-env` 스크립트) 실행할 환경을 결정하고, 최종적으로 이를 실행합니다.
+`asdf exec` 헬퍼는 사용할 패키지의 버전( `.tool-versions` 파일이나 환경 변수에 지정된 버전)을 결정하고,
+패키지 설치 디렉터리 안에서 실행 파일의 최종 경로를 산출합니다
+(이 경로는 플러그인의 `exec-path` 콜백을 통해 조정될 수 있습니다).
+
+또한 실행에 사용할 환경을 결정하는데, 이 역시 플러그인이 제공하는 `exec-env` 스크립트를 통해 설정됩니다.
+
+이 모든 과정이 끝나면, 해당 실행 파일을 실제로 실행합니다.
 
 ::: warning 노트
 이 시스템은 `exec` 호출을 사용하기 때문에, 실행 대신 셸에 의해 source 되야하는 패키지의 스크립트는 shim wrapper를 통하지 않고 직접 액세스되야 합니다. 두 가지 `asdf` 명령어: `which`와 `where`는 설치된 패키지로의 경로를 반환할 수 있습니다:

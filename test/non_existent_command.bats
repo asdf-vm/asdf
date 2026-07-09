@@ -16,7 +16,7 @@ setup() {
 
   [ "$status" -eq 1 ]
   [[ $output == 'invalid command provided:'* ]]
-  [[ $output == *$'version: v'* ]]
+  [[ $output =~ $'version: '[0-9]* ]]
   [[ $output == *$'MANAGE PLUGINS\n'* ]]
   [[ $output == *$'MANAGE TOOLS\n'* ]]
   [[ $output == *$'UTILS\n'* ]]

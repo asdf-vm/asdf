@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"strings"
 	"testing"
+
+	"github.com/asdf-vm/asdf/internal/execute"
 )
 
 // Basic integration tests using the legacy BATS test scripts. This ensures the
@@ -124,9 +126,7 @@ func runBatsFile(t *testing.T, dir, filename string) {
 	cmd.Stderr = &stderr
 
 	// Add dir to asdf test variables
-	asdfTestHome := fmt.Sprintf("BASE_DIR=%s", dir)
-	asdfBinPath := fmt.Sprintf("ASDF_BIN=%s", dir)
-	cmd.Env = []string{asdfBinPath, asdfTestHome}
+	cmd.Env = execute.MergeWithCurrentEnv(map[string]string{"BASE_DIR": dir, "ASDF_BIN": dir})
 
 	err := cmd.Run()
 	if err != nil {

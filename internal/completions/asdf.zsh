@@ -1,4 +1,3 @@
-# Define completion for asdf version manager
 #compdef asdf
 #description tool to manage versions of multiple runtimes
 
@@ -310,13 +309,8 @@ case "$subcmd" in
           # After flag, complete with plugin name
           _asdf__installed_plugins
         else
-          # Complete with available versions for the plugin
-          local versions
-          if versions=$(asdf list all "${words[3]}" 2>/dev/null); then
-            _wanted "versions-${words[3]}" \
-              expl "Available versions of ${words[3]}" \
-              compadd -- ${(f)versions}
-          fi
+          # Complete with installed versions for the plugin
+          _asdf__installed_versions_of_plus_system ${words[3]}
         fi
         ;;
       *)
@@ -326,12 +320,7 @@ case "$subcmd" in
         else
           local plugin="${words[3]}"
         fi
-        local versions
-        if versions=$(asdf list all "$plugin" 2>/dev/null); then
-          _wanted "versions-$plugin" \
-            expl "Available versions of $plugin" \
-            compadd -- ${(f)versions}
-        fi
+        _asdf__installed_versions_of_plus_system $plugin
         ;;
     esac
     ;;

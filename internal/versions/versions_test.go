@@ -196,7 +196,7 @@ func TestInstallOneVersion(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		err := InstallOneVersion(conf, plugin, "path:/foo/bar", false, &stdout, &stderr)
 
-		assert.ErrorContains(t, err, "uninstallable version: path")
+		assert.ErrorContains(t, err, "uninstallable version path of testlua")
 	})
 
 	t.Run("returns error when plugin version is 'system'", func(t *testing.T) {
@@ -263,7 +263,7 @@ func TestInstallOneVersion(t *testing.T) {
 		stdout, stderr := buildOutputs()
 
 		installScript := filepath.Join(conf.DataDir, "plugins", plugin.Name, "bin", "install")
-		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+		f, err := os.OpenFile(installScript, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o777)
 		assert.Nil(t, err)
 		_, err = f.WriteString("\nexit 1")
 		assert.Nil(t, err)
@@ -347,7 +347,7 @@ func TestLatest(t *testing.T) {
 
 		// Replace latest-stable script so it returns a dev version that would be otherwise filtered out
 		latestScript := filepath.Join(pluginDir, "bin", "latest-stable")
-		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0777)
+		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0o777)
 		assert.Nil(t, err)
 
 		version, err := Latest(plugin, "")
@@ -371,6 +371,25 @@ func TestLatest(t *testing.T) {
 		version, err := Latest(plugin, "4")
 		assert.Nil(t, err)
 		assert.Equal(t, "4.0.0", version)
+	})
+
+	t.Run("when given no query returns latest version of plugin starting with number", func(t *testing.T) {
+		pluginName := "no-latest-non-numeric-versions"
+		pluginDir, err := repotest.InstallPlugin("dummy_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, pluginName)
+
+		// Replace list-all script so it returns some non-numeric versions
+		listAllScript := filepath.Join(pluginDir, "bin", "list-all")
+		err = os.WriteFile(listAllScript, []byte("#!/usr/bin/env bash\necho foobar 3.4.5 1.2.3-dev foobar2"), 0o777)
+		assert.Nil(t, err)
+		latestScript := filepath.Join(pluginDir, "bin", "latest-stable")
+		err = os.Remove(latestScript)
+		assert.Nil(t, err)
+
+		version, err := Latest(plugin, "")
+		assert.Nil(t, err)
+		assert.Equal(t, "3.4.5", version)
 	})
 }
 

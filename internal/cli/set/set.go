@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/plugins"
@@ -90,8 +91,11 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 }
 
 func printError(stderr io.Writer, msg string) error {
-	fmt.Fprintf(stderr, "%s", msg)
-	return errors.New(msg)
+	if !strings.HasSuffix(msg, "\n") {
+		msg += "\n"
+	}
+	fmt.Fprint(stderr, msg)
+	return errors.New(strings.TrimSuffix(msg, "\n"))
 }
 
 func findVersionFileInParentDir(conf config.Config, directory string) (string, bool) {

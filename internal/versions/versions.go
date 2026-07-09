@@ -22,7 +22,6 @@ import (
 const (
 	systemVersion           = "system"
 	latestVersion           = "latest"
-	uninstallableVersionMsg = "uninstallable version: %s"
 	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
 	numericStartFilterRegex = "^\\s*[0-9]"
 	noLatestVersionErrMsg   = "no latest version found"
@@ -31,11 +30,12 @@ const (
 // UninstallableVersionError is an error returned if someone tries to install the
 // system version.
 type UninstallableVersionError struct {
+	toolName    string
 	versionType string
 }
 
 func (e UninstallableVersionError) Error() string {
-	return fmt.Sprintf(uninstallableVersionMsg, e.versionType)
+	return fmt.Sprintf("uninstallable version %s of %s", e.versionType, e.toolName)
 }
 
 // NoVersionSetError is returned whenever an operation that requires a version
@@ -145,13 +145,13 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	}
 
 	if versionStr == systemVersion {
-		return UninstallableVersionError{versionType: systemVersion}
+		return UninstallableVersionError{toolName: plugin.Name, versionType: systemVersion}
 	}
 
 	version := toolversions.Parse(versionStr)
 
 	if version.Type == "path" {
-		return UninstallableVersionError{versionType: "path"}
+		return UninstallableVersionError{toolName: plugin.Name, versionType: "path"}
 	}
 	downloadDir := installs.DownloadPath(conf, plugin, version)
 	installDir := installs.InstallPath(conf, plugin, version)
@@ -253,13 +253,19 @@ func Latest(plugin plugins.Plugin, query string) (version string, err error) {
 		return version, err
 	}
 
-	allVersions, err := AllVersionsFiltered(plugin, query)
+	allVersions, err := AllVersions(plugin)
 	if err != nil {
 		return version, err
 	}
 
-	versions := filterOutByRegex(allVersions, numericStartFilterRegex, true)
-	versions = filterOutByRegex(versions, latestFilterRegex, false)
+	versions := filterByRegex(allVersions, latestFilterRegex, false)
+
+	// If no query specified by user default to selecting version with numeric start
+	if query == "" {
+		versions = filterByRegex(versions, numericStartFilterRegex, true)
+	} else {
+		versions = filterByExactMatch(versions, query)
+	}
 
 	if len(versions) < 1 {
 		return version, errors.New(noLatestVersionErrMsg)
@@ -282,17 +288,6 @@ func AllVersions(plugin plugins.Plugin) (versions []string, err error) {
 	versions = parseVersions(stdout.String())
 
 	return versions, err
-}
-
-// AllVersionsFiltered returns a list of existing versions that match a regex
-// query provided by the user.
-func AllVersionsFiltered(plugin plugins.Plugin, query string) (versions []string, err error) {
-	all, err := AllVersions(plugin)
-	if err != nil {
-		return versions, err
-	}
-
-	return filterByExactMatch(all, query), err
 }
 
 // Uninstall uninstalls a specific tool version. It invokes pre and
@@ -349,7 +344,7 @@ func filterByExactMatch(allVersions []string, pattern string) (versions []string
 	return versions
 }
 
-func filterOutByRegex(allVersions []string, pattern string, keepMatch bool) (versions []string) {
+func filterByRegex(allVersions []string, pattern string, keepMatch bool) (versions []string) {
 	regex, _ := regexp.Compile(pattern)
 	for _, version := range allVersions {
 		match := regex.MatchString(version)

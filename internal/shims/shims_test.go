@@ -24,6 +24,7 @@ func TestFindExecutable(t *testing.T) {
 	version := "1.1.0"
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, version)
+	installVersion(t, conf, plugin, "2.0.0")
 	stdout, stderr := buildOutputs()
 	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
 	currentDir := t.TempDir()
@@ -47,6 +48,20 @@ func TestFindExecutable(t *testing.T) {
 	t.Run("returns string containing path to executable when found", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Equal(t, filepath.Base(filepath.Dir(filepath.Dir(executable))), "1.1.0")
+		assert.Equal(t, filepath.Base(executable), "dummy")
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, version, "1.1.0")
+		assert.True(t, found)
+		assert.Nil(t, err)
+	})
+
+	t.Run("returns path to executable with first version when multiple versions are set", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua 1.1.0 3.0.0 2.0.0")
 		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
 
 		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
@@ -97,6 +112,50 @@ func TestFindExecutable(t *testing.T) {
 		// see that it actually returns path to system ls
 		assert.Equal(t, filepath.Base(executable), "dummy")
 		assert.True(t, strings.HasPrefix(executable, dir))
+	})
+
+	t.Run("returns string containing path to executable when shim template in plugin is set", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua 1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		// write a shim template to the plugin shims dir
+		setupShimTemplate(t, plugin, "dummy", "echo 'shim template'")
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Nil(t, err)
+
+		relativePath, err := filepath.Rel(conf.DataDir, executable)
+		assert.Nil(t, err)
+
+		assert.Equal(t, "plugins/lua/shims/dummy", relativePath)
+		assert.Equal(t, "dummy", filepath.Base(executable))
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, "", version)
+		assert.True(t, found)
+	})
+}
+
+func TestFindExecutable_Ref(t *testing.T) {
+	version := "ref:v1.1.0"
+	conf, plugin := generateConfig(t)
+	installVersion(t, conf, plugin, version)
+	stdout, stderr := buildOutputs()
+	assert.Nil(t, GenerateAll(conf, &stdout, &stderr))
+	currentDir := t.TempDir()
+
+	t.Run("returns string containing path to ref installed executable when found", func(t *testing.T) {
+		// write a version file
+		data := []byte("lua ref:v1.1.0")
+		assert.Nil(t, os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666))
+
+		executable, gotPlugin, version, found, err := FindExecutable(conf, "dummy", currentDir)
+		assert.Nil(t, err)
+		assert.True(t, found)
+		assert.Equal(t, "ref:v1.1.0", version)
+		assert.Equal(t, plugin, gotPlugin)
+		assert.Equal(t, "dummy", filepath.Base(executable))
+		assert.Equal(t, "ref-v1.1.0", filepath.Base(filepath.Dir(filepath.Dir(executable))))
 	})
 }
 
@@ -405,14 +464,36 @@ func TestExecutablePaths(t *testing.T) {
 		assert.Equal(t, filepath.Base(path1), "foo")
 		assert.Equal(t, filepath.Base(path2), "bar")
 	})
+
+	t.Run("returns list of executable paths for tool version containing shim templates", func(t *testing.T) {
+		data := []byte("echo 'foo bar'")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
+		assert.Nil(t, err)
+
+		// write a shim template to the plugin shims dir
+		setupShimTemplate(t, plugin, "dummy", "echo 'shim template'")
+
+		executables, err := ExecutablePaths(conf, plugin, toolversions.Version{Type: "version", Value: "1.2.3"})
+		assert.Nil(t, err)
+		path1 := executables[0]
+		path2 := executables[1]
+		path3 := executables[2]
+		assert.Equal(t, "foo", filepath.Base(path2))
+		assert.Equal(t, "bar", filepath.Base(path3))
+
+		relativePath, err := filepath.Rel(conf.DataDir, path1)
+		assert.Nil(t, err)
+		assert.Equal(t, "plugins/lua/shims", relativePath)
+	})
 }
 
 func TestExecutableDirs(t *testing.T) {
 	conf, plugin := generateConfig(t)
 	installVersion(t, conf, plugin, "1.2.3")
+	versionStruct := toolversions.Version{Type: "version", Value: "1.2.3"}
 
 	t.Run("returns list only containing 'bin' when list-bin-paths callback missing", func(t *testing.T) {
-		executables, err := ExecutableDirs(plugin)
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
 		assert.Nil(t, err)
 		assert.Equal(t, executables, []string{"bin"})
 	})
@@ -422,9 +503,20 @@ func TestExecutableDirs(t *testing.T) {
 		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
 		assert.Nil(t, err)
 
-		executables, err := ExecutableDirs(plugin)
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
 		assert.Nil(t, err)
 		assert.Equal(t, executables, []string{"foo", "bar"})
+	})
+
+	t.Run("exposes ASDF_INSTALL_* env vars to list-bin-paths", func(t *testing.T) {
+		data := []byte("echo ${ASDF_INSTALL_TYPE} ${ASDF_INSTALL_VERSION} ${ASDF_INSTALL_PATH}")
+		err := os.WriteFile(filepath.Join(plugin.Dir, "bin", "list-bin-paths"), data, 0o777)
+		assert.Nil(t, err)
+
+		executables, err := ExecutableDirs(conf, plugin, versionStruct)
+		assert.Nil(t, err)
+		assert.Equal(t, []string{"version", "1.2.3"}, executables[0:2])
+		assert.Contains(t, executables[2], "lua/1.2.3")
 	})
 }
 
@@ -472,4 +564,20 @@ func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, ver
 	t.Helper()
 	err := installtest.InstallOneVersion(conf, plugin, "version", version)
 	assert.Nil(t, err)
+}
+
+func setupShimTemplate(t *testing.T, plugin plugins.Plugin, shimName string, script string) {
+	t.Helper()
+	shimsDirPath := filepath.Join(plugin.Dir, "shims")
+	os.MkdirAll(shimsDirPath, 0o777)
+
+	shimPath := filepath.Join(shimsDirPath, shimName)
+	contents := fmt.Sprintf("#!/usr/bin/env bash\n%s\n", script)
+	err := os.WriteFile(shimPath, []byte(contents), 0o777)
+	assert.Nil(t, err)
+
+	t.Cleanup(func() {
+		err := os.Remove(shimPath)
+		assert.Nil(t, err)
+	})
 }

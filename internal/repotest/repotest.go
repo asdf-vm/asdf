@@ -118,7 +118,7 @@ func getModuleRoot() (string, error) {
 func createGitRepo(location string) (string, error) {
 	// Definitely some opportunities to refactor here. This code might be
 	// simplified by switching to the Go git library
-	err := runCmd("git", "-C", location, "init", "-q")
+	err := runCmd("git", "-C", location, "init", "-q", "-b", "master")
 	if err != nil {
 		return location, err
 	}
@@ -205,6 +205,10 @@ func runCmd(cmdName string, args ...string) error {
 	var stderr strings.Builder
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
+
+	// Global env vars
+	// GIT_CONFIG_GLOBAL=/dev/null prevents git from looking for user settings like commit.gpgSign and user.name
+	cmd.Env = []string{"GIT_CONFIG_GLOBAL=/dev/null"}
 
 	err := cmd.Run()
 	if err != nil {

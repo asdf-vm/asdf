@@ -2,11 +2,13 @@
 package cli
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
 	"io/fs"
 	"log"
+	"net/mail"
 	"os"
 	"path/filepath"
 	"slices"
@@ -29,7 +31,7 @@ import (
 	"github.com/asdf-vm/asdf/internal/shims"
 	"github.com/asdf-vm/asdf/internal/toolversions"
 	"github.com/asdf-vm/asdf/internal/versions"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 const usageText = `The Multiple Runtime Version Manager.
@@ -51,32 +53,28 @@ func Execute(version string) {
 	logger := log.New(os.Stderr, "", 0)
 	log.SetFlags(0)
 
-	app := &cli.App{
-		Name:    "asdf",
-		Version: version,
-		// Not really sure what I should put here, but all the new Golang code will
-		// likely be written by me.
+	app := &cli.Command{
+		Name:      "asdf",
+		Version:   version,
 		Copyright: "(c) 2024 Trevor Brown",
-		Authors: []*cli.Author{
-			{
-				Name: "Trevor Brown",
-			},
+		Authors: []any{
+			mail.Address{Name: "Trevor Brown", Address: "someguy@example.com"},
 		},
 		Usage:     "The multiple runtime version manager",
 		UsageText: usageText,
 		Commands: []*cli.Command{
 			{
 				Name: "cmd",
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args().Slice()
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args().Slice()
 
 					return extensionCommand(logger, args)
 				},
 			},
 			{
 				Name: "completion",
-				Action: func(cCtx *cli.Context) error {
-					shell := cCtx.Args().Get(0)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					shell := cmd.Args().Get(0)
 					return completionCommand(logger, shell)
 				},
 			},
@@ -88,42 +86,46 @@ func Execute(version string) {
 						Usage: "Whether or not to print a header line",
 					},
 				},
-				Action: func(cCtx *cli.Context) error {
-					tool := cCtx.Args().Get(0)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					tool := cmd.Args().Get(0)
 
-					noHeader := cCtx.Bool("no-header")
+					noHeader := cmd.Bool("no-header")
 					return currentCommand(logger, tool, noHeader)
 				},
 			},
 			{
 				Name: "env",
-				Action: func(cCtx *cli.Context) error {
-					shimmedCommand := cCtx.Args().Get(0)
-					args := cCtx.Args().Slice()
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					shimmedCommand := cmd.Args().Get(0)
+					args := cmd.Args().Slice()
 
 					return envCommand(logger, shimmedCommand, args)
 				},
 			},
 			{
 				Name: "exec",
-				Action: func(cCtx *cli.Context) error {
-					command := cCtx.Args().Get(0)
-					args := cCtx.Args().Slice()
+				// We want all arguments to exec to remain unparsed so we can pass them
+				// directly to the command asdf will exec on behalf of the shim/user.
+				// SkipFlagParsing tells urfave/cli to do this.
+				SkipFlagParsing: true,
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					command := cmd.Args().Get(0)
+					args := cmd.Args().Slice()
 
 					return execCommand(logger, command, args)
 				},
 			},
 			{
 				Name: "help",
-				Action: func(cCtx *cli.Context) error {
-					toolName := cCtx.Args().Get(0)
-					toolVersion := cCtx.Args().Get(1)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					toolName := cmd.Args().Get(0)
+					toolVersion := cmd.Args().Get(1)
 					return helpCommand(logger, version, toolName, toolVersion)
 				},
 			},
 			{
 				Name: "info",
-				Action: func(_ *cli.Context) error {
+				Action: func(_ context.Context, _ *cli.Command) error {
 					conf, err := config.LoadConfig()
 					if err != nil {
 						logger.Printf("error loading config: %s", err)
@@ -135,7 +137,7 @@ func Execute(version string) {
 			},
 			{
 				Name: "version",
-				Action: func(_ *cli.Context) error {
+				Action: func(_ context.Context, _ *cli.Command) error {
 					fmt.Fprintf(os.Stdout, "%s\n", version)
 					return nil
 				},
@@ -148,9 +150,9 @@ func Execute(version string) {
 						Usage: "Whether or not to keep download directory after successful install",
 					},
 				},
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args()
-					keepDownload := cCtx.Bool("keep-download")
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args()
+					keepDownload := cmd.Bool("keep-download")
 					return installCommand(logger, args.Get(0), args.Get(1), keepDownload)
 				},
 			},
@@ -162,40 +164,35 @@ func Execute(version string) {
 						Usage: "Show latest version of all tools",
 					},
 				},
-				Action: func(cCtx *cli.Context) error {
-					tool := cCtx.Args().Get(0)
-					pattern := cCtx.Args().Get(1)
-					all := cCtx.Bool("all")
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					tool := cmd.Args().Get(0)
+					pattern := cmd.Args().Get(1)
+					all := cmd.Bool("all")
 
 					return latestCommand(logger, all, tool, pattern)
 				},
 			},
 			{
 				Name: "list",
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args()
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args()
 					return listCommand(logger, args.Get(0), args.Get(1), args.Get(2))
 				},
 			},
 			{
 				Name: "plugin",
-				Action: func(_ *cli.Context) error {
-					logger.Println("Unknown command: `asdf plugin`")
-					cli.OsExiter(1)
-					return nil
-				},
-				Subcommands: []*cli.Command{
+				Commands: []*cli.Command{
 					{
 						Name: "add",
-						Action: func(cCtx *cli.Context) error {
-							args := cCtx.Args()
+						Action: func(_ context.Context, cmd *cli.Command) error {
+							args := cmd.Args()
 							conf, err := config.LoadConfig()
 							if err != nil {
 								logger.Printf("error loading config: %s", err)
 								return err
 							}
 
-							return pluginAddCommand(cCtx, conf, logger, args.Get(0), args.Get(1))
+							return pluginAddCommand(cmd, conf, logger, args.Get(0), args.Get(1))
 						},
 					},
 					{
@@ -210,13 +207,13 @@ func Execute(version string) {
 								Usage: "Show Refs",
 							},
 						},
-						Action: func(cCtx *cli.Context) error {
-							return pluginListCommand(cCtx, logger)
+						Action: func(_ context.Context, cmd *cli.Command) error {
+							return pluginListCommand(cmd, logger)
 						},
-						Subcommands: []*cli.Command{
+						Commands: []*cli.Command{
 							{
 								Name: "all",
-								Action: func(_ *cli.Context) error {
+								Action: func(_ context.Context, _ *cli.Command) error {
 									return pluginListAllCommand(logger)
 								},
 							},
@@ -224,9 +221,9 @@ func Execute(version string) {
 					},
 					{
 						Name: "remove",
-						Action: func(cCtx *cli.Context) error {
-							args := cCtx.Args()
-							return pluginRemoveCommand(cCtx, logger, args.Get(0))
+						Action: func(_ context.Context, cmd *cli.Command) error {
+							args := cmd.Args()
+							return pluginRemoveCommand(cmd, logger, args.Get(0))
 						},
 					},
 					{
@@ -237,9 +234,9 @@ func Execute(version string) {
 								Usage: "Update all installed plugins",
 							},
 						},
-						Action: func(cCtx *cli.Context) error {
-							args := cCtx.Args()
-							return pluginUpdateCommand(cCtx, logger, args.Get(0), args.Get(1))
+						Action: func(_ context.Context, cmd *cli.Command) error {
+							args := cmd.Args()
+							return pluginUpdateCommand(cmd, logger, args.Get(0), args.Get(1))
 						},
 					},
 					{
@@ -254,10 +251,10 @@ func Execute(version string) {
 								Usage: "The plugin Git ref to test",
 							},
 						},
-						Action: func(cCtx *cli.Context) error {
-							toolVersion := cCtx.String("asdf-tool-version")
-							gitRef := cCtx.String("asdf-plugin-gitref")
-							args := cCtx.Args().Slice()
+						Action: func(_ context.Context, cmd *cli.Command) error {
+							toolVersion := cmd.String("asdf-tool-version")
+							gitRef := cmd.String("asdf-plugin-gitref")
+							args := cmd.Args().Slice()
 							pluginTestCommand(logger, args, toolVersion, gitRef)
 							return nil
 						},
@@ -266,8 +263,8 @@ func Execute(version string) {
 			},
 			{
 				Name: "reshim",
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args()
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args()
 					return reshimCommand(logger, args.Get(0), args.Get(1))
 				},
 			},
@@ -285,10 +282,10 @@ func Execute(version string) {
 						Usage:   "The version should be set in the closest existing .tool-versions file in a parent directory",
 					},
 				},
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args().Slice()
-					home := cCtx.Bool("home")
-					parent := cCtx.Bool("parent")
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args().Slice()
+					home := cmd.Bool("home")
+					parent := cmd.Bool("parent")
 					return set.Main(os.Stdout, os.Stderr, args, home, parent, func() (string, error) {
 						return os.UserHomeDir()
 					})
@@ -296,46 +293,46 @@ func Execute(version string) {
 			},
 			{
 				Name: "shimversions",
-				Action: func(cCtx *cli.Context) error {
-					args := cCtx.Args()
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					args := cmd.Args()
 					return shimVersionsCommand(logger, args.Get(0))
 				},
 			},
 			{
 				Name: "uninstall",
-				Action: func(cCtx *cli.Context) error {
-					tool := cCtx.Args().Get(0)
-					version := cCtx.Args().Get(1)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					tool := cmd.Args().Get(0)
+					version := cmd.Args().Get(1)
 
 					return uninstallCommand(logger, tool, version)
 				},
 			},
 			{
 				Name: "update",
-				Action: func(_ *cli.Context) error {
+				Action: func(_ context.Context, _ *cli.Command) error {
 					fmt.Println(updateCommandRemovedText)
 					return errors.New("command removed")
 				},
 			},
 			{
 				Name: "where",
-				Action: func(cCtx *cli.Context) error {
-					tool := cCtx.Args().Get(0)
-					version := cCtx.Args().Get(1)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					tool := cmd.Args().Get(0)
+					version := cmd.Args().Get(1)
 
 					return whereCommand(logger, tool, version)
 				},
 			},
 			{
 				Name: "which",
-				Action: func(cCtx *cli.Context) error {
-					tool := cCtx.Args().Get(0)
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					tool := cmd.Args().Get(0)
 
 					return whichCommand(logger, tool)
 				},
 			},
 		},
-		CommandNotFound: func(_ *cli.Context, s string) {
+		CommandNotFound: func(_ context.Context, _ *cli.Command, s string) {
 			logger.Printf("invalid command provided: %s\n\n", s)
 			helpCommand(logger, version, "", "")
 			cli.OsExiter(1)
@@ -347,7 +344,7 @@ func Execute(version string) {
 		cli.OsExiter(1)
 	}
 
-	if err = app.Run(os.Args); err != nil {
+	if err = app.Run(context.Background(), os.Args); err != nil {
 		cli.OsExiter(1)
 	}
 }
@@ -548,7 +545,7 @@ func envCommand(logger *log.Logger, shimmedCommand string, args []string) error 
 }
 
 func setPath(paths []string) string {
-	return strings.Join(paths, ":") + ":" + os.Getenv("PATH")
+	return strings.Join(paths, string(os.PathListSeparator)) + string(os.PathListSeparator) + os.Getenv("PATH")
 }
 
 func execCommand(logger *log.Logger, command string, args []string) error {
@@ -676,16 +673,16 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 				logger.Printf("No preset version installed for command %s", command)
 				for _, toolVersion := range toolVersions {
 					for _, version := range toolVersion.Versions {
-						fmt.Printf("asdf install %s %s\n", toolVersion.Name, version)
+						logger.Printf("asdf install %s %s\n", toolVersion.Name, version)
 					}
 				}
 
-				fmt.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
 			}
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
-					fmt.Printf("%s %s\n", toolVersion.Name, version)
+					logger.Printf("%s %s\n", toolVersion.Name, version)
 				}
 			}
 		}
@@ -716,7 +713,7 @@ func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) 
 	return false
 }
 
-func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
+func pluginAddCommand(_ *cli.Command, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
 	if pluginName == "" {
 		// Invalid arguments
 		// Maybe one day switch this to show the generated help
@@ -742,7 +739,7 @@ func pluginAddCommand(_ *cli.Context, conf config.Config, logger *log.Logger, pl
 	return nil
 }
 
-func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) error {
+func pluginRemoveCommand(_ *cli.Command, logger *log.Logger, pluginName string) error {
 	if pluginName == "" {
 		logger.Print("No plugin given")
 		cli.OsExiter(1)
@@ -774,7 +771,7 @@ func pluginRemoveCommand(_ *cli.Context, logger *log.Logger, pluginName string) 
 	return err
 }
 
-func pluginListCommand(cCtx *cli.Context, logger *log.Logger) error {
+func pluginListCommand(cCtx *cli.Command, logger *log.Logger) error {
 	urls := cCtx.Bool("urls")
 	refs := cCtx.Bool("refs")
 
@@ -915,7 +912,7 @@ func helpCommand(logger *log.Logger, asdfVersion, tool, version string) error {
 	return err
 }
 
-func pluginUpdateCommand(cCtx *cli.Context, logger *log.Logger, pluginName, ref string) error {
+func pluginUpdateCommand(cCtx *cli.Command, logger *log.Logger, pluginName, ref string) error {
 	updateAll := cCtx.Bool("all")
 	if !updateAll && pluginName == "" {
 		return cli.Exit("usage: asdf plugin update {<name> [git-ref] | --all}", 1)
@@ -967,7 +964,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	// Install plugin
 	err = plugins.Add(conf, testName, url, ref)
 	if err != nil {
-		failTest(l, fmt.Sprintf("%s was not properly installed", name))
+		failTest(l, fmt.Sprintf("%s was not properly installed reason: %s", name, err))
 	}
 
 	// Remove plugin
@@ -1034,10 +1031,18 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 		failTest(l, "list-all did not return any version")
 	}
 
-	// grab first version returned by list-all callback if no version provided as
-	// a CLI argument
+	// Resolve version: if empty use first from list-all; if "latest" or
+	// "latest:<query>" resolve via the plugin's latest-stable callback.
 	if toolVersion == "" {
 		toolVersion = allVersions[0]
+	} else if toolVersion == "latest" || strings.HasPrefix(toolVersion, "latest:") {
+		query := strings.TrimPrefix(toolVersion, "latest")
+		query = strings.TrimPrefix(query, ":")
+		resolved, err := versions.Latest(plugin, query)
+		if err != nil {
+			failTest(l, "could not get latest version")
+		}
+		toolVersion = resolved
 	}
 
 	err = versions.InstallOneVersion(conf, plugin, toolVersion, false, os.Stdout, os.Stderr)
@@ -1080,10 +1085,18 @@ func installCommand(logger *log.Logger, toolName, version string, keepDownload b
 			for _, err := range errs {
 				// Don't print error if no version set, this just means the current
 				// dir doesn't use a particular plugin that is installed.
-				if _, ok := err.(versions.NoVersionSetError); !ok {
-					os.Stderr.Write([]byte(err.Error()))
-					os.Stderr.Write([]byte("\n"))
+				if _, ok := err.(versions.NoVersionSetError); ok {
+					continue
 				}
+
+				if _, ok := err.(versions.UninstallableVersionError); ok {
+					msg := fmt.Sprintf("skipping %s\n", err.Error())
+					os.Stderr.Write([]byte(msg))
+					continue
+				}
+
+				os.Stderr.Write([]byte(err.Error()))
+				os.Stderr.Write([]byte("\n"))
 			}
 
 			filtered := filterInstallErrors(errs)
@@ -1285,8 +1298,11 @@ func listLocalCommand(logger *log.Logger, conf config.Config, pluginName, filter
 		}
 
 		if len(versions) == 0 {
-			logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
-			cli.OsExiter(1)
+			if filter == "" {
+				logger.Printf("No compatible versions installed (%s)", plugin.Name)
+			} else {
+				logger.Printf("No compatible versions installed (%s %s)", plugin.Name, filter)
+			}
 			return nil
 		}
 

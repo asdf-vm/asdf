@@ -133,9 +133,6 @@ EOM
 }
 
 @test "install_command without arguments should generate shim that passes all arguments to executable" {
-  # asdf lib needed to run generated shims
-  cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
-
   cd "$PROJECT_DIR"
   echo 'dummy 1.0.0' >"$PROJECT_DIR/.tool-versions"
   run asdf install
@@ -191,9 +188,6 @@ EOM
 }
 
 @test "install_command without arguments uses a parent directory .tool-versions file if present" {
-  # asdf lib needed to run generated shims
-  cp -rf "$BATS_TEST_DIRNAME"/../{bin,lib} "$ASDF_DIR/"
-
   echo 'dummy 1.0.0' >"$PROJECT_DIR/.tool-versions"
   mkdir -p "$PROJECT_DIR/child"
 
@@ -220,7 +214,7 @@ EOM
 @test "install_command doesn't install system version" {
   run asdf install dummy system
   [ "$status" -eq 1 ]
-  [ "$output" = "error installing version: uninstallable version: system" ]
+  [ "$output" = "error installing version: uninstallable version system of dummy" ]
   [ ! -f "$ASDF_DIR/installs/dummy/system/version" ]
 }
 
