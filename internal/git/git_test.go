@@ -212,6 +212,39 @@ func TestRepoUpdate(t *testing.T) {
 		assert.Equal(t, hash, latestHash)
 		assert.Equal(t, newHash, latestHash)
 	})
+
+	t.Run("updates repo when remote has diverged with non-fast-forward changes", func(t *testing.T) {
+		remoteDir := generateRepo(t)
+		localDir := t.TempDir()
+		localRepo := NewRepo(localDir)
+
+		err := localRepo.Clone(remoteDir, "")
+		assert.Nil(t, err)
+
+		originalRemoteHash, err := getCurrentCommit(remoteDir)
+		assert.Nil(t, err)
+
+		originalLocalHash, err := getCurrentCommit(localDir)
+		assert.Nil(t, err)
+		assert.Equal(t, originalRemoteHash, originalLocalHash)
+
+		err = amendCommitInRepo(remoteDir)
+		assert.Nil(t, err)
+
+		newRemoteHash, err := getCurrentCommit(remoteDir)
+		assert.Nil(t, err)
+		assert.NotEqual(t, originalRemoteHash, newRemoteHash)
+
+		updatedToRef, oldHash, newHash, err := localRepo.Update("")
+		assert.Nil(t, err)
+		assert.Equal(t, "refs/heads/master", updatedToRef)
+		assert.Equal(t, originalLocalHash, oldHash)
+		assert.Equal(t, newRemoteHash, newHash)
+
+		currentLocalHash, err := getCurrentCommit(localDir)
+		assert.Nil(t, err)
+		assert.Equal(t, newRemoteHash, currentLocalHash)
+	})
 }
 
 func getCurrentCommit(path string) (string, error) {
@@ -251,6 +284,24 @@ func checkoutPreviousCommit(path string) (string, error) {
 	}
 
 	return previousHash.String(), nil
+}
+
+func amendCommitInRepo(path string) error {
+	repo, err := git.PlainOpen(path)
+	if err != nil {
+		return err
+	}
+
+	worktree, err := repo.Worktree()
+	if err != nil {
+		return err
+	}
+
+	_, err = worktree.Commit("amended commit", &git.CommitOptions{
+		Amend: true,
+	})
+
+	return err
 }
 
 func generateRepo(t *testing.T) string {
