@@ -113,7 +113,7 @@ func (r Repo) Update(ref string) (string, string, string, error) {
 
 	commonOpts := []string{"git", "-C", r.Directory}
 
-	refSpec := fmt.Sprintf("%s:%s", shortRef, shortRef)
+	refSpec := fmt.Sprintf("+%s:%s", shortRef, shortRef)
 	cmdStr := append(commonOpts, []string{"fetch", "--prune", "--update-head-ok", remoteName, refSpec}...)
 
 	_, stderr, err := exec(cmdStr)
