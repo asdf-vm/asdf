@@ -34,7 +34,7 @@ asdf can be installed in several different ways:
 
 <!-- x-release-please-start-version -->
 1. [Install Go](https://go.dev/doc/install)
-2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.19.0`
+2. Run `go install github.com/asdf-vm/asdf/cmd/asdf@v0.20.0`
 <!-- x-release-please-end -->
 
 ::::
@@ -48,7 +48,7 @@ asdf can be installed in several different ways:
 <!-- x-release-please-start-version -->
 1. Clone the asdf repository:
   ```shell
-  git clone https://github.com/asdf-vm/asdf.git --branch v0.19.0
+  git clone https://github.com/asdf-vm/asdf.git --branch v0.20.0
   ```
 <!-- x-release-please-end -->
 2. Run `make`
@@ -257,47 +257,28 @@ Shell completions not available for PowerShell
 Add the following to `~/.config/nushell/config.nu`:
 
 ```shell
-let shims_dir = (
-  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
-    $env.HOME | path join '.asdf'
-  } else {
-    $env.ASDF_DATA_DIR
-  } | path join 'shims'
-)
-$env.PATH = ( $env.PATH | split row (char esep) | where { |p| $p != $shims_dir } | prepend $shims_dir )
+const asdf_data_dir = '~/.asdf' | path expand # or wherever you like
+const asdf_shims = [$asdf_data_dir shims] | path join
+$env.PATH = $env.PATH | where {$in != $asdf_shims} | prepend $asdf_shims
 ```
 
-###### Custom data directory (optional)
+###### Custom data directory (required when $asdf_data_dir != '~/.asdf')
 
-Add the following to `~/.config/nushell/config.nu` above the line you added above:
+If you set $asdf_data_dir to something different than the default `~/.asdf` then you must add the following to `~/.config/nushell/config.nu`:
 
 ```shell
-$env.ASDF_DATA_DIR = "/your/custom/data/dir"
+$env.ASDF_DATA_DIR = $asdf_data_dir
 ```
 
 ##### Set up shell completions (optional)
 
-```shell
-# If you've not customized the asdf data directory:
-$ mkdir $"($env.HOME)/.asdf/completions"
-$ asdf completion nushell | save $"($env.HOME)/.asdf/completions/nushell.nu"
-
-# If you have customized the data directory by setting ASDF_DATA_DIR:
-$ mkdir $"($env.ASDF_DATA_DIR)/completions"
-$ asdf completion nushell | save $"($env.ASDF_DATA_DIR)/completions/nushell.nu"
-```
-
-Then add the following to `~/.config/nushell/config.nu`:
+Add the following to `~/.config/nushell/config.nu`, after the required setup:
 
 ```shell
-let asdf_data_dir = (
-  if ( $env | get --ignore-errors ASDF_DATA_DIR | is-empty ) {
-    $env.HOME | path join '.asdf'
-  } else {
-    $env.ASDF_DATA_DIR
-  }
-)
-source "$asdf_data_dir/completions/nushell.nu"
+const asdf_cmp = [$asdf_data_dir completions nushell.nu] | path join
+mkdir ($asdf_cmp | path dirname)
+asdf completion nushell | save -f $asdf_cmp
+source $asdf_cmp
 ```
 
 :::

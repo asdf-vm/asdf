@@ -121,6 +121,10 @@ const ko_kr = [
     items: [
       { text: "asdf이란?", link: "/ko-kr/guide/introduction" },
       { text: "시작하기", link: "/ko-kr/guide/getting-started" },
+      {
+        text: "시작하기 (0.16.0 이전)",
+        link: "/ko-kr/guide/getting-started-legacy",
+      },
     ],
   },
   {
@@ -138,6 +142,7 @@ const ko_kr = [
     items: [
       { text: "설정", link: "/ko-kr/manage/configuration" },
       { text: "모든 명령어", link: "/ko-kr/manage/commands" },
+      { text: "의존성", link: "/ko-kr/manage/dependencies" },
       {
         text: "플러그인 Shortname 인덱스",
         link: "https://github.com/asdf-vm/asdf-plugins",
