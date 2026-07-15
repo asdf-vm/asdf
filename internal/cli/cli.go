@@ -1056,7 +1056,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	} else if toolVersion == "latest" || strings.HasPrefix(toolVersion, "latest:") {
 		query := strings.TrimPrefix(toolVersion, "latest")
 		query = strings.TrimPrefix(query, ":")
-		resolved, err := versions.Latest(plugin, query)
+		resolved, err := versions.Latest(plugin, query, os.Stderr)
 		if err != nil {
 			failTest(l, "could not get latest version")
 		}
@@ -1194,7 +1194,7 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	}
 
 	if !all {
-		err = latestForPlugin(conf, toolName, pattern, false)
+		err = latestForPlugin(conf, toolName, pattern, false, os.Stderr)
 		if err != nil {
 			cli.OsExiter(1)
 		}
@@ -1211,7 +1211,7 @@ func latestCommand(logger *log.Logger, all bool, toolName, pattern string) (err 
 	var maybeErr error
 	// loop over all plugins and show latest for each one.
 	for _, plugin := range plugins {
-		maybeErr = latestForPlugin(conf, plugin.Name, "", true)
+		maybeErr = latestForPlugin(conf, plugin.Name, "", true, os.Stderr)
 		if maybeErr != nil {
 			err = maybeErr
 		}
@@ -1579,10 +1579,10 @@ func reshimToolVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	return shims.GenerateForVersion(conf, plugin, version, out, errOut)
 }
 
-func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool) error {
+func latestForPlugin(conf config.Config, toolName, pattern string, showStatus bool, errOut io.Writer) error {
 	// show single plugin
 	plugin := plugins.New(conf, toolName)
-	latest, err := versions.Latest(plugin, pattern)
+	latest, err := versions.Latest(plugin, pattern, errOut)
 	if err != nil && err.Error() != "no latest version found" {
 		fmt.Printf("unable to load latest version: %s\n", err)
 		return err

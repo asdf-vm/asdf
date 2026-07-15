@@ -2,6 +2,7 @@ package versions
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -334,7 +335,7 @@ func TestLatest(t *testing.T) {
 		assert.Nil(t, err)
 		plugin := plugins.New(conf, pluginName)
 
-		version, err := Latest(plugin, "")
+		version, err := Latest(plugin, "", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, "2.0.0", version)
 	})
@@ -350,25 +351,25 @@ func TestLatest(t *testing.T) {
 		err = os.WriteFile(latestScript, []byte("#!/usr/bin/env bash\necho 1.2.3-dev"), 0o777)
 		assert.Nil(t, err)
 
-		version, err := Latest(plugin, "")
+		version, err := Latest(plugin, "", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, "1.2.3-dev", version)
 	})
 
 	t.Run("when given query matching no versions return empty slice of versions", func(t *testing.T) {
-		version, err := Latest(plugin, "impossible-to-satisfy-query")
+		version, err := Latest(plugin, "impossible-to-satisfy-query", io.Discard)
 		assert.Error(t, err, "no latest version found")
 		assert.Equal(t, version, "")
 	})
 
 	t.Run("when given no query returns latest version of plugin", func(t *testing.T) {
-		version, err := Latest(plugin, "")
+		version, err := Latest(plugin, "", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, "5.1.0", version)
 	})
 
 	t.Run("when given no query returns latest version of plugin", func(t *testing.T) {
-		version, err := Latest(plugin, "4")
+		version, err := Latest(plugin, "4", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, "4.0.0", version)
 	})
@@ -387,7 +388,7 @@ func TestLatest(t *testing.T) {
 		err = os.Remove(latestScript)
 		assert.Nil(t, err)
 
-		version, err := Latest(plugin, "")
+		version, err := Latest(plugin, "", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, "3.4.5", version)
 	})
@@ -424,7 +425,7 @@ func TestLatestWithSamples(t *testing.T) {
 		assert.Nil(t, err)
 
 		plugin := plugins.New(conf, pluginName)
-		version, err := Latest(plugin, "")
+		version, err := Latest(plugin, "", io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, tt.expectedOutput, version)
 	}
@@ -438,7 +439,7 @@ func TestAllVersions(t *testing.T) {
 	plugin := plugins.New(conf, pluginName)
 
 	t.Run("returns slice of available versions from plugin", func(t *testing.T) {
-		versions, err := AllVersions(plugin)
+		versions, err := AllVersions(plugin, io.Discard)
 		assert.Nil(t, err)
 		assert.Equal(t, versions, []string{"1.0.0", "1.1.0", "2.0.0"})
 	})
@@ -449,9 +450,23 @@ func TestAllVersions(t *testing.T) {
 		assert.Nil(t, err)
 		plugin := plugins.New(conf, pluginName)
 
-		versions, err := AllVersions(plugin)
+		versions, err := AllVersions(plugin, io.Discard)
 		assert.Equal(t, err.(plugins.NoCallbackError).Error(), "Plugin named list-all-fail does not have a callback named list-all")
 		assert.Empty(t, versions)
+	})
+
+	t.Run("returns error when callback fails", func(t *testing.T) {
+		pluginName = "list-all-stderr"
+		_, err := repotest.InstallPlugin("dummy_broken_plugin", conf.DataDir, pluginName)
+		assert.Nil(t, err)
+		plugin := plugins.New(conf, pluginName)
+
+		var stdErr strings.Builder
+
+		versions, err := AllVersions(plugin, &stdErr)
+		assert.Equal(t, "exit status 1", err.Error())
+		assert.Empty(t, versions)
+		assert.Equal(t, "List-all failed!\n", stdErr.String())
 	})
 }
 
