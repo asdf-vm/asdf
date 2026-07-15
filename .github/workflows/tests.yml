@@ -53,11 +53,13 @@ jobs:
         uses: actions/setup-go@v7
         with:
           go-version: '1.26.3'
-      - run: scripts/install_dependencies.bash
-      - name: Install dependencies
+      - name: Install dependencies (Unix)
+        if: runner.os != 'Windows'
+        run: scripts/install_dependencies.bash
+      - name: Install Go dependencies
         run: go get ./...
       - name: Run Go tests
-        run: go test -coverprofile=/tmp/coverage.out  -bench= -race ./...
+        run: go test -coverprofile=${{ runner.temp }}/coverage.out  -bench= -race ./...
 
   # Because I changed the test helper code Bash tests now fail. I removed them
   # from here to get passing checks. They can be added back at a later time if
