@@ -36,6 +36,9 @@ func TestWrite(t *testing.T) {
 	assert.Nil(t, err)
 	output := stdout.String()
 
+	// normalize line endings for cross-platform compatibility (windows)
+	output = strings.ReplaceAll(output, "\r\n", "\n")
+
 	// Simple format assertions
 	assert.Contains(t, output, "version: ")
 	assert.Contains(t, output, "MANAGE PLUGINS\n")
