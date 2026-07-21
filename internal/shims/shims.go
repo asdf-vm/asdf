@@ -16,10 +16,10 @@ import (
 	"github.com/asdf-vm/asdf/internal/hook"
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/paths"
+	"github.com/asdf-vm/asdf/internal/permissions"
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/resolve"
 	"github.com/asdf-vm/asdf/internal/toolversions"
-	"golang.org/x/sys/unix"
 )
 
 const shimDirName = "shims"
@@ -360,7 +360,7 @@ func ToolExecutables(conf config.Config, plugin plugins.Plugin, version toolvers
 		for _, entry := range entries {
 			// If entry is dir or cannot be executed by the current user ignore it
 			filePath := filepath.Join(path, entry.Name())
-			if entry.IsDir() || unix.Access(filePath, unix.X_OK) != nil {
+			if entry.IsDir() || permissions.FileExecutable(filePath) != nil {
 				continue
 			}
 

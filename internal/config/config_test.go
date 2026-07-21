@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -32,7 +33,7 @@ func TestLoadConfig(t *testing.T) {
 		assert.Nil(t, err)
 
 		assert.Equal(t, homeDir, config.Home, "Home directory has the wrong value")
-		assert.Equal(t, homeDir+"/some/other/dir", config.DataDir, "DataDir has the wrong value")
+		assert.Equal(t, filepath.Join(homeDir, "some", "other", "dir"), config.DataDir, "DataDir has the wrong value")
 		assert.True(t, strings.HasPrefix(config.ConfigFile, homeDir))
 	})
 }
