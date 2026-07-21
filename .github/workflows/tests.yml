@@ -56,6 +56,17 @@ jobs:
       - name: Install dependencies (Unix)
         if: runner.os != 'Windows'
         run: scripts/install_dependencies.bash
+      - name: Setup WSL (Windows)
+        if: runner.os == 'Windows'
+        uses: Vampire/setup-wsl@v4
+        with:
+          distribution: Ubuntu-22.04
+      - name: Install dependencies in WSL (Windows)
+        if: runner.os == 'Windows'
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats git
       - name: Install Go dependencies
         run: go get ./...
       - name: Run Go tests
