@@ -1,6 +1,3 @@
-// Package execute is a simple package that wraps the os/exec Command features
-// for convenient use in asdf. It was inspired by
-// https://github.com/chen-keinan/go-command-eval
 package execute
 
 import (
@@ -36,31 +33,50 @@ func NewExpression(expression string, args []string) Command {
 
 // Run executes a Command with Bash and returns the error if there is one
 func (c Command) Run() error {
-	var command string
-	if c.Expression != "" {
-		// Expressions need to be invoked inside a Bash function, so variables like
-		// $0 and $@ are available
-		command = fmt.Sprintf("fn() { %s; }; fn %s", c.Expression, formatArgString(c.Args))
-	} else {
-		// Scripts can be invoked directly, with args provided
-		command = fmt.Sprintf("%s %s", c.Command, formatArgString(c.Args))
-	}
+	var cmd *exec.Cmd
 
-	cmd := exec.Command("bash", "-c", command)
+	if c.Expression != "" {
+		// Expresiones bash: fn wrapper para que $0/$@ estén disponibles
+		script := fmt.Sprintf(`fn() { %s; }; fn "$@"`, c.Expression)
+		args := append([]string{"-c", script, "asdf"}, c.Args...)
+		cmd = exec.Command("bash", args...)
+
+	} else if isShellExpression(c.Command) || len(c.Args) == 0 {
+		command := c.Command
+		if len(c.Args) > 0 {
+			command = fmt.Sprintf("%s %s", c.Command, formatArgString(c.Args))
+		}
+		cmd = exec.Command("bash", "-c", command)
+
+	} else {
+    binary := strings.Trim(c.Command, "'\"")
+    args := append([]string{"-c", `exec "$0" "$@"`, binary}, c.Args...)
+    cmd = exec.Command("bash", args...)
+	}
 
 	if len(c.Env) > 0 {
 		cmd.Env = MergeWithCurrentEnv(c.Env)
 	} else {
 		cmd.Env = os.Environ()
 	}
-
 	cmd.Stdin = c.Stdin
-
-	// Capture stdout and stderr
 	cmd.Stdout = c.Stdout
 	cmd.Stderr = c.Stderr
-
 	return cmd.Run()
+}
+
+// isShellExpression detecta si el comando contiene metacaracteres de shell
+func isShellExpression(command string) bool {
+	return strings.ContainsAny(command, "$|;&`(){}[]<>\\")
+}
+
+// formatArgString wraps each argument in double quotes
+func formatArgString(args []string) string {
+	result := []string{}
+	for _, arg := range args {
+		result = append(result, fmt.Sprintf(`"%s"`, arg))
+	}
+	return strings.Join(result, " ")
 }
 
 // MergeWithCurrentEnv merges the provided map into the current environment variables
@@ -78,7 +94,6 @@ func MergeEnv(map1, map2 map[string]string) map[string]string {
 	for key, value := range map2 {
 		map1[key] = value
 	}
-
 	return map1
 }
 
@@ -87,29 +102,17 @@ func MapToSlice(env map[string]string) (slice []string) {
 	for key, value := range env {
 		slice = append(slice, fmt.Sprintf("%s=%s", key, value))
 	}
-
 	return slice
 }
 
-// SliceToMap converts an env map to env slice suitable for syscall.Exec
+// SliceToMap converts an env slice to env map
 func SliceToMap(env []string) map[string]string {
 	envMap := map[string]string{}
-
 	for _, envVar := range env {
 		varValue := strings.SplitN(envVar, "=", 2)
-
 		if len(varValue) == 2 {
 			envMap[varValue[0]] = varValue[1]
 		}
 	}
-
 	return envMap
-}
-
-func formatArgString(args []string) string {
-	var newArgs []string
-	for _, str := range args {
-		newArgs = append(newArgs, fmt.Sprintf("\"%s\"", str))
-	}
-	return strings.Join(newArgs, " ")
 }
