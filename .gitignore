@@ -9,4 +9,4 @@ keyrings
 dist/
 
 # ignore build binary
-asdf
+/asdf
