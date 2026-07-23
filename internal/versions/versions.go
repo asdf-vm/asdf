@@ -7,8 +7,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"syscall"
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/hook"
@@ -20,11 +23,12 @@ import (
 )
 
 const (
-	systemVersion           = "system"
-	latestVersion           = "latest"
-	latestFilterRegex       = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
-	numericStartFilterRegex = "^\\s*[0-9]"
-	noLatestVersionErrMsg   = "no latest version found"
+	incompleteMarkerFilename = ".incomplete"
+	systemVersion            = "system"
+	latestVersion            = "latest"
+	latestFilterRegex        = "(?i)(^Available versions:|-src|-dev|-latest|-stm|[-\\.]rc|-milestone|-alpha|-beta|[-\\.]pre|-next|(a|b|c)[0-9]+|snapshot|master|main)"
+	numericStartFilterRegex  = "^\\s*[0-9]"
+	noLatestVersionErrMsg    = "no latest version found"
 )
 
 // UninstallableVersionError is an error returned if someone tries to install the
@@ -153,12 +157,60 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	if version.Type == "path" {
 		return UninstallableVersionError{toolName: plugin.Name, versionType: "path"}
 	}
-	downloadDir := installs.DownloadPath(conf, plugin, version)
+
 	installDir := installs.InstallPath(conf, plugin, version)
+	err = cleanupStaleIncomplete(conf, installDir)
+	if err != nil {
+		fmt.Fprintf(stdErr, "warning: failed to cleanup stale incomplete install: %s\n", err)
+	}
 
 	if installs.IsInstalled(conf, plugin, version) {
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
+
+	tempDir := filepath.Join(conf.DataDir, "temp", "install", fmt.Sprintf("%s-%s", plugin.Name, version))
+	downloadDir := installs.DownloadPath(conf, plugin, version)
+
+	err = os.MkdirAll(tempDir, 0o777)
+	if err != nil {
+		return fmt.Errorf("unable to create temp dir: %w", err)
+	}
+
+	defer func() {
+		os.RemoveAll(tempDir)
+	}()
+
+	err = markIncomplete(tempDir)
+	if err != nil {
+		return fmt.Errorf("failed to mark installation as incomplete: %w", err)
+	}
+
+	installParentDir := filepath.Dir(installDir)
+	err = os.MkdirAll(installParentDir, 0o777)
+	if err != nil {
+		return fmt.Errorf("unable to create install parent dir: %w", err)
+	}
+
+	err = os.Rename(tempDir, installDir)
+	if err != nil {
+		return fmt.Errorf("failed to move temp dir to install location: %w", err)
+	}
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	cleanup := func() {
+		os.RemoveAll(installDir)
+		os.RemoveAll(tempDir)
+	}
+
+	go func() {
+		<-sigChan
+		cleanup()
+		os.Exit(1)
+	}()
+
+	defer signal.Stop(sigChan)
 
 	concurrency, _ := conf.Concurrency()
 	env := map[string]string{
@@ -189,17 +241,20 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		return fmt.Errorf("failed to run pre-install hook: %w", err)
 	}
 
-	err = os.MkdirAll(installDir, 0o777)
-	if err != nil {
-		return fmt.Errorf("unable to create install dir: %w", err)
-	}
-
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
 		if rmErr := os.RemoveAll(installDir); rmErr != nil {
 			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
 		}
 		return fmt.Errorf("failed to run install callback: %w", err)
+	}
+
+	err = markComplete(installDir)
+	if err != nil {
+		if rmErr := os.RemoveAll(installDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
+		}
+		return fmt.Errorf("failed to mark installation as complete: %w", err)
 	}
 
 	// Reshim
@@ -365,4 +420,46 @@ func parseVersions(rawVersions string) []string {
 		}
 	}
 	return versions
+}
+
+// markComplete removes the .incomplete marker file from the given directory
+func markComplete(installPath string) error {
+	markerPath := filepath.Join(installPath, incompleteMarkerFilename)
+	err := os.Remove(markerPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove incomplete marker: %w", err)
+	}
+	return nil
+}
+
+// markIncomplete creates a .incomplete marker file in the given directory
+func markIncomplete(installPath string) error {
+	markerPath := filepath.Join(installPath, incompleteMarkerFilename)
+	file, err := os.Create(markerPath)
+	if err != nil {
+		return fmt.Errorf("failed to create incomplete marker: %w", err)
+	}
+	defer file.Close()
+	return nil
+}
+
+// cleanupStaleIncomplete removes an install directory if it has a .incomplete marker
+func cleanupStaleIncomplete(conf config.Config, installPath string) error {
+	_, err := os.Stat(installPath)
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	markerPath := filepath.Join(installPath, incompleteMarkerFilename)
+	_, err = os.Stat(markerPath)
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	err = os.RemoveAll(installPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove stale incomplete directory: %w", err)
+	}
+
+	return nil
 }
