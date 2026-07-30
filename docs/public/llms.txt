@@ -1,0 +1,42 @@
+# asdf
+
+> A single CLI tool for managing multiple runtime versions with a unified interface, using pluggable version manager plugins for languages and tools (Ruby, Node.js, Elixir, Erlang, and many more).
+
+## Getting Started
+
+- [What is asdf?](https://asdf-vm.com/guide/introduction.html): Overview of what asdf is and why it exists.
+- [Getting Started](https://asdf-vm.com/guide/getting-started.html): Installing asdf and installing your first plugin/tool version.
+- [Getting Started (pre-0.16.0)](https://asdf-vm.com/guide/getting-started-legacy.html): Setup instructions for versions prior to 0.16.0.
+- [Upgrading to 0.16.0](https://asdf-vm.com/guide/upgrading-to-v0-16.html): Breaking changes and migration steps for the 0.16.0 release.
+
+## Usage
+
+- [Core](https://asdf-vm.com/manage/core.html): Managing the asdf core installation itself.
+- [Plugins](https://asdf-vm.com/manage/plugins.html): Adding, listing, updating, and removing plugins.
+- [Versions](https://asdf-vm.com/manage/versions.html): Installing, listing, and switching between tool versions.
+
+## Reference
+
+- [Configuration](https://asdf-vm.com/manage/configuration.html): The `.tool-versions` file and other configuration options.
+- [All Commands](https://asdf-vm.com/manage/commands.html): Full CLI command reference.
+- [Dependencies](https://asdf-vm.com/manage/dependencies.html): System dependencies required by asdf and its plugins.
+
+## Plugins
+
+- [Create a Plugin](https://asdf-vm.com/plugins/create.html): How to author a new asdf plugin.
+
+## Questions
+
+- [FAQ](https://asdf-vm.com/more/faq.html): Frequently asked questions.
+
+## Contribute
+
+- [Core asdf](https://asdf-vm.com/contribute/core.html): Guide for contributing to the asdf core codebase.
+- [Documentation](https://asdf-vm.com/contribute/documentation.html): Guide for contributing to the docs site.
+- [First-Party Plugins](https://asdf-vm.com/contribute/first-party-plugins.html): Guide for maintaining the official first-party plugins.
+- [GitHub Actions](https://asdf-vm.com/contribute/github-actions.html): Guide for the project's GitHub Actions and CI setup.
+
+## Optional
+
+- [Community Projects](https://asdf-vm.com/more/community-projects.html): Third-party tools and integrations built around asdf.
+- [Thanks](https://asdf-vm.com/more/thanks.html): Acknowledgements of contributors and supporting projects.
