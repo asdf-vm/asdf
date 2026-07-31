@@ -388,6 +388,23 @@ func TestWrite(t *testing.T) {
 		assert.Equal(t, want, string(content))
 		os.Remove(shimPath)
 	})
+
+	// Regression test for #2166: an installed tool version can happen to
+	// contain an executable literally named "asdf" (e.g. a Go toolchain
+	// managed by asdf ends up building/installing asdf's own source under
+	// itself). Shimming it would create shims/asdf, which - since the shims
+	// directory precedes the real asdf binary on PATH - causes every asdf
+	// invocation afterwards to resolve to that shim and recurse into itself
+	// forever via its own "exec asdf exec ..." body.
+	t.Run("never creates a shim named asdf, no matter what executable is passed", func(t *testing.T) {
+		fakeAsdfExecutable := filepath.Join(filepath.Dir(executable), "asdf")
+		err := Write(conf, plugin, version, fakeAsdfExecutable)
+		assert.Nil(t, err)
+
+		shimPath := Path(conf, "asdf")
+		_, statErr := os.Stat(shimPath)
+		assert.True(t, os.IsNotExist(statErr), "expected no shim to be created for the reserved name \"asdf\"")
+	})
 }
 
 func TestToolExecutables(t *testing.T) {

@@ -307,14 +307,33 @@ func GenerateForVersion(conf config.Config, plugin plugins.Plugin, version toolv
 	return nil
 }
 
+// reservedShimNames are executable names that must never be shimmed, because
+// a shim generated for them would shadow a command asdf itself relies on.
+// Most notably "asdf" itself: a plugin-managed toolchain (e.g. Go) can end up
+// installing a binary that happens to be named "asdf" (for example, if
+// asdf's own source was `go install`-ed under an asdf-managed Go), and
+// `asdf reshim` would then generate a shim for it, since it doesn't
+// distinguish "asdf" from any other executable it finds. Because the shims
+// directory is placed ahead of the real asdf binary on PATH, invoking `asdf`
+// afterwards resolves to that shim, whose generated body is
+// `exec asdf exec "asdf" "$@"` - which resolves to the same shim again,
+// recursing forever. See https://github.com/asdf-vm/asdf/issues/2166
+var reservedShimNames = map[string]bool{
+	"asdf": true,
+}
+
 // Write generates a shim script and writes it to disk
 func Write(conf config.Config, plugin plugins.Plugin, version toolversions.Version, executablePath string) error {
+	shimName := filepath.Base(executablePath)
+	if reservedShimNames[shimName] {
+		return nil
+	}
+
 	err := ensureShimDirExists(conf)
 	if err != nil {
 		return err
 	}
 
-	shimName := filepath.Base(executablePath)
 	shimPath := Path(conf, shimName)
 	versions := []toolversions.ToolVersions{{Name: plugin.Name, Versions: []string{toolversions.Format(version)}}}
 
