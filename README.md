@@ -1,4 +1,4 @@
-# 🌐 ALFREDO MARTÍNEZ PASTÉN | Identidad Digital Soberana
+# 🌐 ALFREDO MARTÍNEZ PASTÉN | Identidad Digital Global 360
 **Core Activo:** @alfreddlove83® | **ID Fiscal:** RFC MAPA830324UM9 desde 2004 CDMX
 **Ecosistema:** EcoTecNo Global Co ® | ALFREDDLOVE INC ® | Comercio Axolotl Tec ®
 
