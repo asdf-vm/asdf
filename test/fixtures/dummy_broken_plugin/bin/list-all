@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-echo "Attempting to list versions"
-echo "List-all failed!" >&2
-exit 1

@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-versions_list=(1.0.0 1.1.0 2.0.0 3.0.0-alpha1 3.0.0-beta2 4.0.0 4.1.0-pre 5.0.0-Alpha1 5.1.0 5.2.0-Alpha2)
-echo "${versions_list[@]}"
