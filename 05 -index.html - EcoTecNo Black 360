@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<title>EcoTecNo Black 360 ® – Andrick IA Máster Control | v6.0 FINAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="author" content="Alfredo Martínez Pasten (MAPA830324UM9)"/>
+<meta name="description" content="Código abierto del agente IA Andrick Máster Control. Entrenamiento IA cerrado bajo Protocolo Regulatory Black 360 ®. Release v6.0 FINAL 20260804"/>
+<meta property="og:title" content="EcoTecNo Black 360 ® – Andrick IA Máster Control v6.0 FINAL"/>
+<meta property="og:description" content="Código abierto. Entrenamiento IA cerrado. Interacción ética y responsable con IA. Folio RB360-PI-2026-07-12-ALF83"/>
+<link rel="manifest" href="/manifest.json"/>
+<style>
+body{margin:0;background:#050608;color:#f5f5f5;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:2rem;border-bottom:1px solid #222;text-align:center}
+.brand{font-size:1.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.tagline{margin-top:.5rem;color:#999}
+main{max-width:960px;margin:2rem auto;padding:0 1.5rem}
+.badge{display:inline-block;padding:.25rem .6rem;border-radius:999px;background:#111;border:1px solid #444;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#ccc}
+.disclosure{margin-top:1rem;padding:1rem 1.2rem;border-radius:.75rem;background:#0b0c10;border:1px solid #333;font-size:.9rem;line-height:1.5}
+.disclosure strong{color:#ffcc66}
+.section{margin-top:1.5rem;line-height:1.6;font-size:.95rem}
+footer{border-top:1px solid #222;padding:1.5rem;font-size:.8rem;color:#777;text-align:center}
+img.hero{max-width:100%;border-radius:12px;margin-top:1rem;border:2px solid #333}
+code{color:#58a6ff}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">EcoTecNo Global Co ® · Andrick IA Máster Control · v6.0 FINAL</div>
+<div class="tagline">Código abierto · Entrenamiento IA cerrado · Interacción ética · 2004-2049</div>
+</header>
+<main>
+<h1>EcoTecNo-Black360-AndrickIA-Master-Control-2026-MAPA830324UM9 <span class="badge">v6.0 FINAL 20260804 | No rompe Apps</span></h1>
+<div class="disclosure">
+<strong>Disclosure / Aviso:</strong><br><br>
+El <strong>código fuente</strong> se publica como <strong>open-source</strong> para auditoría.<br>
+El <strong>entrenamiento, datasets, pesos y pipelines</strong> <strong>NO son open-source</strong> y permanecen bajo control de Alfredo Martínez Pasten (MAPA830324UM9) y EcoTecNo Global Co ®.<br><br>
+<strong>Folio:</strong> RB360-PI-2026-07-12-ALF83 | GD-GEAR-MAPA830324UM9-2026 | SC360-085034-AMP | PUB-AMP-2026-YT001<br>
+<strong>Hash Validación:</strong> hash2569f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e<br>
+<strong>Release:</strong> v6.0-FINAL-20260804 (compatible v5.5)
+</div>
+<section class="section">
+<h2>Interacción social y ética</h2>
+<p>Proyecto de soberanía digital. Apertura de código permite transparencia, protección del entrenamiento asegura responsabilidad. La IA debe mejorar la vida, no encerrar en sistemas opacos.</p>
+<p><strong>Obra Base:</strong> Dualidad #MenteYDatos v1.2 - Un mundo de Colores entrelazados...</p>
+<p><strong>Nodos:</strong> CPH2363 (Cloudflare adk-gasa.alfreddlove.org) + CPH2743 Failover GASA-01 | <strong>Voluntad de Familia Digital 2026</strong></p>
+</section>
+</main>
+<footer>
+© 2026 · EcoTecNo Global Co ® · Alfredo Martínez Pasten (MAPA830324UM9) | 2004-2049<br>
+Código abierto · Entrenamiento IA cerrado · Protocolo Regulatory Black 360 ® | v6.0 FINAL | No se Borra, Se Documenta.
+</footer>
+<script src="/AMP-CORE-LINK.js"></script>
+</body>
+</html>
