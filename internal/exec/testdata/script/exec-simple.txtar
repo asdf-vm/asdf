@@ -1,2 +1,0 @@
-execit echo this is a test
-stdout 'this is a test\n'

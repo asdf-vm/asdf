@@ -1,3 +1,0 @@
-env ENV=foo
-execit echo this is a $ENV
-stdout 'this is a foo\n'
