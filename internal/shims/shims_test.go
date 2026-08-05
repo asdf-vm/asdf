@@ -405,6 +405,24 @@ func TestWrite(t *testing.T) {
 		_, statErr := os.Stat(shimPath)
 		assert.True(t, os.IsNotExist(statErr), "expected no shim to be created for the reserved name \"asdf\"")
 	})
+
+	t.Run("removes a pre-existing shim named asdf left over from before this guard existed", func(t *testing.T) {
+		shimPath := Path(conf, "asdf")
+		err := os.WriteFile(shimPath, []byte("exec asdf exec \"asdf\" \"$@\"\n"), 0o755)
+		assert.Nil(t, err)
+		_, statErr := os.Stat(shimPath)
+		assert.Nil(t, statErr, "test setup: expected the stale shim to exist before Write runs")
+
+		fakeAsdfExecutable := filepath.Join(filepath.Dir(executable), "asdf")
+		err = Write(conf, plugin, version, fakeAsdfExecutable)
+		assert.Nil(t, err)
+
+		_, statErr = os.Stat(shimPath)
+		assert.True(t, os.IsNotExist(statErr),
+			"expected a pre-existing shims/asdf to be removed, not just skipped, so the recursion bug "+
+				"doesn't persist across an upgrade via `asdf reshim <tool> <version>` (which doesn't call "+
+				"RemoveAll first, unlike a bare `asdf reshim`)")
+	})
 }
 
 func TestToolExecutables(t *testing.T) {
