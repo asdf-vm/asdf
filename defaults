@@ -1,8 +1,0 @@
-# See the docs for explanations: https://asdf-vm.com/manage/configuration.html
-
-legacy_version_file = no
-use_release_candidates = no
-always_keep_download = no
-plugin_repository_last_check_duration = 60
-disable_plugin_short_name_repository = no
-concurrency = auto
