@@ -96,15 +96,15 @@ When determining the version looks for an environment variable with the pattern
 `.tool-versions` file. If set, the value of this environment variable overrides
 any versions set in for the tool in any `.tool-versions` file. For example:
 
-For tool names that contain dashes, replace each dash with an underscore when
-constructing the environment variable name. For example, the `aws-sam-cli`
-tool uses `ASDF_AWS_SAM_CLI_VERSION`.
-
 ```shell
 export ASDF_ELIXIR_VERSION=1.18.1
 ```
 
 Will tell asdf to use Elixir `1.18.1` in the current shell session.
+
+For tool names that contain dashes, replace each dash with an underscore when
+constructing the environment variable name. For example, the `aws-sam-cli`
+tool set `ASDF_AWS_SAM_CLI_VERSION`.
 
 :::warning
 Because this is an environment variable, it only takes effect where it is set.
