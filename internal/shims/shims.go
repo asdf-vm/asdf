@@ -69,6 +69,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 	}
 
 	existingPluginToolVersions := make(map[plugins.Plugin]resolve.ToolVersions)
+	requestedVersion := ""
 
 	// loop over tools and check if the plugin for them still exists
 	for _, shimToolVersion := range toolVersions {
@@ -99,6 +100,10 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 					}
 				}
 
+				if len(versions.Versions) > 0 {
+					requestedVersion = versions.Versions[0]
+				}
+
 				versions.Versions = tempVersions
 				if len(versions.Versions) > 0 {
 					existingPluginToolVersions[plugin] = versions
@@ -108,7 +113,7 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 	}
 
 	if len(existingPluginToolVersions) == 0 {
-		return "", plugins.Plugin{}, "", false, NoVersionSetError{shim: shimName}
+		return "", plugins.Plugin{}, requestedVersion, false, NoVersionSetError{shim: shimName}
 	}
 
 	for plugin, toolVersions := range existingPluginToolVersions {
