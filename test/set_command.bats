@@ -113,3 +113,22 @@ teardown() {
   run cat "$PROJECT_DIR/.tool-versions"
   [ "$output" = "dummy 1.0.0 1.1.0" ]
 }
+
+@test "set should warn when the version being set is not installed" {
+  run --separate-stderr asdf set "dummy" "9.9.9"
+  [ "$status" -eq 0 ]
+  [ -f "$PROJECT_DIR/.tool-versions" ]
+  run cat "$PROJECT_DIR/.tool-versions"
+  [ "$output" = "dummy 9.9.9" ]
+
+  run --separate-stderr asdf set "dummy" "9.9.9"
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "warning: version 9.9.9 of dummy is not installed, run \`asdf install dummy 9.9.9\`" 2>/dev/null
+}
+
+@test "set should not warn when the version being set is already installed" {
+  run --separate-stderr asdf set "dummy" "1.0.0"
+  [ "$status" -eq 0 ]
+  # shellcheck disable=SC2154
+  [ "$stderr" = "" ]
+}
