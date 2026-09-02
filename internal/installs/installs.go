@@ -4,6 +4,8 @@
 package installs
 
 import (
+	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -13,6 +15,12 @@ import (
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/toolversions"
 )
+
+// IncompleteMarkerPath returns the path to the incomplete marker file for a version
+func IncompleteMarkerPath(conf config.Config, plugin plugins.Plugin, version toolversions.Version) string {
+	formattedVersion := toolversions.FormatForFS(version)
+	return filepath.Join(data.InstallLocksDirectory(conf.DataDir, plugin.Name), formattedVersion)
+}
 
 // Installed returns a slice of all installed versions for a given plugin
 func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, err error) {
@@ -31,7 +39,18 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 			continue
 		}
 
-		versions = append(versions, toolversions.VersionStringFromFSFormat(file.Name()))
+		displayVersion := toolversions.VersionStringFromFSFormat(file.Name())
+		version := toolversions.Parse(displayVersion)
+		_, statErr := os.Stat(IncompleteMarkerPath(conf, plugin, version))
+		if statErr == nil {
+			continue
+		}
+		if !errors.Is(statErr, fs.ErrNotExist) {
+			err = fmt.Errorf("checking install marker for version %s: %w", displayVersion, statErr)
+			continue
+		}
+
+		versions = append(versions, displayVersion)
 	}
 
 	return versions, err
@@ -59,7 +78,14 @@ func DownloadPath(conf config.Config, plugin plugins.Plugin, version toolversion
 func IsInstalled(conf config.Config, plugin plugins.Plugin, version toolversions.Version) bool {
 	installDir := InstallPath(conf, plugin, version)
 
-	// Check if version already installed
 	_, err := os.Stat(installDir)
-	return !os.IsNotExist(err)
+	if err != nil {
+		return false
+	}
+
+	_, err = os.Stat(IncompleteMarkerPath(conf, plugin, version))
+	if err == nil {
+		return false
+	}
+	return errors.Is(err, fs.ErrNotExist)
 }

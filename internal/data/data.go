@@ -9,6 +9,7 @@ import (
 const (
 	dataDirDownloads = "downloads"
 	dataDirInstalls  = "installs"
+	dataDirLocks     = "install-locks"
 	dataDirPlugins   = "plugins"
 )
 
@@ -32,4 +33,9 @@ func PluginsDirectory(dataDir string) string {
 // if it were installed
 func PluginDirectory(dataDir, pluginName string) string {
 	return filepath.Join(dataDir, dataDirPlugins, pluginName)
+}
+
+// InstallLocksDirectory returns the directory for install marker/lock files
+func InstallLocksDirectory(dataDir, pluginName string) string {
+	return filepath.Join(dataDir, dataDirLocks, pluginName)
 }
