@@ -25,8 +25,8 @@ import (
 const shimDirName = "shims"
 
 var reservedShimNames = map[string]bool{
-	// shims named `asdf`must never be generated, since it would shadow the same
-	// `asdf` command all asdf shims invoke under the hood.
+	// shims named `asdf` must never be generated, since it would shadow the
+	// same `asdf` command all asdf shims invoke under the hood.
 	// See https://github.com/asdf-vm/asdf/issues/2166
 	"asdf": true,
 }
