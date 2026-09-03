@@ -99,8 +99,6 @@ func printError(stderr io.Writer, msg string) error {
 }
 
 func findVersionFileInParentDir(conf config.Config, directory string) (string, bool) {
-	directory = filepath.Dir(directory)
-
 	for {
 		path := filepath.Join(directory, conf.DefaultToolVersionsFilename)
 		if _, err := os.Stat(path); err == nil {
