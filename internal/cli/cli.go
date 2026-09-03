@@ -684,7 +684,15 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 		toolVersions, _ := shims.GetToolsAndVersionsFromShimFile(shimPath)
 
 		if len(toolVersions) > 0 {
-			if anyInstalled(conf, toolVersions) {
+			if pluginName, configuredVersions, ok := configuredButNotInstalled(conf, toolVersions, currentDir); ok {
+				logger.Printf("version %s of %s is set for the current directory, but it is not installed", strings.Join(configuredVersions, ", "), pluginName)
+				for _, version := range configuredVersions {
+					logger.Printf("asdf install %s %s\n", pluginName, version)
+				}
+
+				os.Exit(126)
+				return executable, plugins.Plugin{}, "", err
+			} else if anyInstalled(conf, toolVersions) {
 				logger.Printf("No version is set for command %s", command)
 				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
 			} else {
@@ -716,6 +724,44 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 	}
 
 	return executable, plugin, version, nil
+}
+
+// configuredButNotInstalled checks, for each plugin associated with a shim,
+// whether a version is actually configured for currentDir (via .tool-versions,
+// an env var, etc) but not installed. This lets getExecutable report that
+// precisely instead of the generic "No version is set" message, which is
+// printed even when a version *is* set -- just not installed yet.
+func configuredButNotInstalled(conf config.Config, toolVersions []toolversions.ToolVersions, currentDir string) (pluginName string, configuredVersions []string, found bool) {
+	for _, toolVersion := range toolVersions {
+		plugin := plugins.New(conf, toolVersion.Name)
+		resolved, ok, err := resolve.Version(conf, plugin, currentDir)
+		if err != nil || !ok || len(resolved.Versions) == 0 {
+			continue
+		}
+
+		anyConcreteVersionInstalled := false
+		anyConcreteVersion := false
+		for _, version := range resolved.Versions {
+			parsedVersion := toolversions.Parse(version)
+			if parsedVersion.Type != "version" {
+				// "system", "path:" and "ref:" versions don't have a
+				// meaningful "not installed" state to report here.
+				continue
+			}
+
+			anyConcreteVersion = true
+			if installs.IsInstalled(conf, plugin, parsedVersion) {
+				anyConcreteVersionInstalled = true
+				break
+			}
+		}
+
+		if anyConcreteVersion && !anyConcreteVersionInstalled {
+			return toolVersion.Name, resolved.Versions, true
+		}
+	}
+
+	return "", nil, false
 }
 
 func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) bool {
