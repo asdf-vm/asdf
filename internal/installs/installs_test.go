@@ -41,6 +41,22 @@ func TestInstallPath(t *testing.T) {
 		assert.Equal(t, path, "foo/bar")
 	})
 
+	t.Run("expands leading ~/ in path version to home directory", func(t *testing.T) {
+		homeDir, err := os.UserHomeDir()
+		assert.Nil(t, err)
+
+		version := toolversions.Version{Type: "path", Value: "~/src/elixir"}
+		path := InstallPath(conf, plugin, version)
+		assert.Equal(t, path, filepath.Join(homeDir, "src", "elixir"))
+	})
+
+	t.Run("leaves a path version without a leading ~/ unchanged", func(t *testing.T) {
+		for _, value := range []string{"/opt/elixir", "foo/bar", "~elixir/src", "src/~/elixir"} {
+			version := toolversions.Version{Type: "path", Value: value}
+			assert.Equal(t, InstallPath(conf, plugin, version), value)
+		}
+	})
+
 	t.Run("returns install path when given regular version as version", func(t *testing.T) {
 		version := toolversions.Version{Type: "version", Value: "1.2.3"}
 		path := InstallPath(conf, plugin, version)
