@@ -389,33 +389,34 @@ func TestWrite(t *testing.T) {
 		os.Remove(shimPath)
 	})
 
-	t.Run("never creates a shim named asdf, no matter what executable is passed", func(t *testing.T) {
-		fakeAsdfExecutable := filepath.Join(filepath.Dir(executable), "asdf")
-		err := Write(conf, plugin, version, fakeAsdfExecutable)
-		assert.Nil(t, err)
+	for reservedName := range reservedShimNames {
+		t.Run(fmt.Sprintf("never creates a shim named %s, no matter what executable is passed", reservedName), func(t *testing.T) {
+			fakeExecutable := filepath.Join(filepath.Dir(executable), reservedName)
+			err := Write(conf, plugin, version, fakeExecutable)
+			assert.Nil(t, err)
 
-		shimPath := Path(conf, "asdf")
-		_, statErr := os.Stat(shimPath)
-		assert.True(t, os.IsNotExist(statErr), "expected no shim to be created for the reserved name \"asdf\"")
-	})
+			shimPath := Path(conf, reservedName)
+			_, statErr := os.Stat(shimPath)
+			assert.True(t, os.IsNotExist(statErr), fmt.Sprintf("expected no shim to be created for the reserved name %q", reservedName))
+		})
+	}
 
-	t.Run("removes a pre-existing shim named asdf left over from before this guard existed", func(t *testing.T) {
-		shimPath := Path(conf, "asdf")
-		err := os.WriteFile(shimPath, []byte("exec asdf exec \"asdf\" \"$@\"\n"), 0o755)
-		assert.Nil(t, err)
-		_, statErr := os.Stat(shimPath)
-		assert.Nil(t, statErr, "test setup: expected the stale shim to exist before Write runs")
+	for reservedName := range reservedShimNames {
+		t.Run(fmt.Sprintf("removes a pre-existing shim named %s left over from before this guard existed", reservedName), func(t *testing.T) {
+			shimPath := Path(conf, reservedName)
+			err := os.WriteFile(shimPath, []byte(fmt.Sprintf("exec asdf exec %q \"$@\"\n", reservedName)), 0o755)
+			assert.Nil(t, err)
+			_, statErr := os.Stat(shimPath)
+			assert.Nil(t, statErr, "test setup: expected the stale shim to exist before Write runs")
 
-		fakeAsdfExecutable := filepath.Join(filepath.Dir(executable), "asdf")
-		err = Write(conf, plugin, version, fakeAsdfExecutable)
-		assert.Nil(t, err)
+			fakeExecutable := filepath.Join(filepath.Dir(executable), reservedName)
+			err = Write(conf, plugin, version, fakeExecutable)
+			assert.Nil(t, err)
 
-		_, statErr = os.Stat(shimPath)
-		assert.True(t, os.IsNotExist(statErr),
-			"expected a pre-existing shims/asdf to be removed, not just skipped, so the recursion bug "+
-				"doesn't persist across an upgrade via `asdf reshim <tool> <version>` (which doesn't call "+
-				"RemoveAll first, unlike a bare `asdf reshim`)")
-	})
+			_, statErr = os.Stat(shimPath)
+			assert.True(t, os.IsNotExist(statErr), fmt.Sprintf("expected the pre-existing shims/%s to be removed", reservedName))
+		})
+	}
 }
 
 func TestToolExecutables(t *testing.T) {
