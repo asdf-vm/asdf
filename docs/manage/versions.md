@@ -102,6 +102,10 @@ export ASDF_ELIXIR_VERSION=1.18.1
 
 Will tell asdf to use Elixir `1.18.1` in the current shell session.
 
+For tool names that contain dashes, replace each dash with an underscore when
+constructing the environment variable name. For example, the `aws-sam-cli`
+tool set `ASDF_AWS_SAM_CLI_VERSION`.
+
 :::warning
 Because this is an environment variable, it only takes effect where it is set.
 Any other shell sessions that are running will still use to whatever version is
