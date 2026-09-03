@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.20.1](https://github.com/asdf-vm/asdf/compare/v0.20.0...v0.20.1) (2026-09-03)
+
+
+### Bug Fixes
+
+* always update local Git repsitory in git.Update even if repositories have diverged ([#2298](https://github.com/asdf-vm/asdf/issues/2298)) ([b684098](https://github.com/asdf-vm/asdf/commit/b684098826642883560f31bd755568d537add933))
+* never generate a shim named "asdf" during reshim ([#2307](https://github.com/asdf-vm/asdf/issues/2307)) ([ca98e44](https://github.com/asdf-vm/asdf/commit/ca98e44ff49cb0a38966b23b42db962203478b59))
+* prevent incomplete installations from being shown as installed ([#2303](https://github.com/asdf-vm/asdf/issues/2303)) ([419e2da](https://github.com/asdf-vm/asdf/commit/419e2da7d7785d42d621f1c4fa93b7793cd18168))
+* Print stderr for list-all / latest-stable callbacks ([c1e632e](https://github.com/asdf-vm/asdf/commit/c1e632e937dd0794e9809081fef55f0ab359c21e))
+* remove urlfave/cli built-in `-h` flag that is causing confusing behavior ([#2294](https://github.com/asdf-vm/asdf/issues/2294)) ([017a770](https://github.com/asdf-vm/asdf/commit/017a770b046f0edc687f1d67ea80f211c88d5ab4))
+
 ## [0.20.0](https://github.com/asdf-vm/asdf/compare/v0.19.0...v0.20.0) (2026-07-07)
 
 
