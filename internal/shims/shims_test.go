@@ -388,6 +388,35 @@ func TestWrite(t *testing.T) {
 		assert.Equal(t, want, string(content))
 		os.Remove(shimPath)
 	})
+
+	for reservedName := range reservedShimNames {
+		t.Run(fmt.Sprintf("never creates a shim named %s, no matter what executable is passed", reservedName), func(t *testing.T) {
+			fakeExecutable := filepath.Join(filepath.Dir(executable), reservedName)
+			err := Write(conf, plugin, version, fakeExecutable)
+			assert.Nil(t, err)
+
+			shimPath := Path(conf, reservedName)
+			_, statErr := os.Stat(shimPath)
+			assert.True(t, os.IsNotExist(statErr), fmt.Sprintf("expected no shim to be created for the reserved name %q", reservedName))
+		})
+	}
+
+	for reservedName := range reservedShimNames {
+		t.Run(fmt.Sprintf("removes a pre-existing shim named %s left over from before this guard existed", reservedName), func(t *testing.T) {
+			shimPath := Path(conf, reservedName)
+			err := os.WriteFile(shimPath, []byte(fmt.Sprintf("exec asdf exec %q \"$@\"\n", reservedName)), 0o755)
+			assert.Nil(t, err)
+			_, statErr := os.Stat(shimPath)
+			assert.Nil(t, statErr, "test setup: expected the stale shim to exist before Write runs")
+
+			fakeExecutable := filepath.Join(filepath.Dir(executable), reservedName)
+			err = Write(conf, plugin, version, fakeExecutable)
+			assert.Nil(t, err)
+
+			_, statErr = os.Stat(shimPath)
+			assert.True(t, os.IsNotExist(statErr), fmt.Sprintf("expected the pre-existing shims/%s to be removed", reservedName))
+		})
+	}
 }
 
 func TestToolExecutables(t *testing.T) {

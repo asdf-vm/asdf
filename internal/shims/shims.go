@@ -24,6 +24,13 @@ import (
 
 const shimDirName = "shims"
 
+var reservedShimNames = map[string]bool{
+	// shims named `asdf` must never be generated, since it would shadow the
+	// same `asdf` command all asdf shims invoke under the hood.
+	// See https://github.com/asdf-vm/asdf/issues/2166
+	"asdf": true,
+}
+
 // UnknownCommandError is an error returned when a shim is not found
 type UnknownCommandError struct {
 	shim string
@@ -309,12 +316,21 @@ func GenerateForVersion(conf config.Config, plugin plugins.Plugin, version toolv
 
 // Write generates a shim script and writes it to disk
 func Write(conf config.Config, plugin plugins.Plugin, version toolversions.Version, executablePath string) error {
+	shimName := filepath.Base(executablePath)
+	if reservedShimNames[shimName] {
+		// Remove any stale shim left over from before this guard existed.
+		shimPath := Path(conf, shimName)
+		if err := os.Remove(shimPath); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		return nil
+	}
+
 	err := ensureShimDirExists(conf)
 	if err != nil {
 		return err
 	}
 
-	shimName := filepath.Base(executablePath)
 	shimPath := Path(conf, shimName)
 	versions := []toolversions.ToolVersions{{Name: plugin.Name, Versions: []string{toolversions.Format(version)}}}
 
