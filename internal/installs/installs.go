@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/data"
@@ -59,10 +60,27 @@ func Installed(conf config.Config, plugin plugins.Plugin) (versions []string, er
 // InstallPath returns the path to a tool installation
 func InstallPath(conf config.Config, plugin plugins.Plugin, version toolversions.Version) string {
 	if version.Type == "path" {
-		return version.Value
+		return resolveUserPath(version.Value)
 	}
 
 	return filepath.Join(data.InstallDirectory(conf.DataDir, plugin.Name), toolversions.FormatForFS(version))
+}
+
+// resolveUserPath expands a leading `~/` to the current user's home directory.
+// A `.tool-versions` file is read directly rather than by a shell, so nothing
+// else expands the `~` in a `path:~/src/elixir` version. Any other string is
+// returned unchanged.
+func resolveUserPath(path string) string {
+	if !strings.HasPrefix(path, "~/") {
+		return path
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return path
+	}
+
+	return filepath.Join(homeDir, path[2:])
 }
 
 // DownloadPath returns the download path for a particular plugin and version
