@@ -18,6 +18,10 @@ Please [open a new Feature Request](https://github.com/asdf-vm/asdf/issues/new/c
 
 See [docs/contribute/core.md](docs/contribute/core.md) or on our [Docs Site](https://asdf-vm.com/contribute/core.html).
 
+### Architectural Decision Records
+
+Architectural Decision Records (ADRs) are stored in `docs/adr/`. These documents capture important architectural decisions made in the project and are useful for understanding the rationale behind past design choices.
+
 ## Documentation
 
 Documentation can always be improved! See [docs/contribute/documentation.md](docs/contribute/documentation.md) or on our [Docs Site](https://asdf-vm.com/contribute/documentation.html).

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/data"
 	"github.com/asdf-vm/asdf/internal/installtest"
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/repotest"
@@ -63,6 +64,68 @@ func TestInstalled(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, installedVersions, []string{"1.0.0"})
 	})
+
+	t.Run("filters out directories with incomplete marker", func(t *testing.T) {
+		mockInstall(t, conf, plugin, "1.0.0")
+		mockInstall(t, conf, plugin, "2.0.0")
+		mockInstall(t, conf, plugin, "3.0.0")
+
+		version2 := toolversions.Version{Type: "version", Value: "2.0.0"}
+		err := markIncomplete(conf, plugin, version2)
+		assert.Nil(t, err)
+
+		installedVersions, err := Installed(conf, plugin)
+		assert.Nil(t, err)
+		assert.Equal(t, 2, len(installedVersions))
+		assert.Contains(t, installedVersions, "1.0.0")
+		assert.Contains(t, installedVersions, "3.0.0")
+		assert.NotContains(t, installedVersions, "2.0.0")
+	})
+
+	t.Run("continues scanning and reports error when a marker lookup fails", func(t *testing.T) {
+		if os.Geteuid() == 0 {
+			t.Skip("permission checks do not apply when running as root")
+		}
+
+		conf4, plugin4 := generateConfig(t)
+		mockInstall(t, conf4, plugin4, "1.0.0")
+		mockInstall(t, conf4, plugin4, "2.0.0")
+		mockInstall(t, conf4, plugin4, "3.0.0")
+
+		locksDir := data.InstallLocksDirectory(conf4.DataDir, plugin4.Name)
+		assert.Nil(t, os.MkdirAll(locksDir, 0o755))
+		assert.Nil(t, os.Chmod(locksDir, 0o000))
+		t.Cleanup(func() { _ = os.Chmod(locksDir, 0o755) })
+
+		installedVersions, err := Installed(conf4, plugin4)
+		assert.Empty(t, installedVersions)
+		assert.NotNil(t, err)
+	})
+
+	t.Run("returns all versions when none have incomplete marker", func(t *testing.T) {
+		conf2, plugin2 := generateConfig(t)
+		mockInstall(t, conf2, plugin2, "1.0.0")
+		mockInstall(t, conf2, plugin2, "2.0.0")
+
+		installedVersions, err := Installed(conf2, plugin2)
+		assert.Nil(t, err)
+		assert.Equal(t, 2, len(installedVersions))
+	})
+
+	t.Run("filters out ref installs with incomplete marker", func(t *testing.T) {
+		conf3, plugin3 := generateConfig(t)
+		refVersion := toolversions.Version{Type: "ref", Value: "foo"}
+		path := InstallPath(conf3, plugin3, refVersion)
+		err := os.MkdirAll(path, os.ModePerm)
+		assert.Nil(t, err)
+
+		err = markIncomplete(conf3, plugin3, refVersion)
+		assert.Nil(t, err)
+
+		installedVersions, err := Installed(conf3, plugin3)
+		assert.Nil(t, err)
+		assert.Empty(t, installedVersions)
+	})
 }
 
 func TestIsInstalled(t *testing.T) {
@@ -76,6 +139,16 @@ func TestIsInstalled(t *testing.T) {
 	t.Run("returns true when installed", func(t *testing.T) {
 		version := toolversions.Version{Type: "version", Value: "1.0.0"}
 		assert.True(t, IsInstalled(conf, plugin, version))
+	})
+
+	t.Run("returns false when directory exists but has incomplete marker", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "2.0.0"}
+		mockInstall(t, conf, plugin, "2.0.0")
+
+		err := markIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		assert.False(t, IsInstalled(conf, plugin, version))
 	})
 }
 
@@ -105,4 +178,18 @@ func installVersion(t *testing.T, conf config.Config, plugin plugins.Plugin, ver
 	t.Helper()
 	err := installtest.InstallOneVersion(conf, plugin, "version", version)
 	assert.Nil(t, err)
+}
+
+func markIncomplete(conf config.Config, plugin plugins.Plugin, version toolversions.Version) error {
+	markerPath := IncompleteMarkerPath(conf, plugin, version)
+	err := os.MkdirAll(filepath.Dir(markerPath), 0o755)
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(markerPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	return nil
 }
