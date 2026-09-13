@@ -85,24 +85,19 @@ module asdf {
         --refs # Show refs
     ] {
 
-        let params = [
-            {name: 'urls', enabled: $urls, flag: '--urls',
-             template: '\s+?(?P<repository>(?:http[s]?|git).+\.git|/.+)'}
-            {name: 'refs', enabled: $refs, flag: '--refs',
-             template: '\s+?(?P<branch>\w+)\s+(?P<ref>\w+)'}
-        ]
+        # `asdf plugin list` prints one plugin per line as tab separated
+        # columns: the name, then the URL when --urls is given, then the git
+        # ref when --refs is given. None of the columns contain whitespace.
+        let template = ('^(?P<name>\S+)'
+            + (if $urls { '\s+(?P<repository>\S+)' } else { '' })
+            + (if $refs { '\s+(?P<ref>\S+)' } else { '' })
+            + '\s*$')
 
-        let template = '(?P<name>.+)' + (
-                            $params |
-                            where enabled |
-                            get --optional template |
-                            str join '' |
-                            str trim
-                        )
+        let flags = ([]
+            | append (if $urls { ['--urls'] } else { [] })
+            | append (if $refs { ['--refs'] } else { [] }))
 
-        let flags = ($params | where enabled | get --optional flag | default '' )
-
-        ^asdf plugin list ...$flags | lines | parse -r $template | str trim
+        ^asdf plugin list ...$flags | lines | parse -r $template
     }
 
     # list all available plugins
