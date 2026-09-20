@@ -27,6 +27,23 @@ func TestGetAllToolsAndVersions(t *testing.T) {
 		expected := []ToolVersions{{Name: "ruby", Versions: []string{"2.0.0"}}}
 		assert.Equal(t, expected, toolVersions)
 	})
+
+	t.Run("strips CR from CRLF .tool-versions files", func(t *testing.T) {
+		toolVersionsPath := filepath.Join(t.TempDir(), ".tool-versions")
+		file, err := os.Create(toolVersionsPath)
+		assert.Nil(t, err)
+		defer file.Close()
+		_, err = file.WriteString("ruby 2.0.0\r\nnodejs 18.0.0\r\n")
+		assert.Nil(t, err)
+
+		toolVersions, err := GetAllToolsAndVersions(toolVersionsPath)
+		assert.Nil(t, err)
+		expected := []ToolVersions{
+			{Name: "ruby", Versions: []string{"2.0.0"}},
+			{Name: "nodejs", Versions: []string{"18.0.0"}},
+		}
+		assert.Equal(t, expected, toolVersions)
+	})
 }
 
 func TestFindToolVersions(t *testing.T) {
