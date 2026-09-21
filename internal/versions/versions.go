@@ -6,9 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"syscall"
 
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/hook"
@@ -153,12 +157,60 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 	if version.Type == "path" {
 		return UninstallableVersionError{toolName: plugin.Name, versionType: "path"}
 	}
-	downloadDir := installs.DownloadPath(conf, plugin, version)
+
 	installDir := installs.InstallPath(conf, plugin, version)
+	err = cleanupStaleIncomplete(conf, plugin, version)
+	if err != nil {
+		return fmt.Errorf("failed to cleanup stale incomplete install: %w", err)
+	}
 
 	if installs.IsInstalled(conf, plugin, version) {
 		return VersionAlreadyInstalledError{version: version, toolName: plugin.Name}
 	}
+
+	downloadDir := installs.DownloadPath(conf, plugin, version)
+
+	installParentDir := filepath.Dir(installDir)
+	err = os.MkdirAll(installParentDir, 0o777)
+	if err != nil {
+		return fmt.Errorf("unable to create install parent dir: %w", err)
+	}
+
+	err = markIncomplete(conf, plugin, version)
+	if err != nil {
+		return fmt.Errorf("failed to mark installation as incomplete: %w", err)
+	}
+
+	err = os.MkdirAll(installDir, 0o777)
+	if err != nil {
+		return fmt.Errorf("unable to create install dir: %w", err)
+	}
+
+	// Set up signal handler to clean up on interrupt
+	sigChan := make(chan os.Signal, 1)
+	done := make(chan struct{})
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	stopCleanup := func() {
+		signal.Stop(sigChan)
+		select {
+		case <-done:
+		default:
+			close(done)
+		}
+	}
+
+	go func() {
+		select {
+		case <-sigChan:
+			os.RemoveAll(installDir)
+			os.Exit(1)
+		case <-done:
+			return
+		}
+	}()
+
+	defer stopCleanup()
 
 	concurrency, _ := conf.Concurrency()
 	env := map[string]string{
@@ -189,11 +241,6 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		return fmt.Errorf("failed to run pre-install hook: %w", err)
 	}
 
-	err = os.MkdirAll(installDir, 0o777)
-	if err != nil {
-		return fmt.Errorf("unable to create install dir: %w", err)
-	}
-
 	err = plugin.RunCallback("install", []string{}, env, stdOut, stdErr)
 	if err != nil {
 		if rmErr := os.RemoveAll(installDir); rmErr != nil {
@@ -201,6 +248,16 @@ func InstallOneVersion(conf config.Config, plugin plugins.Plugin, versionStr str
 		}
 		return fmt.Errorf("failed to run install callback: %w", err)
 	}
+
+	err = markComplete(conf, plugin, version)
+	if err != nil {
+		if rmErr := os.RemoveAll(installDir); rmErr != nil {
+			fmt.Fprintf(stdErr, "failed to clean up '%s' due to %s\n", installDir, rmErr)
+		}
+		return fmt.Errorf("failed to mark installation as complete: %w", err)
+	}
+
+	stopCleanup()
 
 	// Reshim
 	err = shims.GenerateAll(conf, stdOut, stdErr)
@@ -365,4 +422,54 @@ func parseVersions(rawVersions string) []string {
 		}
 	}
 	return versions
+}
+
+// markComplete removes the incomplete marker file
+func markComplete(conf config.Config, plugin plugins.Plugin, version toolversions.Version) error {
+	markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+	err := os.Remove(markerPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove incomplete marker: %w", err)
+	}
+	return nil
+}
+
+// markIncomplete creates an incomplete marker file
+func markIncomplete(conf config.Config, plugin plugins.Plugin, version toolversions.Version) error {
+	markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+	err := os.MkdirAll(filepath.Dir(markerPath), 0o755)
+	if err != nil {
+		return fmt.Errorf("failed to create marker directory: %w", err)
+	}
+	file, err := os.Create(markerPath)
+	if err != nil {
+		return fmt.Errorf("failed to create incomplete marker: %w", err)
+	}
+	defer file.Close()
+	return nil
+}
+
+// cleanupStaleIncomplete removes an install directory if it has an incomplete marker
+func cleanupStaleIncomplete(conf config.Config, plugin plugins.Plugin, version toolversions.Version) error {
+	markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+	_, err := os.Stat(markerPath)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("failed to check for incomplete marker: %w", err)
+	}
+
+	installPath := installs.InstallPath(conf, plugin, version)
+	err = os.RemoveAll(installPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove stale incomplete directory: %w", err)
+	}
+
+	err = os.Remove(markerPath)
+	if err != nil {
+		return fmt.Errorf("failed to remove stale incomplete marker: %w", err)
+	}
+
+	return nil
 }

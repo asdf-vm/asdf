@@ -7,6 +7,7 @@ export default defineConfig({
   title: "asdf",
   description: "Manage multiple runtime versions with a single CLI tool",
   lastUpdated: true,
+  srcExclude: ['adr/**'],
   locales: {
     root: {
       label: "English",

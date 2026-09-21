@@ -1,14 +1,17 @@
 package versions
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/repotest"
 	"github.com/asdf-vm/asdf/internal/toolversions"
@@ -320,6 +323,29 @@ func TestInstallOneVersion(t *testing.T) {
 		// no-download install script prints 'install'
 		assert.Equal(t, "install", stdout.String())
 	})
+
+	t.Run("cleans up stale incomplete directory from previous failed install", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+
+		version := toolversions.Version{Type: "version", Value: "1.0.0"}
+		installPath := installs.InstallPath(conf, plugin, version)
+		err := os.MkdirAll(installPath, 0o777)
+		assert.Nil(t, err)
+
+		markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+		err = os.MkdirAll(filepath.Dir(markerPath), 0o755)
+		assert.Nil(t, err)
+		err = os.WriteFile(markerPath, []byte{}, 0o644)
+		assert.Nil(t, err)
+
+		err = InstallOneVersion(conf, plugin, "1.0.0", false, &stdout, &stderr)
+		assert.Nil(t, err)
+
+		_, err = os.Stat(markerPath)
+		assert.True(t, errors.Is(err, fs.ErrNotExist), "incomplete marker should not exist after successful retry")
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+	})
 }
 
 func TestLatest(t *testing.T) {
@@ -591,4 +617,106 @@ func writeVersionFile(t *testing.T, dir, contents string) {
 	t.Helper()
 	err := os.WriteFile(filepath.Join(dir, ".tool-versions"), []byte(contents), 0o666)
 	assert.Nil(t, err)
+}
+
+func TestCleanupStaleIncomplete(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("removes directory when incomplete marker exists", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "5.0.0"}
+		installPath := installs.InstallPath(conf, plugin, version)
+		err := os.MkdirAll(installPath, 0o777)
+		assert.Nil(t, err)
+
+		err = markIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		err = cleanupStaleIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		_, err = os.Stat(installPath)
+		assert.True(t, errors.Is(err, fs.ErrNotExist), "directory should be removed")
+	})
+
+	t.Run("does nothing when directory does not exist", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "6.0.0"}
+		err := cleanupStaleIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+	})
+
+	t.Run("does nothing when directory exists without incomplete marker", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "7.0.0"}
+		installPath := installs.InstallPath(conf, plugin, version)
+		err := os.MkdirAll(installPath, 0o777)
+		assert.Nil(t, err)
+
+		err = cleanupStaleIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		_, err = os.Stat(installPath)
+		assert.Nil(t, err, "directory should still exist")
+	})
+
+	t.Run("removes marker when install directory was never created", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "8.0.0"}
+
+		err := markIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		err = cleanupStaleIncomplete(conf, plugin, version)
+		assert.Nil(t, err, "should not error when install directory is missing")
+
+		markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+		_, err = os.Stat(markerPath)
+		assert.True(t, errors.Is(err, fs.ErrNotExist), "marker should be removed")
+	})
+}
+
+func TestMarkIncomplete(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("creates marker file in install-locks directory", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "1.0.0"}
+		err := markIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+		_, err = os.Stat(markerPath)
+		assert.Nil(t, err, "marker file should exist")
+	})
+
+	t.Run("creates marker file even when directory does not exist", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "2.0.0"}
+		err := markIncomplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+		_, err = os.Stat(markerPath)
+		assert.Nil(t, err, "marker file should exist")
+	})
+}
+
+func TestMarkComplete(t *testing.T) {
+	conf, plugin := generateConfig(t)
+
+	t.Run("removes marker file from install-locks directory", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "1.0.0"}
+		markerPath := installs.IncompleteMarkerPath(conf, plugin, version)
+		err := os.MkdirAll(filepath.Dir(markerPath), 0o755)
+		assert.Nil(t, err)
+		err = os.WriteFile(markerPath, []byte{}, 0o644)
+		assert.Nil(t, err)
+
+		err = markComplete(conf, plugin, version)
+		assert.Nil(t, err)
+
+		_, err = os.Stat(markerPath)
+		assert.True(t, errors.Is(err, fs.ErrNotExist), "marker file should not exist")
+	})
+
+	t.Run("returns error when marker file does not exist", func(t *testing.T) {
+		version := toolversions.Version{Type: "version", Value: "2.0.0"}
+		err := markComplete(conf, plugin, version)
+		assert.NotNil(t, err)
+	})
 }
