@@ -217,7 +217,13 @@ func VersionStringFromFSFormat(version string) string {
 }
 
 func readLines(content string) (lines []string) {
-	return strings.Split(content, "\n")
+	raw := strings.Split(content, "\n")
+	lines = make([]string, len(raw))
+	for i, line := range raw {
+		// Windows editors write CRLF; keep the version token, drop the CR.
+		lines[i] = strings.TrimSuffix(line, "\r")
+	}
+	return lines
 }
 
 func findToolVersionsInContent(content, toolName string) (versions []string, found bool) {
