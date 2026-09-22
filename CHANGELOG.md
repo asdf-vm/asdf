@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.2](https://github.com/asdf-vm/asdf/compare/v0.20.1...v0.20.2) (2026-09-22)
+
+
+### Bug Fixes
+
+* fix release ([#2337](https://github.com/asdf-vm/asdf/issues/2337)) ([eac99e3](https://github.com/asdf-vm/asdf/commit/eac99e3270f76c292bf5586457e7648d5d35ad35))
+
 ## [0.20.1](https://github.com/asdf-vm/asdf/compare/v0.20.0...v0.20.1) (2026-09-22)
 
 
