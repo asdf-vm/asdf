@@ -100,10 +100,11 @@ teardown() {
   [[ "$output" == *"No .tool-versions version file found in parent directory"* ]]
 }
 
-@test "set with -h flag should show error for undefined flag" {
-  run asdf set -h "dummy" "1.0.0"
-  [ "$status" -eq 1 ]
-  [[ "$output" == *"flag provided but not defined: -h"* ]]
+@test "set with -h flag should show command help" {
+  run asdf set -h
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"USAGE:"* ]]
+  [[ "$output" == *"asdf set [options]"* ]]
 }
 
 @test "set should support multiple versions" {
