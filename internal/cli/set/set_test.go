@@ -50,12 +50,45 @@ func TestAll(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, stdout.String(), "")
+		assert.Equal(t, stderr.String(), "warning: version 5.2.3 of lua is not installed, run `asdf install lua 5.2.3`\n")
+
+		path := filepath.Join(dir, ".tool-versions")
+		bytes, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, "lua 5.2.3\n", string(bytes))
+	})
+
+	t.Run("does not warn when the version being set is already installed", func(t *testing.T) {
+		dataDir := t.TempDir()
+		t.Setenv("ASDF_DATA_DIR", dataDir)
+		assert.Nil(t, os.MkdirAll(filepath.Join(dataDir, "installs", "lua", "5.2.3"), 0o777))
+
+		stdout, stderr := buildOutputs()
+		dir := t.TempDir()
+		assert.Nil(t, os.Chdir(dir))
+
+		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, false, homeFunc)
+
+		assert.Nil(t, err)
+		assert.Equal(t, stdout.String(), "")
 		assert.Equal(t, stderr.String(), "")
 
 		path := filepath.Join(dir, ".tool-versions")
 		bytes, err := os.ReadFile(path)
 		assert.Nil(t, err)
 		assert.Equal(t, "lua 5.2.3\n", string(bytes))
+	})
+
+	t.Run("does not warn when setting a system version", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		dir := t.TempDir()
+		assert.Nil(t, os.Chdir(dir))
+
+		err := Main(&stdout, &stderr, []string{"lua", "system"}, false, false, homeFunc)
+
+		assert.Nil(t, err)
+		assert.Equal(t, stdout.String(), "")
+		assert.Equal(t, stderr.String(), "")
 	})
 
 	t.Run("sets version in parent directory when --parent flag provided", func(t *testing.T) {
@@ -70,7 +103,7 @@ func TestAll(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "")
+		assert.Equal(t, stderr.String(), "warning: version 5.2.3 of lua is not installed, run `asdf install lua 5.2.3`\n")
 
 		path := filepath.Join(dir, ".tool-versions")
 		bytes, err := os.ReadFile(path)
@@ -88,7 +121,7 @@ func TestAll(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "")
+		assert.Equal(t, stderr.String(), "warning: version 5.2.3 of lua is not installed, run `asdf install lua 5.2.3`\n")
 
 		path := filepath.Join(homedir, ".tool-versions")
 		bytes, err := os.ReadFile(path)
@@ -106,7 +139,7 @@ func TestAll(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, stdout.String(), "")
-		assert.Equal(t, stderr.String(), "")
+		assert.Equal(t, stderr.String(), strings.Repeat("warning: version 5.2.3 of lua is not installed, run `asdf install lua 5.2.3`\n", 2))
 
 		path := filepath.Join(dir, ".tool-versions")
 		bytes, err := os.ReadFile(path)
