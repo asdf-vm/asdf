@@ -22,7 +22,7 @@ fi
 # Elvish
 elvish_semver="v0.19.2"
 # Nushell
-nushell_semver="0.86.0"
+nushell_semver="0.115.1"
 # Powershell
 powershell_semver="7.4.6"
 powershell_apt_semver="${powershell_semver}-1.deb"
