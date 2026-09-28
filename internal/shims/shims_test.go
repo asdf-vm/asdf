@@ -11,11 +11,11 @@ import (
 	"github.com/asdf-vm/asdf/internal/config"
 	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/installtest"
+	"github.com/asdf-vm/asdf/internal/permissions"
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/repotest"
 	"github.com/asdf-vm/asdf/internal/toolversions"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/sys/unix"
 )
 
 const testPluginName = "lua"
@@ -246,7 +246,7 @@ func TestGenerateAll(t *testing.T) {
 		for _, executable := range executables {
 			shimName := filepath.Base(executable)
 			shimPath := Path(conf, shimName)
-			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+			assert.Nil(t, permissions.FileExecutable(shimPath))
 
 			// shim exists and has expected contents
 			content, err := os.ReadFile(shimPath)
@@ -275,7 +275,7 @@ func TestGenerateForPluginVersions(t *testing.T) {
 		for _, executable := range executables {
 			shimName := filepath.Base(executable)
 			shimPath := Path(conf, shimName)
-			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+			assert.Nil(t, permissions.FileExecutable(shimPath))
 
 			// shim exists and has expected contents
 			content, err := os.ReadFile(shimPath)
@@ -312,7 +312,7 @@ func TestGenerateForVersion(t *testing.T) {
 		for _, executable := range executables {
 			shimName := filepath.Base(executable)
 			shimPath := Path(conf, shimName)
-			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+			assert.Nil(t, permissions.FileExecutable(shimPath))
 		}
 	})
 
@@ -325,7 +325,7 @@ func TestGenerateForVersion(t *testing.T) {
 		for _, executable := range executables {
 			shimName := filepath.Base(executable)
 			shimPath := Path(conf, shimName)
-			assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+			assert.Nil(t, permissions.FileExecutable(shimPath))
 		}
 	})
 }
@@ -348,7 +348,7 @@ func TestWrite(t *testing.T) {
 		// shim is executable
 		shimName := filepath.Base(executable)
 		shimPath := Path(conf, shimName)
-		assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+		assert.Nil(t, permissions.FileExecutable(shimPath))
 
 		// shim exists and has expected contents
 		content, err := os.ReadFile(shimPath)
@@ -366,7 +366,7 @@ func TestWrite(t *testing.T) {
 		// shim is still executable
 		shimName := filepath.Base(executable)
 		shimPath := Path(conf, shimName)
-		assert.Nil(t, unix.Access(shimPath, unix.X_OK))
+		assert.Nil(t, permissions.FileExecutable(shimPath))
 
 		// has expected contents
 		content, err := os.ReadFile(shimPath)
