@@ -106,3 +106,22 @@ teardown() {
   [ "$status" -eq 1 ]
   [ "$output" = "No dummy executable found for dummy 1.0" ]
 }
+
+@test "which should report when no version is set" {
+  cd "$PROJECT_DIR"
+  rm -f "$PROJECT_DIR/.tool-versions"
+  touch "$PROJECT_DIR/.tool-versions"
+
+  run asdf which "dummy"
+  [ "$status" -eq 1 ]
+  [ "$output" = "No version is set for command dummy" ]
+}
+
+@test "which should report when preset version is not installed" {
+  cd "$PROJECT_DIR"
+  echo 'dummy 9.9.9' >"$PROJECT_DIR/.tool-versions"
+
+  run asdf which "dummy"
+  [ "$status" -eq 1 ]
+  [ "$output" = "No preset version installed for command dummy" ]
+}
