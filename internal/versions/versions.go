@@ -108,14 +108,24 @@ func Install(conf config.Config, plugin plugins.Plugin, dir string, stdOut io.Wr
 		return NoVersionSetError{toolName: plugin.Name}
 	}
 
+	var uninstallable error
 	for _, version := range versions.Versions {
 		iErr := InstallOneVersion(conf, plugin, version, false, stdOut, stdErr)
 		var vaiErr VersionAlreadyInstalledError
+		var uvErr UninstallableVersionError
 		if errors.As(iErr, &vaiErr) {
 			err = errors.Join(err, iErr)
+		} else if errors.As(iErr, &uvErr) {
+			if uninstallable == nil {
+				uninstallable = iErr
+			}
 		} else if iErr != nil {
 			return iErr
 		}
+	}
+
+	if uninstallable != nil {
+		return uninstallable
 	}
 
 	return err

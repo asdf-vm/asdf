@@ -1191,6 +1191,10 @@ func filterInstallErrors(errs []error) []error {
 			continue
 		}
 
+		if _, ok := err.(versions.UninstallableVersionError); ok {
+			continue
+		}
+
 		if _, ok := err.(versions.NoVersionSetError); !ok {
 			filtered = append(filtered, err)
 		}
