@@ -138,6 +138,43 @@ teardown() {
   echo "${stderr:?}" | grep -q "asdf install dummy 2.0.0" 2>/dev/null
 }
 
+@test "shim exec should list every configured version when none is installed" {
+  run asdf install dummy 1.0
+
+  echo "dummy 2.0.0 1.3" >"$PROJECT_DIR/.tool-versions"
+
+  run --separate-stderr "$ASDF_DIR/shims/dummy" world hello
+  [ "$status" -eq 126 ]
+
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "version 2.0.0, 1.3 of dummy is set for the current directory, but it is not installed" 2>/dev/null
+  echo "${stderr:?}" | grep -q "asdf install dummy 2.0.0" 2>/dev/null
+  echo "${stderr:?}" | grep -q "asdf install dummy 1.3" 2>/dev/null
+}
+
+@test "shim exec should report a not installed version taken from a legacy file" {
+  run asdf install dummy 1.0
+
+  echo "legacy_version_file = yes" >"$HOME/.asdfrc"
+  echo "2.0.0" >"$PROJECT_DIR/.dummy-version"
+
+  run --separate-stderr "$ASDF_DIR/shims/dummy" world hello
+  [ "$status" -eq 126 ]
+
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "version 2.0.0 of dummy is set for the current directory, but it is not installed" 2>/dev/null
+}
+
+@test "shim exec should not report a not installed version when an installed one is also set" {
+  run asdf install dummy 2.0.0
+
+  echo "dummy 9.9.9 2.0.0" >"$PROJECT_DIR/.tool-versions"
+
+  run "$ASDF_DIR/shims/dummy" world hello
+  [ "$status" -eq 0 ]
+  [ "$output" = "This is Dummy 2.0.0! hello world" ]
+}
+
 @test "shim exec should execute first plugin that is installed and set" {
   run asdf install dummy 2.0.0
   run asdf install dummy 3.0
