@@ -54,10 +54,11 @@ func Execute(version string) {
 	log.SetFlags(0)
 
 	app := &cli.Command{
-		HideHelp:  true,
-		Name:      "asdf",
-		Version:   version,
-		Copyright: "(c) 2024 Trevor Brown",
+		HideHelp:        false,
+		HideHelpCommand: true,
+		Name:            "asdf",
+		Version:         version,
+		Copyright:       "(c) 2024 Trevor Brown",
 		Authors: []any{
 			mail.Address{Name: "Trevor Brown"},
 		},
@@ -358,6 +359,17 @@ func Execute(version string) {
 			helpCommand(logger, version, "", "")
 			cli.OsExiter(1)
 		},
+	}
+
+	defaultHelpPrinter := cli.HelpPrinter
+	cli.HelpPrinter = func(w io.Writer, templ string, data interface{}) {
+		// Only override help output for the root "asdf" command. Subcommand
+		// help still uses urfave/cli's built-in printer.
+		if cmd, ok := data.(*cli.Command); ok && cmd == app {
+			helpCommand(logger, version, "", "")
+			return
+		}
+		defaultHelpPrinter(w, templ, data)
 	}
 
 	err := unsetAsdfReservedEnvVars()
