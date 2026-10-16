@@ -49,6 +49,17 @@ func (e NoVersionSetError) Error() string {
 	return fmt.Sprintf("no versions set for %s", e.shim)
 }
 
+// NoPresetVersionInstalledError is returned when a version is set for the tool
+// but the version is not installed.
+type NoPresetVersionInstalledError struct {
+	Shim         string
+	ToolVersions []toolversions.ToolVersions
+}
+
+func (e NoPresetVersionInstalledError) Error() string {
+	return fmt.Sprintf("no preset version installed for %s", e.Shim)
+}
+
 // NoExecutableForPluginError is returned when a compatible version is found
 // but no executable matching the name is located.
 type NoExecutableForPluginError struct {
@@ -76,6 +87,8 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 	}
 
 	existingPluginToolVersions := make(map[plugins.Plugin]resolve.ToolVersions)
+	var uninstalledToolVersions []toolversions.ToolVersions
+	installedPluginToolVersionsWithoutExec := make(map[plugins.Plugin]resolve.ToolVersions)
 
 	// loop over tools and check if the plugin for them still exists
 	for _, shimToolVersion := range toolVersions {
@@ -106,15 +119,52 @@ func FindExecutable(conf config.Config, shimName, currentDirectory string) (path
 					}
 				}
 
-				versions.Versions = tempVersions
-				if len(versions.Versions) > 0 {
+				if len(tempVersions) > 0 {
+					versions.Versions = tempVersions
 					existingPluginToolVersions[plugin] = versions
+				} else {
+					var uninstalledVersions []string
+					var installedWithoutExec []string
+					for _, v := range versions.Versions {
+						parsed := toolversions.Parse(v)
+						if parsed.Type == "system" || parsed.Type == "path" {
+							installedWithoutExec = append(installedWithoutExec, v)
+						} else if installs.IsInstalled(conf, plugin, parsed) {
+							installedWithoutExec = append(installedWithoutExec, v)
+						} else {
+							uninstalledVersions = append(uninstalledVersions, v)
+						}
+					}
+					if len(uninstalledVersions) > 0 {
+						uninstalledToolVersions = append(uninstalledToolVersions, toolversions.ToolVersions{
+							Name:     plugin.Name,
+							Versions: uninstalledVersions,
+						})
+					}
+					if len(installedWithoutExec) > 0 {
+						versions.Versions = installedWithoutExec
+						installedPluginToolVersionsWithoutExec[plugin] = versions
+					}
 				}
 			}
 		}
 	}
 
 	if len(existingPluginToolVersions) == 0 {
+		if len(uninstalledToolVersions) > 0 {
+			return "", plugins.Plugin{}, "", false, NoPresetVersionInstalledError{Shim: shimName, ToolVersions: uninstalledToolVersions}
+		}
+
+		if len(installedPluginToolVersionsWithoutExec) > 0 {
+			tools := []string{}
+			versions := []string{}
+			for plugin, toolVersions := range installedPluginToolVersionsWithoutExec {
+				tools = append(tools, plugin.Name)
+				versions = append(versions, toolVersions.Versions...)
+			}
+			return "", plugins.Plugin{}, "", false, NoExecutableForPluginError{shim: shimName, tools: tools, versions: versions}
+		}
+
 		return "", plugins.Plugin{}, "", false, NoVersionSetError{shim: shimName}
 	}
 
