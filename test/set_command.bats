@@ -114,3 +114,46 @@ teardown() {
   run cat "$PROJECT_DIR/.tool-versions"
   [ "$output" = "dummy 1.0.0 1.1.0" ]
 }
+
+@test "set should warn when the version being set is not installed" {
+  run --separate-stderr asdf set "dummy" "9.9.9"
+  [ "$status" -eq 0 ]
+  [ -f "$PROJECT_DIR/.tool-versions" ]
+  run cat "$PROJECT_DIR/.tool-versions"
+  [ "$output" = "dummy 9.9.9" ]
+
+  run --separate-stderr asdf set "dummy" "9.9.9"
+  # shellcheck disable=SC2154
+  echo "${stderr:?}" | grep -q "warning: version 9.9.9 of dummy is not installed, run \`asdf install dummy 9.9.9\`" 2>/dev/null
+}
+
+@test "set should not warn when the version being set is already installed" {
+  run --separate-stderr asdf set "dummy" "1.0.0"
+  [ "$status" -eq 0 ]
+  # shellcheck disable=SC2154
+  [ "$stderr" = "" ]
+}
+
+@test "set should not warn for system, path and ref versions" {
+  run --separate-stderr asdf set "dummy" "system"
+  [ "$status" -eq 0 ]
+  # shellcheck disable=SC2154
+  [ "$stderr" = "" ]
+
+  run --separate-stderr asdf set "dummy" "path:/tmp/dummy"
+  [ "$status" -eq 0 ]
+  [ "$stderr" = "" ]
+
+  run --separate-stderr asdf set "dummy" "ref:main"
+  [ "$status" -eq 0 ]
+  [ "$stderr" = "" ]
+}
+
+@test "set should warn once per not installed version" {
+  run --separate-stderr asdf set "dummy" "1.0.0" "8.8.8" "9.9.9"
+  [ "$status" -eq 0 ]
+  # shellcheck disable=SC2154
+  [ "$(echo "$stderr" | grep -c "is not installed")" -eq 2 ]
+  echo "$stderr" | grep -q "version 8.8.8 of dummy is not installed" 2>/dev/null
+  echo "$stderr" | grep -q "version 9.9.9 of dummy is not installed" 2>/dev/null
+}

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/config"
+	"github.com/asdf-vm/asdf/internal/installs"
 	"github.com/asdf-vm/asdf/internal/plugins"
 	"github.com/asdf-vm/asdf/internal/toolversions"
 	"github.com/asdf-vm/asdf/internal/versions"
@@ -52,6 +53,9 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 
 	tv := toolversions.ToolVersions{Name: args[0], Versions: resolvedVersions}
 
+	plugin := plugins.New(conf, args[0])
+	warnIfNotInstalled(stderr, conf, plugin, resolvedVersions)
+
 	if home {
 		homeDir, err := homeFunc()
 		if err != nil {
@@ -88,6 +92,24 @@ func Main(_ io.Writer, stderr io.Writer, args []string, home bool, parent bool, 
 	// Write new file in current dir
 	filepath := filepath.Join(currentDir, conf.DefaultToolVersionsFilename)
 	return toolversions.WriteToolVersionsToFile(filepath, []toolversions.ToolVersions{tv})
+}
+
+// warnIfNotInstalled prints a warning to stderr for any version being set
+// that is not currently installed for the plugin, so users are not left
+// wondering why a shim later reports no version resolves. It only warns for
+// concrete versions -- "system", "path:" and "ref:" versions have no
+// meaningful installed state to check.
+func warnIfNotInstalled(stderr io.Writer, conf config.Config, plugin plugins.Plugin, versions []string) {
+	for _, version := range versions {
+		parsedVersion := toolversions.Parse(version)
+		if parsedVersion.Type != "version" {
+			continue
+		}
+
+		if !installs.IsInstalled(conf, plugin, parsedVersion) {
+			fmt.Fprintf(stderr, "warning: version %s of %s is not installed, run `asdf install %s %s`\n", parsedVersion.Value, plugin.Name, plugin.Name, parsedVersion.Value)
+		}
+	}
 }
 
 func printError(stderr io.Writer, msg string) error {
