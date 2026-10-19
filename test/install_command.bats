@@ -218,6 +218,16 @@ EOM
   [ ! -f "$ASDF_DIR/installs/dummy/system/version" ]
 }
 
+@test "install_command without arguments skips system version and installs the rest" {
+  cd "$PROJECT_DIR"
+  echo 'dummy system 1.0.0' >".tool-versions"
+
+  run asdf install
+  [ "$status" -eq 0 ]
+  [ "$output" = "skipping uninstallable version system of dummy" ]
+  [ "$(cat "$ASDF_DIR/installs/dummy/1.0.0/version")" = "1.0.0" ]
+}
+
 @test "install command executes configured pre plugin install hook" {
   cat >"$HOME/.asdfrc" <<-'EOM'
 pre_asdf_install_dummy = echo will install dummy $1

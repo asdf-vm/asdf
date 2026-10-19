@@ -150,6 +150,21 @@ func TestInstall(t *testing.T) {
 		var eerr VersionAlreadyInstalledError
 		assert.ErrorAs(t, err, &eerr)
 	})
+
+	t.Run("installs versions listed after an uninstallable version", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		stdout, stderr := buildOutputs()
+		currentDir := t.TempDir()
+
+		data := []byte(fmt.Sprintf("%s system 1.0.0", plugin.Name))
+		err := os.WriteFile(filepath.Join(currentDir, ".tool-versions"), data, 0o666)
+		assert.NoError(t, err)
+
+		err = Install(conf, plugin, currentDir, &stdout, &stderr)
+		assert.IsType(t, UninstallableVersionError{}, err)
+
+		assertVersionInstalled(t, conf.DataDir, plugin.Name, "1.0.0")
+	})
 }
 
 func TestInstallVersion(t *testing.T) {
