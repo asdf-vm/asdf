@@ -49,6 +49,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Check workflow files
-        uses: docker://rhysd/actionlint:1.6.24
+        uses: docker://rhysd/actionlint:1.7.7
         with:
           args: -color
