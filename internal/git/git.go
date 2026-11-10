@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/asdf-vm/asdf/internal/execute"
@@ -41,10 +42,25 @@ func NewRepo(directory string) Repo {
 
 // Clone installs a plugin via Git
 func (r Repo) Clone(pluginURL, ref string) error {
-	cmdStr := []string{"git", "clone", "--depth", "1", pluginURL, r.Directory}
+	// git refuses to clone when the current working directory has been deleted,
+	// so run it from the parent of the target directory instead. A relative
+	// local path URL must be resolved first, since it is relative to the
+	// original working directory.
+	if _, err := os.Stat(pluginURL); err == nil {
+		if abs, err := filepath.Abs(pluginURL); err == nil {
+			pluginURL = abs
+		}
+	}
+
+	parent := filepath.Dir(r.Directory)
+	if err := os.MkdirAll(parent, 0o777); err != nil {
+		return fmt.Errorf("unable to clone plugin: %w", err)
+	}
+
+	cmdStr := []string{"git", "-C", parent, "clone", "--depth", "1", pluginURL, filepath.Base(r.Directory)}
 
 	if ref != "" {
-		cmdStr = []string{"git", "clone", "--depth", "1", pluginURL, r.Directory, "--branch", ref}
+		cmdStr = append(cmdStr, "--branch", ref)
 	}
 
 	_, stderr, err := exec(cmdStr)

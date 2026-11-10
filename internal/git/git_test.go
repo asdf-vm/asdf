@@ -38,6 +38,24 @@ func TestRepoClone(t *testing.T) {
 		assert.Equal(t, 12, len(entries))
 	})
 
+	t.Run("clones when the current working directory has been deleted", func(t *testing.T) {
+		repoDir := generateRepo(t)
+		directory := filepath.Join(t.TempDir(), "plugins", "foo")
+
+		original, err := os.Getwd()
+		assert.Nil(t, err)
+		gone := t.TempDir()
+		assert.Nil(t, os.Chdir(gone))
+		t.Cleanup(func() { _ = os.Chdir(original) })
+		assert.Nil(t, os.Remove(gone))
+
+		err = NewRepo(directory).Clone(repoDir, "")
+		assert.Nil(t, err)
+
+		_, err = os.ReadDir(directory + "/.git")
+		assert.Nil(t, err)
+	})
+
 	t.Run("when repo name and URL are valid but ref is invalid prints an error", func(t *testing.T) {
 		repoDir := generateRepo(t)
 		directory := t.TempDir()
