@@ -45,6 +45,36 @@ func TestFindExecutable(t *testing.T) {
 		assert.Equal(t, err.(NoVersionSetError).Error(), "no versions set for dummy")
 	})
 
+	t.Run("returns error when shim is present but preset version is not installed", func(t *testing.T) {
+		uninstalledDir := t.TempDir()
+		data := []byte("lua 9.9.9")
+		assert.Nil(t, os.WriteFile(filepath.Join(uninstalledDir, ".tool-versions"), data, 0o666))
+
+		executable, _, version, found, err := FindExecutable(conf, "dummy", uninstalledDir)
+		assert.Empty(t, executable)
+		assert.False(t, found)
+		assert.Empty(t, version)
+		assert.IsType(t, NoPresetVersionInstalledError{}, err)
+		presetErr := err.(NoPresetVersionInstalledError)
+		assert.Equal(t, "no preset version installed for dummy", presetErr.Error())
+		assert.Equal(t, "dummy", presetErr.Shim)
+		assert.Equal(t, []toolversions.ToolVersions{{Name: "lua", Versions: []string{"9.9.9"}}}, presetErr.ToolVersions)
+	})
+
+	t.Run("returns error with all preset versions when multiple preset versions are not installed", func(t *testing.T) {
+		uninstalledDir := t.TempDir()
+		data := []byte("lua 9.9.9 8.8.8")
+		assert.Nil(t, os.WriteFile(filepath.Join(uninstalledDir, ".tool-versions"), data, 0o666))
+
+		executable, _, version, found, err := FindExecutable(conf, "dummy", uninstalledDir)
+		assert.Empty(t, executable)
+		assert.False(t, found)
+		assert.Empty(t, version)
+		assert.IsType(t, NoPresetVersionInstalledError{}, err)
+		presetErr := err.(NoPresetVersionInstalledError)
+		assert.Equal(t, []toolversions.ToolVersions{{Name: "lua", Versions: []string{"9.9.9", "8.8.8"}}}, presetErr.ToolVersions)
+	})
+
 	t.Run("returns string containing path to executable when found", func(t *testing.T) {
 		// write a version file
 		data := []byte("lua 1.1.0")

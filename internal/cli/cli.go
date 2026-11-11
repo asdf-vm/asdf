@@ -692,23 +692,36 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 			cli.OsExiter(1)
 			return "", plugin, version, err
 		}
+		if presetErr, ok := err.(shims.NoPresetVersionInstalledError); ok {
+			logger.Printf("No preset version installed for command %s", command)
+			logger.Printf("Please install a version by running one of the following:\n")
+			for _, toolVersion := range presetErr.ToolVersions {
+				for _, version := range toolVersion.Versions {
+					logger.Printf("asdf install %s %s\n", toolVersion.Name, version)
+				}
+			}
+
+			shimPath := shims.Path(conf, command)
+			toolVersions, _ := shims.GetToolsAndVersionsFromShimFile(shimPath)
+			if len(toolVersions) > 0 {
+				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
+				for _, toolVersion := range toolVersions {
+					for _, version := range toolVersion.Versions {
+						logger.Printf("%s %s\n", toolVersion.Name, version)
+					}
+				}
+			}
+
+			os.Exit(126)
+			return executable, plugins.Plugin{}, "", err
+		}
+
 		shimPath := shims.Path(conf, command)
 		toolVersions, _ := shims.GetToolsAndVersionsFromShimFile(shimPath)
 
 		if len(toolVersions) > 0 {
-			if anyInstalled(conf, toolVersions) {
-				logger.Printf("No version is set for command %s", command)
-				logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
-			} else {
-				logger.Printf("No preset version installed for command %s", command)
-				for _, toolVersion := range toolVersions {
-					for _, version := range toolVersion.Versions {
-						logger.Printf("asdf install %s %s\n", toolVersion.Name, version)
-					}
-				}
-
-				logger.Printf("or add one of the following versions in your config file at %s/.tool-versions\n", currentDir)
-			}
+			logger.Printf("No version is set for command %s", command)
+			logger.Printf("Consider adding one of the following versions in your config file at %s/.tool-versions\n", currentDir)
 
 			for _, toolVersion := range toolVersions {
 				for _, version := range toolVersion.Versions {
@@ -728,19 +741,6 @@ func getExecutable(logger *log.Logger, conf config.Config, command string) (exec
 	}
 
 	return executable, plugin, version, nil
-}
-
-func anyInstalled(conf config.Config, toolVersions []toolversions.ToolVersions) bool {
-	for _, toolVersion := range toolVersions {
-		for _, version := range toolVersion.Versions {
-			version := toolversions.Parse(version)
-			plugin := plugins.New(conf, toolVersion.Name)
-			if installs.IsInstalled(conf, plugin, version) {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 func pluginAddCommand(_ *cli.Command, conf config.Config, logger *log.Logger, pluginName, pluginRepo string) error {
@@ -1466,6 +1466,16 @@ func whichCommand(logger *log.Logger, command string) error {
 	if _, ok := err.(shims.NoExecutableForPluginError); ok {
 		logger.Printf("%s", err.Error())
 		return errors.New("no executable for tool version")
+	}
+
+	if _, ok := err.(shims.NoPresetVersionInstalledError); ok {
+		logger.Printf("No preset version installed for command %s", command)
+		return errors.New("no preset version installed")
+	}
+
+	if _, ok := err.(shims.NoVersionSetError); ok {
+		logger.Printf("No version is set for command %s", command)
+		return errors.New("no version set")
 	}
 
 	if err != nil {
