@@ -7,11 +7,11 @@ on:
   pull_request:
 
 env:
-  PYTHON_MIN_VERSION: "3.13.1"
+  PYTHON_MIN_VERSION: "3.13.18"
 
 jobs:
   asdf-bash:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: asdf-vm/actions/install@v4

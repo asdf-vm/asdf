@@ -24,16 +24,21 @@ elvish_semver="v0.19.2"
 # Nushell
 nushell_semver="0.86.0"
 # Powershell
-powershell_semver="7.4.6"
+powershell_semver="7.6.9"
 powershell_apt_semver="${powershell_semver}-1.deb"
 
 ### Install dependencies on Linux
 if [ "$RUNNER_OS" = "Linux" ]; then
   printf "%s\n" "Installing dependencies on Linux"
 
+  # Use the Microsoft apt repo for Ubuntu 24.04 (noble). The powershell
+  # package's dependencies list a wide range of libicu/libssl ABI versions
+  # (see its control file), so it installs cleanly on newer Ubuntu releases
+  # even though the repo is pinned to the noble suite. This avoids relying
+  # on a per-release Microsoft repo, which may not exist yet for the
+  # newest Ubuntu versions.
   curl -fsSLo- https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc >/dev/null
-  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
-  sudo add-apt-repository -y ppa:fish-shell/release-3
+  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/24.04/prod noble main" > /etc/apt/sources.list.d/microsoft.list'
   sudo apt-get update
   sudo apt-get --allow-downgrades -y install curl parallel \
     fish powershell="${powershell_apt_semver}"
