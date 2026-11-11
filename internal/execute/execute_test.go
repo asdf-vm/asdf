@@ -61,6 +61,18 @@ func TestRun_Command(t *testing.T) {
 		assert.Equal(t, "test string another string\n", stdout.String())
 	})
 
+	t.Run("shell metacharacters in args are passed to command literally", func(t *testing.T) {
+		args := []string{"$(echo injected)", "`echo injected`", "$HOME", `with"quote`, `back\slash`, "", "semi; echo injected"}
+		cmd := New("printf '%s\\n'", args)
+
+		var stdout strings.Builder
+		cmd.Stdout = &stdout
+		err := cmd.Run()
+
+		assert.Nil(t, err)
+		assert.Equal(t, strings.Join(args, "\n")+"\n", stdout.String())
+	})
+
 	t.Run("environment variables are passed to command", func(t *testing.T) {
 		cmd := New("echo $MYVAR;", []string{})
 		cmd.Env = map[string]string{"MYVAR": "my var value"}
@@ -162,6 +174,18 @@ func TestRun_Expression(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.Equal(t, "test string another string\n", stdout.String())
+	})
+
+	t.Run("shell metacharacters in args are passed to expression literally", func(t *testing.T) {
+		args := []string{"$(echo injected)", "`echo injected`", "$HOME", `with"quote`, `back\slash`, "", "semi; echo injected"}
+		cmd := NewExpression("printf '%s\\n' \"$@\"", args)
+
+		var stdout strings.Builder
+		cmd.Stdout = &stdout
+		err := cmd.Run()
+
+		assert.Nil(t, err)
+		assert.Equal(t, strings.Join(args, "\n")+"\n", stdout.String())
 	})
 
 	t.Run("environment variables are passed to expression", func(t *testing.T) {

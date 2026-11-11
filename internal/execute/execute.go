@@ -40,13 +40,15 @@ func (c Command) Run() error {
 	if c.Expression != "" {
 		// Expressions need to be invoked inside a Bash function, so variables like
 		// $0 and $@ are available
-		command = fmt.Sprintf("fn() { %s; }; fn %s", c.Expression, formatArgString(c.Args))
+		command = fmt.Sprintf("fn() { %s; }; fn \"$@\"", c.Expression)
 	} else {
 		// Scripts can be invoked directly, with args provided
-		command = fmt.Sprintf("%s %s", c.Command, formatArgString(c.Args))
+		command = fmt.Sprintf("%s \"$@\"", c.Command)
 	}
 
-	cmd := exec.Command("bash", "-c", command)
+	// Args are handed to Bash as positional parameters rather than interpolated
+	// into the command string, so they are never subject to shell expansion.
+	cmd := exec.Command("bash", append([]string{"-c", command, "bash"}, c.Args...)...)
 
 	if len(c.Env) > 0 {
 		cmd.Env = MergeWithCurrentEnv(c.Env)
@@ -104,12 +106,4 @@ func SliceToMap(env []string) map[string]string {
 	}
 
 	return envMap
-}
-
-func formatArgString(args []string) string {
-	var newArgs []string
-	for _, str := range args {
-		newArgs = append(newArgs, fmt.Sprintf("\"%s\"", str))
-	}
-	return strings.Join(newArgs, " ")
 }
