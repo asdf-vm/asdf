@@ -210,7 +210,7 @@ func (p Plugin) ShimTemplatePath(shimName string) (string, error) {
 	path := filepath.Join(p.Dir, "shims", shimName)
 	stat, err := os.Stat(path)
 
-	if errors.Is(err, os.ErrNotExist) || stat.Mode()&executableMode == 0 {
+	if err != nil || stat.Mode()&executableMode == 0 {
 		return "", NoShimTemplateError{shimName: shimName, plugin: p.Name}
 	}
 

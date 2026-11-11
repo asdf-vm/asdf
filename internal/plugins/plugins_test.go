@@ -470,6 +470,48 @@ func TestCallbackPath(t *testing.T) {
 	})
 }
 
+func TestShimTemplatePath(t *testing.T) {
+	testDataDir := t.TempDir()
+	conf := config.Config{DataDir: testDataDir}
+	_, err := repotest.InstallPlugin("dummy_plugin", testDataDir, testPluginName)
+	assert.Nil(t, err)
+	plugin := New(conf, testPluginName)
+
+	shimsDir := filepath.Join(plugin.Dir, "shims")
+	assert.Nil(t, os.MkdirAll(shimsDir, 0o755))
+	assert.Nil(t, os.WriteFile(filepath.Join(shimsDir, "executable"), []byte("#!/usr/bin/env bash\n"), 0o755))
+	assert.Nil(t, os.WriteFile(filepath.Join(shimsDir, "not-executable"), []byte("#!/usr/bin/env bash\n"), 0o644))
+	assert.Nil(t, os.Symlink("loop", filepath.Join(shimsDir, "loop")))
+
+	t.Run("returns shim template path when shim is executable", func(t *testing.T) {
+		path, err := plugin.ShimTemplatePath("executable")
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Join(shimsDir, "executable"), path)
+	})
+
+	t.Run("returns error when shim template does not exist", func(t *testing.T) {
+		path, err := plugin.ShimTemplatePath("non-existent")
+		assert.IsType(t, NoShimTemplateError{}, err)
+		assert.Equal(t, "", path)
+	})
+
+	t.Run("returns error when shim template is not executable", func(t *testing.T) {
+		path, err := plugin.ShimTemplatePath("not-executable")
+		assert.IsType(t, NoShimTemplateError{}, err)
+		assert.Equal(t, "", path)
+	})
+
+	t.Run("returns error instead of panicking when shim template cannot be stat'ed", func(t *testing.T) {
+		// A symlink pointing at itself makes stat fail with ELOOP, which is not
+		// os.ErrNotExist.
+		assert.NotPanics(t, func() {
+			path, err := plugin.ShimTemplatePath("loop")
+			assert.IsType(t, NoShimTemplateError{}, err)
+			assert.Equal(t, "", path)
+		})
+	})
+}
+
 func TestGetExtensionCommands(t *testing.T) {
 	testDataDir := t.TempDir()
 	conf := config.Config{DataDir: testDataDir}
