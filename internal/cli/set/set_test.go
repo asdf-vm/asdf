@@ -78,6 +78,24 @@ func TestAll(t *testing.T) {
 		assert.Equal(t, "lua 5.2.3\n", string(bytes))
 	})
 
+	t.Run("sets version in current directory when --parent flag provided", func(t *testing.T) {
+		stdout, stderr := buildOutputs()
+		dir := t.TempDir()
+		assert.Nil(t, os.Chdir(dir))
+		assert.Nil(t, os.WriteFile(filepath.Join(dir, ".tool-versions"), []byte("lua 4.0.0"), 0o666))
+
+		err := Main(&stdout, &stderr, []string{"lua", "5.2.3"}, false, true, homeFunc)
+
+		assert.Nil(t, err)
+		assert.Equal(t, stdout.String(), "")
+		assert.Equal(t, stderr.String(), "")
+
+		path := filepath.Join(dir, ".tool-versions")
+		bytes, err := os.ReadFile(path)
+		assert.Nil(t, err)
+		assert.Equal(t, "lua 5.2.3\n", string(bytes))
+	})
+
 	t.Run("sets version in home directory when --home flag provided", func(t *testing.T) {
 		stdout, stderr := buildOutputs()
 		homedir := filepath.Join(t.TempDir(), "home")
