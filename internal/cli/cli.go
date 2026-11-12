@@ -277,8 +277,7 @@ func Execute(version string) {
 							toolVersion := cmd.String("asdf-tool-version")
 							gitRef := cmd.String("asdf-plugin-gitref")
 							args := cmd.Args().Slice()
-							pluginTestCommand(logger, args, toolVersion, gitRef)
-							return nil
+							return pluginTestCommand(logger, args, toolVersion, gitRef)
 						},
 					},
 				},
@@ -975,16 +974,15 @@ func pluginUpdateCommand(cCtx *cli.Command, logger *log.Logger, pluginName, ref 
 	return err
 }
 
-func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
+func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		l.Printf("error loading config: %s", err)
-		cli.OsExiter(1)
-		return
+		return err
 	}
 
 	if len(args) < 2 {
-		failTest(l, "please provide a plugin name and url")
+		return failTest(l, "please provide a plugin name and url")
 	}
 
 	name := args[0]
@@ -994,7 +992,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	// Install plugin
 	err = plugins.Add(conf, testName, url, ref)
 	if err != nil {
-		failTest(l, fmt.Sprintf("%s was not properly installed reason: %s", name, err))
+		return failTest(l, fmt.Sprintf("%s was not properly installed reason: %s", name, err))
 	}
 
 	// Remove plugin
@@ -1005,7 +1003,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	plugin := plugins.New(conf, testName)
 	files, err := os.ReadDir(filepath.Join(plugin.Dir, "bin"))
 	if _, ok := err.(*fs.PathError); ok {
-		failTest(l, "bin/ directory does not exist")
+		return failTest(l, "bin/ directory does not exist")
 	}
 
 	callbacks := []string{}
@@ -1015,7 +1013,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 
 	for _, expectedCallback := range []string{"download", "install", "list-all"} {
 		if !slices.Contains(callbacks, expectedCallback) {
-			failTest(l, fmt.Sprintf("missing callback %s", expectedCallback))
+			return failTest(l, fmt.Sprintf("missing callback %s", expectedCallback))
 		}
 	}
 
@@ -1028,7 +1026,7 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 			// check if it is executable
 			info, _ := file.Info()
 			if !(info.Mode()&0o111 != 0) {
-				failTest(l, fmt.Sprintf("callback lacks executable permission: %s", file.Name()))
+				return failTest(l, fmt.Sprintf("callback lacks executable permission: %s", file.Name()))
 			}
 		}
 	}
@@ -1036,29 +1034,29 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	// Assert has license
 	licensePath := filepath.Join(plugin.Dir, "LICENSE")
 	if _, err := os.Stat(licensePath); errors.Is(err, os.ErrNotExist) {
-		failTest(l, "LICENSE file must be present in the plugin repository")
+		return failTest(l, "LICENSE file must be present in the plugin repository")
 	}
 
 	bytes, err := os.ReadFile(licensePath)
 	if err != nil {
-		failTest(l, "LICENSE file must be present in the plugin repository")
+		return failTest(l, "LICENSE file must be present in the plugin repository")
 	}
 
 	// Validate license file not empty
 	if len(bytes) == 0 {
-		failTest(l, "LICENSE file in the plugin repository must not be empty")
+		return failTest(l, "LICENSE file in the plugin repository must not be empty")
 	}
 
 	// Validate it returns at least one available version
 	var output strings.Builder
 	err = plugin.RunCallback("list-all", []string{}, map[string]string{}, &output, &blackhole)
 	if err != nil {
-		failTest(l, "Unable to list available versions")
+		return failTest(l, "Unable to list available versions")
 	}
 
 	allVersions := strings.Fields(output.String())
 	if len(allVersions) < 1 {
-		failTest(l, "list-all did not return any version")
+		return failTest(l, "list-all did not return any version")
 	}
 
 	// Resolve version: if empty use first from list-all; if "latest" or
@@ -1070,20 +1068,22 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 		query = strings.TrimPrefix(query, ":")
 		resolved, err := versions.Latest(plugin, query, os.Stderr)
 		if err != nil {
-			failTest(l, "could not get latest version")
+			return failTest(l, "could not get latest version")
 		}
 		toolVersion = resolved
 	}
 
 	err = versions.InstallOneVersion(conf, plugin, toolVersion, false, os.Stdout, os.Stderr)
 	if err != nil {
-		failTest(l, "install exited with an error")
+		return failTest(l, "install exited with an error")
 	}
+
+	return nil
 }
 
-func failTest(logger *log.Logger, msg string) {
+func failTest(logger *log.Logger, msg string) error {
 	logger.Printf("FAILED: %s", msg)
-	cli.OsExiter(1)
+	return cli.Exit("", 1)
 }
 
 func formatUpdateResult(logger *log.Logger, pluginName, updatedToRef string, err error) {
