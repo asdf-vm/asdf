@@ -821,6 +821,9 @@ asdf plugin test <plugin_name> <plugin_url> [--asdf-tool-version <version>] [--a
   # asdf plugin test <plugin_name>  <plugin_url>                               [test_command]
     asdf plugin test nodejs         https://github.com/asdf-vm/asdf-nodejs.git node --version
   ```
+  The command runs with the installed version on `PATH` and the plugin's
+  `exec-env` applied, and the test fails if it exits with an error. A single
+  argument is run as a command line, so `"node --version"` works too.
 
 ::: tip Note
 
