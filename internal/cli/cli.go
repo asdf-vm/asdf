@@ -1079,6 +1079,48 @@ func pluginTestCommand(l *log.Logger, args []string, toolVersion, ref string) {
 	if err != nil {
 		failTest(l, "install exited with an error")
 	}
+
+	if len(args) > 2 {
+		testCommand := args[2:]
+		err = runPluginTestCommand(conf, plugin, toolVersion, testCommand)
+		if err != nil {
+			failTest(l, fmt.Sprintf("%s failed: %s", strings.Join(testCommand, " "), err))
+		}
+	}
+}
+
+// runPluginTestCommand runs the test command of "asdf plugin test" with the
+// installed version on PATH and the plugin's exec-env applied. A single
+// argument is a command line, e.g. "node --version" as asdf-vm/actions passes
+// it; several arguments are the command and its arguments.
+func runPluginTestCommand(conf config.Config, plugin plugins.Plugin, toolVersion string, testCommand []string) error {
+	version := toolversions.Parse(toolVersion)
+	execPaths, err := shims.ExecutablePaths(conf, plugin, version)
+	if err != nil {
+		return err
+	}
+
+	env := map[string]string{
+		"ASDF_INSTALL_TYPE":    version.Type,
+		"ASDF_INSTALL_VERSION": version.Value,
+		"ASDF_INSTALL_PATH":    installs.InstallPath(conf, plugin, version),
+		"PATH":                 setPath(execPaths),
+	}
+	env, err = execenv.Generate(plugin, env)
+	if _, ok := err.(plugins.NoCallbackError); err != nil && !ok {
+		return err
+	}
+
+	expression, expressionArgs := `"$@"`, testCommand
+	if len(testCommand) == 1 {
+		expression, expressionArgs = testCommand[0], []string{}
+	}
+
+	cmd := execute.NewExpression(expression, expressionArgs)
+	cmd.Env = env
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func failTest(logger *log.Logger, msg string) {
