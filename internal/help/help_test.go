@@ -60,6 +60,47 @@ func TestWriteToolHelp(t *testing.T) {
 		assert.Equal(t, stdout.String(), expected)
 	})
 
+	t.Run("when plugin implements help.deps, help.config and help.links", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		writeHelpCallback(t, plugin, "help.deps", "echo deps")
+		writeHelpCallback(t, plugin, "help.config", "echo config")
+		writeHelpCallback(t, plugin, "help.links", "echo links")
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err := WriteToolHelp(conf, plugin.Name, &stdout, &stderr)
+
+		assert.Nil(t, err)
+		assert.Empty(t, stderr.String())
+		expected := "Dummy plugin documentation\n\nDummy plugin is a plugin only used for unit tests\ndeps\nconfig\nlinks\n"
+		assert.Equal(t, expected, stdout.String())
+	})
+
+	t.Run("when plugin has help.links but no help.deps", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		writeHelpCallback(t, plugin, "help.links", "echo links")
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err := WriteToolHelp(conf, plugin.Name, &stdout, &stderr)
+
+		assert.Nil(t, err)
+		assert.Equal(t, "Dummy plugin documentation\n\nDummy plugin is a plugin only used for unit tests\nlinks\n", stdout.String())
+	})
+
+	t.Run("when help.deps fails", func(t *testing.T) {
+		conf, plugin := generateConfig(t)
+		writeHelpCallback(t, plugin, "help.deps", "exit 1")
+		writeHelpCallback(t, plugin, "help.links", "echo links")
+		var stdout strings.Builder
+		var stderr strings.Builder
+
+		err := WriteToolHelp(conf, plugin.Name, &stdout, &stderr)
+
+		assert.NotNil(t, err)
+		assert.NotContains(t, stdout.String(), "links")
+	})
+
 	t.Run("when plugin does not have help.overview callback", func(t *testing.T) {
 		var stdout strings.Builder
 		var stderr strings.Builder
@@ -138,6 +179,12 @@ func installPlugin(t *testing.T, conf config.Config, fixture, pluginName string)
 	assert.Nil(t, err)
 
 	return plugins.New(conf, pluginName)
+}
+
+func writeHelpCallback(t *testing.T, plugin plugins.Plugin, name, body string) {
+	t.Helper()
+	path := filepath.Join(plugin.Dir, "bin", name)
+	assert.Nil(t, os.WriteFile(path, []byte("#!/usr/bin/env bash\n"+body+"\n"), 0o777))
 }
 
 func writeExtensionCommand(t *testing.T, plugin plugins.Plugin, name, contents string) error {
