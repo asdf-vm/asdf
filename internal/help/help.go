@@ -122,19 +122,11 @@ func writePluginHelp(conf config.Config, toolName, toolVersion string, writer io
 		return err
 	}
 
-	err = plugin.RunCallback("help.deps", []string{}, env, writer, errWriter)
-	if _, ok := err.(plugins.NoCallbackError); !ok {
-		return err
-	}
-
-	err = plugin.RunCallback("help.config", []string{}, env, writer, errWriter)
-	if _, ok := err.(plugins.NoCallbackError); !ok {
-		return err
-	}
-
-	err = plugin.RunCallback("help.links", []string{}, env, writer, errWriter)
-	if _, ok := err.(plugins.NoCallbackError); !ok {
-		return err
+	for _, callback := range []string{"help.deps", "help.config", "help.links"} {
+		err = plugin.RunCallback(callback, []string{}, env, writer, errWriter)
+		if _, ok := err.(plugins.NoCallbackError); err != nil && !ok {
+			return err
+		}
 	}
 
 	return nil
