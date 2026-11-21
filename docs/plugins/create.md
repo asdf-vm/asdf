@@ -1,9 +1,9 @@
 # Create a Plugin
 
 A plugin is a Git repo with some executable scripts to support versioning a
-language / tool. These scripts are run by asdf using specific commands to
-support features such as `asdf list-all <name>`, `asdf install <name> <version>`
-etc.
+language / tool. These scripts are callbacks: asdf invokes them when needed
+while running commands such as `asdf list all <name>` or
+`asdf install <name> <version>`. A plugin does not run them on its own.
 
 ## Quickstart
 
@@ -29,7 +29,7 @@ There are two options to get started with creating your own plugin:
 
 ## Scripts Overview
 
-The full list of scripts callable from asdf.
+The full list of callback scripts asdf can invoke.
 
 | Script                                                                                                | Description                                                      |
 | :---------------------------------------------------------------------------------------------------- |:-----------------------------------------------------------------|
@@ -56,7 +56,8 @@ each script.
 
 ## Environment Variables Overview
 
-The full list of Environment Variables used throughout all scripts.
+All Environment Variables that asdf may set for plugin scripts. Each script
+only receives a subset of them.
 
 | Environment Variables    | Description                                                                             |
 | :----------------------- |:----------------------------------------------------------------------------------------|
@@ -127,7 +128,7 @@ No environment variables are provided to this script.
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/list-all"
@@ -175,7 +176,7 @@ All plugins must include this script as support for legacy plugins will eventual
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}"/bin/download
@@ -226,7 +227,7 @@ variable. If set, assume the `bin/download` script already downloaded the versio
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}"/bin/install
@@ -573,7 +574,7 @@ No environment variables are provided to this script.
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/uninstall"
@@ -609,7 +610,7 @@ Any command which reads a tool version.
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/list-legacy-filenames"
@@ -672,7 +673,7 @@ See also the related command hooks:
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/post-plugin-add"
@@ -701,7 +702,7 @@ See also the related command hooks:
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/post-plugin-update"
@@ -728,7 +729,7 @@ See also the related command hooks:
 
 **Call signature from asdf core**
 
-No parameters provided.
+No arguments provided.
 
 ```bash
 "${plugin_path}/bin/pre-plugin-remove"
