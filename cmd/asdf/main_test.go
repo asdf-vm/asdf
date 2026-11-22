@@ -3,11 +3,30 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/asdf-vm/asdf/internal/execute"
 )
+
+func TestVersionRejectsArguments(t *testing.T) {
+	dir := t.TempDir()
+	buildAsdf(t, dir)
+
+	cmd := exec.Command(filepath.Join(dir, "asdf"), "version", "python")
+	stdout, err := cmd.Output()
+	exitErr, ok := err.(*exec.ExitError)
+	if !ok || exitErr.ExitCode() != 1 {
+		t.Fatalf("asdf version python: got error %v and stdout %q, want exit status 1", err, stdout)
+	}
+	if len(stdout) != 0 {
+		t.Errorf("stdout = %q, want empty output", stdout)
+	}
+	if got, want := string(exitErr.Stderr), "asdf version does not take any arguments\n"; got != want {
+		t.Errorf("stderr = %q, want %q", got, want)
+	}
+}
 
 // Basic integration tests using the legacy BATS test scripts. This ensures the
 // new Golang implementation matches the existing Bash implementation.
