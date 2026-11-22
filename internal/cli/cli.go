@@ -159,7 +159,10 @@ func Execute(version string) {
 			},
 			{
 				Name: "version",
-				Action: func(_ context.Context, _ *cli.Command) error {
+				Action: func(_ context.Context, cmd *cli.Command) error {
+					if cmd.NArg() != 0 {
+						return cli.Exit("asdf version does not take any arguments", 1)
+					}
 					fmt.Fprintf(os.Stdout, "%s\n", version)
 					return nil
 				},
