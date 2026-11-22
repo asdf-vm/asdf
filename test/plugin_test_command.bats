@@ -23,9 +23,14 @@ teardown() {
   [ "$output" = "FAILED: please provide a plugin name and url" ]
 }
 
-@test "plugin_test_command works with no options provided" {
+@test "plugin_test_command installs the latest stable version by default" {
+  cat >"$HOME/.asdfrc" <<-'EOM'
+post_asdf_install_asdf-test-dummy = echo Installed $1
+EOM
+
   run asdf plugin test dummy "${BASE_DIR}/repo-dummy"
   [ "$status" -eq 0 ]
+  [[ "$output" == *"Installed 2.0.0" ]]
 }
 
 @test "plugin_test_command works with all options provided" {
